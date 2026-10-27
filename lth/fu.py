@@ -232,3 +232,11 @@ def score(level: TaskLevel, result: dict) -> tuple[bool, bool]:
         first = raw.strip().split("\n")[0].strip().rstrip(".").lower()
         return first == str(result["expected_result"]).lower(), first in _TAPATAN_LABELS
     raise ValueError(level.task)
+
+
+def recorded_prompts(directory: Path) -> dict[str, str]:
+    """Item -> prompt text, from the result file Fu's runner wrote into ``directory``."""
+    import json
+
+    files = sorted(directory.rglob("*.json"))
+    return {item_id(r): r["prompt"] for r in json.loads(files[-1].read_text())["results"]}
