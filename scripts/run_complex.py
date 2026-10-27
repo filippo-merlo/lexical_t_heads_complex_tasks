@@ -52,6 +52,8 @@ def main() -> None:
     parser.add_argument("--gpu", type=int, required=True)
     parser.add_argument("--levels", nargs="+", default=None)
     parser.add_argument("--n-test", type=int, default=None, help="items per level (smoke runs)")
+    parser.add_argument("--variants", nargs="+", default=None,
+                        help="run only these prompt variants (to split a level over GPUs)")
     args = parser.parse_args()
     gpu.pin(args.gpu)
 
@@ -65,6 +67,8 @@ def main() -> None:
         directory = run_dir("complex", key)
         fixed = fixed_items(directory, FIXING) if done(directory, FIXING) else None
         for name, mode, rules in variants(level):
+            if args.variants and name not in args.variants:
+                continue
             if done(directory, name):
                 continue
             start = time.time()

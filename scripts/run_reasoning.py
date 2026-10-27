@@ -54,6 +54,8 @@ def main() -> None:
     parser.add_argument("--levels", nargs="+", default=None)
     parser.add_argument("--n-items", type=int, default=N_ITEMS)
     parser.add_argument("--n-fix", type=int, default=N_FIX)
+    parser.add_argument("--variants", nargs="+", default=None,
+                        help="run only these prompt variants (to split a level over GPUs)")
     args = parser.parse_args()
     gpu.pin(args.gpu)
 
@@ -68,6 +70,8 @@ def main() -> None:
         directory = run_dir("reasoning", key)
         fixed = fixed_items(directory, FIXING) if done(directory, FIXING) else None
         for name, mode, rules in variants(level):
+            if args.variants and name not in args.variants:
+                continue
             if done(directory, name) and (name == BARE or done(directory, name + PRE)):
                 continue
             start = time.time()
