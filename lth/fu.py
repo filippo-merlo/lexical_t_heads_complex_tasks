@@ -44,7 +44,7 @@ DEMOS = {"set_game": 20, "operator_func": 1}
 # 300 items answered straight away, in any variant) are run with Fu's instruction-tuned
 # limit for Operator Function, so the model can reason first.
 REASONING_TASKS = ("set_game", "operator_func", "tapatan")
-REASONING_MAX_TOKENS = 6000
+REASONING_MAX_TOKENS = int(os.environ.get("LTH_REASONING_MAX_TOKENS", 6000))  # override: smoke runs only
 RUNNERS = {"set_game": "run_set_game_experiment", "operator_func": "run_operator_func_experiment",
            "tapatan": "run_tapatan_experiment",
            "noun_class_agreement": "run_noun_class_agreement_experiment",
