@@ -70,10 +70,13 @@ def main() -> None:
             start = time.time()
             stash = {}
 
-            def answer(prompt: str) -> str:
-                replies, z = lm.generate(lm.encode_chat(prompt), fu.MAX_TOKENS[level.task])
-                stash[prompt] = z[0].cpu()
-                return replies[0]
+            def answer(prompts: list[str]) -> list[str]:
+                out = []
+                for prompt in prompts:
+                    replies, z = lm.generate(lm.encode_chat(prompt), fu.MAX_TOKENS[level.task])
+                    stash[prompt] = z[0].cpu()
+                    out.append(replies[0])
+                return out
 
             results = fu.run(level, mode, answer, directory / "fu_out" / name, rules=rules,
                              n_test=args.n_test)

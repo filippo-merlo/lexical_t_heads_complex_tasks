@@ -30,9 +30,12 @@ def run_dir(family: str, task: str) -> Path:
 
 
 class Collector:
-    def __init__(self, lm, *, fixed: set[str] | None = None, fixing: bool = False):
+    def __init__(self, lm, *, fixed: set[str] | None = None, fixing: bool = False,
+                 require_straight: bool = True, fix_cap: int = CAP):
         self.lm = lm
+        self.fix_cap = fix_cap
         self.fixing = fixing
+        self.require_straight = require_straight
         self.fixed: list[str] = []
         self.known_fixed = set(fixed or ())
         self.records: list[dict] = []
@@ -43,16 +46,26 @@ class Collector:
 
     def add(self, item: str, z: torch.Tensor, *, correct: bool, straight: bool = True, **record):
         self.records.append({"item": item, "correct": correct, "straight": straight, **record})
-        if not (correct and straight):
+        if not self.wants(item, correct=correct, straight=straight):
             return
         if len(self.id_items) < CAP:
             self.id_items.append(item)
             self.top.append(self.lm.top_tokens(z))
-        if self.fixing and len(self.fixed) < CAP:
+        if self.fixing and len(self.fixed) < self.fix_cap:
             self.fixed.append(item)
         elif item not in self.known_fixed and len(self.mean_items) < CAP:
             self.mean_items.append(item)
             self.z_sum += z.double().cpu()
+
+    def wants(self, item: str, *, correct: bool, straight: bool = True) -> bool:
+        """Whether a prompt joins P+ and is still needed (identification, fixing or mean set).
+
+        In reasoning mode (``require_straight=False``) P+ asks only for a correct answer.
+        """
+        if not correct or (self.require_straight and not straight):
+            return False
+        return (len(self.id_items) < CAP or (self.fixing and len(self.fixed) < self.fix_cap)
+                or (item not in self.known_fixed and len(self.mean_items) < CAP))
 
     def save(self, directory: Path, wording: str) -> None:
         directory.mkdir(parents=True, exist_ok=True)

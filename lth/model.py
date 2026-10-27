@@ -11,6 +11,7 @@ Notation (proposal Sec. 3): ``z`` is a layer's ``o_proj`` input at the last prom
 
 from __future__ import annotations
 
+import contextlib
 from dataclasses import dataclass
 
 import torch
@@ -116,6 +117,53 @@ class LM:
             cut = next((i for i, t in enumerate(row) if t in self.eos), len(row))
             replies.append(self.tokenizer.decode(row[:cut], skip_special_tokens=True).strip())
         return replies, z
+
+    @torch.no_grad()
+    def generate_batch(self, prompts: list[list[int]], max_new_tokens: int, *,
+                       edits: dict | None = None) -> list[list[int]]:
+        """Greedy replies to several prompts at once, as token ids up to the first EOS.
+
+        For reasoning mode, where replies run to thousands of tokens. Prompts are padded on
+        the left with an attention mask, so the last prompt token is the last column.
+        ``edits`` stay on for the whole generation: at the last prompt token and at every
+        generated token (proposal Sec. 5.3, reasoning mode). Readings are not taken here
+        but from an unpadded pass over the prompt and the reply (:meth:`states`).
+        """
+        from src.hooks import ZinPatcher
+
+        pad = self.tokenizer.pad_token_id
+        pad = min(self.eos) if pad is None else pad
+        width = max(len(p) for p in prompts)
+        input_ids = torch.full((len(prompts), width), pad, device=self.device)
+        mask = torch.zeros_like(input_ids)
+        for row, ids in enumerate(prompts):
+            input_ids[row, width - len(ids):] = torch.tensor(ids, device=self.device)
+            mask[row, width - len(ids):] = 1
+        patcher = ZinPatcher(self.model.layers, edits) if edits else contextlib.nullcontext()
+        with patcher:
+            out = self.model.hf_model.generate(
+                input_ids=input_ids, attention_mask=mask, max_new_tokens=max_new_tokens,
+                do_sample=False, temperature=None, top_p=None, top_k=None,
+                pad_token_id=pad, eos_token_id=sorted(self.eos))
+        replies = []
+        for row in out[:, width:].tolist():
+            cut = next((i for i, t in enumerate(row) if t in self.eos), len(row))
+            replies.append(row[:cut])
+        return replies
+
+    def decode(self, ids: list[int]) -> str:
+        """A reply's text, as Fu et al.'s vLLM path returns it: no special tokens, stripped."""
+        return self.tokenizer.decode(ids, skip_special_tokens=True).strip()
+
+    @torch.no_grad()
+    def states(self, ids: list[int], positions: list[int]) -> list[torch.Tensor]:
+        """``z`` at each of ``positions`` from one unpadded pass over ``ids``."""
+        from src.hooks import AnchorRecorder
+
+        layers = range(self.spec.n_layers)
+        with AnchorRecorder(self.model.layers, zin_at=layers) as recorder:
+            self.model.forward(torch.tensor([ids], device=self.device))
+        return [torch.stack([recorder.activations[("zin", l)][0, p] for l in layers]) for p in positions]
 
     def _prefill(self, input_ids, edits, cache=None):
         from src.hooks import AnchorRecorder, ZinPatcher

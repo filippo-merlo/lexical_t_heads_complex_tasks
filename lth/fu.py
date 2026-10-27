@@ -40,6 +40,11 @@ MODES = ("rules", "examples", "combined")
 MAX_TOKENS = {"set_game": 50, "operator_func": 50, "tapatan": 4,
               "noun_class_agreement": 8, "lexical_category_inference": 2}
 DEMOS = {"set_game": 20, "operator_func": 1}
+# Reasoning mode (proposal Sec. 5.3): the tasks on which E0 found no direct answers (none of
+# 300 items answered straight away, in any variant) are run with Fu's instruction-tuned
+# limit for Operator Function, so the model can reason first.
+REASONING_TASKS = ("set_game", "operator_func", "tapatan")
+REASONING_MAX_TOKENS = 6000
 RUNNERS = {"set_game": "run_set_game_experiment", "operator_func": "run_operator_func_experiment",
            "tapatan": "run_tapatan_experiment",
            "noun_class_agreement": "run_noun_class_agreement_experiment",
@@ -164,12 +169,15 @@ def rule_text(markdown: str, template: str):
 
 # ---- running ---------------------------------------------------------------------------
 
-def run(level: TaskLevel, mode: str, generate: Callable[[str], str], output_dir: Path, *,
-        rules: str | None = None, n_test: int | None = None) -> list[dict]:
-    """Fu's runner for one task level and mode, answering each prompt with ``generate``.
+def run(level: TaskLevel, mode: str, generate: Callable[[list[str]], list[str]], output_dir: Path, *,
+        rules: str | None = None, n_test: int | None = None, batch: int = 1,
+        reasoning: bool = False) -> list[dict]:
+    """Fu's runner for one task level and mode, answering its prompts with ``generate``.
 
-    ``rules`` replaces the rules-only template (rules mode only). Returns the runner's
-    per-item records, each with the ``prompt`` and the ``raw_response``.
+    ``generate`` receives up to ``batch`` prompts at a time. ``rules`` replaces the
+    rules-only template (rules mode only). In reasoning mode the runner is told the
+    reasoning-mode output limit. Returns the runner's per-item records, each with the
+    ``prompt`` and the ``raw_response``.
     """
     if rules is not None and mode != "rules":
         raise ValueError("a rule text applies to rules mode only")
@@ -177,16 +185,15 @@ def run(level: TaskLevel, mode: str, generate: Callable[[str], str], output_dir:
     answered: dict[str, str] = {}
 
     async def query_batch(prompts):
-        responses = []
-        for prompt in prompts:
-            answered[prompt] = generate(prompt)
-            responses.append(answered[prompt])
+        responses = generate(list(prompts))
+        answered.update(zip(prompts, responses))
         return responses
 
     kwargs = dict(level.runner_kwargs, mode=mode, num_test_samples=n_test or level.n_test,
                   num_demos=DEMOS.get(level.task), output_dir=str(output_dir),
-                  model_name=MODEL_NAME, seed=SEED, max_tokens=MAX_TOKENS[level.task],
-                  query_batch_fn=query_batch, query_batch_size=1)
+                  model_name=MODEL_NAME, seed=SEED,
+                  max_tokens=REASONING_MAX_TOKENS if reasoning else MAX_TOKENS[level.task],
+                  query_batch_fn=query_batch, query_batch_size=batch)
     context = (rule_text(ORIGINALS[level.original].markdown, rules)
                if rules is not None else contextlib.nullcontext())
     # Set Game shuffles each board with the unseeded global RNG (set_game.py:349); seeding
@@ -206,18 +213,21 @@ def run(level: TaskLevel, mode: str, generate: Callable[[str], str], output_dir:
 
 _YES_NO_START = re.compile(r"\s*(yes|no)\b", re.IGNORECASE)
 _TAPATAN_LABELS = ("a win", "b win", "continue")
+_TAPATAN_LABEL = re.compile(r"\b(A win|B win|continue)\b")
+_BOXED = re.compile(r"\\boxed\{(.+?)\}", re.S)
 
 
 def item_id(result: dict) -> str:
     return str(result.get("id", result.get("sample_id")))
 
 
-def score(level: TaskLevel, result: dict) -> tuple[bool, bool]:
+def score(level: TaskLevel, result: dict, *, reasoning: bool = False) -> tuple[bool, bool]:
     """``(correct, straight)``: the answer is right; the answer is the first thing written.
 
     Set Game, Operator Function and Lexical Category Inference use the runners' own
     ``is_correct``; Noun Class Agreement compares the runner's parsed answer with the
-    label; Tapatan's release has no check, so its first line must be the expected label.
+    label. Tapatan's release has no check: its first line must be the expected label, or
+    in reasoning mode the first label anywhere in the output must be (Sec. 5.3).
     """
     raw = result["raw_response"]
     if level.task in ("set_game", "operator_func"):
@@ -230,8 +240,32 @@ def score(level: TaskLevel, result: dict) -> tuple[bool, bool]:
         return result["prediction"] == result["expected_label"], straight
     if level.task == "tapatan":
         first = raw.strip().split("\n")[0].strip().rstrip(".").lower()
-        return first == str(result["expected_result"]).lower(), first in _TAPATAN_LABELS
+        straight = first in _TAPATAN_LABELS
+        if reasoning:
+            label = _TAPATAN_LABEL.search(raw)
+            return bool(label) and label.group(1) == str(result["expected_result"]), straight
+        return first == str(result["expected_result"]).lower(), straight
     raise ValueError(level.task)
+
+
+def answer_start(level: TaskLevel, text: str) -> int | None:
+    """Where the extracted answer begins in a reasoning-mode reply (character offset).
+
+    The answer is what the scoring reads: the first ``\\boxed{}``'s content (Fu et al.'s
+    ``extract_outcome``), and within it the first card for Set Game; for Tapatan the first
+    label. The pre-answer position is the token before the one holding this character.
+    """
+    if level.task == "tapatan":
+        label = _TAPATAN_LABEL.search(text)
+        return label.start(1) if label else None
+    boxed = _BOXED.search(text)
+    if not boxed:
+        return None
+    content = boxed.start(1)
+    if level.task == "set_game":
+        card = text.find("(", content, boxed.end(1))
+        return card if card >= 0 else None
+    return content + len(boxed.group(1)) - len(boxed.group(1).lstrip())
 
 
 def recorded_prompts(directory: Path) -> dict[str, str]:

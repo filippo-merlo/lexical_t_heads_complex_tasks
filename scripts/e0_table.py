@@ -1,9 +1,12 @@
 """E0: accuracy of every wording of every task, and the share answered straight away (no GPU).
 
+Family ``complex`` holds the complex tasks under Fu et al.'s answer limits, ``reasoning``
+the tasks rerun in reasoning mode (accuracy after reasoning).
+
 Writes ``results/e0_accuracy.csv`` with one row per task and wording: its style (``none``
 for the prompts without task information), the number of items, accuracy, the share of
 replies that begin with the answer, the number of identification prompts (P+: correct and
-straight away, at most 100), and chance. Chance is the majority label's share for the
+straight away, or in reasoning mode correct; at most 100), and chance. Chance is the majority label's share for the
 tasks with a fixed label set (Noun Class Agreement, Lexical Category Inference, Tapatan)
 and 0 for open answers.
 
@@ -60,15 +63,16 @@ def main() -> None:
             for wording in wordings:
                 if done(directory, wording):
                     rows.append(row("simple", task, style, wording, load(directory, wording), 0.0))
-    for key, level in fu.TASK_LEVELS.items():
-        directory = run_dir("complex", key)
-        if not done(directory, "orig"):
-            continue
-        chance_level = chance(level, directory)
-        for wording in ["orig", *[f"w{i}" for i in range(1, 7)], "examples", "combined", "bare"]:
-            if done(directory, wording):
-                rows.append(row("complex", key, complex_style(wording), wording, load(directory, wording),
-                                chance_level))
+    for family in ("complex", "reasoning"):
+        for key, level in fu.TASK_LEVELS.items():
+            directory = run_dir(family, key)
+            if not done(directory, "orig"):
+                continue
+            chance_level = chance(level, directory)
+            for wording in ["orig", *[f"w{i}" for i in range(1, 7)], "examples", "combined", "bare"]:
+                if done(directory, wording):
+                    rows.append(row(family, key, complex_style(wording), wording, load(directory, wording),
+                                    chance_level))
     RESULTS.mkdir(exist_ok=True)
     with (RESULTS / "e0_accuracy.csv").open("w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=list(rows[0]))

@@ -7,7 +7,9 @@ over the style's wordings (Definition 1; n = 1, k = 10, rho = 0.1).
 
 Writes ``results/heads.json`` (every head set with each head's match rate),
 ``results/measures.csv`` (prompts, heads, mean layer and copy share per set) and
-``results/overlaps.csv`` (Logit-head vs J-head, and rule vs example, per task).
+``results/overlaps.csv`` (Logit-head vs J-head, and rule vs example, per task). Families:
+``simple``, ``complex``, and for the tasks run in reasoning mode ``reasoning`` (last prompt
+token) and ``reasoning-pre`` (pre-answer position).
 
     .venv/bin/python scripts/identify_heads.py
 """
@@ -30,6 +32,7 @@ from lth.store import done, load, run_dir  # noqa: E402
 
 RHO = 0.10
 N_HEADS = 32
+PRE = "@pre"  # reasoning mode: readings at the pre-answer position (scripts/run_reasoning.py)
 
 
 def complex_styles() -> dict[str, tuple[str, ...]]:
@@ -37,6 +40,15 @@ def complex_styles() -> dict[str, tuple[str, ...]]:
     if (MATERIALS / "complex" / "wordings.json").exists():
         wordings += tuple(f"w{i}" for i in range(1, 7))
     return {"rule": wordings, "example": ("examples",), "combined": ("combined",)}
+
+
+def pre_answer_texts(directory: Path, wording: str) -> dict[str, str]:
+    """Item -> prompt plus the reply up to the pre-answer position (reasoning mode)."""
+    from lth import fu
+
+    prompts = fu.recorded_prompts(directory / "fu_out" / wording.removesuffix(PRE))
+    return {r["item"]: prompts[r["item"]] + r["pre_text"] for r in load(directory, wording)["records"]
+            if "pre_text" in r}
 
 
 def copy_share(top: np.ndarray, matched: np.ndarray, texts: list[str], heads, term_ids: set[int],
@@ -75,9 +87,20 @@ def main() -> None:
     if (MATERIALS / "complex" / "terms.json").exists():
         complex_terms = complex_term_lists()
         for key, level in fu.TASK_LEVELS.items():
-            directory = run_dir("complex", key)
-            jobs.append(("complex", key, complex_styles(), complex_terms[level.original], directory,
+            terms = complex_terms[level.original]
+            if level.task not in fu.REASONING_TASKS:
+                directory = run_dir("complex", key)
+                jobs.append(("complex", key, complex_styles(), terms, directory,
+                             lambda w, directory=directory: fu.recorded_prompts(directory / "fu_out" / w)))
+                continue
+            # Reasoning mode: heads at the last prompt token, and at the pre-answer position,
+            # where the copy share also checks the reply up to that point.
+            directory = run_dir("reasoning", key)
+            jobs.append(("reasoning", key, complex_styles(), terms, directory,
                          lambda w, directory=directory: fu.recorded_prompts(directory / "fu_out" / w)))
+            jobs.append(("reasoning-pre", key,
+                         {s: tuple(w + PRE for w in ws) for s, ws in complex_styles().items()},
+                         terms, directory, lambda w, directory=directory: pre_answer_texts(directory, w)))
     else:
         print("no materials/complex/terms.json yet: complex tasks skipped")
 
