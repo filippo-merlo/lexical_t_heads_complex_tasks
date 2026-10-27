@@ -60,7 +60,7 @@ def main() -> None:
     from lth.store import Collector, done, fixed_items, run_dir
 
     lm = LM.load()
-    for key in args.levels or list(fu.TASK_LEVELS):
+    for key in args.levels or [k for k in fu.STUDY_LEVELS if fu.TASK_LEVELS[k].task not in fu.REASONING_TASKS]:
         level = fu.TASK_LEVELS[key]
         directory = run_dir("complex", key)
         fixed = fixed_items(directory, FIXING) if done(directory, FIXING) else None

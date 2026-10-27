@@ -64,7 +64,8 @@ def main() -> None:
                 if done(directory, wording):
                     rows.append(row("simple", task, style, wording, load(directory, wording), 0.0))
     for family in ("complex", "reasoning"):
-        for key, level in fu.TASK_LEVELS.items():
+        for key in fu.STUDY_LEVELS:
+            level = fu.TASK_LEVELS[key]
             directory = run_dir(family, key)
             if not done(directory, "orig"):
                 continue

@@ -62,7 +62,7 @@ def main() -> None:
     from lth.store import Collector, done, fixed_items, run_dir
 
     lm = LM.load()
-    levels = args.levels or [k for k, l in fu.TASK_LEVELS.items() if l.task in fu.REASONING_TASKS]
+    levels = args.levels or [k for k in fu.STUDY_LEVELS if fu.TASK_LEVELS[k].task in fu.REASONING_TASKS]
     for key in levels:
         level = fu.TASK_LEVELS[key]
         directory = run_dir("reasoning", key)

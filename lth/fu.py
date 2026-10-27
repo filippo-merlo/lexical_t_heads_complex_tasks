@@ -120,6 +120,11 @@ TASK_LEVELS = {t.key: t for t in [
 ]}
 
 
+# The levels in the study: only the easy level of each task (user decision, 2026-10-27).
+# Data for the other levels may be on disk; no script uses it.
+STUDY_LEVELS = tuple(key for key in TASK_LEVELS if key.endswith("/easy"))
+
+
 # ---- rule text -------------------------------------------------------------------------
 
 def original_template(original: Original) -> str:

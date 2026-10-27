@@ -86,7 +86,8 @@ def main() -> None:
                      lambda w, texts=texts: {str(k): v for k, v in texts[w].items()}))
     if (MATERIALS / "complex" / "terms.json").exists():
         complex_terms = complex_term_lists()
-        for key, level in fu.TASK_LEVELS.items():
+        for key in fu.STUDY_LEVELS:
+            level = fu.TASK_LEVELS[key]
             terms = complex_terms[level.original]
             if level.task not in fu.REASONING_TASKS:
                 directory = run_dir("complex", key)

@@ -114,7 +114,8 @@ def run_complex(lm, heads_json, rows):
     from identify_heads import complex_styles
 
     styles = complex_styles()
-    for key, level in fu.TASK_LEVELS.items():
+    for key in fu.STUDY_LEVELS:
+        level = fu.TASK_LEVELS[key]
         directory = run_dir("complex", key)
         if key not in heads_json.get("complex", {}) or not done(directory, "orig"):
             continue
@@ -163,7 +164,8 @@ def run_reasoning(lm, heads_json, rows, family):
 
     suffix = PRE if family == "reasoning-pre" else ""
     styles = {s: tuple(w + suffix for w in ws) for s, ws in complex_styles().items()}
-    for key, level in fu.TASK_LEVELS.items():
+    for key in fu.STUDY_LEVELS:
+        level = fu.TASK_LEVELS[key]
         directory = run_dir("reasoning", key)
         if key not in heads_json.get(family, {}) or not done(directory, "orig"):
             continue
