@@ -1,0 +1,37 @@
+[project]
+name = "lexical-t-heads-complex-tasks"
+version = "0.1.0"
+description = "Lexical task heads of Yang et al. (2026) on the complex tasks of Fu et al. (2026), read with Logit-head and Head-JLens."
+requires-python = ">=3.11,<3.12"
+# Pinned to the versions in head_level_jlens's uv.lock, the toolchain the lens was fitted
+# and evaluated under.
+dependencies = [
+    "head-level-jlens",
+    "jlens",
+    "torch==2.13.0",
+    "transformers==5.15.0",
+    "huggingface-hub==1.27.0",
+    "tokenizers==0.22.2",
+    "safetensors==0.8.0",
+    "numpy==2.4.6",
+    "pandas==3.0.5",
+    "httpx==0.28.1",
+    "marimo==0.23.16",
+    "altair==6.3.0",
+    "vl-convert-python==1.9.0.post1",
+]
+
+[tool.uv]
+package = false
+
+# head_level_jlens and its vendored jlens are used as they are, from their checkouts.
+# The torch index matches head_level_jlens (CUDA 13.0 wheels).
+[tool.uv.sources]
+head-level-jlens = { path = "../head_level_jlens", editable = true }
+jlens = { path = "../head_level_jlens/vendor/jacobian-lens", editable = true }
+torch = { index = "pytorch-cu130" }
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true

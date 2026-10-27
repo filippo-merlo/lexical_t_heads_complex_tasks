@@ -1,0 +1,12 @@
+You will be given the rules of a task for a language model. List words that describe the task itself: what the task asks the model to do, its operation or relation, and its key concepts. For example, for the task "give the antonym of a word": opposite, reverse, antonym, contrary.
+
+Requirements:
+1. Single words only.
+2. Do not list possible answers or output labels, words that only name the items of a particular input (e.g. specific animals, nouns or numbers), or placeholders.
+3. Include singular and plural forms and capitalised forms. You may include translations into other languages.
+4. Return a JSON list of strings.
+
+Task rules:
+<<<
+{rule_prompt}
+>>>

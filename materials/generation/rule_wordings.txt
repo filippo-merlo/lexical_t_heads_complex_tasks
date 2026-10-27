@@ -1,0 +1,15 @@
+You will be given a prompt that describes the rules of a task for a language model. Write {N} paraphrases of it.
+
+Requirements:
+1. Each paraphrase must state exactly the same rules as the original: the same constraints, conditions, quantities, names, symbols and labels. Do not add, remove, weaken or strengthen any rule, and do not add examples, hints or explanations.
+2. Change the wording and the sentence structure. Reorder rules only where their order does not matter; if a rule refers to another rule by its number, keep the reference correct.
+3. Copy verbatim every placeholder in curly braces (e.g. {board}), the answer-format instruction, and every output label or format string (e.g. "Yes or No", "A win, B win, or continue", \boxed{...}).
+4. Keep unchanged the final lines that introduce the input and the answer (e.g. "Sentence: {sentence}" and "Answer:").
+5. The paraphrases must differ from the original and from each other.
+
+Return a JSON list of {N} strings.
+
+Original prompt:
+<<<
+{rule_prompt}
+>>>
