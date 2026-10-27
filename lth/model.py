@@ -13,12 +13,39 @@ from __future__ import annotations
 
 import contextlib
 from dataclasses import dataclass
+from typing import Callable
 
 import torch
+from transformers import StoppingCriteria
 
 from lth import LENS_KEY, READOUTS
 
 TOP_K = 10
+# Batched generation (reasoning mode): rows per batch, and padded prompt-plus-reply tokens
+# per batch, which bounds the KV cache (128 kB per token on Llama-3.1-8B) to about 38 GB.
+MAX_ROWS = 32
+TOKEN_BUDGET = 300_000
+STOP_EVERY = 8
+
+
+class _ReplyStop(StoppingCriteria):
+    """Stopping criterion: a row ends once ``stop`` holds for its reply so far."""
+
+    def __init__(self, tokenizer, width: int, stop):
+        self.tokenizer, self.width, self.stop = tokenizer, width, stop
+        self.calls = 0
+        self.finished = None
+
+    def __call__(self, input_ids, scores, **kwargs):
+        if self.finished is None:
+            self.finished = torch.zeros(input_ids.shape[0], dtype=torch.bool, device=input_ids.device)
+        self.calls += 1
+        if self.calls % STOP_EVERY == 0:
+            for row in range(input_ids.shape[0]):
+                if not self.finished[row]:
+                    text = self.tokenizer.decode(input_ids[row, self.width:], skip_special_tokens=True)
+                    self.finished[row] = bool(self.stop(text))
+        return self.finished.clone()
 
 
 @dataclass
@@ -120,15 +147,19 @@ class LM:
 
     @torch.no_grad()
     def generate_batch(self, prompts: list[list[int]], max_new_tokens: int, *,
-                       edits: dict | None = None) -> list[list[int]]:
+                       edits: dict | None = None,
+                       stop: Callable[[str], bool] | None = None) -> list[list[int]]:
         """Greedy replies to several prompts at once, as token ids up to the first EOS.
 
         For reasoning mode, where replies run to thousands of tokens. Prompts are padded on
         the left with an attention mask, so the last prompt token is the last column.
         ``edits`` stay on for the whole generation: at the last prompt token and at every
-        generated token (proposal Sec. 5.3, reasoning mode). Readings are not taken here
-        but from an unpadded pass over the prompt and the reply (:meth:`states`).
+        generated token (proposal Sec. 5.3, reasoning mode). A row also ends once
+        ``stop(reply text)`` holds, checked every ``STOP_EVERY`` tokens. Readings are not
+        taken here but from an unpadded pass over the prompt and the reply (:meth:`states`).
         """
+        from transformers import StoppingCriteriaList
+
         from src.hooks import ZinPatcher
 
         pad = self.tokenizer.pad_token_id
@@ -144,12 +175,26 @@ class LM:
             out = self.model.hf_model.generate(
                 input_ids=input_ids, attention_mask=mask, max_new_tokens=max_new_tokens,
                 do_sample=False, temperature=None, top_p=None, top_k=None,
-                pad_token_id=pad, eos_token_id=sorted(self.eos))
+                pad_token_id=pad, eos_token_id=sorted(self.eos),
+                stopping_criteria=StoppingCriteriaList([_ReplyStop(self.tokenizer, width, stop)]) if stop else None)
         replies = []
         for row in out[:, width:].tolist():
             cut = next((i for i, t in enumerate(row) if t in self.eos), len(row))
             replies.append(row[:cut])
         return replies
+
+    @staticmethod
+    def token_batches(lengths: list[int], max_new_tokens: int) -> list[range]:
+        """Consecutive batches whose padded prompts plus replies fit ``TOKEN_BUDGET`` tokens."""
+        batches, start = [], 0
+        while start < len(lengths):
+            end = start + 1
+            while (end < len(lengths) and end - start < MAX_ROWS
+                   and (end + 1 - start) * (max(lengths[start:end + 1]) + max_new_tokens) <= TOKEN_BUDGET):
+                end += 1
+            batches.append(range(start, end))
+            start = end
+        return batches
 
     def decode(self, ids: list[int]) -> str:
         """A reply's text, as Fu et al.'s vLLM path returns it: no special tokens, stripped."""

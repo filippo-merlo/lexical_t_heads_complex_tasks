@@ -3,7 +3,8 @@ which the model does not answer straight away (``lth.fu.REASONING_TASKS``).
 
 Each task level runs through Fu's runner as in ``run_complex.py``, under the same prompt
 variants, but the model may reason: greedy decoding under the chat template up to 6,000
-new tokens, replies generated in batches. Every variant uses the same fixed sample of
+new tokens, replies generated in batches. A reply stops once the answer the scoring reads
+is complete (``lth.fu.answer_complete``), which leaves every score unchanged. Every variant uses the same fixed sample of
 ``--n-items`` items (Fu's sampler and seed). A prompt is in P+ when its final answer is
 correct, whatever precedes it. For a P+ prompt, one unpadded forward pass over the prompt
 and the model's own reply gives ``z`` at two positions, kept as described in
@@ -74,7 +75,10 @@ def main() -> None:
 
             def answer(prompts: list[str]) -> list[str]:
                 ids = [lm.encode_chat(p) for p in prompts]
-                replies = lm.generate_batch(ids, fu.REASONING_MAX_TOKENS)
+                replies = []
+                for rows in lm.token_batches([len(i) for i in ids], fu.REASONING_MAX_TOKENS):
+                    replies += lm.generate_batch([ids[r] for r in rows], fu.REASONING_MAX_TOKENS,
+                                                 stop=lambda text: fu.answer_complete(level, text))
                 stash.update((p, (i, r)) for p, i, r in zip(prompts, ids, replies))
                 return [lm.decode(r) for r in replies]
 

@@ -248,6 +248,19 @@ def score(level: TaskLevel, result: dict, *, reasoning: bool = False) -> tuple[b
     raise ValueError(level.task)
 
 
+def answer_complete(level: TaskLevel, text: str) -> bool:
+    """Whether the answer the scoring reads is already fixed in ``text``.
+
+    Scoring reads the first complete ``\\boxed{...}``, or for Tapatan the first label, so
+    once it is in the text no continuation can change the score: reasoning-mode replies
+    stop there. A label at the very end is not yet fixed (``continue`` may become
+    ``continued``).
+    """
+    if level.task == "tapatan":
+        return any(m.end() < len(text) for m in _TAPATAN_LABEL.finditer(text))
+    return _BOXED.search(text) is not None
+
+
 def answer_start(level: TaskLevel, text: str) -> int | None:
     """Where the extracted answer begins in a reasoning-mode reply (character offset).
 

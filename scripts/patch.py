@@ -159,7 +159,7 @@ def run_reasoning(lm, heads_json, rows, family):
 
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from identify_heads import complex_styles
-    from run_reasoning import BATCH, N_ITEMS, PRE
+    from run_reasoning import N_ITEMS, PRE
 
     suffix = PRE if family == "reasoning-pre" else ""
     styles = {s: tuple(w + suffix for w in ws) for s, ws in complex_styles().items()}
@@ -182,14 +182,14 @@ def run_reasoning(lm, heads_json, rows, family):
                 heads_json[family][key], styles, directory, run_dir("reasoning", COMPLEX_CONTROL[key])):
             start = time.time()
             grid = [(item, alpha) for item in fixed for alpha in REASONING_ALPHAS]
+            ids = [lm.encode_chat(prompts[item]) for item, _ in grid]
             replies = {}
-            for i in range(0, len(grid), BATCH):
-                chunk = grid[i:i + BATCH]
-                edits = lm.mean_patch(heads, mean, [alpha for _, alpha in chunk])
-                out = lm.generate_batch([lm.encode_chat(prompts[item]) for item, _ in chunk],
-                                        fu.REASONING_MAX_TOKENS, edits=edits)
-                for (item, alpha), reply in zip(chunk, out):
-                    replies[(prompts[item], alpha)] = lm.decode(reply)
+            for rows in lm.token_batches([len(i) for i in ids], fu.REASONING_MAX_TOKENS):
+                edits = lm.mean_patch(heads, mean, [grid[r][1] for r in rows])
+                out = lm.generate_batch([ids[r] for r in rows], fu.REASONING_MAX_TOKENS, edits=edits,
+                                        stop=lambda text: fu.answer_complete(level, text))
+                for r, reply in zip(rows, out):
+                    replies[(prompts[grid[r][0]], grid[r][1])] = lm.decode(reply)
             for alpha in REASONING_ALPHAS:
                 with tempfile.TemporaryDirectory() as scratch:
                     results = fu.run(level, "rules", lambda ps, a=alpha: [replies.get((p, a), "") for p in ps],
