@@ -1,60 +1,51 @@
 #!/usr/bin/env bash
-# Run every remaining stage unattended, in order. Start it detached:
-#   setsid nohup scripts/pipeline.sh WAIT_PIDS... > logs/pipeline.log 2>&1 < /dev/null &
-# WAIT_PIDS are E0 workers already running; the E0 stages wait for them. Every stage
-# skips what is already on disk, so the script can be rerun after a failure.
+# Run the stages that need no further decision, unattended. Start it detached:
+#   setsid nohup scripts/pipeline.sh > logs/pipeline.log 2>&1 < /dev/null &
+# Every stage skips what is already on disk, so the script can be rerun after a failure.
 #
-#  1. Set Game in reasoning mode (GPU 3), beside the running workers.
-#  2. When every E0 worker is done: a completion pass over all complex and reasoning
-#     levels, which adds whatever is missing (the six rule wordings, once
-#     materials/complex/wordings.json exists).
-#  3. E0 table and head identification.
-#  4. Causal checks: complex (GPU 3), reasoning at the last prompt token (GPU 2), and at
-#     the pre-answer position (GPU 5); the simple one is already running on GPU 0.
-# Writes logs/pipeline.done at the end.
+#  1. E0 table and head identification on what is done (simple, complex), then the
+#     complex causal check (GPU 5).
+#  2. Reasoning-mode E0 and readings: Operator Function (GPU 0), Tapatan (GPU 2),
+#     Set Game easy and medium (GPU 3), Set Game hard (GPU 5, after step 1).
+#  3. E0 table and head identification on everything.
+# The reasoning-mode causal check is not run here: its sample size and alpha grid are
+# still to be chosen (proposal Sec. 5.3). Writes logs/pipeline.done at the end.
 set -uo pipefail
 cd "$(dirname "$0")/.."
 PY=.venv/bin/python
-WAIT_PIDS=("$@")
-REASONING_LEVELS=(set_game/easy set_game/medium set_game/hard operator_func/easy operator_func/medium
-                  operator_func/hard tapatan/easy tapatan/medium tapatan/hard)
-COMPLEX_LEVELS=(noun_class_agreement/easy noun_class_agreement/medium noun_class_agreement/hard
-                lexical_category_inference/easy lexical_category_inference/medium-or
-                lexical_category_inference/medium-and lexical_category_inference/hard-or
-                lexical_category_inference/hard-and)
 
 say() { echo "[$(date '+%F %T')] $*"; }
-wait_for() { for pid in "$@"; do while kill -0 "$pid" 2>/dev/null; do sleep 30; done; done; }
 
-say "stage 1: Set Game in reasoning mode"
-$PY scripts/run_reasoning.py --gpu 3 --levels set_game/easy set_game/medium set_game/hard \
-    > logs/reasoning_g3.log 2>&1 &
-SETGAME=$!
-wait_for "${WAIT_PIDS[@]}" "$SETGAME"
+say "stage 1: E0 table, head identification, complex causal check"
+$PY scripts/e0_table.py || say "e0_table failed"
+$PY scripts/identify_heads.py > logs/identify_heads.log 2>&1 || say "identify_heads failed"
+(
+    $PY scripts/patch.py --gpu 5 --family complex > logs/patch_complex.log 2>&1
+    say "complex patching exit $?"
+    $PY scripts/run_reasoning.py --gpu 5 --levels set_game/hard >> logs/reasoning_g5.log 2>&1
+    say "reasoning set_game/hard exit $?"
+) &
+LANE5=$!
 
-say "stage 2: completion pass (adds wordings if materials/complex/wordings.json exists)"
-$PY scripts/run_complex.py --gpu 3 --levels "${COMPLEX_LEVELS[@]}" >> logs/complex_g3b.log 2>&1 &
-A=$!
+say "stage 2: reasoning-mode E0"
 sleep 90
-$PY scripts/run_reasoning.py --gpu 2 --levels "${REASONING_LEVELS[@]}" >> logs/reasoning_g2.log 2>&1 &
-B=$!
-wait "$A" "$B"
+$PY scripts/run_reasoning.py --gpu 0 --levels operator_func/easy operator_func/medium operator_func/hard \
+    >> logs/reasoning_g0.log 2>&1 &
+LANE0=$!
+sleep 90
+$PY scripts/run_reasoning.py --gpu 2 --levels tapatan/easy tapatan/medium tapatan/hard \
+    >> logs/reasoning_g2.log 2>&1 &
+LANE2=$!
+sleep 90
+$PY scripts/run_reasoning.py --gpu 3 --levels set_game/easy set_game/medium >> logs/reasoning_g3.log 2>&1 &
+LANE3=$!
+wait "$LANE0"; say "reasoning operator_func exit $?"
+wait "$LANE2"; say "reasoning tapatan exit $?"
+wait "$LANE3"; say "reasoning set_game easy/medium exit $?"
+wait "$LANE5"
 
 say "stage 3: E0 table and head identification"
 $PY scripts/e0_table.py || say "e0_table failed"
 $PY scripts/identify_heads.py > logs/identify_heads.log 2>&1 || say "identify_heads failed"
-
-say "stage 4: causal checks"
-$PY scripts/patch.py --gpu 3 --family complex > logs/patch_complex.log 2>&1 &
-C=$!
-sleep 90
-$PY scripts/patch.py --gpu 2 --family reasoning > logs/patch_reasoning.log 2>&1 &
-D=$!
-sleep 90
-$PY scripts/patch.py --gpu 5 --family reasoning-pre > logs/patch_reasoning_pre.log 2>&1 &
-E=$!
-wait "$C"; say "complex patching exit $?"
-wait "$D"; say "reasoning patching exit $?"
-wait "$E"; say "reasoning-pre patching exit $?"
 say "done"
 touch logs/pipeline.done
