@@ -20,10 +20,10 @@ def _():
         sys.path.insert(0, str(ROOT))
 
     from lth import RESULTS, fu
-    from lth.store import done, run_dir
+    from lth.store import done, load, run_dir
 
     _ = alt.data_transformers.disable_max_rows()
-    return RESULTS, alt, done, fu, gzip, html, json, mo, pd, run_dir
+    return RESULTS, alt, done, fu, gzip, html, json, load, mo, pd, run_dir
 
 
 @app.cell
@@ -285,6 +285,201 @@ def _(e0, e0_shown, e0_table, html, mo):
         ])
     _view
     return (text_panel,)
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    ## E2: the terms behind the lexical task heads
+
+    A head matches an identification prompt when one of its top-10 tokens, read at the last
+    prompt token (in reasoning mode, also at the pre-answer position), is in the task's term
+    list; it is a lexical task head when it matches on at least 10% of the style's
+    identification prompts, pooled over the style's wordings. For one task and style, the
+    chart gives each term's share of the matches of the Logit-head and the J-head set: the
+    share of matching (prompt, head) pairs whose top-10 tokens contain it. The token variants
+    of a word (case, leading space, `.`, `_`, `-`) count as one term. *In prompt*: the matched
+    term also occurs in the prompt (at the pre-answer position: prompt and reply so far).
+    """)
+    return
+
+
+@app.cell
+def _(RESULTS, json):
+    import functools
+    import re
+
+    import numpy as np
+    from src.config import LENSES
+    from transformers import AutoTokenizer
+
+    from lth import LENS_KEY, READOUTS
+    from lth.terms import complex_term_lists, expand_to_token_ids
+    from scripts.identify_heads import N_HEADS, PRE, complex_styles, pre_answer_texts
+
+    tokenizer = AutoTokenizer.from_pretrained(LENSES[LENS_KEY].hf_model_id)
+    term_lists = complex_term_lists()
+    lexical_heads = json.loads((RESULTS / "heads.json").read_text())
+    return (N_HEADS, PRE, READOUTS, complex_styles, expand_to_token_ids, functools, lexical_heads, np,
+            pre_answer_texts, re, term_lists, tokenizer)
+
+
+@app.cell
+def _(lexical_heads, mo):
+    _families = {"direct": "complex", "reasoning, last prompt token": "reasoning",
+                 "reasoning, pre-answer position": "reasoning-pre"}
+    term_family = mo.ui.dropdown({k: v for k, v in _families.items() if v in lexical_heads},
+                                 value="direct", label="mode")
+    term_family
+    return (term_family,)
+
+
+@app.cell
+def _(TASK_ORDER, lexical_heads, mo, task_name, term_family):
+    _sets = lexical_heads[term_family.value]
+    _tasks = sorted(_sets, key=lambda key: TASK_ORDER.index(task_name(key)))
+    term_task = mo.ui.dropdown({task_name(key): key for key in _tasks}, value=task_name(_tasks[0]),
+                               label="task")
+    term_style = mo.ui.dropdown(["rule", "example", "combined"], value="rule", label="style")
+    mo.hstack([term_task, term_style], justify="start")
+    return term_style, term_task
+
+
+@app.cell
+def _(N_HEADS, PRE, READOUTS, complex_styles, done, expand_to_token_ids, fu, functools, lexical_heads,
+      load, np, pd, pre_answer_texts, re, run_dir, term_lists, tokenizer):
+    @functools.cache
+    def token_text(token):
+        return tokenizer.decode([int(token)])
+
+    def term(token):
+        return token_text(token).strip(" ._-").lower()
+
+    @functools.cache
+    def head_matches(family, key, style):
+        """One row per matching (prompt, head) pair of the Logit-head and J-head sets."""
+        directory = run_dir("complex" if family == "complex" else "reasoning", key)
+        term_ids = set(expand_to_token_ids(tokenizer, term_lists[fu.TASK_LEVELS[key].original]))
+        ids = np.array(sorted(term_ids))
+        rows = []
+        for wording in complex_styles()[style]:
+            stored = wording + PRE if family == "reasoning-pre" else wording
+            if not done(directory, stored):
+                continue
+            run = load(directory, stored)
+            if not len(run["id_items"]):
+                continue
+            texts = (pre_answer_texts(directory, stored) if family == "reasoning-pre"
+                     else fu.recorded_prompts(directory / "fu_out" / wording))
+            for r, readout in enumerate(READOUTS):
+                for layer, head, rate in lexical_heads[family][key][style][readout]["heads"]:
+                    top = run["top"][:, r, layer * N_HEADS + head]
+                    for row in np.flatnonzero(np.isin(top, ids).any(-1)):
+                        item = str(run["id_items"][row])
+                        words = sorted({term(t) for t in top[row] if t in term_ids})
+                        text = texts[item].lower()
+                        rows.append({
+                            "readout": readout, "layer": layer, "head": head, "rate": rate, "item": item,
+                            "wording": wording, "terms": words,
+                            "in_prompt": any(re.search(rf"(?<![a-z]){re.escape(w)}(?![a-z])", text) for w in words),
+                            "top_10": " | ".join(f"«{token_text(t)}»" if t in term_ids else token_text(t)
+                                                 for t in top[row])})
+        return pd.DataFrame(rows, columns=["readout", "layer", "head", "rate", "item", "wording", "terms",
+                                           "in_prompt", "top_10"])
+    return (head_matches,)
+
+
+@app.cell
+def _(head_matches, term_family, term_style, term_task):
+    term_matches = head_matches(term_family.value, term_task.value, term_style.value)
+    return (term_matches,)
+
+
+@app.cell
+def _(HEAD_SETS, LABEL_COLORS, alt, expand_to_token_ids, fu, lexical_heads, mo, term_family,
+      term_lists, term_matches, term_style, term_task, tokenizer):
+    _sets = lexical_heads[term_family.value][term_task.value][term_style.value]
+    _words = term_lists[fu.TASK_LEVELS[term_task.value].original]
+    _ids = expand_to_token_ids(tokenizer, _words)
+    _summary = mo.md(
+        f"{_sets['jhead']['n_prompts']} identification prompts; term list of {len(_words)} words, "
+        f"{len(_ids)} token ids. Lexical task heads: "
+        + ", ".join(f"{HEAD_SETS[r]} {len(_sets[r]['heads'])}" for r in ("logithead", "jhead")) + ".")
+
+    if term_matches.empty:
+        _chart = mo.md("_No lexical task heads for this task and style._")
+    else:
+        _pairs = term_matches.explode("terms").assign(head_id=lambda d: d["layer"] * 1000 + d["head"])
+        _counts = _pairs.groupby(["readout", "terms"]).agg(
+            matches=("item", "size"), heads=("head_id", "nunique"), in_prompt=("in_prompt", "mean")).reset_index()
+        _counts["share"] = _counts["matches"] / _counts["readout"].map(term_matches["readout"].value_counts())
+        _counts["readout"] = _counts["readout"].map(HEAD_SETS)
+        _order = _counts.groupby("terms")["share"].max().sort_values(ascending=False).index[:25].tolist()
+        _chart = alt.Chart(_counts[_counts["terms"].isin(_order)]).mark_bar(cornerRadiusEnd=2).encode(
+            x=alt.X("share:Q", axis=alt.Axis(format="%", tickCount=5), title="share of the set's matches"),
+            y=alt.Y("terms:N", sort=_order, title=None),
+            yOffset=alt.YOffset("readout:N", sort=["Logit-head", "J-head"]),
+            color=alt.Color("readout:N", scale=alt.Scale(domain=["Logit-head", "J-head"], range=LABEL_COLORS[:2]),
+                            legend=alt.Legend(orient="top", title=None)),
+            tooltip=[alt.Tooltip("terms", title="term"), alt.Tooltip("readout", title="head set"),
+                     alt.Tooltip("matches", title="matching (prompt, head) pairs"),
+                     alt.Tooltip("heads", title="heads"), alt.Tooltip("share:Q", format=".0%"),
+                     alt.Tooltip("in_prompt:Q", title="in prompt", format=".0%")],
+        ).properties(width=420, height=alt.Step(18), title="Matched terms, at most 25, by share")
+
+    _matched = {r: set(term_matches.loc[term_matches["readout"] == r, "terms"].explode().dropna())
+                for r in ("logithead", "jhead")}
+    _listed = sorted({w.lower() for w in _words})
+    _mark = lambda w: (f"**{w}**" if w in _matched["logithead"] | _matched["jhead"] else w) + (
+        "ᴸ" if w in _matched["logithead"] else "") + ("ᴶ" if w in _matched["jhead"] else "")
+    mo.vstack([_summary, _chart, mo.accordion({
+        f"Term list ({len(_listed)} words; bold: matched, ᴸ Logit-head, ᴶ J-head)":
+            mo.md(", ".join(_mark(w) for w in _listed))})])
+    return
+
+
+@app.cell
+def _(mo):
+    term_readout = mo.ui.dropdown({"Logit-head": "logithead", "J-head": "jhead"}, value="J-head",
+                                  label="head set")
+    term_readout
+    return (term_readout,)
+
+
+@app.cell
+def _(mo, term_matches, term_readout):
+    _rows = term_matches[term_matches["readout"] == term_readout.value]
+
+    def _top_terms(terms):
+        return ", ".join(f"{w} ({n})" for w, n in terms.explode().value_counts().head(5).items())
+
+    term_heads = (_rows.groupby(["layer", "head"])
+                  .agg(match_rate=("rate", "first"), matches=("item", "size"), in_prompt=("in_prompt", "mean"),
+                       terms=("terms", _top_terms))
+                  .reset_index().round({"in_prompt": 2}))
+    term_head_table = mo.ui.table(term_heads, selection="single", page_size=10, show_column_summaries=False,
+                                  label=f"{len(term_heads)} heads: pick one to see its matches")
+    term_head_table
+    return term_head_table, term_heads
+
+
+@app.cell
+def _(mo, term_head_table, term_heads, term_matches, term_readout):
+    if term_heads.empty:
+        _view = mo.md("_No heads._")
+    else:
+        _head = term_head_table.value.iloc[0] if len(term_head_table.value) else term_heads.iloc[0]
+        _rows = term_matches[(term_matches["readout"] == term_readout.value)
+                             & (term_matches["layer"] == _head["layer"]) & (term_matches["head"] == _head["head"])]
+        _view = mo.vstack([
+            mo.md(f"**Head {_head['layer']}.{_head['head']}**: matches {len(_rows)} prompts; "
+                  "its top-10 tokens, terms of the list in «»."),
+            mo.ui.table(_rows.assign(terms=_rows["terms"].str.join(", "))[
+                ["item", "wording", "terms", "in_prompt", "top_10"]],
+                selection=None, page_size=10, show_column_summaries=False),
+        ])
+    _view
+    return
 
 
 @app.cell
