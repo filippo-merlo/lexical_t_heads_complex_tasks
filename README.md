@@ -26,6 +26,7 @@ The GPT-5.5 steps call an Azure OpenAI deployment and need `AZURE_OPENAI_API_KEY
 | E0 table | `scripts/e0_table.py` | `results/e0_accuracy.csv` |
 | head sets and measures | `scripts/identify_heads.py` | `results/heads.json`, `measures.csv`, `overlaps.csv` |
 | causal check (GPU) | `scripts/run_all.sh patching` (`patch.py`) | `results/patching_{simple,complex}.csv` |
+| results tables and figures | `scripts/results_tex.py` | `tables/`, `figures/` (proposal, Results section) |
 
 Every GPU script skips work already on disk, so an interrupted run resumes.
 

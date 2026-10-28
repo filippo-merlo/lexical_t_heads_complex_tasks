@@ -1,0 +1,443 @@
+"""Tables and figures of the proposal's Results section, from results/ (no GPU).
+
+Writes the tabulars ``tables/*.tex``, each ``\\input`` inside a table float of
+proposal-minimal.tex, and the figures ``figures/*.pdf``:
+- ``e0_simple``, ``e0_complex``: accuracy per style and wording (``e0_accuracy.csv``);
+- ``heads_simple``, ``heads_complex``: head counts and overlaps (``measures.csv``,
+  ``overlaps.csv``);
+- ``effects_simple``, ``effects_complex``: the causal effect, the highest accuracy over
+  alpha minus the unpatched accuracy, per head set and mean source (``patching_*.csv``);
+- ``layers.pdf``: lexical task heads per layer under each readout (``heads.json``);
+- ``copy_share.pdf``: copy share per task, style and readout (``measures.csv``);
+- ``patching_simple.pdf``, ``patching_complex.pdf``: accuracy against alpha.
+
+Conditions without output yet (a causal check still to run) are marked in the tables and
+left blank in the figures, so the script can be rerun as results arrive.
+
+    .venv/bin/python scripts/results_tex.py
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from collections import Counter
+from pathlib import Path
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt  # noqa: E402
+import pandas as pd  # noqa: E402
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from lth import READOUTS, RESULTS, ROOT, simple  # noqa: E402
+
+TABLES, FIGURES = ROOT / "tables", ROOT / "figures"
+
+SIMPLE_NAMES = {"singular-plural": "singular--plural", "present-past": "present--past",
+                "country-capital": "country--capital", "country-currency": "country--currency",
+                "landmark-country": "landmark--country", "park-country": "park--country",
+                "product-company": "product--company", "next_item": "next-item", "prev_item": "prev-item",
+                "english-french": "English--French", "english-german": "English--German",
+                "english-spanish": "English--Spanish"}
+COMPLEX_NAMES = {"noun_class_agreement/easy": "Noun Class Agreement",
+                 "lexical_category_inference/easy": "Lexical Category Inference",
+                 "set_game/easy": "Set Game", "operator_func/easy": "Operator Function",
+                 "tapatan/easy": "Tapatan"}
+#: Complex rows: the direct-answer tasks, then each reasoning-mode task at the last prompt
+#: token and at the pre-answer position.
+COMPLEX_ROWS = [("complex", "noun_class_agreement/easy"), ("complex", "lexical_category_inference/easy"),
+                *[(family, key) for key in ("set_game/easy", "operator_func/easy", "tapatan/easy")
+                  for family in ("reasoning", "reasoning-pre")]]
+STYLES = ("rule", "example", "combined")
+SETS = ("logithead", "jhead", "jhead_only")
+# Label fields of the tasks with a fixed label set (as scripts/e0_table.py).
+LABEL_FIELDS = {"noun_class_agreement": "expected_label", "lexical_category_inference": "expected_answer"}
+
+# The style of head_level_jlens/scripts/figures.py: blue for J-head, orange for Logit-head,
+# grey for context; the third series (heads only J-head finds) takes the next slot, aqua.
+BLUE, ORANGE, AQUA, GREY = "#2a78d6", "#eb6834", "#1baf7a", "#898781"
+INK, INK_2, SURFACE = "#0b0b0b", "#52514e", "#fcfcfb"
+GRIDLINE, AXIS_LINE = "#e1e0d9", "#c3c2b7"
+SET_COLOUR = {"logithead": ORANGE, "jhead": BLUE, "jhead_only": AQUA}
+SET_LABEL = {"logithead": "Logit-head", "jhead": "J-head", "jhead_only": "J-head only"}
+CONTROL_STYLE = (0, (1, 1.5))
+
+plt.rcParams.update(
+    {
+        "figure.facecolor": SURFACE,
+        "savefig.facecolor": SURFACE,
+        "axes.facecolor": SURFACE,
+        "font.family": "sans-serif",
+        "font.size": 8,
+        "axes.titlesize": 8,
+        "axes.labelsize": 8,
+        "axes.edgecolor": AXIS_LINE,
+        "axes.labelcolor": INK_2,
+        "axes.titlecolor": INK,
+        "xtick.color": INK_2,
+        "ytick.color": INK_2,
+        "xtick.labelsize": 7,
+        "ytick.labelsize": 7,
+        "axes.grid": True,
+        "grid.color": GRIDLINE,
+        "grid.linewidth": 0.6,
+        "axes.axisbelow": True,
+        "legend.frameon": False,
+        "legend.fontsize": 7.5,
+        "lines.linewidth": 1.3,
+        "lines.solid_capstyle": "round",
+    }
+)
+
+
+def tex_name(family: str, task: str) -> str:
+    if family == "simple":
+        return SIMPLE_NAMES.get(task, task)
+    return r"\quad pre-answer" if family == "reasoning-pre" else COMPLEX_NAMES[task]
+
+
+def plot_name(family: str, task: str) -> str:
+    name = tex_name(family, task).replace("--", "–")
+    return f"{COMPLEX_NAMES[task]}, pre-answer" if family == "reasoning-pre" else name
+
+
+def num(x) -> str:
+    """Two decimals, a typeset minus, ``--`` for a missing value."""
+    if x is None or pd.isna(x):
+        return "--"
+    text = f"{x:.2f}"
+    return "0.00" if text == "-0.00" else text.replace("-", "$-$")
+
+
+def tabular(spec: str, header: list[str], rows: list[str]) -> str:
+    return "\n".join([f"\\begin{{tabular}}{{{spec}}}", "\\toprule", *header, "\\midrule", *rows,
+                      "\\bottomrule", "\\end{tabular}"]) + "\n"
+
+
+def write(name: str, text: str) -> None:
+    TABLES.mkdir(exist_ok=True)
+    (TABLES / f"{name}.tex").write_text(f"% Generated by scripts/results_tex.py from results/.\n{text}")
+
+
+# ------------------------------------------------------------------ data
+
+
+def load() -> dict:
+    patching = pd.concat([pd.read_csv(f) for f in sorted(RESULTS.glob("patching_*.csv"))], ignore_index=True)
+    return {"e0": pd.read_csv(RESULTS / "e0_accuracy.csv"), "measures": pd.read_csv(RESULTS / "measures.csv"),
+            "overlaps": pd.read_csv(RESULTS / "overlaps.csv"), "patching": patching,
+            "heads": json.loads((RESULTS / "heads.json").read_text())}
+
+
+def baselines(patching: pd.DataFrame) -> dict:
+    """``(family, task)`` -> (patched items, unpatched accuracy)."""
+    rows = patching[patching.source == "none"]
+    return {(r.family, r.task): (int(r.n_prompts), r.accuracy) for r in rows.itertuples()}
+
+
+def effects(patching: pd.DataFrame) -> dict:
+    """``(family, task, style, head set, source)`` -> highest accuracy over alpha minus baseline."""
+    base = baselines(patching)
+    rows = patching[patching.source != "none"]
+    best = rows.groupby(["family", "task", "style", "heads", "source"]).accuracy.max()
+    return {key: value - base[key[:2]][1] for key, value in best.items()}
+
+
+def constant_answer(task: str) -> float | None:
+    """Accuracy on the patched items of answering every one with the most frequent label."""
+    from lth import fu
+    from lth.store import load as load_run, run_dir
+
+    field = LABEL_FIELDS.get(task.split("/")[0])
+    if field is None:
+        return None
+    directory = run_dir("complex", task)
+    fixed = set(load_run(directory, "orig")["fixed"].tolist())
+    files = sorted((directory / "fu_out" / "orig").rglob("*.json"))
+    labels = Counter(str(r[field]) for r in json.loads(files[-1].read_text())["results"] if fu.item_id(r) in fixed)
+    return max(labels.values()) / sum(labels.values())
+
+
+# ------------------------------------------------------------------ tables
+
+
+def table_e0_simple(e0: pd.DataFrame) -> None:
+    e0 = e0[e0.family == "simple"]
+    rows = []
+    for task in simple.TASKS:
+        t = e0[e0.task == task].set_index("wording")
+        rule = t.loc[list(simple.WORDINGS["rule"]), "accuracy"]
+        shots = [num(t.loc[w, "accuracy"]) for w in simple.WORDINGS["example"]]
+        rows.append(" & ".join([tex_name("simple", task), str(int(t.n.iloc[0])), num(rule.mean()),
+                                f"{num(rule.min())}--{num(rule.max())}", *shots,
+                                num(t.loc[simple.ZERO, "accuracy"])]) + r" \\")
+    header = [r" & & \multicolumn{2}{c}{Rule (6 templates)} & \multicolumn{5}{c}{Example (shots)} & \\",
+              r"\cmidrule(lr){3-4}\cmidrule(lr){5-9}",
+              "Task & Items & mean & range & " + " & ".join(str(n) for n in simple.SHOTS) + r" & Zero-shot \\"]
+    write("e0_simple", tabular("@{}lrcccccccc@{}", header, rows))
+
+
+def table_e0_complex(e0: pd.DataFrame) -> None:
+    rows = []
+    for family, key in [("complex", "noun_class_agreement/easy"), ("complex", "lexical_category_inference/easy"),
+                        ("reasoning", "set_game/easy"), ("reasoning", "operator_func/easy"),
+                        ("reasoning", "tapatan/easy")]:
+        t = e0[(e0.family == family) & (e0.task == key)].set_index("wording")
+        wordings = t.loc[[f"w{i}" for i in range(1, 7)], "accuracy"]
+        mode = "direct" if family == "complex" else "reasoning"
+        rows.append(" & ".join([COMPLEX_NAMES[key], mode, str(int(t.n.iloc[0])), num(t.loc["orig", "accuracy"]),
+                                num(wordings.mean()), f"{num(wordings.min())}--{num(wordings.max())}",
+                                num(t.loc["examples", "accuracy"]), num(t.loc["combined", "accuracy"]),
+                                num(t.loc["bare", "accuracy"]), num(t.chance.iloc[0])]) + r" \\")
+    header = [r" & & & \multicolumn{3}{c}{Rule} & & & No task & \\", r"\cmidrule(lr){4-6}",
+              r"Task & Mode & Items & orig. & w1--6 & range & Examples & Combined & info & Chance \\"]
+    write("e0_complex", tabular("@{}llrccccccc@{}", header, rows))
+
+
+def head_cells(measures, overlaps, family, task, style) -> list[str]:
+    """|P+|, |H^L|, |H^J| and |H^L ∩ H^J| for one style; dashes when P+ is empty."""
+    m = measures[(measures.family == family) & (measures.task == task) & (measures["style"] == style)]
+    if m.empty or m.n_prompts.iloc[0] == 0:
+        return ["0" if not m.empty else "--", "--", "--", "--"]
+    n = m.set_index("readout").n_heads
+    o = overlaps[(overlaps.family == family) & (overlaps.task == task) & (overlaps.a == f"{style}/logithead")
+                 & (overlaps.b == f"{style}/jhead")]
+    return [str(int(m.n_prompts.iloc[0])), str(int(n["logithead"])), str(int(n["jhead"])), str(int(o.n_both.iloc[0]))]
+
+
+def shared_cells(overlaps, family, task) -> list[str]:
+    """Heads shared by the rule and example sets, per readout."""
+    cells = []
+    for readout in READOUTS:
+        o = overlaps[(overlaps.family == family) & (overlaps.task == task) & (overlaps.a == f"rule/{readout}")
+                     & (overlaps.b == f"example/{readout}")]
+        cells.append("--" if o.empty or o.n_b.iloc[0] == 0 else str(int(o.n_both.iloc[0])))
+    return cells
+
+
+def table_heads(measures: pd.DataFrame, overlaps: pd.DataFrame) -> None:
+    rows = []
+    for task in simple.TASKS:
+        cells = [c for style in ("rule", "example") for c in head_cells(measures, overlaps, "simple", task, style)[1:]]
+        rows.append(" & ".join([tex_name("simple", task), *cells, *shared_cells(overlaps, "simple", task)]) + r" \\")
+    header = [r" & \multicolumn{3}{c}{Rule} & \multicolumn{3}{c}{Example} & \multicolumn{2}{c}{Rule $\cap$ example} \\",
+              r"\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-9}",
+              r"Task & L & J & L$\cap$J & L & J & L$\cap$J & L & J \\"]
+    write("heads_simple", tabular("@{}lcccccccc@{}", header, rows))
+
+    rows = []
+    for family, task in COMPLEX_ROWS:
+        cells = [c for style in STYLES for c in head_cells(measures, overlaps, family, task, style)]
+        rows.append(" & ".join([tex_name(family, task), *cells, *shared_cells(overlaps, family, task)]) + r" \\")
+    header = [r" & \multicolumn{4}{c}{Rule} & \multicolumn{4}{c}{Example} & \multicolumn{4}{c}{Combined}"
+              r" & \multicolumn{2}{c}{Rule $\cap$ ex.} \\",
+              r"\cmidrule(lr){2-5}\cmidrule(lr){6-9}\cmidrule(lr){10-13}\cmidrule(lr){14-15}",
+              r"Task & $|P^+|$ & L & J & L$\cap$J & $|P^+|$ & L & J & L$\cap$J & $|P^+|$ & L & J & L$\cap$J & L & J \\"]
+    write("heads_complex", tabular("@{}l" + "c" * 14 + "@{}", header, rows))
+
+
+def effect_rows(patching, effect, family, task, styles, *, items: bool) -> list[str]:
+    base = baselines(patching)
+    if (family, task) not in base:
+        return [f"{tex_name(family, task)} & \\multicolumn{{{8 + items}}}{{l}}{{\\textit{{not yet run}}}} \\\\"]
+    n, accuracy = base[(family, task)]
+    rows, first = [], True
+    for style in styles:
+        cells = [num(effect.get((family, task, style, s, source))) for source in ("task", "control") for s in SETS]
+        if all(c == "--" for c in cells):
+            continue
+        lead = [tex_name(family, task) if first else "", style]
+        lead += ([str(n)] if items else []) + [num(accuracy) if first else ""]
+        rows.append(" & ".join(lead + cells) + r" \\")
+        first = False
+    return rows
+
+
+def table_effects(patching: pd.DataFrame) -> None:
+    effect = effects(patching)
+    group = r"\multicolumn{3}{c}{Task mean} & \multicolumn{3}{c}{Control mean} \\"
+    sets = r"L & J & J only & L & J & J only \\"
+    rows = []
+    for task in simple.TASKS:
+        rows += effect_rows(patching, effect, "simple", task, ("rule", "example"), items=False)
+    header = [r" & & & " + group, r"\cmidrule(lr){4-6}\cmidrule(lr){7-9}", r"Task & Style & Baseline & " + sets]
+    write("effects_simple", tabular("@{}llccccccc@{}", header, rows))
+
+    rows = []
+    for family, task in COMPLEX_ROWS:
+        rows += effect_rows(patching, effect, family, task, STYLES, items=True)
+    header = [r" & & & & " + group, r"\cmidrule(lr){5-7}\cmidrule(lr){8-10}",
+              r"Task & Style & Items & Baseline & " + sets]
+    write("effects_complex", tabular("@{}llrccccccc@{}", header, rows))
+
+
+# ------------------------------------------------------------------ figures
+
+
+def style_axes(ax) -> None:
+    for side in ("top", "right"):
+        ax.spines[side].set_visible(False)
+
+
+def figure_layers(heads: dict) -> None:
+    """Heads per layer, summed over the task and style sets of each panel."""
+    panels = [("Simple, last prompt token", ("simple",)), ("Complex, last prompt token", ("complex", "reasoning")),
+              ("Complex, pre-answer", ("reasoning-pre",))]
+    fig, axes = plt.subplots(1, 3, figsize=(6.3, 1.9), sharex=True)
+    for ax, (title, families) in zip(axes, panels):
+        for readout in READOUTS:
+            counts = [0] * 32
+            for family in families:
+                for styles in heads.get(family, {}).values():
+                    for sets in styles.values():
+                        for layer, _, _ in sets[readout]["heads"]:
+                            counts[layer] += 1
+            ax.plot(range(32), counts, color=SET_COLOUR[readout], label=SET_LABEL[readout])
+        ax.set_title(title, loc="left")
+        ax.set_xlabel("layer")
+        ax.set_xticks([0, 8, 16, 24, 31])
+        style_axes(ax)
+    axes[0].set_ylabel("heads")
+    axes[0].legend(loc="upper left")
+    fig.tight_layout()
+    fig.savefig(FIGURES / "layers.pdf")
+    plt.close(fig)
+
+
+def figure_copy_share(measures: pd.DataFrame) -> None:
+    rows = [("simple", t) for t in simple.TASKS] + [("complex", k) for k in COMPLEX_NAMES]
+    family_of = {"noun_class_agreement/easy": "complex", "lexical_category_inference/easy": "complex"}
+    y = {row: i + (i >= len(simple.TASKS)) for i, row in enumerate(rows)}  # a gap between the families
+    fig, axes = plt.subplots(1, 3, figsize=(6.3, 3.6), sharey=True)
+    for ax, style in zip(axes, STYLES):
+        for (kind, task), pos in y.items():
+            family = "simple" if kind == "simple" else family_of.get(task, "reasoning")
+            m = measures[(measures.family == family) & (measures.task == task) & (measures["style"] == style)]
+            for readout, dy in zip(READOUTS, (-0.17, 0.17)):
+                value = m[m.readout == readout].copy_share
+                if len(value) and pd.notna(value.iloc[0]):
+                    ax.plot(value.iloc[0], pos + dy, "o", color=SET_COLOUR[readout], ms=4, mec=SURFACE, mew=0.6)
+        ax.set_title(f"{style} prompts", loc="left")
+        ax.set_xlim(-0.03, 1.03)
+        ax.set_xlabel("copy share")
+        ax.grid(axis="y", visible=False)
+        style_axes(ax)
+    axes[0].set_yticks(list(y.values()), [plot_name(k, t) for k, t in y])
+    axes[0].invert_yaxis()
+    handles = [plt.Line2D([], [], color=SET_COLOUR[r], marker="o", lw=0, ms=4) for r in READOUTS]
+    fig.legend(handles, [SET_LABEL[r] for r in READOUTS], loc="upper right", ncol=2)
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    fig.savefig(FIGURES / "copy_share.pdf")
+    plt.close(fig)
+
+
+def curve_panel(ax, patching, family, task, style, reference=None) -> bool:
+    """Accuracy against alpha for one condition; False if it has no patched rows."""
+    rows = patching[(patching.family == family) & (patching.task == task) & (patching["style"] == style)]
+    if rows.empty:
+        return False
+    base = patching[(patching.family == family) & (patching.task == task) & (patching.source == "none")]
+    ax.axhline(base.accuracy.iloc[0], color=GREY, lw=0.9, ls=(0, (4, 2)), zorder=1)
+    if reference is not None:
+        ax.axhline(reference, color=INK_2, lw=0.8, ls=(0, (7, 2, 1.5, 2)), zorder=1)
+    for s in SETS:
+        for source in ("task", "control"):
+            r = rows[(rows.heads == s) & (rows.source == source)].sort_values("alpha")
+            if len(r):
+                ax.plot(r.alpha, r.accuracy, color=SET_COLOUR[s], lw=1.3 if source == "task" else 0.9,
+                        ls="-" if source == "task" else CONTROL_STYLE, marker="o" if len(r) < 6 else None,
+                        ms=2.5, zorder=3 if source == "task" else 2)
+    return True
+
+
+def curve_legend(fig, constant: bool = False) -> None:
+    handles = [plt.Line2D([], [], color=SET_COLOUR[s]) for s in SETS]
+    labels = [f"{SET_LABEL[s]}, task mean" for s in SETS]
+    handles += [plt.Line2D([], [], color=INK_2, ls=CONTROL_STYLE, lw=0.9),
+                plt.Line2D([], [], color=GREY, ls=(0, (4, 2)), lw=0.9)]
+    labels += ["control mean (same colours)", "unpatched"]
+    if constant:
+        handles.append(plt.Line2D([], [], color=INK_2, ls=(0, (7, 2, 1.5, 2)), lw=0.8))
+        labels.append("constant answer")
+    fig.legend(handles, labels, loc="upper center", ncol=3)
+
+
+def empty_panel(ax, text: str) -> None:
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.grid(False)
+    for spine in ax.spines.values():
+        spine.set_visible(False)
+    ax.text(0.5, 0.5, text, transform=ax.transAxes, ha="center", va="center", color=INK_2, fontsize=7)
+
+
+def figure_patching(patching: pd.DataFrame) -> None:
+    fig, axes = plt.subplots(7, 4, figsize=(6.3, 8.4), sharex=True, sharey=True)
+    for i, task in enumerate(simple.TASKS):
+        for j, style in enumerate(("rule", "example")):
+            ax = axes[i // 2, 2 * (i % 2) + j]
+            curve_panel(ax, patching, "simple", task, style)
+            ax.set_title(f"{plot_name('simple', task)}, {style}", loc="left", fontsize=7)
+            ax.set_ylim(-0.03, 1.03)
+            style_axes(ax)
+    for ax in axes[-1]:
+        ax.set_xlabel(r"$\alpha$")
+        ax.set_xticks([-10, -5, 0, 5, 10])
+    for ax in axes[:, 0]:
+        ax.set_ylabel("accuracy")
+    curve_legend(fig)
+    fig.tight_layout(rect=(0, 0, 1, 0.96))
+    fig.savefig(FIGURES / "patching_simple.pdf")
+    plt.close(fig)
+
+    # Styles head the columns and tasks the rows; empty panels keep their own y axis, so
+    # the axes are not shared.
+    fig, axes = plt.subplots(len(COMPLEX_ROWS), 3, figsize=(6.3, 9.0))
+    ran = set(zip(patching.family, patching.task))
+    for i, (family, task) in enumerate(COMPLEX_ROWS):
+        reference = constant_answer(task) if family == "complex" else None
+        for j, style in enumerate(STYLES):
+            ax = axes[i, j]
+            if (family, task) not in ran:
+                empty_panel(ax, "not yet run")
+            elif not curve_panel(ax, patching, family, task, style, reference):
+                empty_panel(ax, "no head set")
+            else:
+                ax.set_xticks([-10, -5, 0, 5, 10] if family == "complex" else [0, 1, 4, 10])
+                ax.set_ylim(-0.03, 1.03)
+                ax.set_yticks([0, 0.5, 1], ["0", "0.5", "1"] if j == 0 else [])
+                style_axes(ax)
+        name = COMPLEX_NAMES[task].replace(" ", "\n", 1) if family == "complex" else COMPLEX_NAMES[task]
+        position = {"reasoning": "\nlast token", "reasoning-pre": "\npre-answer"}.get(family, "")
+        axes[i, 0].set_ylabel(name + position, fontsize=7)
+    for ax, style in zip(axes[0], STYLES):
+        ax.set_title(f"{style} prompts", loc="left")
+    for ax in axes[-1]:
+        ax.set_xlabel(r"$\alpha$")
+    fig.supylabel("accuracy", fontsize=8, color=INK_2)
+    curve_legend(fig, constant=True)
+    fig.tight_layout(rect=(0, 0, 1, 0.955))
+    fig.savefig(FIGURES / "patching_complex.pdf")
+    plt.close(fig)
+
+
+def main() -> None:
+    argparse.ArgumentParser(description=__doc__.split("\n\n")[0]).parse_args()
+    data = load()
+    table_e0_simple(data["e0"])
+    table_e0_complex(data["e0"])
+    table_heads(data["measures"], data["overlaps"])
+    table_effects(data["patching"])
+    FIGURES.mkdir(exist_ok=True)
+    figure_layers(data["heads"])
+    figure_copy_share(data["measures"])
+    figure_patching(data["patching"])
+    print(f"wrote {TABLES} and {FIGURES}")
+
+
+if __name__ == "__main__":
+    main()

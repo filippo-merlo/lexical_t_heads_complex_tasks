@@ -10,6 +10,7 @@
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{booktabs}
+\usepackage{graphicx}
 \usepackage{fvextra}
 \DefineVerbatimEnvironment{promptbox}{Verbatim}{breaklines,breakanywhere,fontsize=\footnotesize,frame=single,framesep=2mm}
 \usepackage{xcolor}
@@ -163,6 +164,104 @@ For each task $t$, style $s$ and readout $R$:
 
 \subsection{E2: Complex tasks}\label{sec:e2}
 \emph{Question}: RQ1, H\ref{h:complex}, RQ2 on the complex tasks, and RQ3. \emph{Procedure}: as in E1, for each complex task kept by E0, with the added wordings and term lists (Sec.~\ref{sec:adapt}); example-based and combined prompts from \citet{fu2026rules}. \emph{Decides}: whether lexical task heads are found and causally effective for complex tasks, under which readout, and whether they are shared with example-based prompts.
+
+\section{Results}\label{sec:results}
+Each experiment was run once, with greedy decoding. Tables~\ref{tab:e0-simple}--\ref{tab:effects-complex} and Figures~\ref{fig:layers}--\ref{fig:patch-complex} are generated from the result files by \texttt{scripts/results\_tex.py}. Causal-check accuracies are over the patched items: 100 per task, and 10 in reasoning mode, where one item is 0.1. The causal check of Set Game at the pre-answer position has not been run yet.
+
+\subsection{E0: Behavioural baseline}\label{sec:res-e0}
+\paragraph{Simple tasks} (Table~\ref{tab:e0-simple}). Every task is answered well above its zero-shot accuracy under both styles, and the zero-shot prompts, which are the prompts without task information of the causal check, are almost never answered correctly. Accuracy rises from one to five shots and changes little after that. The instruction templates differ most on the translation tasks, next-item, prev-item, park--country and synonym, where one template falls well below the others.
+
+\paragraph{Complex tasks} (Table~\ref{tab:e0-complex}). Noun Class Agreement and Lexical Category Inference are answered straight away and above chance under all seven rule wordings and under examples. Combined prompts fall below chance, largely because the model often explains before answering: it answers straight away on 65\% (Noun Class Agreement) and 17\% (Lexical Category Inference) of combined prompts, against at least 96\% under every rule and example prompt. Without task information it never answers straight away.
+
+Set Game, Operator Function and Tapatan are not answered straight away on any of their 300 items under any prompt, so they are run in reasoning mode (Sec.~\ref{sec:reasoning}); Table~\ref{tab:e0-complex} gives their accuracy after reasoning, on 100 items. Set Game and Operator Function are then solved under rules and combined prompts but never from examples alone, so they have no example-style prompts in $P^{+}$ and no example-style head sets. Operator Function varies most across wordings: every wrong answer under its rule wordings is a reply without a \texttt{\textbackslash boxed\{\}} answer, which the scoring counts as wrong, and under wording~2 no reply has one. Tapatan stays close to chance under every rule wording and falls below it with examples, so its $P^{+}$ sets likely include items answered correctly by chance. Set Game is solved on 28 of 100 items without task information: its input block still asks which three cards on the board form a set.
+
+\begin{table}[tbp]
+\centering\footnotesize
+\input{tables/e0_simple}
+\caption{E0, simple tasks: accuracy per prompt style. Rule: the six instruction templates of \citet{yang2026shared}, mean and range; example: by number of shots; zero-shot: the prompts without task information. Items: dataset size.}
+\label{tab:e0-simple}
+\end{table}
+
+\begin{table}[tbp]
+\centering\footnotesize\setlength{\tabcolsep}{3.5pt}
+\input{tables/e0_complex}
+\caption{E0, complex tasks at the easy level: accuracy per prompt. Mode: direct, with the answer limits of \citet{fu2026rules}; reasoning, as in Sec.~\ref{sec:reasoning}, accuracy after reasoning. Rule: the original rules prompt (orig.) and the six added wordings (w1--6: mean, and range). No task info: the prompt without task information. Chance: share of the most frequent label for the tasks with a fixed label set, 0 for open answers.}
+\label{tab:e0-complex}
+\end{table}
+
+\subsection{E1: Simple tasks}\label{sec:res-e1}
+\paragraph{Head sets} (Table~\ref{tab:heads-simple}, Figures~\ref{fig:layers} and~\ref{fig:copy}). Logit-head finds lexical task heads for every task under both styles, from two heads (synonym) upward. J-head finds more heads than Logit-head on 25 of the 28 pairs of task and style. Two thirds of the heads it adds lie in layers 10 to 19, where Logit-head finds few (Figure~\ref{fig:layers}). The J-head set contains the whole Logit-head set on only 4 of the 28 pairs, and at least half of it on every pair. Rule-style sets are at least as large as example-style sets, and most heads of an example-style set are also in the rule-style set, except on synonym under both readouts and singular--plural under Logit-head. The copy share is high under rule-style prompts, whose instructions contain task words, and close to zero under example-style prompts except on country--capital: there the heads decode task words that are not in the prompt (Figure~\ref{fig:copy}).
+
+\paragraph{Causal check} (Table~\ref{tab:effects-simple}, Figure~\ref{fig:patch-simple}). Patching the mean output of the Logit-head set raises accuracy above the unpatched baseline on country--capital, landmark--country, park--country and product--company under both styles, on singular--plural and next-item with examples, on prev-item with rules, and slightly on country--currency. It has no effect on antonym, synonym, present--past and the three translation tasks. Gains appear at positive $\alpha$, except on next-item and prev-item, where $\alpha=-10$ also raises accuracy. The control mean raises accuracy much less than the task mean, except on park--country, next-item and prev-item, where it raises it by a comparable amount, on next-item by as much as the task mean.
+
+The J-head set raises accuracy about as much as the Logit-head set or more on most tasks, and also on synonym, where the Logit-head set does not; landmark--country with examples is the clearest case where it raises it less. The heads found only by J-head raise accuracy by themselves on most tasks where the J-head set does, most strongly on country--capital and singular--plural with examples and on product--company, landmark--country and English--French with rules. The control mean at those heads raises it less, except on next-item and park--country.
+
+\paragraph{Hypotheses.} For H\ref{h:rep}, lexical task heads are found for every simple task, and patching them raises accuracy on eight tasks and not on the other six; on two of the eight, park--country and prev-item, the control mean raises it as well. Whether these six are tasks on which \citet{yang2026shared} report a gain decides whether H\ref{h:rep} holds \tbd{compare with their per-task results}. For H\ref{h:readout} on the simple tasks, the first condition fails, since the J-head set misses part of the Logit-head set on 24 of 28 pairs, and the second holds: heads found only by J-head have causal effects of their own.
+
+\begin{table}[tbp]
+\centering\footnotesize
+\input{tables/heads_simple}
+\caption{E1: lexical task heads per task and style under Logit-head (L) and J-head (J). L$\cap$J: heads in both sets. Rule $\cap$ example: heads in both the rule-style and the example-style set of a readout. Identification prompts: 600 per task for the rule style (515 for next-item, 539 for prev-item) and 500 for the example style.}
+\label{tab:heads-simple}
+\end{table}
+
+\begin{table}[tbp]
+\centering\footnotesize
+\input{tables/effects_simple}
+\caption{E1 causal check: causal effect, the highest accuracy over $\alpha\in[-10,10]$ minus the unpatched accuracy (baseline), on the 100 patched items of each task. Task mean: the head set's mean output over the task's own prompts; control mean: over the control task's prompts (Sec.~\ref{sec:trmethods}). L: Logit-head set; J: J-head set; J only: heads in the J-head set and not in the Logit-head set. --: empty set.}
+\label{tab:effects-simple}
+\end{table}
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\textwidth]{figures/layers.pdf}
+\caption{Lexical task heads per layer under each readout, summed over the head sets of all tasks and styles. Middle: Noun Class Agreement, Lexical Category Inference and the reasoning-mode tasks, at the last prompt token. Right: the reasoning-mode tasks at the pre-answer position.}
+\label{fig:layers}
+\end{figure}
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\textwidth]{figures/copy_share.pdf}
+\caption{Copy share of each head set (Sec.~\ref{sec:measures}): the share of prompts on which a head's matched terms occur in the prompt text, averaged over the set. Complex tasks at the last prompt token; missing points are empty sets.}
+\label{fig:copy}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{figures/patching_simple.pdf}
+\caption{E1 causal check: accuracy on the 100 patched items of each task against $\alpha$. Solid: the head set's mean over the task's prompts; dotted: the control mean at the same heads; dashed: unpatched accuracy.}
+\label{fig:patch-simple}
+\end{figure}
+
+\subsection{E2: Complex tasks}\label{sec:res-e2}
+\paragraph{Head sets} (Table~\ref{tab:heads-complex}). Both readouts find lexical task heads for every complex task and style with a non-empty $P^{+}$, at the last prompt token and at the pre-answer position. The sets are larger than for the simple tasks, against H\ref{h:complex}, but the head counts of the two families are not comparable. The complex term lists expand to 114 to 340 token ids and the simple ones to 2 to 22, and a longer list makes a match among a head's ten top tokens more likely for any head. Small $P^{+}$ sets add to this for Tapatan's example and combined styles, where 3 of 27 and 2 of 15 matching prompts make a head a lexical task head. As on the simple tasks, J-head finds more heads than Logit-head on every pair, and its added heads lie mostly in layers 10 to 19. Its set covers half to nine tenths of the Logit-head set, never all of it. On the three tasks with example-style sets, about two thirds or more of each example-style set is also in the rule-style set under both readouts (RQ3), as on the simple tasks. At the pre-answer position Tapatan has more heads than at the last prompt token, and Set Game and Operator Function similar numbers or fewer. Copy shares are high under rule and combined prompts and lower under example prompts, but well above the near-zero values of the simple tasks' example prompts (Figure~\ref{fig:copy}).
+
+\paragraph{Causal check} (Table~\ref{tab:effects-complex}, Figure~\ref{fig:patch-complex}). On Noun Class Agreement and Lexical Category Inference, the prompts without task information get no patched item right, and patching the Logit-head sets changes nothing under any style or $\alpha$. Patching the rule-style J-head sets of Noun Class Agreement, or the combined-style heads found only by J-head on Lexical Category Inference, raises accuracy to the score of answering ``No'' to every patched item (the constant-answer line in Figure~\ref{fig:patch-complex}). The control mean at the same heads reaches about the same level, and on Lexical Category Inference's rule style it does so where the task mean does not. These gains are therefore not specific to the task: they fit a patch that makes the model give an answer of the required form, not one that supplies the task.
+
+In reasoning mode, no patch moves more than three of the ten items. On Set Game, every patch but one leaves accuracy at or below the unpatched level; the exception, the Logit-head set of the combined style, gains three items at $\alpha=1$, and the J-head set of the same style does not. On Operator Function and Tapatan, a few head sets gain one or two items, and no control does; ten items cannot separate such differences from item-to-item variation.
+
+\paragraph{Hypotheses.} For RQ1, the method finds lexical task heads for every complex task under both readouts, but the causal check shows no task-specific effect for them. This agrees with the causal part of H\ref{h:complex}; its head-count part cannot be tested with term lists of such different lengths. For H\ref{h:readout} on the complex tasks, both conditions fail: the J-head set misses part of the Logit-head set on every pair, and the heads found only by J-head have no task-specific effect. Together with E1, H\ref{h:readout} is falsified as stated, although on the simple tasks the heads that J-head adds have causal effects of their own.
+
+\begin{table}[tbp]
+\centering\footnotesize\setlength{\tabcolsep}{3.5pt}
+\input{tables/heads_complex}
+\caption{E2: lexical task heads per task and style. $|P^{+}|$: identification prompts, pooled over the wordings of a style (at most 100 per wording). L, J, L$\cap$J and Rule $\cap$ ex.\ as in Table~\ref{tab:heads-simple}. Reasoning-mode tasks: heads at the last prompt token, and (pre-answer) at the pre-answer position. --: no prompt in $P^{+}$.}
+\label{tab:heads-complex}
+\end{table}
+
+\begin{table}[tbp]
+\centering\footnotesize
+\input{tables/effects_complex}
+\caption{E2 causal check, as Table~\ref{tab:effects-simple}. Reasoning-mode tasks: 10 patched items and $\alpha\in\{0,1,4,10\}$, with heads and means taken at the last prompt token or (pre-answer) at the pre-answer position. Styles without head sets are left out. --: no control mean, since Set Game, Tapatan's control task, has no example-style prompts in $P^{+}$.}
+\label{tab:effects-complex}
+\end{table}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{figures/patching_complex.pdf}
+\caption{E2 causal check, as Figure~\ref{fig:patch-simple}. Reasoning-mode tasks: 10 patched items and $\alpha\in\{0,1,4,10\}$. Constant answer: the accuracy of answering every patched item with the more frequent label, ``No''. No head set: no prompt of that style in $P^{+}$.}
+\label{fig:patch-complex}
+\end{figure}
 
 \section{Plan}\label{sec:plan}
 \paragraph{Steps.}
