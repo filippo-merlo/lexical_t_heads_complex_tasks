@@ -58,6 +58,7 @@ class LM:
 
     @classmethod
     def load(cls) -> LM:
+        """The model in bfloat16, the dtype the lens was fitted under."""
         from transformers import GenerationConfig
 
         from src.config import LENSES, jz_path
@@ -107,6 +108,17 @@ class LM:
         """
         tokens, z = self._prefill(torch.tensor([ids], device=self.device), edits)
         return tokens[0], z[0]
+
+    @torch.no_grad()
+    def next_tokens_batch(self, rows: list[list[int]], *, edits: dict | None = None
+                          ) -> tuple[list[int], torch.Tensor]:
+        """Greedy next token and ``z`` at the last token of equal-length rows, ``[rows, n_layers, d_source]``.
+
+        No attention mask is passed, so left padding is attended to, as in Yang et al.'s
+        nnsight runs.
+        """
+        tokens, z = self._prefill(torch.tensor(rows, device=self.device), edits)
+        return tokens.tolist(), z
 
     @torch.no_grad()
     def next_tokens(self, ids: list[int], rows: int, *, edits: dict) -> list[int]:
@@ -256,8 +268,10 @@ class LM:
         """Edits that set each head in ``heads`` to ``alpha * mean_z`` at the last token.
 
         Batch row ``i`` gets ``alphas[i]`` (Yang et al., ``set_activation_rank_logit_average``).
+        As there, ``alpha * mean_z`` is formed in float32 and rounded to the model's dtype
+        when written into ``z``.
         """
-        alpha = torch.tensor(alphas, device=self.device, dtype=torch.bfloat16)[:, None]
+        alpha = torch.tensor(alphas, device=self.device, dtype=torch.float32)[:, None]
         by_layer: dict[int, list[int]] = {}
         for layer, head in heads:
             by_layer.setdefault(layer, []).append(head)
@@ -265,11 +279,11 @@ class LM:
         for layer, layer_heads in by_layer.items():
             cols = torch.cat([torch.arange(h * self.spec.head_dim, (h + 1) * self.spec.head_dim)
                               for h in layer_heads]).to(self.device)
-            target = mean_z[layer].to(self.device, torch.bfloat16)[cols]
+            target = mean_z[layer].to(self.device, torch.float32)[cols]
 
             def edit(z, cols=cols, target=target):
                 z = z.clone()
-                z[:, -1, cols] = alpha * target
+                z[:, -1, cols] = (alpha * target).to(z.dtype)
                 return z
 
             edits[layer] = edit

@@ -1,13 +1,15 @@
 """What each run keeps per task and wording, and where it is stored.
 
-For each wording (one prompt template, shot count or prompt variant) a run keeps:
+The simple tasks keep only the records and the identification readings (``save``); their
+means are taken in the causal check, as Yang et al. do. For the complex tasks, for each
+wording (one prompt template or prompt variant) a run keeps:
 - every item's behaviour (``records``: item, correct, straight away, prediction);
 - the identification prompts: the first ``CAP`` answered correctly and straight away
   (P+, as Yang et al.'s ``exp_size``), with every head's top-10 tokens under both readouts;
 - the mean set: the first ``CAP`` such prompts whose item is not patched in the causal
   check, with the sum of their ``z`` (Yang et al.'s holdout and ``average_size``).
-The fixing wording (1-shot, or the original rules prompt) defines the patched items: its
-first ``CAP`` prompts in P+.
+The fixing wording (the original rules prompt) defines the patched items: its first
+``CAP`` prompts in P+.
 """
 
 from __future__ import annotations
@@ -68,12 +70,18 @@ class Collector:
                 or (item not in self.known_fixed and len(self.mean_items) < CAP))
 
     def save(self, directory: Path, wording: str) -> None:
-        directory.mkdir(parents=True, exist_ok=True)
-        top = torch.stack(self.top).numpy() if self.top else np.zeros((0, 2, 0, 10), np.int32)
-        np.savez(directory / f"{wording}.npz", id_items=np.array(self.id_items, dtype=str),
-                 top=top, mean_items=np.array(self.mean_items, dtype=str),
-                 z_sum=self.z_sum.numpy(), fixed=np.array(self.fixed, dtype=str))
-        (directory / f"{wording}.json").write_text(json.dumps(self.records, ensure_ascii=False))
+        save(directory, wording, self.records, self.id_items, self.top, mean_items=self.mean_items,
+             z_sum=self.z_sum.numpy(), fixed=self.fixed)
+
+
+def save(directory: Path, wording: str, records: list[dict], id_items: list[str], top: list[torch.Tensor],
+         **arrays) -> None:
+    """A wording's records and identification readings, plus any other arrays (as lists or arrays)."""
+    directory.mkdir(parents=True, exist_ok=True)
+    top = torch.stack(top).numpy() if top else np.zeros((0, 2, 0, 10), np.int32)
+    arrays = {k: np.array(v, dtype=str) if isinstance(v, list) else v for k, v in arrays.items()}
+    np.savez(directory / f"{wording}.npz", id_items=np.array(id_items, dtype=str), top=top, **arrays)
+    (directory / f"{wording}.json").write_text(json.dumps(records, ensure_ascii=False))
 
 
 def done(directory: Path, wording: str) -> bool:

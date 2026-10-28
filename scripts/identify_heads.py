@@ -2,8 +2,11 @@
 
 A head matches a prompt when at least one of its top-10 tokens is in the task's term list
 (expanded to token ids as in Yang et al.); it is a lexical task head for a task, style and
-readout when it matches on at least 10% of that style's identification prompts, pooled
-over the style's wordings (Definition 1; n = 1, k = 10, rho = 0.1).
+readout when it matches on at least 10% of that style's identification prompts
+(Definition 1; n = 1, k = 10, rho = 0.1). For the simple tasks these are the prompts of one
+wording, as in Yang et al.'s code: the 5-shot prompts, and the instruction template with
+the highest accuracy (``lth.simple.identification_wording``). For the complex tasks they
+are pooled over the style's wordings.
 
 Writes ``results/heads.json`` (every head set with each head's match rate),
 ``results/measures.csv`` (prompts, heads, mean layer and copy share per set) and
@@ -79,10 +82,12 @@ def main() -> None:
     simple_terms = simple_term_lists()
     for task in simple.TASKS:
         directory = run_dir("simple", task)
-        if not done(directory, simple.FIXING):
+        if not all(done(directory, w) for ws in simple.WORDINGS.values() for w in ws):
             continue
-        texts = {w: dict(enumerate(simple.prompts(task, w)[0])) for ws in simple.WORDINGS.values() for w in ws}
-        jobs.append(("simple", task, simple.WORDINGS, simple_terms[task], directory,
+        accuracy = {w: np.mean([r["correct"] for r in load(directory, w)["records"]]) for w in simple.WORDINGS["rule"]}
+        styles = {s: (simple.identification_wording(s, accuracy),) for s in simple.WORDINGS}
+        texts = {w: dict(enumerate(simple.prompts(task, w)[0])) for (w,) in styles.values()}
+        jobs.append(("simple", task, styles, simple_terms[task], directory,
                      lambda w, texts=texts: {str(k): v for k, v in texts[w].items()}))
     if (MATERIALS / "complex" / "terms.json").exists():
         complex_terms = complex_term_lists()
@@ -128,7 +133,7 @@ def main() -> None:
                 heads = [int(h) for h in np.flatnonzero(rate >= RHO)]
                 sets[(style, readout)] = set(heads)
                 heads_out.setdefault(family, {}).setdefault(task, {}).setdefault(style, {})[readout] = {
-                    "n_prompts": int(len(top)),
+                    "wordings": list(wordings), "n_prompts": int(len(top)),
                     "heads": [[h // N_HEADS, h % N_HEADS, round(float(rate[h]), 4)] for h in heads]}
                 measures.append({
                     "family": family, "task": task, "style": style, "readout": readout,

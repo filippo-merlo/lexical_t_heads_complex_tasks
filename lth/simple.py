@@ -3,9 +3,20 @@
 Prompt builders are copied from their ``src/Shared_utils/prompt_utils.py`` (f81ef39):
 example-based prompts are ``" in: out;"`` shots ending in ``" query:"`` (the shots are the
 items before the query in file order, wrapping round for the first ones), rule-based
-prompts are their six instruction templates, and the prompt without task information is
+prompts are their instruction templates 0-4, and the prompt without task information is
 ``" query:"``. All are raw text, scored by the greedy first token against the first token
 of ``" " + output``.
+
+Their code runs every prompt set as ``get_prompt_token`` tokenizes it: the whole dataset
+padded on the left to its longest prompt, with nnsight's pad token (EOS), and passed to
+the model in batches of 20 without an attention mask, so the padding is attended to.
+:func:`token_ids` and :data:`BATCH` reproduce that. Which wordings each step uses is
+theirs too (``behavior_variance.py``, ``identify_heads_nnsight.py``,
+``causal_fix_incorrect.py``):
+- heads are identified on the first 100 correct prompts of one wording per style: the
+  5-shot prompts, and the instruction template with the highest accuracy;
+- each source wording of a style gives its own mean and its own patch;
+- the patched items are the first 100 answered correctly 1-shot.
 """
 
 from __future__ import annotations
@@ -18,11 +29,21 @@ TASKS = ("antonym", "synonym", "singular-plural", "present-past", "country-capit
          "country-currency", "landmark-country", "park-country", "product-company",
          "next_item", "prev_item", "english-french", "english-german", "english-spanish")
 SHOTS = (1, 5, 10, 20, 30)
-INSTRUCTIONS = tuple(range(6))
+# instruction_dict.json has six templates per task; Yang et al.'s code and paper use the
+# first five (App. A.3.1, templates A-E).
+INSTRUCTIONS = tuple(range(5))
 WORDINGS = {"rule": tuple(f"inst{i}" for i in INSTRUCTIONS),
             "example": tuple(f"shot{n}" for n in SHOTS)}
 ZERO = "zero"
 FIXING = "shot1"  # the patched items are the first ones answered correctly 1-shot
+IDENTIFY_EXAMPLE = "shot5"  # identify_heads_nnsight.py: prompt_template_index = 5 for EP
+CAP = 100  # exp_size and average_size
+BATCH = 20  # their default batch_size
+# The control mean comes from the control task's 1-shot prompts, at the items that task
+# answers correctly under the mean style's wording with index 1 (causal_recover_corrupted_
+# prompts.py: tokens from EP 1-shot, items from ``prompt_type_fix`` index 1), all of them.
+CONTROL_PROMPTS = "shot1"
+CONTROL_ITEMS = {"rule": "inst1", "example": "shot1"}
 # Yang et al.'s control_map (src/causal_fix_incorrect.py), restricted to these tasks.
 CONTROL = {"country-capital": "park-country", "product-company": "park-country",
            "park-country": "country-currency", "landmark-country": "product-company",
@@ -39,6 +60,25 @@ def dataset(task: str) -> list[dict]:
 
 def instruction_dict() -> dict:
     return json.loads((YANG / "datasets" / "dataset_info" / "instruction_dict.json").read_text())
+
+
+def token_ids(tokenizer, prompts_: list[str]) -> list[list[int]]:
+    """Every prompt with BOS, padded on the left with EOS to the longest one, as Yang et al."""
+    encoded = [tokenizer(p).input_ids for p in prompts_]
+    width = max(len(ids) for ids in encoded)
+    return [[tokenizer.eos_token_id] * (width - len(ids)) + ids for ids in encoded]
+
+
+def correct_items(records: list[dict]) -> list[int]:
+    """Items answered correctly, in file order (their ``correct_index``)."""
+    return [int(r["item"]) for r in records if r["correct"]]
+
+
+def identification_wording(style: str, accuracy: dict[str, float]) -> str:
+    """The wording whose prompts identify a style's heads (first maximum, as ``np.argmax``)."""
+    if style == "example":
+        return IDENTIFY_EXAMPLE
+    return max(WORDINGS["rule"], key=lambda w: (accuracy[w], -WORDINGS["rule"].index(w)))
 
 
 def prompts(task: str, wording: str) -> tuple[list[str], list[str]]:

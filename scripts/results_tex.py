@@ -5,8 +5,12 @@ proposal-minimal.tex, and the figures ``paper/figures/*.pdf``:
 - ``e0_simple``, ``e0_complex``: accuracy per style and wording (``e0_accuracy.csv``);
 - ``heads_simple``, ``heads_complex``: head counts and overlaps (``measures.csv``,
   ``overlaps.csv``);
-- ``effects_simple``, ``effects_complex``: the causal effect, the highest accuracy over
-  alpha minus the unpatched accuracy, per head set and mean source (``patching_*.csv``);
+- ``effects_simple``, ``effects_simple_cross``, ``effects_complex``: the causal effect, the
+  highest accuracy over alpha minus the unpatched accuracy, per head set and mean source
+  (``patching_*.csv``). For the simple tasks, the accuracy at each alpha is first averaged
+  over the source wordings of the mean style (Yang et al. patch each wording separately);
+  ``effects_simple`` patches each style's heads with means of the same style,
+  ``effects_simple_cross`` with means of the other style;
 - ``layers.pdf``: lexical task heads per layer under each readout (``heads.json``);
 - ``copy_share.pdf``: copy share per task, style and readout (``measures.csv``);
 - ``patching_simple.pdf``, ``patching_complex.pdf``: accuracy against alpha.
@@ -128,9 +132,28 @@ def write(name: str, text: str) -> None:
 
 def load() -> dict:
     patching = pd.concat([pd.read_csv(f) for f in sorted(RESULTS.glob("patching_*.csv"))], ignore_index=True)
+    patching, cross = simple_curves(patching)
     return {"e0": pd.read_csv(RESULTS / "e0_accuracy.csv"), "measures": pd.read_csv(RESULTS / "measures.csv"),
-            "overlaps": pd.read_csv(RESULTS / "overlaps.csv"), "patching": patching,
+            "overlaps": pd.read_csv(RESULTS / "overlaps.csv"), "patching": patching, "cross": cross,
             "heads": json.loads((RESULTS / "heads.json").read_text())}
+
+
+def simple_curves(patching: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Simple tasks: accuracy at each alpha averaged over the source wordings of the mean style.
+
+    Returns the table with each simple style's heads patched with means of the same style
+    (as the complex rows), and the simple rows patched with means of the other style
+    (baseline rows included).
+    """
+    simple_rows = patching[patching.family == "simple"]
+    base = simple_rows[simple_rows.source == "none"]
+    keys = ["family", "task", "style", "heads", "source", "mean_style", "alpha"]
+    curve = (simple_rows[simple_rows.source != "none"]
+             .groupby(keys, as_index=False).agg(accuracy=("accuracy", "mean"), n_prompts=("n_prompts", "first")))
+    same = curve[curve.mean_style == curve["style"]].drop(columns="mean_style")
+    other = curve[curve.mean_style != curve["style"]].drop(columns="mean_style")
+    rest = patching[patching.family != "simple"]
+    return (pd.concat([rest, base, same], ignore_index=True), pd.concat([base, other], ignore_index=True))
 
 
 def baselines(patching: pd.DataFrame) -> dict:
@@ -175,7 +198,7 @@ def table_e0_simple(e0: pd.DataFrame) -> None:
         rows.append(" & ".join([tex_name("simple", task), str(int(t.n.iloc[0])), num(rule.mean()),
                                 f"{num(rule.min())}--{num(rule.max())}", *shots,
                                 num(t.loc[simple.ZERO, "accuracy"])]) + r" \\")
-    header = [r" & & \multicolumn{2}{c}{Rule (6 templates)} & \multicolumn{5}{c}{Example (shots)} & \\",
+    header = [rf" & & \multicolumn{{2}}{{c}}{{Rule ({len(simple.INSTRUCTIONS)} templates)}} & \multicolumn{{5}}{{c}}{{Example (shots)}} & \\",
               r"\cmidrule(lr){3-4}\cmidrule(lr){5-9}",
               "Task & Items & mean & range & " + " & ".join(str(n) for n in simple.SHOTS) + r" & Zero-shot \\"]
     write("e0_simple", tabular("@{}lrcccccccc@{}", header, rows))
@@ -257,16 +280,18 @@ def effect_rows(patching, effect, family, task, styles, *, items: bool) -> list[
     return rows
 
 
-def table_effects(patching: pd.DataFrame) -> None:
-    effect = effects(patching)
+def table_effects(patching: pd.DataFrame, cross: pd.DataFrame) -> None:
     group = r"\multicolumn{3}{c}{Task mean} & \multicolumn{3}{c}{Control mean} \\"
     sets = r"L & J & J only & L & J & J only \\"
-    rows = []
-    for task in simple.TASKS:
-        rows += effect_rows(patching, effect, "simple", task, ("rule", "example"), items=False)
-    header = [r" & & & " + group, r"\cmidrule(lr){4-6}\cmidrule(lr){7-9}", r"Task & Style & Baseline & " + sets]
-    write("effects_simple", tabular("@{}llccccccc@{}", header, rows))
+    for name, frame, column in (("effects_simple", patching, "Style"), ("effects_simple_cross", cross, "Heads")):
+        effect = effects(frame)
+        rows = []
+        for task in simple.TASKS:
+            rows += effect_rows(frame, effect, "simple", task, ("rule", "example"), items=False)
+        header = [r" & & & " + group, r"\cmidrule(lr){4-6}\cmidrule(lr){7-9}", f"Task & {column} & Baseline & " + sets]
+        write(name, tabular("@{}llccccccc@{}", header, rows))
 
+    effect = effects(patching)
     rows = []
     for family, task in COMPLEX_ROWS:
         rows += effect_rows(patching, effect, family, task, STYLES, items=True)
@@ -431,7 +456,7 @@ def main() -> None:
     table_e0_simple(data["e0"])
     table_e0_complex(data["e0"])
     table_heads(data["measures"], data["overlaps"])
-    table_effects(data["patching"])
+    table_effects(data["patching"], data["cross"])
     FIGURES.mkdir(exist_ok=True)
     figure_layers(data["heads"])
     figure_copy_share(data["measures"])
