@@ -1,0 +1,310 @@
+% Appendix: prompts and generated material for the complex tasks.
+% Included from proposal-minimal.tex.
+
+\section{Original rule prompts}\label{app:orig}
+The rules-only prompts of \citet{fu2026rules}, from their released code (\url{https://github.com/tinlaboratory/rules-vs-examples}, \texttt{rules-mode-prompts/}, MIT licence). Text in curly braces is filled per item. Tapatan uses the final-board-state prompt, whose levels differ only in its parameters: board size 3, 5, 7 and line length 3, 4, 5 for Easy, Medium, Hard \citep[Table~1]{fu2026rules}; the version in \citet[App.~F]{fu2026rules} also states the maximum number of pieces per player and that at most one player has a winning line. The Medium and Hard prompts of Lexical Category Inference are identical within each logic variant.
+
+\subsection*{Set Game}
+
+\paragraph{Easy.}
+\begin{promptbox}
+You will be shown 9 cards on the board and have to select 3 cards that form a GAME-SET based on the following rules.
+
+RULES:
+1. Each card has two attributes: an animal and a biome.
+2. There are 10 types of animals: armadillo, axolotl, bat, cat, fox, horse, rabbit, sheep, turtle, wolf.
+3. There are 10 types of biomes: plain, savanna, desert, swamp, forest, jungle, taiga, hill, badland, tundra.
+4. A GAME-SET is a set of three cards: For each attribute (animal, biome), the three cards must be either ALL the SAME or ALL DIFFERENT. e.g. if 2 of the cards have the same value, and 1 of them has a different value, the set is NOT valid.
+
+Here is the board:
+
+{board}
+
+Based on the rules, tell me which three cards here constitute a GAME-SET. Type the cards in the following format:
+ \boxed{First card: CARD1
+Second card: CARD2
+Third card: CARD3}
+\end{promptbox}
+
+\paragraph{Medium.}
+\begin{promptbox}
+You will be shown 9 cards on the board and have to select 3 cards that form a GAME-SET based on the following rules.
+
+RULES:
+1. Each card has three attributes: an animal, a biome, and a food.
+2. There are 10 types of animals: armadillo, axolotl, bat, cat, fox, horse, rabbit, sheep, turtle, wolf.
+3. There are 10 types of biomes: plain, savanna, desert, swamp, forest, jungle, taiga, hill, badland, tundra.
+4. There are 10 types of food: apple, potato, bread, cake, carrot, mutton, beef, cookie, pie, melon.
+5. A GAME-SET is a set of three cards: For each attribute (animal, biome, food), the three cards must be either ALL the SAME or ALL DIFFERENT. e.g. if 2 of the cards have the same value, and 1 of them has a different value, the set is NOT valid.
+
+Here is the board:
+
+{board}
+
+Based on the rules, tell me which three cards here constitute a GAME-SET. Type the cards in the following format:
+ \boxed{First card: CARD1
+Second card: CARD2
+Third card: CARD3}
+\end{promptbox}
+
+\paragraph{Hard.}
+\begin{promptbox}
+You will be shown 9 cards on the board and have to select 3 cards that form a GAME-SET based on the following rules.
+
+RULES:
+1. Each card has a number and three attributes: an animal, a biome, and a food.
+2. Numbers range from 1 to 12.
+3. There are 10 types of animals: armadillo, axolotl, bat, cat, fox, horse, rabbit, sheep, turtle, wolf.
+4. There are 10 types of biomes: plain, savanna, desert, swamp, forest, jungle, taiga, hill, badland, tundra.
+5. There are 10 types of food: apple, potato, bread, cake, carrot, mutton, beef, cookie, pie, melon.
+6. A GAME-SET is a set of three cards: For each attribute (animal, biome, food), the three cards must be either ALL the SAME or ALL DIFFERENT. e.g. if 2 of the cards have the same value, and 1 of them has a different value, the set is NOT valid.
+7. But only for the number, 2 of the cards should have the same number, and 1 of them should have a different number in order for the set to be valid.
+
+Here is the board:
+
+{board}
+
+Based on the rules, tell me which three cards here constitute a GAME-SET. Type the cards in the following format:
+ \boxed{First card: CARD1
+Second card: CARD2
+Third card: CARD3}
+\end{promptbox}
+
+\subsection*{Tapatan}
+
+\paragraph{all levels.}
+\begin{promptbox}
+You will be learning a new board game. You will then be given one final board state from that game. Determine the current game outcome.
+
+RULES:
+1. The board is a {board_size}x{board_size} grid of points with coordinates (x,y), where 0 <= x,y < {board_size}.
+2. A board cell contains A for player A's piece, B for player B's piece, or . for an empty point.
+3. Orthogonal neighbors are always adjacent. Diagonal neighbors are adjacent only from even-parity points where (x+y) is even: (x,y) connects to (x±1,y±1) when in bounds.
+4. A player wins if they have {line_length} pieces in a straight line (horizontal, vertical, or diagonal) and each consecutive pair of points in that line is adjacent under rule 3.
+5. If A has a valid winning line, output A win. If B has a valid winning line, output B win. If neither player has a valid winning line, output continue.
+6. You must output a label that is exactly one of: A win, B win, or continue.
+
+BOARD:
+{board_state}
+
+LABEL:
+\end{promptbox}
+
+\subsection*{Operator Function}
+
+\paragraph{Easy.}
+\begin{promptbox}
+You will be shown a problem that uses a newly defined operator function based on the following rules and need to calculate the answer for the problem.
+
+RULES:
+1. The new operator function f is composed of two arithmetic operators, and its inputs are integers.
+2. Let x, y, z be inputs of the function.
+3. To compute f(x,y,z), first multiply x and y.
+4. Then, add z to the result from the previous operation.
+Problem: \({problem}\)
+Answer (place the result in \boxed{}):\boxed{}
+\end{promptbox}
+
+\paragraph{Medium.}
+\begin{promptbox}
+You will be shown a problem that uses a newly defined operator function based on the following rules and need to calculate the answer for the problem.
+
+RULES:
+1. The new operator function g is composed of three arithmetic operators, and its inputs are integers.
+2. Let x, y, z, a be inputs of the function.
+3. To compute g(x,y,z,a), first subtract y from x.
+4. Second, multiply the result from the previous operation by z.
+5. Last, adds a to the result of the previous operation.
+Problem: \({problem}\)
+Answer (place the result in \boxed{}):\boxed{}
+\end{promptbox}
+
+\paragraph{Hard.}
+\begin{promptbox}
+You will be shown a problem that uses a newly defined operator function based on the following rules and need to calculate the answer for the problem.
+
+RULES:
+1. The new operator function h is composed of four arithmetic operators, and its inputs are integers.
+2. Let x, y, z, a, b be inputs of the function.
+3. To compute h(x,y,z,a,b), first add x and y.
+4. Second, multiply the result from the previous operation by z.
+5. Third, subtract a from the result of the previous operation.
+6. Last, take the remainder when the result is divided by b.
+Problem: \({problem}\)
+Answer (place the result in \boxed{}):\boxed{}
+\end{promptbox}
+
+\subsection*{Noun Class Agreement}
+
+\paragraph{Easy.}
+\begin{promptbox}
+You will be given one sentence in a synthetic language. Decide whether the sentence is grammatical.
+
+RULES:
+1. There are 2 noun classes: A and B.
+2. Each noun phrase has the form DET NOUN.
+3. The class A determiner is ka, and the class B determiner is ti.
+4. The class A nouns are tac, sular, fep, wug. The class B nouns are bim, noko, glarn, zesh.
+5. Sentences follow the template DET NOUN VERB DET NOUN.
+6. Verbs are plain roots like dax, miv, lorp and never change.
+7. A sentence is grammatical if and only if, in each noun phrase, the determiner matches the noun's class.
+8. Your answer must be exactly one word: Yes or No.
+
+Sentence: {sentence}
+Answer:
+\end{promptbox}
+
+\paragraph{Medium.}
+\begin{promptbox}
+You will be given one sentence in a synthetic language. Decide whether the sentence is grammatical.
+
+RULES:
+1. There are 4 noun classes: A, B, C, D.
+2. A noun phrase has the form DET ADJ-SUFF NOUN.
+3. The class A determiner is ka, the class B determiner is ti, the class C determiner is su, and the class D determiner is vo.
+4. Adjectives have the form STEM-SUFFIX. The suffix must match the noun's class.
+5. The class A adjective suffix is -en, the class B adjective suffix is -os, the class C adjective suffix is -im, and the class D adjective suffix is -at.
+6. Example adjective tokens are glim-en, prun-os, fen-im, zay-at.
+7. The class A nouns are tav, fap. The class B nouns are bim, glarn. The class C nouns are sular, wug. The class D nouns are noko, zesh.
+8. Sentences follow the template DET ADJ-SUFF NOUN VERB DET ADJ-SUFF NOUN.
+9. Verbs are plain roots like dax, miv, lorp and never change.
+10. A sentence is grammatical if and only if, in each noun phrase, both the determiner and the adjective suffix match the noun's class.
+11. Your answer must be exactly one word: Yes or No.
+
+Sentence: {sentence}
+Answer:
+\end{promptbox}
+
+\paragraph{Hard.}
+\begin{promptbox}
+You will be given one sentence in a synthetic language. Decide whether the sentence is grammatical.
+
+RULES:
+1. There are 6 noun classes: A, B, C, D, E, F.
+2. A noun phrase has the form DET ADJ-SUFF NOUN.
+3. The class A determiner is ka, the class B determiner is ti, the class C determiner is su, the class D determiner is vo, the class E determiner is ne, and the class F determiner is la.
+4. Adjectives have the form STEM-SUFFIX. The suffix must match the noun's class.
+5. The class A adjective suffix is -en, the class B adjective suffix is -os, the class C adjective suffix is -im, the class D adjective suffix is -at, the class E adjective suffix is -uk, and the class F adjective suffix is -esh.
+6. The verb has the form PREFIX-ROOT-SUFFIX.
+7. The prefix must match the class of the subject noun, and the suffix must match the class of the object noun.
+8. The class A subject prefix is ge-, the class B subject prefix is du-, the class C subject prefix is ri-, the class D subject prefix is zo-, the class E subject prefix is pa-, and the class F subject prefix is li-.
+9. The class A object suffix is -an, the class B object suffix is -eb, the class C object suffix is -ig, the class D object suffix is -ot, the class E object suffix is -ul, and the class F object suffix is -er.
+10. Example verb tokens are ge-dax-eb, pa-miv-ig, du-lorp-er.
+11. The class A nouns are tav, fap. The class B nouns are bim, glarn. The class C nouns are sular, wug. The class D nouns are noko, zesh. The class E nouns are tac, fep. The class F nouns are lurn, prax.
+12. Sentences follow the template DET ADJ-SUFF NOUN PREFIX-ROOT-SUFFIX DET ADJ-SUFF NOUN.
+13. Verb roots are plain roots like dax, miv, lorp. Only the verb's prefix and suffix change.
+14. A sentence is grammatical if and only if the subject noun phrase's determiner and adjective suffix match the subject noun's class, the object noun phrase's determiner and adjective suffix match the object noun's class, the verb prefix matches the subject noun's class, and the verb suffix matches the object noun's class.
+15. Your answer must be exactly one word: Yes or No.
+
+Sentence: {sentence}
+Answer:
+\end{promptbox}
+
+\subsection*{Lexical Category Inference}
+
+\paragraph{Easy.}
+\begin{promptbox}
+You will be shown a list of four words. Decide whether this list is correct based on the following rules.
+
+RULES:
+1. There are exactly four categories: {prompt_labels}.
+2. Each category has the meaning shown in the category definitions below.
+3. A correct list contains exactly four comma-separated items.
+4. In a correct list, the first item is a member of Category 1, the second item is a member of Category 2, and so on.
+5. If a category says "at least one", an item may satisfy any listed description. If it says "all", an item must satisfy every listed description.
+6. Your answer must be exactly one word: Yes or No.
+
+CATEGORY DEFINITIONS:
+{label_block}
+
+List: {candidate_block}
+Answer:
+\end{promptbox}
+
+\paragraph{Medium and Hard, OR.}
+\begin{promptbox}
+You will be shown a list of four words. Decide whether this list is correct based on the following rules.
+
+RULES:
+1. There are exactly four categories: {prompt_labels}.
+2. Each category has the meaning shown in the category definitions below.
+3. A correct list contains exactly four comma-separated items.
+4. In a correct list, the first item is a member of Category 1, the second item is a member of Category 2, and so on.
+5. If a category lists multiple descriptions, an item is a member of that category if it satisfies at least one listed description.
+6. Your answer must be exactly one word: Yes or No.
+
+CATEGORY DEFINITIONS:
+{label_block}
+
+List: {candidate_block}
+Answer:
+\end{promptbox}
+
+\paragraph{Medium and Hard, AND.}
+\begin{promptbox}
+You will be shown a list of four words. Decide whether this list is correct based on the following rules.
+
+RULES:
+1. There are exactly four categories: {prompt_labels}.
+2. Each category has the meaning shown in the category definitions below.
+3. A correct list contains exactly four comma-separated items.
+4. In a correct list, the first item is a member of Category 1, the second item is a member of Category 2, and so on.
+5. If a category lists multiple descriptions, an item is a member of that category only if it satisfies all listed descriptions.
+6. Your answer must be exactly one word: Yes or No.
+
+CATEGORY DEFINITIONS:
+{label_block}
+
+List: {candidate_block}
+Answer:
+\end{promptbox}
+
+\section{Generation prompts}\label{app:genprompts}
+Both prompts are given to GPT-5.5 through the Azure OpenAI API; \texttt{\{rule\_prompt\}} is an original prompt of App.~\ref{app:orig}.
+
+\subsection*{Rule wordings}
+\begin{promptbox}
+You will be given a prompt that describes the rules of a task for a language model. Write {N} paraphrases of it.
+
+Requirements:
+1. Each paraphrase must state exactly the same rules as the original: the same constraints, conditions, quantities, names, symbols and labels. Do not add, remove, weaken or strengthen any rule, and do not add examples, hints or explanations.
+2. Change the wording and the sentence structure. Reorder rules only where their order does not matter; if a rule refers to another rule by its number, keep the reference correct.
+3. Copy verbatim every placeholder in curly braces (e.g. {board}), the answer-format instruction, and every output label or format string (e.g. "Yes or No", "A win, B win, or continue", \boxed{...}).
+4. Keep unchanged the final lines that introduce the input and the answer (e.g. "Sentence: {sentence}" and "Answer:").
+5. The paraphrases must differ from the original and from each other.
+
+Return a JSON list of {N} strings.
+
+Original prompt:
+<<<
+{rule_prompt}
+>>>
+\end{promptbox}
+
+\subsection*{Term lists}
+\begin{promptbox}
+You will be given the rules of a task for a language model. List words that describe the task itself: what the task asks the model to do, its operation or relation, and its key concepts. For example, for the task "give the antonym of a word": opposite, reverse, antonym, contrary.
+
+Requirements:
+1. Single words only.
+2. Do not list possible answers or output labels, words that only name the items of a particular input (e.g. specific animals, nouns or numbers), or placeholders.
+3. Include singular and plural forms and capitalised forms. You may include translations into other languages.
+4. Return a JSON list of strings.
+
+Task rules:
+<<<
+{rule_prompt}
+>>>
+\end{promptbox}
+
+\section{Rule wordings}\label{app:wordings}
+The six wordings of each original rules prompt of App.~\ref{app:orig} at the easy level, the level in the study, generated and checked as in Sec.~\ref{sec:adapt}. Text in curly braces is filled per item.
+
+\input{appendix-wordings}
+
+\section{Term lists}\label{app:terms}
+The term list of each complex task at the easy level, generated and checked as in Sec.~\ref{sec:adapt}, as words before their expansion to token ids. Tapatan's list is made from its single prompt, shared by all levels.
+
+\begin{center}
+\input{appendix-terms}
+\end{center}
