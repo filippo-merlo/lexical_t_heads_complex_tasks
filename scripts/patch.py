@@ -15,6 +15,11 @@ all the items it answers correctly under the mean style's wording 1. Complex tas
 mean is taken over the style's mean set (``lth.store``), pooled over its wordings, and the
 control patches the same heads with the mean of another task, same style.
 
+Family ``simple-wrong`` is the second simple-task check, Yang et al.'s released
+``causal_fix_incorrect.py``: the patched prompts are the 1-shot prompts of the first 100
+items answered wrongly 1-shot (baseline 0), means and heads as above, no control. It is
+the setting that reproduces their Figs. 57 and 62; App. G.1 describes the first.
+
 Simple tasks are scored by the first token; complex tasks are generated greedily from the
 patched prompt and scored by Fu et al.'s runner, as in E0.
 
@@ -119,29 +124,39 @@ def simple_mean(lm, ids: list[list[int]], items: list[int]):
     return total / len(items) if items else None
 
 
-def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS):
+def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple"):
     """Yang et al.'s ``fix_corrupted_prompts_vary_prompt_instances_average_new``, with each
     style's heads (``intervention_component_prompt_type``) patched with the means of each
-    style (``prompt_type_fix``), one source wording at a time, and their control."""
+    style (``prompt_type_fix``), one source wording at a time, and their control.
+
+    With ``family="simple-wrong"``, their ``fix_incorrect_prompts_vary_prompt_instances_average_new``
+    instead: the patched prompts are the 1-shot prompts of the first 100 items answered
+    wrongly 1-shot, and there is no control (commented out in their code)."""
     from lth.store import done, load, run_dir
 
     def records(task, wording):
         return load(run_dir("simple", task), wording)["records"]
 
+    wrong = family == "simple-wrong"
+    target = simple.FIXING if wrong else simple.ZERO
     for task in tasks:
         directory = run_dir("simple", task)
         if task not in heads_json.get("simple", {}) or not done(directory, simple.ZERO):
             continue
-        fixed = simple.correct_items(records(task, simple.FIXING))[: simple.CAP]
-        prompts, answers = simple.prompts(task, simple.ZERO)
+        one_shot = records(task, simple.FIXING)
+        if wrong:
+            fixed = [int(r["item"]) for r in one_shot if not r["correct"]][: simple.CAP]
+        else:
+            fixed = simple.correct_items(one_shot)[: simple.CAP]
+        prompts, answers = simple.prompts(task, target)
         corrupt = simple.token_ids(lm.tokenizer, prompts)
-        zero = {int(r["item"]): r for r in records(task, simple.ZERO)}
-        rows.append(dict(family="simple", task=task, style="", heads="", source="none", mean_style="",
+        unpatched = {int(r["item"]): r for r in records(task, target)}
+        rows.append(dict(family=family, task=task, style="", heads="", source="none", mean_style="",
                          mean_wording="", n_heads=0, n_prompts=len(fixed), n_mean=0, alpha="",
-                         accuracy=sum(zero[i]["correct"] for i in fixed) / len(fixed)))
-        log += [dict(family="simple", task=task, style="", heads="", source="none", mean_style="",
+                         accuracy=sum(unpatched[i]["correct"] for i in fixed) / len(fixed)))
+        log += [dict(family=family, task=task, style="", heads="", source="none", mean_style="",
                      mean_wording="", alpha="", item=str(i), expected=lm.tokenizer.decode([lm.first_token(answers[i])]),
-                     predicted=lm.tokenizer.decode([zero[i]["prediction"]]), correct=zero[i]["correct"])
+                     predicted=lm.tokenizer.decode([unpatched[i]["prediction"]]), correct=unpatched[i]["correct"])
                 for i in fixed]
         # Means: each source wording's first 100 correct items that are not patched; the
         # control: the control task's 1-shot prompts at all its items correct under the
@@ -152,6 +167,8 @@ def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS):
                 items = sorted(set(simple.correct_items(records(task, wording))) - set(fixed))[: simple.CAP]
                 ids = simple.token_ids(lm.tokenizer, simple.prompts(task, wording)[0])
                 means.append((mean_style, "task", wording, items, simple_mean(lm, ids, items)))
+            if wrong:
+                continue
             control = simple.CONTROL[task]
             items = simple.correct_items(records(control, simple.CONTROL_ITEMS[mean_style]))
             ids = simple.token_ids(lm.tokenizer, simple.prompts(control, simple.CONTROL_PROMPTS)[0])
@@ -165,7 +182,7 @@ def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS):
                 for mean_style, source, wording, items, mean in means:
                     if mean is None:
                         continue
-                    condition = dict(family="simple", task=task, style=style, heads=name, source=source,
+                    condition = dict(family=family, task=task, style=style, heads=name, source=source,
                                      mean_style=mean_style, mean_wording=wording)
                     for alpha in ALPHAS:
                         edits = lm.mean_patch(heads, mean, [alpha] * simple.BATCH)
@@ -183,7 +200,7 @@ def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS):
                                                 predicted=lm.tokenizer.decode([token]), correct=token == answer))
                         rows.append(dict(**condition, n_heads=len(heads), n_prompts=len(fixed), n_mean=len(items),
                                          alpha=alpha, accuracy=hits / len(fixed)))
-        print(f"simple {task} done", flush=True)
+        print(f"{family} {task} done", flush=True)
 
 
 def run_complex(lm, heads_json, rows, log, levels):
@@ -296,7 +313,8 @@ def run_reasoning(lm, heads_json, rows, log, family, levels):
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--gpu", type=int, required=True)
-    parser.add_argument("--family", choices=("simple", "complex", "reasoning", "reasoning-pre"), required=True)
+    parser.add_argument("--family", choices=("simple", "simple-wrong", "complex", "reasoning", "reasoning-pre"),
+                        required=True)
     parser.add_argument("--levels", nargs="+", default=None,
                         help="complex task levels to patch (default: all in the study); "
                              "the output file then names them")
@@ -317,7 +335,7 @@ def main() -> None:
     elif args.family == "complex":
         run_complex(lm, heads_json, rows, log, args.levels)
     else:
-        run_simple(lm, heads_json, rows, log, args.tasks or simple.TASKS)
+        run_simple(lm, heads_json, rows, log, args.tasks or simple.TASKS, args.family)
     name = args.family + "".join("_" + level.replace("/", "-") for level in args.levels or [])
     if args.tasks:
         name += f".part-{args.part}"

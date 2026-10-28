@@ -10,10 +10,13 @@ proposal-minimal.tex, and the figures ``paper/figures/*.pdf``:
   (``patching_*.csv``). For the simple tasks, the accuracy at each alpha is first averaged
   over the source wordings of the mean style (Yang et al. patch each wording separately);
   ``effects_simple`` patches each style's heads with means of the same style,
-  ``effects_simple_cross`` with means of the other style;
+  ``effects_simple_cross`` with means of the other style; ``effects_simple_wrong`` and
+  ``effects_simple_wrong_cross`` the same for the second simple check (``simple-wrong``:
+  wrongly answered 1-shot prompts patched, no control);
 - ``layers.pdf``: lexical task heads per layer under each readout (``heads.json``);
 - ``copy_share.pdf``: copy share per task, style and readout (``measures.csv``);
-- ``patching_simple.pdf``, ``patching_complex.pdf``: accuracy against alpha.
+- ``patching_simple.pdf``, ``patching_simple_wrong.pdf``, ``patching_complex.pdf``: accuracy
+  against alpha.
 
 Conditions without output yet (a causal check still to run) are marked in the tables and
 left blank in the figures, so the script can be rerun as results arrive.
@@ -41,6 +44,7 @@ from lth import PAPER, READOUTS, RESULTS, simple  # noqa: E402
 
 TABLES, FIGURES = PAPER / "tables", PAPER / "figures"
 
+SIMPLE_FAMILIES = ("simple", "simple-wrong")  # the two simple-task causal checks (scripts/patch.py)
 SIMPLE_NAMES = {"singular-plural": "singular--plural", "present-past": "present--past",
                 "country-capital": "country--capital", "country-currency": "country--currency",
                 "landmark-country": "landmark--country", "park-country": "park--country",
@@ -99,7 +103,7 @@ plt.rcParams.update(
 
 
 def tex_name(family: str, task: str) -> str:
-    if family == "simple":
+    if family in SIMPLE_FAMILIES:
         return SIMPLE_NAMES.get(task, task)
     return r"\quad pre-answer" if family == "reasoning-pre" else COMPLEX_NAMES[task]
 
@@ -139,20 +143,20 @@ def load() -> dict:
 
 
 def simple_curves(patching: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Simple tasks: accuracy at each alpha averaged over the source wordings of the mean style.
+    """Simple checks: accuracy at each alpha averaged over the source wordings of the mean style.
 
     Returns the table with each simple style's heads patched with means of the same style
     (as the complex rows), and the simple rows patched with means of the other style
     (baseline rows included).
     """
-    simple_rows = patching[patching.family == "simple"]
+    simple_rows = patching[patching.family.isin(SIMPLE_FAMILIES)]
     base = simple_rows[simple_rows.source == "none"]
     keys = ["family", "task", "style", "heads", "source", "mean_style", "alpha"]
     curve = (simple_rows[simple_rows.source != "none"]
              .groupby(keys, as_index=False).agg(accuracy=("accuracy", "mean"), n_prompts=("n_prompts", "first")))
     same = curve[curve.mean_style == curve["style"]].drop(columns="mean_style")
     other = curve[curve.mean_style != curve["style"]].drop(columns="mean_style")
-    rest = patching[patching.family != "simple"]
+    rest = patching[~patching.family.isin(SIMPLE_FAMILIES)]
     return (pd.concat([rest, base, same], ignore_index=True), pd.concat([base, other], ignore_index=True))
 
 
@@ -283,13 +287,15 @@ def effect_rows(patching, effect, family, task, styles, *, items: bool) -> list[
 def table_effects(patching: pd.DataFrame, cross: pd.DataFrame) -> None:
     group = r"\multicolumn{3}{c}{Task mean} & \multicolumn{3}{c}{Control mean} \\"
     sets = r"L & J & J only & L & J & J only \\"
-    for name, frame, column in (("effects_simple", patching, "Style"), ("effects_simple_cross", cross, "Heads")):
-        effect = effects(frame)
-        rows = []
-        for task in simple.TASKS:
-            rows += effect_rows(frame, effect, "simple", task, ("rule", "example"), items=False)
-        header = [r" & & & " + group, r"\cmidrule(lr){4-6}\cmidrule(lr){7-9}", f"Task & {column} & Baseline & " + sets]
-        write(name, tabular("@{}llccccccc@{}", header, rows))
+    for family in SIMPLE_FAMILIES:
+        stem = "effects_" + family.replace("-", "_")
+        for name, frame, column in ((stem, patching, "Style"), (stem + "_cross", cross, "Heads")):
+            effect = effects(frame)
+            rows = []
+            for task in simple.TASKS:
+                rows += effect_rows(frame, effect, family, task, ("rule", "example"), items=False)
+            header = [r" & & & " + group, r"\cmidrule(lr){4-6}\cmidrule(lr){7-9}", f"Task & {column} & Baseline & " + sets]
+            write(name, tabular("@{}llccccccc@{}", header, rows))
 
     effect = effects(patching)
     rows = []
@@ -379,12 +385,14 @@ def curve_panel(ax, patching, family, task, style, reference=None) -> bool:
     return True
 
 
-def curve_legend(fig, constant: bool = False) -> None:
+def curve_legend(fig, constant: bool = False, control: bool = True) -> None:
     handles = [plt.Line2D([], [], color=SET_COLOUR[s]) for s in SETS]
     labels = [f"{SET_LABEL[s]}, task mean" for s in SETS]
-    handles += [plt.Line2D([], [], color=INK_2, ls=CONTROL_STYLE, lw=0.9),
-                plt.Line2D([], [], color=GREY, ls=(0, (4, 2)), lw=0.9)]
-    labels += ["control mean (same colours)", "unpatched"]
+    if control:
+        handles.append(plt.Line2D([], [], color=INK_2, ls=CONTROL_STYLE, lw=0.9))
+        labels.append("control mean (same colours)")
+    handles.append(plt.Line2D([], [], color=GREY, ls=(0, (4, 2)), lw=0.9))
+    labels.append("unpatched")
     if constant:
         handles.append(plt.Line2D([], [], color=INK_2, ls=(0, (7, 2, 1.5, 2)), lw=0.8))
         labels.append("constant answer")
@@ -401,23 +409,26 @@ def empty_panel(ax, text: str) -> None:
 
 
 def figure_patching(patching: pd.DataFrame) -> None:
-    fig, axes = plt.subplots(7, 4, figsize=(6.3, 8.4), sharex=True, sharey=True)
-    for i, task in enumerate(simple.TASKS):
-        for j, style in enumerate(("rule", "example")):
-            ax = axes[i // 2, 2 * (i % 2) + j]
-            curve_panel(ax, patching, "simple", task, style)
-            ax.set_title(f"{plot_name('simple', task)}, {style}", loc="left", fontsize=7)
-            ax.set_ylim(-0.03, 1.03)
-            style_axes(ax)
-    for ax in axes[-1]:
-        ax.set_xlabel(r"$\alpha$")
-        ax.set_xticks([-10, -5, 0, 5, 10])
-    for ax in axes[:, 0]:
-        ax.set_ylabel("accuracy")
-    curve_legend(fig)
-    fig.tight_layout(rect=(0, 0, 1, 0.96))
-    fig.savefig(FIGURES / "patching_simple.pdf")
-    plt.close(fig)
+    for family in SIMPLE_FAMILIES:
+        if not (patching.family == family).any():
+            continue
+        fig, axes = plt.subplots(7, 4, figsize=(6.3, 8.4), sharex=True, sharey=True)
+        for i, task in enumerate(simple.TASKS):
+            for j, style in enumerate(("rule", "example")):
+                ax = axes[i // 2, 2 * (i % 2) + j]
+                curve_panel(ax, patching, family, task, style)
+                ax.set_title(f"{plot_name(family, task)}, {style}", loc="left", fontsize=7)
+                ax.set_ylim(-0.03, 1.03)
+                style_axes(ax)
+        for ax in axes[-1]:
+            ax.set_xlabel(r"$\alpha$")
+            ax.set_xticks([-10, -5, 0, 5, 10])
+        for ax in axes[:, 0]:
+            ax.set_ylabel("accuracy")
+        curve_legend(fig, control=family == "simple")
+        fig.tight_layout(rect=(0, 0, 1, 0.96))
+        fig.savefig(FIGURES / f"patching_{family.replace('-', '_')}.pdf")
+        plt.close(fig)
 
     # Styles head the columns and tasks the rows; empty panels keep their own y axis, so
     # the axes are not shared.

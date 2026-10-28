@@ -15,7 +15,11 @@ computed as if run alone. Which wordings each step uses is theirs (``behavior_va
 - heads are identified on the first 100 correct prompts of one wording per style: the
   5-shot prompts, and the instruction template with the highest accuracy;
 - each source wording of a style gives its own mean and its own patch;
-- the patched items are the first 100 answered correctly 1-shot.
+- the patched items are the first 100 answered correctly 1-shot, patched in their prompt
+  without task information (``causal_recover_corrupted_prompts.py``, the procedure the
+  paper's App. G.1 describes); or, in the second check, the first 100 answered wrongly
+  1-shot, patched in their 1-shot prompt (``causal_fix_incorrect.py``, the only causal
+  driver they release, which reproduces their Figs. 57 and 62), without a control.
 """
 
 from __future__ import annotations
@@ -34,7 +38,7 @@ INSTRUCTIONS = tuple(range(5))
 WORDINGS = {"rule": tuple(f"inst{i}" for i in INSTRUCTIONS),
             "example": tuple(f"shot{n}" for n in SHOTS)}
 ZERO = "zero"
-FIXING = "shot1"  # the patched items are the first ones answered correctly 1-shot
+FIXING = "shot1"  # the patched items are the first ones answered correctly (or wrongly) 1-shot
 IDENTIFY_EXAMPLE = "shot5"  # identify_heads_nnsight.py: prompt_template_index = 5 for EP
 CAP = 100  # exp_size and average_size
 BATCH = 20  # their default batch_size
