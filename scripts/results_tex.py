@@ -1,7 +1,7 @@
 """Tables and figures of the proposal's Results section, from results/ (no GPU).
 
-Writes the tabulars ``tables/*.tex``, each ``\\input`` inside a table float of
-proposal-minimal.tex, and the figures ``figures/*.pdf``:
+Writes the tabulars ``paper/tables/*.tex``, each ``\\input`` inside a table float of
+proposal-minimal.tex, and the figures ``paper/figures/*.pdf``:
 - ``e0_simple``, ``e0_complex``: accuracy per style and wording (``e0_accuracy.csv``);
 - ``heads_simple``, ``heads_complex``: head counts and overlaps (``measures.csv``,
   ``overlaps.csv``);
@@ -33,9 +33,9 @@ import pandas as pd  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from lth import READOUTS, RESULTS, ROOT, simple  # noqa: E402
+from lth import PAPER, READOUTS, RESULTS, simple  # noqa: E402
 
-TABLES, FIGURES = ROOT / "tables", ROOT / "figures"
+TABLES, FIGURES = PAPER / "tables", PAPER / "figures"
 
 SIMPLE_NAMES = {"singular-plural": "singular--plural", "present-past": "present--past",
                 "country-capital": "country--capital", "country-currency": "country--currency",

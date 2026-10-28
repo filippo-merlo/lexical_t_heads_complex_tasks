@@ -10,6 +10,7 @@ DATA = ROOT / "data"
 RESULTS = Path(os.environ.get("LTH_RESULTS", ROOT / "results"))
 MATERIALS = Path(os.environ.get("LTH_MATERIALS", ROOT / "materials"))
 THIRD_PARTY = ROOT / "third_party"
+PAPER = ROOT / "paper"
 YANG = THIRD_PARTY / "Lexical_Task_Representations"
 FU = THIRD_PARTY / "rules-vs-examples"
 

@@ -1,6 +1,6 @@
 # Lexical task heads beyond simple tasks
 
-Code for the project described in `proposal-minimal.tex`. It identifies the lexical task
+Code for the project described in `paper/proposal-minimal.tex`. It identifies the lexical task
 heads of Yang et al. (2026) in Llama-3.1-8B-Instruct, on 14 simple tasks and on the five
 rule-defined tasks of Fu et al. (2026). Each attention head is read with two readouts:
 the per-head logit lens (Logit-head) and Head-JLens (J-head). The identified heads are
@@ -26,7 +26,7 @@ The GPT-5.5 steps call an Azure OpenAI deployment and need `AZURE_OPENAI_API_KEY
 | E0 table | `scripts/e0_table.py` | `results/e0_accuracy.csv` |
 | head sets and measures | `scripts/identify_heads.py` | `results/heads.json`, `measures.csv`, `overlaps.csv` |
 | causal check (GPU) | `scripts/run_all.sh patching` (`patch.py`) | `results/patching_{simple,complex}.csv` |
-| results tables and figures | `scripts/results_tex.py` | `tables/`, `figures/` (proposal, Results section) |
+| results tables and figures | `scripts/results_tex.py` | `paper/tables/`, `paper/figures/` (proposal, Results section) |
 
 Every GPU script skips work already on disk, so an interrupted run resumes.
 
@@ -38,5 +38,6 @@ Every GPU script skips work already on disk, so an interrupted run resumes.
   - `fu.py`: Fu et al.'s tasks, run through their own code.
   - `terms.py`: term lists and their token ids.
   - `store.py`: what each run keeps.
+- `paper/`: the proposal (`proposal-minimal.tex`), its appendices, bibliography, tables and figures.
 - `materials/`: the generation prompts (proposal App. B) and the checked wordings and term lists.
 - `third_party/`, `data/`: fetched sources and run outputs (not tracked).
