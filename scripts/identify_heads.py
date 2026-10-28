@@ -5,8 +5,9 @@ A head matches a prompt when at least one of its top-10 tokens is in the task's 
 readout when it matches on at least 10% of that style's identification prompts
 (Definition 1; n = 1, k = 10, rho = 0.1). For the simple tasks these are the prompts of one
 wording, as in Yang et al.'s code: the 5-shot prompts, and the instruction template with
-the highest accuracy (``lth.simple.identification_wording``). For the complex tasks they
-are pooled over the style's wordings.
+the highest accuracy (``lth.simple.identification_wording``). The complex tasks follow the
+same rule: the prompts of the most accurate rule wording (``identification_styles``), and
+those of the example-based and of the combined prompts.
 
 Writes ``results/heads.json`` (every head set with each head's match rate),
 ``results/measures.csv`` (prompts, heads, mean layer and copy share per set) and
@@ -43,6 +44,18 @@ def complex_styles() -> dict[str, tuple[str, ...]]:
     if (MATERIALS / "complex" / "wordings.json").exists():
         wordings += tuple(f"w{i}" for i in range(1, 7))
     return {"rule": wordings, "example": ("examples",), "combined": ("combined",)}
+
+
+def identification_styles(directory: Path, styles: dict[str, tuple[str, ...]]) -> dict[str, tuple[str, ...]]:
+    """One wording per style, as for the simple tasks: the most accurate of the style's
+    wordings on disk (the first maximum, in the order of ``complex_styles``)."""
+    out = {}
+    for style, wordings in styles.items():
+        wordings = [w for w in wordings if done(directory, w)]
+        if wordings:
+            accuracy = {w: np.mean([r["correct"] for r in load(directory, w)["records"]]) for w in wordings}
+            out[style] = (max(wordings, key=lambda w: (accuracy[w], -wordings.index(w))),)
+    return out
 
 
 def pre_answer_texts(directory: Path, wording: str) -> dict[str, str]:
@@ -96,16 +109,17 @@ def main() -> None:
             terms = complex_terms[level.original]
             if level.task not in fu.REASONING_TASKS:
                 directory = run_dir("complex", key)
-                jobs.append(("complex", key, complex_styles(), terms, directory,
+                jobs.append(("complex", key, identification_styles(directory, complex_styles()), terms, directory,
                              lambda w, directory=directory: fu.recorded_prompts(directory / "fu_out" / w)))
                 continue
             # Reasoning mode: heads at the last prompt token, and at the pre-answer position,
             # where the copy share also checks the reply up to that point.
             directory = run_dir("reasoning", key)
-            jobs.append(("reasoning", key, complex_styles(), terms, directory,
+            jobs.append(("reasoning", key, identification_styles(directory, complex_styles()), terms, directory,
                          lambda w, directory=directory: fu.recorded_prompts(directory / "fu_out" / w)))
             jobs.append(("reasoning-pre", key,
-                         {s: tuple(w + PRE for w in ws) for s, ws in complex_styles().items()},
+                         identification_styles(directory, {s: tuple(w + PRE for w in ws)
+                                                           for s, ws in complex_styles().items()}),
                          terms, directory, lambda w, directory=directory: pre_answer_texts(directory, w)))
     else:
         print("no materials/complex/terms.json yet: complex tasks skipped")

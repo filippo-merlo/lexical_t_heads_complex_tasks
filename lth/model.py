@@ -201,12 +201,13 @@ class LM:
         return replies
 
     @staticmethod
-    def token_batches(lengths: list[int], max_new_tokens: int) -> list[range]:
-        """Consecutive batches whose padded prompts plus replies fit ``TOKEN_BUDGET`` tokens."""
+    def token_batches(lengths: list[int], max_new_tokens: int, max_rows: int = MAX_ROWS) -> list[range]:
+        """Consecutive batches of at most ``max_rows`` rows whose padded prompts plus replies
+        fit ``TOKEN_BUDGET`` tokens."""
         batches, start = [], 0
         while start < len(lengths):
             end = start + 1
-            while (end < len(lengths) and end - start < MAX_ROWS
+            while (end < len(lengths) and end - start < max_rows
                    and (end + 1 - start) * (max(lengths[start:end + 1]) + max_new_tokens) <= TOKEN_BUDGET):
                 end += 1
             batches.append(range(start, end))

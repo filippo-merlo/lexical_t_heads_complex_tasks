@@ -15,6 +15,12 @@ and the model's own reply gives ``z`` at two positions, kept as described in
 The first ``--n-fix`` items in P+ under the original rules prompt are the ones patched in
 the causal check. A variant already on disk is skipped.
 
+With ``--reuse DIR`` (an earlier runs folder of this family, e.g. a smaller sample), a
+prompt answered there gets that reply instead of a new generation (its text re-tokenized),
+and the patched items are taken from its original rules prompt until this run has its own,
+so the variants of a level can run in parallel. The 300-item sample starts with the
+earlier 100 items, with the same prompts.
+
     .venv/bin/python scripts/run_reasoning.py --gpu 3 --levels operator_func/easy
 """
 
@@ -30,7 +36,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from lth import gpu  # noqa: E402
 from run_complex import BARE, FIXING, variants  # noqa: E402
 
-N_ITEMS = 100
+N_ITEMS = 300  # 100 until 2026-10-28; raised to the size of the other tasks
 N_FIX = 25
 BATCH = 32
 PRE = "@pre"
@@ -56,6 +62,8 @@ def main() -> None:
     parser.add_argument("--n-fix", type=int, default=N_FIX)
     parser.add_argument("--variants", nargs="+", default=None,
                         help="run only these prompt variants (to split a level over GPUs)")
+    parser.add_argument("--reuse", type=Path, default=None,
+                        help="earlier runs folder whose replies are reused for the same prompts")
     args = parser.parse_args()
     gpu.pin(args.gpu)
 
@@ -68,7 +76,10 @@ def main() -> None:
     for key in levels:
         level = fu.TASK_LEVELS[key]
         directory = run_dir("reasoning", key)
+        earlier = args.reuse / directory.name if args.reuse else None
         fixed = fixed_items(directory, FIXING) if done(directory, FIXING) else None
+        if fixed is None and earlier is not None:
+            fixed = fixed_items(earlier, FIXING)
         for name, mode, rules in variants(level):
             if args.variants and name not in args.variants:
                 continue
@@ -76,15 +87,21 @@ def main() -> None:
                 continue
             start = time.time()
             stash = {}
+            reused = ({r["prompt"]: r["raw_response"] for r in fu.recorded_results(earlier / "fu_out" / name)}
+                      if earlier is not None and (earlier / "fu_out" / name).exists() else {})
 
             def answer(prompts: list[str]) -> list[str]:
                 ids = [lm.encode_chat(p) for p in prompts]
-                replies = []
-                for rows in lm.token_batches([len(i) for i in ids], fu.REASONING_MAX_TOKENS):
-                    replies += lm.generate_batch([ids[r] for r in rows], fu.REASONING_MAX_TOKENS,
-                                                 stop=lambda text: fu.answer_complete(level, text))
+                replies = [lm.tokenizer(reused[p], add_special_tokens=False).input_ids if p in reused else None
+                           for p in prompts]
+                new = [i for i, r in enumerate(replies) if r is None]
+                for rows in lm.token_batches([len(ids[i]) for i in new], fu.REASONING_MAX_TOKENS):
+                    out = lm.generate_batch([ids[new[r]] for r in rows], fu.REASONING_MAX_TOKENS,
+                                            stop=lambda text: fu.answer_complete(level, text))
+                    for r, reply in zip(rows, out):
+                        replies[new[r]] = reply
                 stash.update((p, (i, r)) for p, i, r in zip(prompts, ids, replies))
-                return [lm.decode(r) for r in replies]
+                return [reused[p] if p in reused else lm.decode(r) for p, r in zip(prompts, replies)]
 
             results = fu.run(level, mode, answer, directory / "fu_out" / name, rules=rules,
                              n_test=args.n_items, batch=BATCH, reasoning=True)
@@ -113,6 +130,8 @@ def main() -> None:
             if name != BARE:
                 pre.save(directory, name + PRE)
             if name == FIXING:
+                if fixed is not None and set(last.fixed) != fixed:
+                    raise RuntimeError(f"{key}: the patched items differ from the earlier run's")
                 fixed = set(last.fixed)
             records = last.records
             tokens = sorted(r["reply_tokens"] for r in records)
