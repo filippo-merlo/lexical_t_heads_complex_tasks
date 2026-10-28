@@ -158,6 +158,8 @@ The causal check of \citet[Sec.~2.3.2, App.~G]{yang2026shared} tests whether a h
 Three head sets are patched for each task and style: $H^{\mathrm{L}}_{t,s}$, $H^{\mathrm{J}}_{t,s}$, and the heads found only by J-head, $H^{\mathrm{J}}_{t,s}\setminus H^{\mathrm{L}}_{t,s}$. For the simple tasks, we report the accuracy at each $\alpha$ averaged over the five wordings of the mean's style.
 In reasoning mode (Sec.~\ref{sec:reasoning}), each set's mean output is taken at the position where the set was found. It is patched at the last prompt position and kept at every generated position, and the final answer is scored. To bound the cost of long generations, 10 items are patched, with $\alpha\in\{0,1,4,10\}$.
 
+\paragraph{Second check on the simple tasks.} The code of \citet{yang2026shared} releases one script for this check (\texttt{causal\_fix\_incorrect.py}), and it differs from the procedure described in their App.~G.1, which we follow above, in the patched prompts. Instead of the zero-shot prompts, it patches the 1-shot prompts of the first 100 items answered wrongly with one shot, or all of them where fewer are wrong; these prompts show the answer format, and their unpatched accuracy is 0 by construction. Head sets, means, $\alpha$ and scoring are as above, and the script has no control. We run it as a second check on the simple tasks and report both.
+
 \subsection{Measures}\label{sec:measures}
 For each task $t$, style $s$ and readout $R$:
 \begin{itemize}
@@ -211,7 +213,9 @@ The J-head set raises accuracy about as much as the Logit-head set or more on mo
 
 Patched with the means of the other style, the head sets raise accuracy on the same tasks, often by a comparable amount or more. On antonym and singular--plural, the rule-style sets raise accuracy only with example-style means: on antonym the Logit-head set, on singular--plural the J-head set and the heads only it finds. Present--past and the translation tasks show no gain under any pairing.
 
-\paragraph{Hypotheses.} For H\ref{h:rep}, lexical task heads are found for every simple task, and patching them raises accuracy on eight tasks with means of the heads' own style, and on antonym with means of the other style; there is no gain on synonym under Logit-head, on present--past or on the three translation tasks. On three of the eight, park--country, next-item and prev-item, the control mean raises accuracy as well. On the same model, \citet[App.~G.1, Figs.~57 and~62]{yang2026shared} report a gain on every one of these tasks, largest on country--capital and present--past and smallest on synonym and the translation tasks. H\ref{h:rep} is therefore falsified as stated: the heads are found for every task, but their causal effect does not reproduce on present--past and the translation tasks; on the tasks where it does, it is about as large as reported on country--capital and larger or smaller than reported on the others. For H\ref{h:readout} on the simple tasks, the first condition fails, since the J-head set misses part of the Logit-head set on 23 of 28 pairs, and the second holds: heads found only by J-head have causal effects of their own.
+\paragraph{Second causal check} (Tables~\ref{tab:effects-simple-wrong} and~\ref{tab:effects-simple-wrong-cross}, Figure~\ref{fig:patch-simple-wrong}). With the wrongly answered 1-shot prompts patched, every head set raises accuracy above zero on every task, under both styles and with means of either style, though only by a few items on synonym and the translation tasks. This includes present--past and the translation tasks, where patching the zero-shot prompts has no effect, and antonym, where it has an effect only across styles. The gains are largest on singular--plural, country--capital and present--past and smallest on synonym and the translation tasks, the order reported by \citet[Figs.~57 and~62]{yang2026shared}. The curves also share features of theirs that the zero-shot prompts do not show, such as a gain at negative $\alpha$ on park--country. On landmark--country, park--country and product--company the gains are smaller than with the zero-shot prompts and closer to the reported ones. The J-head set raises accuracy about as much as the Logit-head set or more on most tasks, and far more on next-item and prev-item with examples. The heads found only by J-head raise it on every task where that set is not empty, least on landmark--country with examples.
+
+\paragraph{Hypotheses.} For H\ref{h:rep}, lexical task heads are found for every simple task. With the zero-shot prompts described by \citet[App.~G.1]{yang2026shared}, patching them raises accuracy on eight tasks with means of the heads' own style, and on antonym with means of the other style; there is no gain on synonym under Logit-head, on present--past or on the three translation tasks. On three of the eight, park--country, next-item and prev-item, the control mean raises accuracy as well. With the 1-shot prompts of their released script, patching raises accuracy on all fourteen tasks, in the per-task pattern of their Figs.~57 and~62. H\ref{h:rep} is therefore falsified for the procedure their paper describes and holds for the setting of their released code, which reproduces their figures: the gains they report on present--past and the translation tasks need prompts that show the answer format. For H\ref{h:readout} on the simple tasks, the first condition fails, since the J-head set misses part of the Logit-head set on 23 of 28 pairs, and the second holds in both checks: heads found only by J-head have causal effects of their own.
 
 \begin{table}[tbp]
 \centering\footnotesize
@@ -234,6 +238,20 @@ Patched with the means of the other style, the head sets raise accuracy on the s
 \label{tab:effects-simple-cross}
 \end{table}
 
+\begin{table}[tbp]
+\centering\footnotesize
+\input{tables/effects_simple_wrong}
+\caption{E1, second causal check, as Table~\ref{tab:effects-simple}, with the 1-shot prompts of the first 100 items answered wrongly with one shot patched; fewer items are wrong on singular--plural (23), country--capital (25), park--country (43), present--past and country--currency (61) and next-item (98). Unpatched accuracy is 0 by construction. No control mean.}
+\label{tab:effects-simple-wrong}
+\end{table}
+
+\begin{table}[tbp]
+\centering\footnotesize
+\input{tables/effects_simple_wrong_cross}
+\caption{E1, second causal check across styles, as Table~\ref{tab:effects-simple-cross}.}
+\label{tab:effects-simple-wrong-cross}
+\end{table}
+
 \begin{figure}[tbp]
 \centering
 \includegraphics[width=\textwidth]{figures/layers.pdf}
@@ -253,6 +271,13 @@ Patched with the means of the other style, the head sets raise accuracy on the s
 \includegraphics[width=\textwidth]{figures/patching_simple.pdf}
 \caption{E1 causal check: accuracy on the 100 patched items of each task against $\alpha$, with each style's head set patched with means of the same style, averaged over the style's five source wordings. Solid: the head set's mean over the task's prompts; dotted: the control mean at the same heads; dashed: unpatched accuracy.}
 \label{fig:patch-simple}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{figures/patching_simple_wrong.pdf}
+\caption{E1, second causal check, as Figure~\ref{fig:patch-simple}, with the wrongly answered 1-shot prompts patched. No control mean.}
+\label{fig:patch-simple-wrong}
 \end{figure}
 
 \subsection{E2: Complex tasks}\label{sec:res-e2}
@@ -329,6 +354,7 @@ Reused code and data: the lexical-task-head code of \citet{yang2026shared}; the 
 \item[2026-10-27] Reasoning mode: 100 items per task, style and wording; the causal check patches 10 items with $\alpha\in\{0,1,4,10\}$.
 \item[2026-10-28] The simple tasks follow the code of \citet{yang2026shared} exactly, except for the J-head readout and the bfloat16 precision of the Head-JLens matrices: five instruction templates (their code and paper do not use the sixth template of their instruction file); heads from one wording per style (5-shot, and the most accurate template); one mean and one patch per source wording; their control mean; their batching. This replaces, for the simple tasks, the pooling of prompts and means over wordings and the use of six templates. E1 was rerun.
 \item[2026-10-28] Simple tasks: the padding of each batch is masked. The code of \citet{yang2026shared} passes no attention mask, so the model attends to the padding, which their paper does not describe. E1 was rerun.
+\item[2026-10-28] Simple tasks: a second causal check with the setting of the one causal script of \citet{yang2026shared} (wrongly answered 1-shot prompts patched, no control). It reproduces their Figs.~57 and~62, which the zero-shot procedure of their App.~G.1 does not; both checks are reported.
 \end{description}
 
 \end{document}
