@@ -253,6 +253,24 @@ def score(level: TaskLevel, result: dict, *, reasoning: bool = False) -> tuple[b
     raise ValueError(level.task)
 
 
+def answer(level: TaskLevel, result: dict, *, reasoning: bool = False) -> tuple:
+    """``(expected, predicted)``: the two answers ``score`` compares, as the runner records
+    them (Tapatan: the first line, or in reasoning mode the first label; None if absent)."""
+    if level.task in ("set_game", "operator_func"):
+        return result["expected_result"], result["predicted_result"]
+    if level.task == "lexical_category_inference":
+        return result["expected_answer"], result["predicted_answer"]
+    if level.task == "noun_class_agreement":
+        return result["expected_label"], result["prediction"]
+    if level.task == "tapatan":
+        raw = result["raw_response"]
+        if reasoning:
+            label = _TAPATAN_LABEL.search(raw)
+            return result["expected_result"], label.group(1) if label else None
+        return result["expected_result"], raw.strip().split("\n")[0].strip().rstrip(".")
+    raise ValueError(level.task)
+
+
 def answer_complete(level: TaskLevel, text: str) -> bool:
     """Whether the answer the scoring reads is already fixed in ``text``.
 
@@ -286,9 +304,14 @@ def answer_start(level: TaskLevel, text: str) -> int | None:
     return content + len(boxed.group(1)) - len(boxed.group(1).lstrip())
 
 
-def recorded_prompts(directory: Path) -> dict[str, str]:
-    """Item -> prompt text, from the result file Fu's runner wrote into ``directory``."""
+def recorded_results(directory: Path) -> list[dict]:
+    """The per-item results of the result file Fu's runner wrote into ``directory``."""
     import json
 
     files = sorted(directory.rglob("*.json"))
-    return {item_id(r): r["prompt"] for r in json.loads(files[-1].read_text())["results"]}
+    return json.loads(files[-1].read_text())["results"]
+
+
+def recorded_prompts(directory: Path) -> dict[str, str]:
+    """Item -> prompt text, from the result file Fu's runner wrote into ``directory``."""
+    return {item_id(r): r["prompt"] for r in recorded_results(directory)}

@@ -17,6 +17,11 @@ name): one row per task, style, head set, mean source and alpha, plus a baseline
 (``source`` = ``none``) per task. In reasoning mode the first ``REASONING_ITEMS`` fixing
 items are patched, over ``REASONING_ALPHAS``.
 
+Every answer behind those accuracies is kept in ``results/answers/patching_{...}.jsonl.gz``
+(same name as the table): one line per patched prompt and alpha, and per baseline prompt,
+with the condition, item, expected and predicted answer, whether it is correct, and for
+generated answers the reply.
+
     .venv/bin/python scripts/patch.py --gpu 0 --family simple
 """
 
@@ -24,6 +29,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import gzip
 import json
 import sys
 import tempfile
@@ -84,7 +90,20 @@ def conditions(heads_by_style, styles, directory, control_directory):
                     yield style, name, heads, source, mean
 
 
-def run_simple(lm, heads_json, rows):
+def fu_answers(level, results, fixed_set, *, reasoning=False, **condition) -> list[dict]:
+    """One answer line per fixing item in the results of Fu et al.'s runner."""
+    from lth import fu
+
+    lines = []
+    for r in results:
+        if fu.item_id(r) in fixed_set:
+            expected, predicted = fu.answer(level, r, reasoning=reasoning)
+            lines.append(dict(**condition, item=fu.item_id(r), expected=expected, predicted=predicted,
+                              correct=fu.score(level, r, reasoning=reasoning)[0], reply=r["raw_response"]))
+    return lines
+
+
+def run_simple(lm, heads_json, rows, log):
     from lth.store import done, load, run_dir
 
     for task in simple.TASKS:
@@ -93,24 +112,30 @@ def run_simple(lm, heads_json, rows):
             continue
         fixed = load(directory, simple.FIXING)["fixed"].tolist()
         prompts, answers = simple.prompts(task, simple.ZERO)
-        zero = {r["item"]: r["correct"] for r in load(directory, simple.ZERO)["records"]}
-        rows.append(dict(family="simple", task=task, style="", heads="", source="none", n_heads=0,
-                         n_prompts=len(fixed), alpha="", accuracy=sum(zero[i] for i in fixed) / len(fixed)))
-        targets = [(lm.encode_raw(prompts[int(i)]), lm.first_token(answers[int(i)])) for i in fixed]
+        zero = {r["item"]: r for r in load(directory, simple.ZERO)["records"]}
+        rows.append(dict(family="simple", task=task, style="", heads="", source="none", n_heads=0, n_prompts=len(fixed),
+                         alpha="", accuracy=sum(zero[i]["correct"] for i in fixed) / len(fixed)))
+        targets = [(i, lm.encode_raw(prompts[int(i)]), lm.first_token(answers[int(i)])) for i in fixed]
+        log += [dict(family="simple", task=task, style="", heads="", source="none", alpha="", item=i,
+                     expected=lm.tokenizer.decode([answer]), predicted=lm.tokenizer.decode([zero[i]["prediction"]]),
+                     correct=zero[i]["correct"]) for i, _, answer in targets]
         for style, name, heads, source, mean in conditions(
                 heads_json["simple"][task], simple.WORDINGS, directory, run_dir("simple", simple.CONTROL[task])):
             edits = lm.mean_patch(heads, mean, ALPHAS)
             hits = [0] * len(ALPHAS)
-            for ids, answer in targets:
+            for item, ids, answer in targets:
                 for i, token in enumerate(lm.next_tokens(ids, len(ALPHAS), edits=edits)):
                     hits[i] += token == answer
+                    log.append(dict(family="simple", task=task, style=style, heads=name, source=source,
+                                    alpha=ALPHAS[i], item=item, expected=lm.tokenizer.decode([answer]),
+                                    predicted=lm.tokenizer.decode([token]), correct=token == answer))
             rows += [dict(family="simple", task=task, style=style, heads=name, source=source,
                           n_heads=len(heads), n_prompts=len(targets), alpha=a, accuracy=h / len(targets))
                      for a, h in zip(ALPHAS, hits)]
         print(f"simple {task} done", flush=True)
 
 
-def run_complex(lm, heads_json, rows, levels):
+def run_complex(lm, heads_json, rows, log, levels):
     from lth import fu
     from lth.store import done, load, run_dir
 
@@ -134,6 +159,8 @@ def run_complex(lm, heads_json, rows, levels):
         rows.append(dict(family="complex", task=key, style="", heads="", source="none", n_heads=0,
                          n_prompts=len(fixed), alpha="", accuracy=sum(baseline[i] for i in fixed) / len(fixed)))
         fixed_set = set(fixed)
+        log += fu_answers(level, fu.recorded_results(directory / "fu_out" / "bare"), fixed_set,
+                          family="complex", task=key, style="", heads="", source="none", alpha="")
         for style, name, heads, source, mean in conditions(
                 heads_json["complex"][key], styles, directory, run_dir("complex", COMPLEX_CONTROL[key])):
             start = time.time()
@@ -148,14 +175,17 @@ def run_complex(lm, heads_json, rows, levels):
                 with tempfile.TemporaryDirectory() as scratch:
                     results = fu.run(level, "rules", lambda ps, a=alpha: [replies.get((p, a), "") for p in ps],
                                      Path(scratch), rules=bare)
-                correct = [fu.score(level, r)[0] for r in results if fu.item_id(r) in fixed_set]
+                lines = fu_answers(level, results, fixed_set, family="complex", task=key, style=style,
+                                   heads=name, source=source, alpha=alpha)
+                log += lines
+                correct = [line["correct"] for line in lines]
                 rows.append(dict(family="complex", task=key, style=style, heads=name, source=source,
                                  n_heads=len(heads), n_prompts=len(correct), alpha=alpha,
                                  accuracy=sum(correct) / len(correct)))
             print(f"complex {key} {style} {name} {source} ({time.time() - start:.0f} s)", flush=True)
 
 
-def run_reasoning(lm, heads_json, rows, family, levels):
+def run_reasoning(lm, heads_json, rows, log, family, levels):
     """Reasoning mode (Sec. 5.3): the patch stays on at every generated token, and the final
     answer is scored; ``family`` says whose heads and means are patched (last prompt token,
     or pre-answer position)."""
@@ -184,6 +214,8 @@ def run_reasoning(lm, heads_json, rows, family, levels):
         rows.append(dict(family=family, task=key, style="", heads="", source="none", n_heads=0,
                          n_prompts=len(fixed), alpha="", accuracy=sum(baseline[i] for i in fixed) / len(fixed)))
         fixed_set = set(fixed)
+        log += fu_answers(level, fu.recorded_results(directory / "fu_out" / "bare"), fixed_set, reasoning=True,
+                          family=family, task=key, style="", heads="", source="none", alpha="")
         for style, name, heads, source, mean in conditions(
                 heads_json[family][key], styles, directory, run_dir("reasoning", COMPLEX_CONTROL[key])):
             start = time.time()
@@ -200,7 +232,10 @@ def run_reasoning(lm, heads_json, rows, family, levels):
                 with tempfile.TemporaryDirectory() as scratch:
                     results = fu.run(level, "rules", lambda ps, a=alpha: [replies.get((p, a), "") for p in ps],
                                      Path(scratch), rules=bare, n_test=N_ITEMS, batch=N_ITEMS, reasoning=True)
-                correct = [fu.score(level, r, reasoning=True)[0] for r in results if fu.item_id(r) in fixed_set]
+                lines = fu_answers(level, results, fixed_set, reasoning=True, family=family, task=key,
+                                   style=style, heads=name, source=source, alpha=alpha)
+                log += lines
+                correct = [line["correct"] for line in lines]
                 rows.append(dict(family=family, task=key, style=style, heads=name, source=source,
                                  n_heads=len(heads), n_prompts=len(correct), alpha=alpha,
                                  accuracy=sum(correct) / len(correct)))
@@ -222,17 +257,21 @@ def main() -> None:
     lm = LM.load()
     heads_json = json.loads((RESULTS / "heads.json").read_text())
     rows: list[dict] = []
+    log: list[dict] = []
     if args.family in ("reasoning", "reasoning-pre"):
-        run_reasoning(lm, heads_json, rows, args.family, args.levels)
+        run_reasoning(lm, heads_json, rows, log, args.family, args.levels)
     elif args.family == "complex":
-        run_complex(lm, heads_json, rows, args.levels)
+        run_complex(lm, heads_json, rows, log, args.levels)
     else:
-        run_simple(lm, heads_json, rows)
+        run_simple(lm, heads_json, rows, log)
     name = args.family + "".join("_" + level.replace("/", "-") for level in args.levels or [])
     with (RESULTS / f"patching_{name}.csv").open("w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
+    (RESULTS / "answers").mkdir(exist_ok=True)
+    with gzip.open(RESULTS / "answers" / f"patching_{name}.jsonl.gz", "wt") as f:
+        f.writelines(json.dumps(line, ensure_ascii=False) + "\n" for line in log)
 
 
 if __name__ == "__main__":
