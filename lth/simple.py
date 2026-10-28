@@ -7,12 +7,11 @@ prompts are their instruction templates 0-4, and the prompt without task informa
 ``" query:"``. All are raw text, scored by the greedy first token against the first token
 of ``" " + output``.
 
-Their code runs every prompt set as ``get_prompt_token`` tokenizes it: the whole dataset
-padded on the left to its longest prompt, with nnsight's pad token (EOS), and passed to
-the model in batches of 20 without an attention mask, so the padding is attended to.
-:func:`token_ids` and :data:`BATCH` reproduce that. Which wordings each step uses is
-theirs too (``behavior_variance.py``, ``identify_heads_nnsight.py``,
-``causal_fix_incorrect.py``):
+Prompts run in their batches of 20 (:data:`BATCH`), padded on the left. Their code passes
+no attention mask, so the model attends to the padding (nnsight fills a mask of ones); we
+pass the mask and matching positions (``LM.next_tokens_batch``), so that every prompt is
+computed as if run alone. Which wordings each step uses is theirs (``behavior_variance.py``,
+``identify_heads_nnsight.py``, ``causal_fix_incorrect.py``):
 - heads are identified on the first 100 correct prompts of one wording per style: the
   5-shot prompts, and the instruction template with the highest accuracy;
 - each source wording of a style gives its own mean and its own patch;
@@ -63,10 +62,8 @@ def instruction_dict() -> dict:
 
 
 def token_ids(tokenizer, prompts_: list[str]) -> list[list[int]]:
-    """Every prompt with BOS, padded on the left with EOS to the longest one, as Yang et al."""
-    encoded = [tokenizer(p).input_ids for p in prompts_]
-    width = max(len(ids) for ids in encoded)
-    return [[tokenizer.eos_token_id] * (width - len(ids)) + ids for ids in encoded]
+    """Every prompt with BOS, unpadded (``LM.next_tokens_batch`` pads each batch with a mask)."""
+    return [tokenizer(p).input_ids for p in prompts_]
 
 
 def correct_items(records: list[dict]) -> list[int]:

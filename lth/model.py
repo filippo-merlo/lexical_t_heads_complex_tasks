@@ -112,12 +112,17 @@ class LM:
     @torch.no_grad()
     def next_tokens_batch(self, rows: list[list[int]], *, edits: dict | None = None
                           ) -> tuple[list[int], torch.Tensor]:
-        """Greedy next token and ``z`` at the last token of equal-length rows, ``[rows, n_layers, d_source]``.
+        """Greedy next token and ``z`` at the last token of each row, ``[rows, n_layers, d_source]``.
 
-        No attention mask is passed, so left padding is attended to, as in Yang et al.'s
-        nnsight runs.
+        Rows are padded on the left with EOS, with an attention mask and positions counted
+        from each row's first token, so every prompt is computed as if run alone.
         """
-        tokens, z = self._prefill(torch.tensor(rows, device=self.device), edits)
+        width = max(len(r) for r in rows)
+        pad = min(self.eos)
+        input_ids = torch.tensor([[pad] * (width - len(r)) + r for r in rows], device=self.device)
+        mask = torch.tensor([[0] * (width - len(r)) + [1] * len(r) for r in rows], device=self.device)
+        positions = (mask.cumsum(-1) - 1).clamp(min=0)
+        tokens, z = self._prefill(input_ids, edits, attention_mask=mask, position_ids=positions)
         return tokens.tolist(), z
 
     @torch.no_grad()
@@ -222,7 +227,7 @@ class LM:
             self.model.forward(torch.tensor([ids], device=self.device))
         return [torch.stack([recorder.activations[("zin", l)][0, p] for l in layers]) for p in positions]
 
-    def _prefill(self, input_ids, edits, cache=None):
+    def _prefill(self, input_ids, edits, cache=None, **inputs):
         from src.hooks import AnchorRecorder, ZinPatcher
 
         layers = range(self.spec.n_layers)
@@ -232,7 +237,7 @@ class LM:
                 patcher.__enter__()
             try:
                 out = self.model.hf_model(input_ids=input_ids, use_cache=cache is not None,
-                                          logits_to_keep=1)
+                                          logits_to_keep=1, **inputs)
             finally:
                 if patcher is not None:
                     patcher.__exit__(None, None, None)

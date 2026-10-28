@@ -2,7 +2,7 @@
 
 Every item of every task is run under each wording (instruction templates 0-4, 1/5/10/20/30
 shots) and without task information (``" query:"``), and scored by its greedy first token
-(their ``behavior_variance.py``). The prompts are padded and batched as theirs
+(their ``behavior_variance.py``), in their batches of 20 but with the padding masked
 (``lth.simple``). The first 100 correct prompts of each
 wording are then run again, in batches of 20, and every head's top-10 tokens are kept
 under both readouts (their ``get_save_MAPS_scores_across_tasks_nnsight``, plus J-head).

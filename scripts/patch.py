@@ -9,8 +9,8 @@ Logit-head, J-head, and the heads only J-head finds.
 
 Simple tasks follow Yang et al.'s code exactly (``run_simple``): the heads of each style
 are patched with the mean of each source wording of each style separately (the first
-100 correct prompts of that wording that are not patched), run padded and in batches of
-20 (``lth.simple``); the control mean is the control task's 1-shot prompts at
+100 correct prompts of that wording that are not patched), run in batches of 20 with the
+padding masked (``lth.simple``); the control mean is the control task's 1-shot prompts at
 all the items it answers correctly under the mean style's wording 1. Complex tasks: the
 mean is taken over the style's mean set (``lth.store``), pooled over its wordings, and the
 control patches the same heads with the mean of another task, same style.
