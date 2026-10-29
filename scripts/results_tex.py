@@ -60,11 +60,10 @@ COMPLEX_NAMES = {"noun_class_agreement/easy": "Noun Class Agreement",
                  "lexical_category_inference/easy": "Lexical Category Inference",
                  "set_game/easy": "Set Game", "operator_func/easy": "Operator Function",
                  "tapatan/easy": "Tapatan"}
-#: Complex rows: the direct-answer tasks, then each reasoning-mode task at the last prompt
-#: token and at the pre-answer position.
+#: Complex rows: the direct-answer tasks, then the reasoning-mode tasks, all read at the last
+#: prompt token (the pre-answer position was dropped from the study on 2026-10-29).
 COMPLEX_ROWS = [("complex", "noun_class_agreement/easy"), ("complex", "lexical_category_inference/easy"),
-                *[(family, key) for key in ("set_game/easy", "operator_func/easy", "tapatan/easy")
-                  for family in ("reasoning", "reasoning-pre")]]
+                *[("reasoning", key) for key in ("set_game/easy", "operator_func/easy", "tapatan/easy")]]
 #: The two complex-task checks (scripts/patch.py): check 1, and check 2 with this family suffix.
 WRONG = "-wrong"
 STYLES = ("rule", "example", "combined")
@@ -333,9 +332,8 @@ def style_axes(ax) -> None:
 
 def figure_layers(heads: dict) -> None:
     """Heads per layer, summed over the task and style sets of each panel."""
-    panels = [("Simple, last prompt token", ("simple",)), ("Complex, last prompt token", ("complex", "reasoning")),
-              ("Complex, pre-answer", ("reasoning-pre",))]
-    fig, axes = plt.subplots(1, 3, figsize=(6.3, 1.9), sharex=True)
+    panels = [("Simple", ("simple",)), ("Complex", ("complex", "reasoning"))]
+    fig, axes = plt.subplots(1, 2, figsize=(6.3, 1.9), sharex=True)
     for ax, (title, families) in zip(axes, panels):
         for readout in READOUTS:
             counts = [0] * 32
@@ -466,8 +464,7 @@ def figure_patching(patching: pd.DataFrame) -> None:
                 ax.set_yticks([0, 0.5, 1], ["0", "0.5", "1"] if j == 0 else [])
                 style_axes(ax)
         name = COMPLEX_NAMES[task].replace(" ", "\n", 1) if found == "complex" else COMPLEX_NAMES[task]
-        position = {"reasoning": "\nlast token", "reasoning-pre": "\npre-answer"}.get(found, "")
-        axes[i, 0].set_ylabel(name + position, fontsize=7)
+        axes[i, 0].set_ylabel(name, fontsize=7)
     for ax, (_, title) in zip(axes[0], checks):
         ax.set_title(f"patched: {title}", loc="left")
     for ax in axes[-1]:
