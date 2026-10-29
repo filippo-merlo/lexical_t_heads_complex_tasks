@@ -9,7 +9,7 @@ touched.
   ``SIMPLE_MAX_TOKENS`` new tokens;
 - complex: Fu's runner under every prompt variant, chat template; a reply ends at EOS or
   ``COMPLEX_MAX_TOKENS`` new tokens (no stop at the answer). One reply per distinct prompt,
-  in batches for the reasoning tasks, one prompt at a time for the others, as in E0.
+  in batches (padding masked). The same for all five tasks: no direct/reasoning split.
 Each wording is written to ``data/outputs/{family}/{task}/{wording}.jsonl.gz``; a
 wording already there is skipped.
 
@@ -81,7 +81,6 @@ def run_complex(lm, levels, variant_names, n_test):
 
     for key in levels:
         level = fu.TASK_LEVELS[key]
-        reasoning = level.task in fu.REASONING_TASKS
         limit = COMPLEX_MAX_TOKENS
         for name, mode, rules in variants(level):
             if variant_names and name not in variant_names:
@@ -93,23 +92,17 @@ def run_complex(lm, levels, variant_names, n_test):
             stash: dict[str, list[int]] = {}
 
             def answer(prompts: list[str]) -> list[str]:
-                # One reply per distinct prompt (Tapatan's sample repeats boards). Generated as
-                # in E0, so that the reply cut to the source limit is E0's reply up to batch
-                # numerics: the reasoning tasks in batches, the others one prompt at a time.
+                # One reply per distinct prompt (Tapatan's sample repeats boards), in batches.
                 new = [p for p in dict.fromkeys(prompts) if p not in stash]
                 ids = {p: lm.encode_chat(p) for p in new}
-                if reasoning:
-                    for rows_ in lm.token_batches([len(ids[p]) for p in new], limit):
-                        for r, reply in zip(rows_, lm.generate_batch([ids[new[r]] for r in rows_], limit)):
-                            stash[new[r]] = reply
-                else:
-                    for p in new:
-                        stash[p] = lm.generate(ids[p], limit, token_ids=True)[0][0]
+                for rows_ in lm.token_batches([len(ids[p]) for p in new], limit):
+                    for r, reply in zip(rows_, lm.generate_batch([ids[new[r]] for r in rows_], limit)):
+                        stash[new[r]] = reply
                 return [lm.decode(stash[p]) for p in prompts]
 
             with tempfile.TemporaryDirectory() as scratch:
                 results = fu.run(level, mode, answer, Path(scratch), rules=rules, n_test=n_test,
-                                 batch=BATCH, reasoning=reasoning)
+                                 batch=BATCH)
             rows = []
             for result in results:
                 reply = stash[result["prompt"]]

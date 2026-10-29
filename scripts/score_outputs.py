@@ -94,9 +94,8 @@ def score_unit(family, key, task, wording, mode, rules, cache, use_judge):
         strict = evaluation.strict_complex(key, wording, mode, rules, rows)
         original = load_outputs(outputs_path(family, key, "orig"))
         questions = {r["item"]: r["prompt"] for r in original}
-    reasoning = family == "complex" and task in fu.REASONING_TASKS
     e0 = e0_records(family, key, wording)
-    e0_reasoning = e0_records("reasoning", key, wording) if reasoning else {}
+    e0_reasoning = e0_records("reasoning", key, wording) if family == "complex" else {}
     verdicts = {}
     if use_judge:
         cases = [{"item": r["item"], "question": questions[r["item"]], "reference": str(r["reference"]).strip(),

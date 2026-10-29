@@ -4,7 +4,8 @@ Works on the saved outputs of ``scripts/run_outputs.py``, without the model:
 - the strict score is the source evaluation, unchanged: for the simple tasks the reply's
   first token against the first token of the reference (Yang et al.); for the complex
   tasks Fu's runner re-run on the stored replies, cut to Fu's limit (``strict``) and whole
-  (``strict_full``, in reasoning mode the reasoning-mode scoring of Sec. 5.3);
+  (``strict_full``, the answer read anywhere in the reply, as in Sec. 5.3), the same for all
+  five tasks;
 - the judge's question is neutral: for a simple task its description and the input word,
   for a complex task the item's original rules prompt (the same under every variant);
 - a disagreement between the two scores gets reasons, by rule where a rule can tell and
@@ -80,17 +81,16 @@ def strict_simple(row: dict) -> dict:
 def strict_complex(key: str, name: str, mode: str, rules: str | None, rows: list[dict]) -> dict[str, dict]:
     """Item -> strict scores, by Fu's runner over the stored replies (cut and whole)."""
     level = fu.TASK_LEVELS[key]
-    reasoning = level.task in fu.REASONING_TASKS
     out = {r["item"]: {} for r in rows}
     for cut in (True, False):
         texts = {r["prompt"]: decode(r["reply_ids"][:fu.MAX_TOKENS[level.task]] if cut else r["reply_ids"])
                  for r in rows}
         with tempfile.TemporaryDirectory() as scratch:
             results = fu.run(level, mode, lambda prompts: [texts[p] for p in prompts], Path(scratch),
-                             rules=rules, n_test=len(rows), reasoning=reasoning)
+                             rules=rules, n_test=len(rows))
         for result in results:
-            correct, straight = fu.score(level, result, reasoning=reasoning and not cut)
-            predicted = fu.answer(level, result, reasoning=reasoning and not cut)[1]
+            correct, straight = fu.score(level, result, reasoning=not cut)
+            predicted = fu.answer(level, result, reasoning=not cut)[1]
             suffix = "" if cut else "_full"
             out[fu.item_id(result)].update({f"strict{suffix}": correct, f"straight{suffix}": straight,
                                             f"parsed{suffix}": None if predicted is None else str(predicted)})
@@ -117,9 +117,8 @@ def reply_for_judge(family: str, row: dict) -> str:
 # ---- disagreement reasons ----------------------------------------------------------------
 
 def primary_strict(task: str, scores: dict) -> bool:
-    """The strict score the study uses: reasoning mode (whole reply) for the reasoning tasks,
-    the source limit otherwise."""
-    return scores["strict_full"] if task in fu.REASONING_TASKS else scores["strict"]
+    """The strict score the study uses for a complex task: the whole reply, for every task."""
+    return scores["strict_full"]
 
 
 def reasons(family: str, task: str, row: dict, scores: dict, verdict: dict) -> list[str]:
@@ -136,8 +135,6 @@ def reasons(family: str, task: str, row: dict, scores: dict, verdict: dict) -> l
     found = []
     if judged:  # strict wrong, judge right
         if family == "complex":
-            if task not in fu.REASONING_TASKS and scores["strict_full"]:
-                found.append("truncation")
             if task in ("set_game", "operator_func"):
                 boxes = _BOXED.findall(row["reply_text"])
                 if not boxes:
@@ -148,8 +145,7 @@ def reasons(family: str, task: str, row: dict, scores: dict, verdict: dict) -> l
                     found.append("format_malformed")
             if task == "tapatan":
                 labels = _TAPATAN_LABEL.findall(row["reply_text"])
-                first_line = row["reply_text"].strip().split("\n")[0].strip().rstrip(".").lower()
-                if first_line not in ("a win", "b win", "continue"):
+                if not labels:
                     found.append("format_missing")
                 if labels and labels[0] != labels[-1]:
                     found.append("first_vs_final")
@@ -157,8 +153,8 @@ def reasons(family: str, task: str, row: dict, scores: dict, verdict: dict) -> l
             found.append("case")
         if relation == "punctuation":
             found.append("punctuation")
-        # Reasoning mode lets the model reason first, so text before the answer is no reason.
-        if answer and task not in fu.REASONING_TASKS and not bare(reply.lstrip()).startswith(bare(answer)):
+        # Complex tasks let the model reason first, so text before the answer is no reason.
+        if answer and family == "simple" and not bare(reply.lstrip()).startswith(bare(answer)):
             found.append("leading_phrase")
         if family == "simple" and relation == "identical" and reply.lstrip().startswith(answer):
             found.append("tokenization")

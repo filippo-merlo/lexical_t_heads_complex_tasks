@@ -2,8 +2,9 @@
 # The saved outputs of the answer evaluation (proposal Sec. 5.5) for every task and wording,
 # under the generation scheme of each group of tasks (scripts/run_outputs.py), on GPUs 0, 2,
 # 3 and 5. Scoring (scripts/score_outputs.py) is run separately. Start it detached:
-#   setsid nohup scripts/run_outputs_all.sh > logs/run_outputs_all.log 2>&1 < /dev/null &
-# Per-lane logs in logs/outputs/; writes logs/run_outputs_all.done at the end.
+#   setsid nohup scripts/run_outputs_all.sh [simple|complex] > logs/run_outputs_all.log 2>&1 < /dev/null &
+# With an argument only that family runs. Per-lane logs in logs/outputs/; writes
+# logs/run_outputs_{family|all}.done at the end.
 set -uo pipefail
 cd "$(dirname "$0")/.."
 PY=.venv/bin/python
@@ -18,9 +19,14 @@ lane() {  # gpu name args...
     say "$name (GPU $gpu) exit $?"
 }
 
-lane 0 simple --family simple &
-PIDS=($!)
-sleep 90
+FAMILY=${1:-all}
+PIDS=()
+if [ "$FAMILY" != complex ]; then
+    lane 0 simple --family simple &
+    PIDS+=($!)
+fi
+[ "$FAMILY" = simple ] && { wait "${PIDS[@]}"; touch logs/run_outputs_simple.done; exit; }
+[ "$FAMILY" = all ] && sleep 90
 lane 2 set_game --family complex --levels set_game/easy &
 PIDS+=($!)
 sleep 90
@@ -30,4 +36,4 @@ sleep 90
 lane 5 nca_lci --family complex --levels noun_class_agreement/easy lexical_category_inference/easy &
 PIDS+=($!)
 wait "${PIDS[@]}"
-touch logs/run_outputs_all.done
+touch "logs/run_outputs_$FAMILY.done"
