@@ -4,8 +4,8 @@ Works on the saved outputs of ``scripts/run_outputs.py``, without the model:
 - the strict score is the source evaluation, unchanged: for the simple tasks the reply's
   first token against the first token of the reference (Yang et al.); for the complex
   tasks Fu's runner re-run on the stored replies, cut to Fu's limit (``strict``) and whole
-  (``strict_full``, the answer read anywhere in the reply, as in Sec. 5.3), the same for all
-  five tasks;
+  (``strict_full``, the study's strict score), the same for all five tasks; Tapatan, which
+  has no scorer in Fu's release, by its first line;
 - the judge's question is neutral: for a simple task its description and the input word,
   for a complex task the item's original rules prompt (the same under every variant);
 - a disagreement between the two scores gets reasons, by rule where a rule can tell and
@@ -89,8 +89,8 @@ def strict_complex(key: str, name: str, mode: str, rules: str | None, rows: list
             results = fu.run(level, mode, lambda prompts: [texts[p] for p in prompts], Path(scratch),
                              rules=rules, n_test=len(rows))
         for result in results:
-            correct, straight = fu.score(level, result, reasoning=not cut)
-            predicted = fu.answer(level, result, reasoning=not cut)[1]
+            correct, straight = fu.score(level, result)
+            predicted = fu.answer(level, result)[1]
             suffix = "" if cut else "_full"
             out[fu.item_id(result)].update({f"strict{suffix}": correct, f"straight{suffix}": straight,
                                             f"parsed{suffix}": None if predicted is None else str(predicted)})
@@ -145,7 +145,8 @@ def reasons(family: str, task: str, row: dict, scores: dict, verdict: dict) -> l
                     found.append("format_malformed")
             if task == "tapatan":
                 labels = _TAPATAN_LABEL.findall(row["reply_text"])
-                if not labels:
+                first_line = row["reply_text"].strip().split("\n")[0].strip().rstrip(".").lower()
+                if first_line not in ("a win", "b win", "continue"):
                     found.append("format_missing")
                 if labels and labels[0] != labels[-1]:
                     found.append("first_vs_final")
