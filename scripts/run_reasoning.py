@@ -91,17 +91,19 @@ def main() -> None:
                       if earlier is not None and (earlier / "fu_out" / name).exists() else {})
 
             def answer(prompts: list[str]) -> list[str]:
-                ids = [lm.encode_chat(p) for p in prompts]
-                replies = [lm.tokenizer(reused[p], add_special_tokens=False).input_ids if p in reused else None
-                           for p in prompts]
-                new = [i for i, r in enumerate(replies) if r is None]
-                for rows in lm.token_batches([len(ids[i]) for i in new], fu.REASONING_MAX_TOKENS):
+                # One reply per distinct prompt: Tapatan's sample repeats boards, and a batched
+                # reply can differ with the batch it is generated in.
+                new = [p for p in dict.fromkeys(prompts) if p not in stash and p not in reused]
+                ids = {p: lm.encode_chat(p) for p in new}
+                for rows in lm.token_batches([len(ids[p]) for p in new], fu.REASONING_MAX_TOKENS):
                     out = lm.generate_batch([ids[new[r]] for r in rows], fu.REASONING_MAX_TOKENS,
                                             stop=lambda text: fu.answer_complete(level, text))
                     for r, reply in zip(rows, out):
-                        replies[new[r]] = reply
-                stash.update((p, (i, r)) for p, i, r in zip(prompts, ids, replies))
-                return [reused[p] if p in reused else lm.decode(r) for p, r in zip(prompts, replies)]
+                        stash[new[r]] = (ids[new[r]], reply)
+                for p in prompts:
+                    if p not in stash:
+                        stash[p] = (lm.encode_chat(p), lm.tokenizer(reused[p], add_special_tokens=False).input_ids)
+                return [reused[p] if p in reused else lm.decode(stash[p][1]) for p in prompts]
 
             results = fu.run(level, mode, answer, directory / "fu_out" / name, rules=rules,
                              n_test=args.n_items, batch=BATCH, reasoning=True)
