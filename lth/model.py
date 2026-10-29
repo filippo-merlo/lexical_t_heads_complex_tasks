@@ -133,12 +133,13 @@ class LM:
 
     @torch.no_grad()
     def generate(self, ids: list[int], max_new_tokens: int, *, edits: dict | None = None,
-                 rows: int = 1) -> tuple[list[str], torch.Tensor]:
+                 rows: int = 1, token_ids: bool = False) -> tuple[list, torch.Tensor]:
         """Greedy replies to ``ids`` (copied over ``rows`` batch rows) and the prefill ``z``.
 
         ``edits`` apply to the prompt's forward pass only, as in Yang et al.'s patching;
         the reply is then decoded from the patched cache. Each reply stops at an EOS token
-        and is decoded without special tokens and stripped, as in Fu et al.'s vLLM path.
+        and is decoded without special tokens and stripped, as in Fu et al.'s vLLM path
+        (with ``token_ids``, returned as its token ids up to the EOS instead).
         """
         input_ids = torch.tensor([ids] * rows, device=self.device)
         cache = {}
@@ -159,7 +160,8 @@ class LM:
         replies = []
         for row in tokens:
             cut = next((i for i, t in enumerate(row) if t in self.eos), len(row))
-            replies.append(self.tokenizer.decode(row[:cut], skip_special_tokens=True).strip())
+            replies.append(row[:cut] if token_ids else
+                           self.tokenizer.decode(row[:cut], skip_special_tokens=True).strip())
         return replies, z
 
     @torch.no_grad()

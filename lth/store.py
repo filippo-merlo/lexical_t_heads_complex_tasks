@@ -96,3 +96,31 @@ def load(directory: Path, wording: str) -> dict:
 
 def fixed_items(directory: Path, wording: str) -> set[str]:
     return set(np.load(directory / f"{wording}.npz")["fixed"].tolist())
+
+
+# ---- saved outputs (proposal Sec. 5.5, answer evaluation) --------------------------------
+# One gzipped JSON line per item: prompt, input, reference, reply ids and text, why the
+# reply stopped. Kept apart from the runs, which the head identification reads.
+
+OUTPUTS = Path(os.environ.get("LTH_OUTPUTS", DATA / "outputs"))
+
+
+def outputs_path(family: str, task: str, wording: str) -> Path:
+    return OUTPUTS / family / task.replace("/", "__") / f"{wording}.jsonl.gz"
+
+
+def save_outputs(path: Path, rows: list[dict]) -> None:
+    import gzip
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    partial = path.with_suffix(".partial")
+    with gzip.open(partial, "wt") as f:
+        f.writelines(json.dumps(row, ensure_ascii=False) + "\n" for row in rows)
+    partial.rename(path)
+
+
+def load_outputs(path: Path) -> list[dict]:
+    import gzip
+
+    with gzip.open(path, "rt") as f:
+        return [json.loads(line) for line in f]
