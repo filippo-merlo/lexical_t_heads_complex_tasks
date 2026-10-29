@@ -1,14 +1,15 @@
 """Answer evaluation (proposal Sec. 5.5): every E0 prompt answered once, with longer limits, and saved.
 
-Greedy decoding, as in E0, but more generous, so that answers past the source limits can
-still be scored; the strict score is later read from the reply cut to the source limit
-(``scripts/score_outputs.py``). No readings are taken and ``data/runs`` is not touched.
-- simple: Yang et al.'s raw-text prompts in their batches of 20 (padding masked), up to
-  ``SIMPLE_MAX_TOKENS`` new tokens, stopping at the shot delimiter ``;``, a newline or EOS;
-- complex: Fu's runner under every prompt variant, chat template, up to
-  ``fu.REASONING_MAX_TOKENS`` for the reasoning tasks (no early stop) and
-  ``COMPLEX_MAX_TOKENS`` for the others, one reply per distinct prompt, generated as in
-  E0: in batches for the reasoning tasks, one prompt at a time for the others.
+Greedy decoding, one scheme per group of tasks, with limits past the source limits so that
+longer answers can still be scored; the strict score is later read from the reply cut to the
+source limit (``scripts/score_outputs.py``). No readings are taken and ``data/runs`` is not
+touched.
+- simple: Yang et al.'s raw-text prompts in their batches of 20 (padding masked); a reply
+  ends at the shot delimiter ``;``, a newline once the reply has begun, EOS, or
+  ``SIMPLE_MAX_TOKENS`` new tokens;
+- complex: Fu's runner under every prompt variant, chat template; a reply ends at EOS or
+  ``COMPLEX_MAX_TOKENS`` new tokens (no stop at the answer). One reply per distinct prompt,
+  in batches for the reasoning tasks, one prompt at a time for the others, as in E0.
 Each wording is written to ``data/outputs/{family}/{task}/{wording}.jsonl.gz``; a
 wording already there is skipped.
 
@@ -30,14 +31,15 @@ from lth import gpu, simple  # noqa: E402
 
 SIMPLE_MAX_TOKENS = 32
 COMPLEX_MAX_TOKENS = 1024
-SIMPLE_STOPS = (";", "\n")
 BATCH = 32  # Fu's runner: prompts per call
 
 
 def simple_answer(text: str) -> str:
-    """The reply up to its first stop string: the answer, without the next query."""
-    cut = min((i for i in (text.find(s) for s in SIMPLE_STOPS) if i >= 0), default=len(text))
-    return text[:cut]
+    """The reply up to its first stop: the delimiter ``;``, or a newline once the reply has
+    begun (a leading newline is kept, so that it does not leave an empty answer)."""
+    begun = len(text) - len(text.lstrip())
+    cuts = [i for i in (text.find(";"), text.find("\n", begun)) if i >= 0]
+    return text[:min(cuts, default=len(text))]
 
 
 def stop_reason(reply: list[int], limit: int, stopped: bool) -> str:
@@ -59,7 +61,7 @@ def run_simple(lm, tasks, limit_items):
             rows = []
             for b in range(0, len(ids), simple.BATCH):
                 replies = lm.generate_batch(ids[b:b + simple.BATCH], SIMPLE_MAX_TOKENS,
-                                            stop=lambda text: any(s in text for s in SIMPLE_STOPS))
+                                            stop=lambda text: simple_answer(text) != text)
                 for i, reply in enumerate(replies, start=b):
                     text = lm.tokenizer.decode(reply, skip_special_tokens=True)
                     answer = simple_answer(text)
@@ -80,7 +82,7 @@ def run_complex(lm, levels, variant_names, n_test):
     for key in levels:
         level = fu.TASK_LEVELS[key]
         reasoning = level.task in fu.REASONING_TASKS
-        limit = fu.REASONING_MAX_TOKENS if reasoning else COMPLEX_MAX_TOKENS
+        limit = COMPLEX_MAX_TOKENS
         for name, mode, rules in variants(level):
             if variant_names and name not in variant_names:
                 continue
@@ -92,8 +94,8 @@ def run_complex(lm, levels, variant_names, n_test):
 
             def answer(prompts: list[str]) -> list[str]:
                 # One reply per distinct prompt (Tapatan's sample repeats boards). Generated as
-                # in E0, so that the reply cut to the source limit is E0's reply: the
-                # reasoning tasks in batches, the others one prompt at a time.
+                # in E0, so that the reply cut to the source limit is E0's reply up to batch
+                # numerics: the reasoning tasks in batches, the others one prompt at a time.
                 new = [p for p in dict.fromkeys(prompts) if p not in stash]
                 ids = {p: lm.encode_chat(p) for p in new}
                 if reasoning:
