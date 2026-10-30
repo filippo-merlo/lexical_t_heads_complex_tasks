@@ -4,7 +4,7 @@ Writes the tabulars ``paper/tables/*.tex``, each ``\\input`` inside a table floa
 proposal-minimal.tex, and the figures ``paper/figures/*.pdf``:
 - ``e0_simple``, ``e0_complex``: strict accuracy per style and wording of the saved outputs
   (``answer_eval/accuracy.csv``, ``scripts/score_outputs.py``; chance from ``e0_accuracy.csv``);
-  ``e0_simple_flexible``: the same for the simple tasks under the flexible score;
+  ``e0_simple_flexible``, ``e0_complex_flexible``: the same under the flexible score;
 - ``heads_simple``, ``heads_complex``: head counts and overlaps (``measures.csv``,
   ``overlaps.csv``);
 - ``effects_simple``, ``effects_simple_cross``, ``effects_complex``: the causal effect, the
@@ -224,13 +224,13 @@ def table_e0_simple(e0: pd.DataFrame, score: str = "accuracy", name: str = "e0_s
     write(name, tabular("@{}lrcccccccc@{}", header, rows))
 
 
-def table_e0_complex(e0: pd.DataFrame) -> None:
+def table_e0_complex(e0: pd.DataFrame, score: str = "accuracy", name: str = "e0_complex") -> None:
     rows = []
     for key in ["noun_class_agreement/easy", "lexical_category_inference/easy", "set_game/easy",
                 "operator_func/easy", "tapatan/easy"]:
         t = e0[(e0.family == "complex") & (e0.task == key)].set_index("wording")
         # Wordings still running are left out of the mean and range, and shown as --.
-        acc = t.accuracy.reindex(["orig", *(f"w{i}" for i in range(1, 7)), "examples", "combined", "bare"])
+        acc = t[score].reindex(["orig", *(f"w{i}" for i in range(1, 7)), "examples", "combined", "bare"])
         wordings = acc[[f"w{i}" for i in range(1, 7)]].dropna()
         span = f"{num(wordings.min())}--{num(wordings.max())}" if len(wordings) else "--"
         rows.append(" & ".join([COMPLEX_NAMES[key], str(int(t.n.iloc[0])), num(acc["orig"]),
@@ -238,7 +238,7 @@ def table_e0_complex(e0: pd.DataFrame) -> None:
                                 num(acc["bare"]), num(t.chance.iloc[0])]) + r" \\")
     header = [r" & & \multicolumn{3}{c}{Rule} & & & No task & \\", r"\cmidrule(lr){3-5}",
               r"Task & Items & orig. & w1--6 & range & Examples & Combined & info & Chance \\"]
-    write("e0_complex", tabular("@{}lrccccccc@{}", header, rows))
+    write(name, tabular("@{}lrccccccc@{}", header, rows))
 
 
 def head_cells(measures, overlaps, family, task, style) -> list[str]:
@@ -493,6 +493,7 @@ def main() -> None:
     table_e0_simple(data["e0"])
     table_e0_simple(data["e0"], "flexible", "e0_simple_flexible")
     table_e0_complex(data["e0"])
+    table_e0_complex(data["e0"], "flexible", "e0_complex_flexible")
     table_heads(data["measures"], data["overlaps"])
     table_effects(data["patching"], data["cross"])
     FIGURES.mkdir(exist_ok=True)
