@@ -25,10 +25,17 @@ from lth import DATA
 
 CAP = 100
 RUNS = Path(os.environ.get("LTH_RUNS", DATA / "runs"))
+# The head identification and the causal checks read the runs rebuilt from the saved
+# outputs under the flexible score (``scripts/build_readings.py``), in the same format.
+READINGS = Path(os.environ.get("LTH_READINGS", DATA / "readings"))
 
 
 def run_dir(family: str, task: str) -> Path:
     return RUNS / family / task.replace("/", "__")
+
+
+def readings_dir(family: str, task: str) -> Path:
+    return READINGS / family / task.replace("/", "__")
 
 
 class Collector:

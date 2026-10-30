@@ -21,9 +21,6 @@ proposal-minimal.tex, and the figures ``paper/figures/*.pdf``:
 - ``patching_simple.pdf``, ``patching_simple_wrong.pdf``, ``patching_complex.pdf``: accuracy
   against alpha.
 
-Patching files without a ``mean_wording`` column come from the earlier complex-task design
-(means pooled over a style's wordings) and are left out until their rerun replaces them.
-
 Conditions without output yet (a causal check still to run) are marked in the tables and
 left blank in the figures, so the script can be rerun as results arrive.
 
@@ -62,10 +59,9 @@ COMPLEX_NAMES = {"noun_class_agreement/easy": "Noun Class Agreement",
                  "lexical_category_inference/easy": "Lexical Category Inference",
                  "set_game/easy": "Set Game", "operator_func/easy": "Operator Function",
                  "tapatan/easy": "Tapatan"}
-#: Complex rows: the direct-answer tasks, then the reasoning-mode tasks, all read at the last
-#: prompt token (the pre-answer position was dropped from the study on 2026-10-29).
-COMPLEX_ROWS = [("complex", "noun_class_agreement/easy"), ("complex", "lexical_category_inference/easy"),
-                *[("reasoning", key) for key in ("set_game/easy", "operator_func/easy", "tapatan/easy")]]
+#: Complex rows: the five tasks, one family since the heads and checks were rebuilt under the
+#: flexible score (2026-10-30), all read at the last prompt token.
+COMPLEX_ROWS = [("complex", key) for key in COMPLEX_NAMES]
 #: The two complex-task checks (scripts/patch.py): check 1, and check 2 with this family suffix.
 WRONG = "-wrong"
 STYLES = ("rule", "example", "combined")
@@ -113,12 +109,11 @@ plt.rcParams.update(
 def tex_name(family: str, task: str) -> str:
     if family in SIMPLE_FAMILIES:
         return SIMPLE_NAMES.get(task, task)
-    return r"\quad pre-answer" if family.removesuffix(WRONG) == "reasoning-pre" else COMPLEX_NAMES[task]
+    return COMPLEX_NAMES[task]
 
 
 def plot_name(family: str, task: str) -> str:
-    name = tex_name(family, task).replace("--", "–")
-    return f"{COMPLEX_NAMES[task]}, pre-answer" if family == "reasoning-pre" else name
+    return tex_name(family, task).replace("--", "–")
 
 
 def num(x) -> str:
@@ -343,7 +338,7 @@ def style_axes(ax) -> None:
 
 def figure_layers(heads: dict) -> None:
     """Heads per layer, summed over the task and style sets of each panel."""
-    panels = [("Simple", ("simple",)), ("Complex", ("complex", "reasoning"))]
+    panels = [("Simple", ("simple",)), ("Complex", ("complex",))]
     fig, axes = plt.subplots(1, 2, figsize=(6.3, 1.9), sharex=True)
     for ax, (title, families) in zip(axes, panels):
         for readout in READOUTS:
@@ -367,13 +362,11 @@ def figure_layers(heads: dict) -> None:
 
 def figure_copy_share(measures: pd.DataFrame) -> None:
     rows = [("simple", t) for t in simple.TASKS] + [("complex", k) for k in COMPLEX_NAMES]
-    family_of = {"noun_class_agreement/easy": "complex", "lexical_category_inference/easy": "complex"}
     y = {row: i + (i >= len(simple.TASKS)) for i, row in enumerate(rows)}  # a gap between the families
     fig, axes = plt.subplots(1, 3, figsize=(6.3, 3.6), sharey=True)
     for ax, style in zip(axes, STYLES):
         for (kind, task), pos in y.items():
-            family = "simple" if kind == "simple" else family_of.get(task, "reasoning")
-            m = measures[(measures.family == family) & (measures.task == task) & (measures["style"] == style)]
+            m = measures[(measures.family == kind) & (measures.task == task) & (measures["style"] == style)]
             for readout, dy in zip(READOUTS, (-0.17, 0.17)):
                 value = m[m.readout == readout].copy_share
                 if len(value) and pd.notna(value.iloc[0]):
@@ -464,18 +457,17 @@ def figure_patching(patching: pd.DataFrame) -> None:
     for i, (found, task) in enumerate(COMPLEX_ROWS):
         for j, (suffix, _) in enumerate(checks):
             ax, family = axes[i, j], found + suffix
-            reference = constant_answer(family, task) if found == "complex" else None
+            reference = constant_answer(family, task)
             if (family, task) not in ran:
                 empty_panel(ax, "not yet run")
             elif not curve_panel(ax, patching, family, task, "rule", reference):
                 empty_panel(ax, "no head set")
             else:
-                ax.set_xticks([-10, -5, 0, 5, 10] if found == "complex" else [0, 1, 4, 10])
+                ax.set_xticks([-10, -5, 0, 5, 10])
                 ax.set_ylim(-0.03, 1.03)
                 ax.set_yticks([0, 0.5, 1], ["0", "0.5", "1"] if j == 0 else [])
                 style_axes(ax)
-        name = COMPLEX_NAMES[task].replace(" ", "\n", 1) if found == "complex" else COMPLEX_NAMES[task]
-        axes[i, 0].set_ylabel(name, fontsize=7)
+        axes[i, 0].set_ylabel(COMPLEX_NAMES[task].replace(" ", "\n", 1), fontsize=7)
     for ax, (_, title) in zip(axes[0], checks):
         ax.set_title(f"patched: {title}", loc="left")
     for ax in axes[-1]:

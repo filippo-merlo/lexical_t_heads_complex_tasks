@@ -12,8 +12,9 @@ those of the example-based and of the combined prompts.
 Writes ``results/heads.json`` (every head set with each head's match rate),
 ``results/measures.csv`` (prompts, heads, mean layer and copy share per set) and
 ``results/overlaps.csv`` (Logit-head vs J-head, and rule vs example, per task). Families:
-``simple``, ``complex``, and for the tasks run in reasoning mode ``reasoning`` (last prompt
-token) and ``reasoning-pre`` (pre-answer position).
+``simple`` and ``complex`` (all five tasks alike). The prompts, their scores and readings
+are those of ``scripts/build_readings.py``: P+ is the prompts answered correctly under the
+flexible score, and the most accurate wording is the most accurate under it.
 
     .venv/bin/python scripts/identify_heads.py
 """
@@ -32,11 +33,10 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from lth import MATERIALS, READOUTS, RESULTS, simple  # noqa: E402
-from lth.store import done, load, run_dir  # noqa: E402
+from lth.store import done, load, load_outputs, outputs_path, readings_dir  # noqa: E402
 
 RHO = 0.10
 N_HEADS = 32
-PRE = "@pre"  # reasoning mode: readings at the pre-answer position (scripts/run_reasoning.py)
 
 
 def complex_styles() -> dict[str, tuple[str, ...]]:
@@ -58,13 +58,9 @@ def identification_styles(directory: Path, styles: dict[str, tuple[str, ...]]) -
     return out
 
 
-def pre_answer_texts(directory: Path, wording: str) -> dict[str, str]:
-    """Item -> prompt plus the reply up to the pre-answer position (reasoning mode)."""
-    from lth import fu
-
-    prompts = fu.recorded_prompts(directory / "fu_out" / wording.removesuffix(PRE))
-    return {r["item"]: prompts[r["item"]] + r["pre_text"] for r in load(directory, wording)["records"]
-            if "pre_text" in r}
+def output_prompts(family: str, task: str, wording: str) -> dict[str, str]:
+    """Item -> prompt text, from the saved outputs."""
+    return {r["item"]: r["prompt"] for r in load_outputs(outputs_path(family, task, wording))}
 
 
 def copy_share(top: np.ndarray, matched: np.ndarray, texts: list[str], heads, term_ids: set[int],
@@ -94,33 +90,20 @@ def main() -> None:
     jobs = []  # (family, task, styles, term list, prompt texts by wording)
     simple_terms = simple_term_lists()
     for task in simple.TASKS:
-        directory = run_dir("simple", task)
+        directory = readings_dir("simple", task)
         if not all(done(directory, w) for ws in simple.WORDINGS.values() for w in ws):
             continue
         accuracy = {w: np.mean([r["correct"] for r in load(directory, w)["records"]]) for w in simple.WORDINGS["rule"]}
         styles = {s: (simple.identification_wording(s, accuracy),) for s in simple.WORDINGS}
-        texts = {w: dict(enumerate(simple.prompts(task, w)[0])) for (w,) in styles.values()}
         jobs.append(("simple", task, styles, simple_terms[task], directory,
-                     lambda w, texts=texts: {str(k): v for k, v in texts[w].items()}))
+                     lambda w, task=task: output_prompts("simple", task, w)))
     if (MATERIALS / "complex" / "terms.json").exists():
         complex_terms = complex_term_lists()
         for key in fu.STUDY_LEVELS:
-            level = fu.TASK_LEVELS[key]
-            terms = complex_terms[level.original]
-            if level.task not in fu.REASONING_TASKS:
-                directory = run_dir("complex", key)
-                jobs.append(("complex", key, identification_styles(directory, complex_styles()), terms, directory,
-                             lambda w, directory=directory: fu.recorded_prompts(directory / "fu_out" / w)))
-                continue
-            # Reasoning mode: heads at the last prompt token, and at the pre-answer position,
-            # where the copy share also checks the reply up to that point.
-            directory = run_dir("reasoning", key)
-            jobs.append(("reasoning", key, identification_styles(directory, complex_styles()), terms, directory,
-                         lambda w, directory=directory: fu.recorded_prompts(directory / "fu_out" / w)))
-            jobs.append(("reasoning-pre", key,
-                         identification_styles(directory, {s: tuple(w + PRE for w in ws)
-                                                           for s, ws in complex_styles().items()}),
-                         terms, directory, lambda w, directory=directory: pre_answer_texts(directory, w)))
+            directory = readings_dir("complex", key)
+            jobs.append(("complex", key, identification_styles(directory, complex_styles()),
+                         complex_terms[fu.TASK_LEVELS[key].original], directory,
+                         lambda w, key=key: output_prompts("complex", key, w)))
     else:
         print("no materials/complex/terms.json yet: complex tasks skipped")
 

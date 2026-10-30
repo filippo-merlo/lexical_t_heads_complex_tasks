@@ -272,12 +272,13 @@ class LM:
     # ---- patching ----------------------------------------------------------------------
 
     def mean_patch(self, heads: list[tuple[int, int]], mean_z: torch.Tensor,
-                   alphas: list[float]) -> dict:
+                   alphas: list[float], *, prompt_only: bool = False) -> dict:
         """Edits that set each head in ``heads`` to ``alpha * mean_z`` at the last token.
 
         Batch row ``i`` gets ``alphas[i]`` (Yang et al., ``set_activation_rank_logit_average``).
         As there, ``alpha * mean_z`` is formed in float32 and rounded to the model's dtype
-        when written into ``z``.
+        when written into ``z``. With ``prompt_only``, the edits leave single-token passes
+        alone, so that in :meth:`generate_batch` only the last prompt token is patched.
         """
         alpha = torch.tensor(alphas, device=self.device, dtype=torch.float32)[:, None]
         by_layer: dict[int, list[int]] = {}
@@ -290,6 +291,8 @@ class LM:
             target = mean_z[layer].to(self.device, torch.float32)[cols]
 
             def edit(z, cols=cols, target=target):
+                if prompt_only and z.shape[1] == 1:
+                    return z
                 z = z.clone()
                 z[:, -1, cols] = (alpha * target).to(z.dtype)
                 return z
