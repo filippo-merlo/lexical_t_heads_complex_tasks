@@ -4,6 +4,7 @@ Writes the tabulars ``paper/tables/*.tex``, each ``\\input`` inside a table floa
 proposal-minimal.tex, and the figures ``paper/figures/*.pdf``:
 - ``e0_simple``, ``e0_complex``: strict accuracy per style and wording of the saved outputs
   (``answer_eval/accuracy.csv``, ``scripts/score_outputs.py``; chance from ``e0_accuracy.csv``);
+  ``e0_simple_flexible``: the same for the simple tasks under the flexible score;
 - ``heads_simple``, ``heads_complex``: head counts and overlaps (``measures.csv``,
   ``overlaps.csv``);
 - ``effects_simple``, ``effects_simple_cross``, ``effects_complex``: the causal effect, the
@@ -145,7 +146,8 @@ def e0_strict() -> pd.DataFrame:
     """E0 accuracy: the strict score of the saved outputs (answer_eval/accuracy.csv), with
     chance from e0_accuracy.csv (it depends on the items only)."""
     acc = pd.read_csv(RESULTS / "answer_eval" / "accuracy.csv")
-    acc = acc.rename(columns={"study_strict": "accuracy"})[["family", "task", "wording", "n", "accuracy"]]
+    acc = acc.rename(columns={"study_strict": "accuracy"})[["family", "task", "wording", "n", "accuracy",
+                                                            "flexible"]]
     chance = pd.read_csv(RESULTS / "e0_accuracy.csv").drop_duplicates(["family", "task"])
     chance = chance[chance.family != "reasoning"][["family", "task", "chance"]]
     return acc.merge(chance, on=["family", "task"], how="left")
@@ -206,20 +208,20 @@ def constant_answer(family: str, task: str) -> float | None:
 # ------------------------------------------------------------------ tables
 
 
-def table_e0_simple(e0: pd.DataFrame) -> None:
+def table_e0_simple(e0: pd.DataFrame, score: str = "accuracy", name: str = "e0_simple") -> None:
     e0 = e0[e0.family == "simple"]
     rows = []
     for task in simple.TASKS:
         t = e0[e0.task == task].set_index("wording")
-        rule = t.loc[list(simple.WORDINGS["rule"]), "accuracy"]
-        shots = [num(t.loc[w, "accuracy"]) for w in simple.WORDINGS["example"]]
+        rule = t.loc[list(simple.WORDINGS["rule"]), score]
+        shots = [num(t.loc[w, score]) for w in simple.WORDINGS["example"]]
         rows.append(" & ".join([tex_name("simple", task), str(int(t.n.iloc[0])), num(rule.mean()),
                                 f"{num(rule.min())}--{num(rule.max())}", *shots,
-                                num(t.loc[simple.ZERO, "accuracy"])]) + r" \\")
+                                num(t.loc[simple.ZERO, score])]) + r" \\")
     header = [rf" & & \multicolumn{{2}}{{c}}{{Rule ({len(simple.INSTRUCTIONS)} templates)}} & \multicolumn{{5}}{{c}}{{Example (shots)}} & \\",
               r"\cmidrule(lr){3-4}\cmidrule(lr){5-9}",
               "Task & Items & mean & range & " + " & ".join(str(n) for n in simple.SHOTS) + r" & Zero-shot \\"]
-    write("e0_simple", tabular("@{}lrcccccccc@{}", header, rows))
+    write(name, tabular("@{}lrcccccccc@{}", header, rows))
 
 
 def table_e0_complex(e0: pd.DataFrame) -> None:
@@ -489,6 +491,7 @@ def main() -> None:
     argparse.ArgumentParser(description=__doc__.split("\n\n")[0]).parse_args()
     data = load()
     table_e0_simple(data["e0"])
+    table_e0_simple(data["e0"], "flexible", "e0_simple_flexible")
     table_e0_complex(data["e0"])
     table_heads(data["measures"], data["overlaps"])
     table_effects(data["patching"], data["cross"])
