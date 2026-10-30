@@ -271,6 +271,66 @@ def answer(level: TaskLevel, result: dict, *, reasoning: bool = False) -> tuple:
     raise ValueError(level.task)
 
 
+# ---- error analysis (E0) ----------------------------------------------------------------
+
+OUTCOMES = ("correct", "wrong_answer", "malformed", "unformatted", "limit", "no_answer")
+_NUMBER = re.compile(r"-?\d+")
+
+
+def outcome(level: TaskLevel, result: dict, correct: bool, reply_tokens: int, *,
+            reasoning: bool = False) -> tuple[str, str | None]:
+    """The outcome of one reply (proposal Sec. 3.6), and a detail for some outcomes.
+
+    ``correct`` is the reply's score (:func:`score`), which the outcome does not change; the
+    other outcomes describe the wrong replies: ``wrong_answer``, an answer is read and is
+    wrong; ``malformed``, a ``\\boxed{}`` the parser cannot read; ``unformatted``, no
+    ``\\boxed{}`` but the last line states a number (Operator Function); ``limit``, the
+    output limit is reached before any answer; ``no_answer``, the reply ends before it
+    without one. Details: Set Game's reason a set is wrong, whether an unformatted number
+    is right, and a Tapatan label read from inside a code block. ``reply_tokens`` is the
+    reply's length; direct-mode replies are stored stripped, so theirs may fall up to two
+    tokens short of the limit.
+    """
+    raw = result["raw_response"]
+    limit = REASONING_MAX_TOKENS if reasoning else MAX_TOKENS[level.task]
+    at_limit = reply_tokens >= (limit if reasoning else limit - 2)
+    if level.task == "tapatan":
+        label = _TAPATAN_LABEL.search(raw) if reasoning else None
+        read = bool(label) if reasoning else raw.strip().split("\n")[0].strip().rstrip(".").lower() in _TAPATAN_LABELS
+        if not read:
+            return ("limit" if at_limit else "no_answer"), None
+        in_code = bool(label) and raw[:label.start()].count("```") % 2 == 1
+        return ("correct" if correct else "wrong_answer"), "label in code" if in_code else None
+    if correct:
+        return "correct", None
+    if level.task == "set_game":
+        message = result["validation_message"]
+        if message == "Model did not return exactly 3 cards":  # Fu's "Not boxed"
+            return ("limit" if at_limit else "no_answer"), None
+        if message == "Problem with raw response":
+            return "malformed", None
+        return "wrong_answer", "not a valid set" if "valid set" in message else "card not on the board"
+    if level.task == "operator_func":
+        if result["validation_message"] == "The answer is not correct":
+            return "wrong_answer", None
+        if "\\boxed" in raw:
+            return "malformed", None
+        if at_limit:
+            return "limit", None
+        lines = [line for line in raw.strip().splitlines() if line.strip()]
+        numbers = _NUMBER.findall(lines[-1]) if lines else []
+        if numbers:
+            return "unformatted", "right" if numbers[-1] == str(result["expected_result"]).strip() else "wrong"
+        return "no_answer", None
+    if level.task == "noun_class_agreement":
+        read = result["parse_method"] != "no_match"
+    else:  # lexical_category_inference
+        read = result["parse_method"] == "first_answer_token"
+    if read:
+        return "wrong_answer", None
+    return ("limit" if at_limit else "no_answer"), None
+
+
 def answer_complete(level: TaskLevel, text: str) -> bool:
     """Whether the answer the scoring reads is already fixed in ``text``.
 

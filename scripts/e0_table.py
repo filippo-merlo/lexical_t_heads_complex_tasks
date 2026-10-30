@@ -10,6 +10,10 @@ straight away, or in reasoning mode correct; at most 100), and chance. Chance is
 tasks with a fixed label set (Noun Class Agreement, Lexical Category Inference, Tapatan)
 and 0 for open answers.
 
+Also writes ``results/e0_outcomes.csv``, the error analysis of the complex tasks: per task
+and wording, how many replies have each outcome of ``lth.fu.outcome`` (scoring unchanged),
+and the counts of its details.
+
     .venv/bin/python scripts/e0_table.py
 """
 
@@ -52,11 +56,45 @@ def row(family, task, style, wording, run, chance_level):
             "p_plus": len(run["id_items"]), "chance": chance_level}
 
 
-def main() -> None:
-    argparse.ArgumentParser(description=__doc__.split("\n\n")[0]).parse_args()
+DETAILS = {"not a valid set": "not_a_set", "card not on the board": "card_not_on_board",
+           "right": "unformatted_right", "label in code": "label_in_code"}
+
+
+def outcome_row(family, level, wording, directory, run, tokenizer):
     from lth import fu
 
-    rows = []
+    records = {fu.item_id(r): r for r in fu.recorded_results(directory / "fu_out" / wording)}
+    counts = Counter()
+    for r in run["records"]:
+        reply_tokens = r.get("reply_tokens") or len(tokenizer(r["response"], add_special_tokens=False).input_ids)
+        name, detail = fu.outcome(level, records[r["item"]], r["correct"], reply_tokens,
+                                  reasoning=family == "reasoning")
+        counts[name] += 1
+        if detail in DETAILS:
+            counts[DETAILS[detail]] += 1
+    if counts["correct"] != sum(r["correct"] for r in run["records"]):
+        raise RuntimeError(f"{family} {level.key} {wording}: outcomes disagree with the scores")
+    return {"family": family, "task": level.key, "style": complex_style(wording), "wording": wording,
+            "n": len(run["records"]), **{k: counts[k] for k in (*fu.OUTCOMES, *DETAILS.values())}}
+
+
+def write(name: str, rows: list[dict]) -> None:
+    with (RESULTS / name).open("w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+    print(f"wrote {RESULTS / name} ({len(rows)} rows)")
+
+
+def main() -> None:
+    argparse.ArgumentParser(description=__doc__.split("\n\n")[0]).parse_args()
+    from transformers import AutoTokenizer
+
+    from lth import LENS_KEY, fu
+    from src.config import LENSES
+
+    tokenizer = AutoTokenizer.from_pretrained(LENSES[LENS_KEY].hf_model_id)
+    rows, outcomes = [], []
     for task in simple.TASKS:
         directory = run_dir("simple", task)
         for style, wordings in [*simple.WORDINGS.items(), ("none", (simple.ZERO,))]:
@@ -72,14 +110,12 @@ def main() -> None:
             chance_level = chance(level, directory)
             for wording in ["orig", *[f"w{i}" for i in range(1, 7)], "examples", "combined", "bare"]:
                 if done(directory, wording):
-                    rows.append(row(family, key, complex_style(wording), wording, load(directory, wording),
-                                    chance_level))
+                    run = load(directory, wording)
+                    rows.append(row(family, key, complex_style(wording), wording, run, chance_level))
+                    outcomes.append(outcome_row(family, level, wording, directory, run, tokenizer))
     RESULTS.mkdir(exist_ok=True)
-    with (RESULTS / "e0_accuracy.csv").open("w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=list(rows[0]))
-        writer.writeheader()
-        writer.writerows(rows)
-    print(f"wrote {RESULTS / 'e0_accuracy.csv'} ({len(rows)} rows)")
+    write("e0_accuracy.csv", rows)
+    write("e0_outcomes.csv", outcomes)
 
 
 if __name__ == "__main__":
