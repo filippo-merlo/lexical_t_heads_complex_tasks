@@ -1,7 +1,8 @@
 """Answer evaluation (proposal Sec. 5.5): strict and judged scores of the saved E0 outputs (no GPU).
 
 For every task and wording in ``data/outputs`` (``scripts/run_outputs.py``):
-- strict scores (``lth.evaluation``), checked against the E0 records in ``data/runs``;
+- strict scores (``lth.evaluation``), checked against the E0 records in ``data/runs``, and
+  for the simple tasks the flexible score (the whole reference at the reply's start);
 - the judge's verdict (``lth.judge``; ``--no-judge`` skips it), the rule check of the
   answer it extracted where a rule exists, whether the reply begins with that answer;
 - the reasons for each disagreement between the study's strict score and the judge.
@@ -88,7 +89,8 @@ def units(family: str, tasks, levels, variant_names):
 def score_unit(family, key, task, wording, mode, rules, cache, use_judge):
     rows = load_outputs(outputs_path(family, key, wording))
     if family == "simple":
-        strict = {r["item"]: evaluation.strict_simple(r) for r in rows}
+        strict = {r["item"]: {**evaluation.strict_simple(r), "flexible": evaluation.flexible_simple(r)}
+                  for r in rows}
         questions = {r["item"]: evaluation.question_simple(task, r) for r in rows}
     else:
         strict = evaluation.strict_complex(key, wording, mode, rules, rows)
@@ -131,6 +133,8 @@ def summary(family, key, wording, scored):
     mean = lambda field: sum(bool(x.get(field)) for x in scored) / n  # noqa: E731
     row = {"family": family, "task": key, "style": style_of(family, wording), "wording": wording, "n": n,
            "strict": mean("strict"), "strict_full": mean("strict_full"), "study_strict": mean("study_strict")}
+    if family == "simple":
+        row["flexible"] = mean("flexible")
     e0 = [x for x in scored if "e0_strict" in x]
     row["e0_items"] = len(e0)
     row["e0_mismatch"] = sum(x["e0_strict"] != x["strict"] for x in e0)

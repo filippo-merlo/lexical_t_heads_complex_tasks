@@ -2,7 +2,8 @@
 
 Works on the saved outputs of ``scripts/run_outputs.py``, without the model:
 - the strict score is the source evaluation, unchanged: for the simple tasks the reply's
-  first token against the first token of the reference (Yang et al.); for the complex
+  first token against the first token of the reference (Yang et al.), and a second, more
+  flexible score, the whole reference as words at the reply's start (:func:`flexible_simple`); for the complex
   tasks Fu's runner re-run on the stored replies, cut to Fu's limit (``strict``) and whole
   (``strict_full``, the study's strict score), the same for all five tasks; Tapatan, which
   has no scorer in Fu's release, by the first label anywhere in the reply, as in E0;
@@ -17,6 +18,7 @@ from __future__ import annotations
 
 import re
 import tempfile
+import unicodedata
 from functools import lru_cache
 from pathlib import Path
 
@@ -55,6 +57,12 @@ GROUP = {reason: group for group, reasons in GROUPS.items() for reason in reason
 _BOXED = re.compile(r"\\boxed\{(.+?)\}", re.S)
 _TAPATAN_LABEL = re.compile(r"\b(A win|B win|continue)\b")
 _EDGE = re.compile(r"^[\s\"'`*_.,:;!?()\[\]{}«»“”‘’$\\]+|[\s\"'`*_.,:;!?()\[\]{}«»“”‘’$\\]+$")
+_LEADING = re.compile(r"^\W+")
+_ARTICLE = re.compile(r"^(?:(?:a|an|the|der|die|das|den|dem|des|ein|eine|einen|einem|einer|le|la|les|un|une|"
+                      r"el|los|las|uno|una|to)\s+|l['’ʼ]\s*)")
+_PARENTHESIS = re.compile(r"\([^)]*\)")
+_POSSESSIVE = re.compile(r"['’ʼ]s\b")
+_JOINER = re.compile(r"(?<=\w)[-‐'’ʼ](?=\w)")
 
 
 @lru_cache(maxsize=1)
@@ -82,6 +90,30 @@ def bare(text: str) -> str:
 def strict_simple(row: dict) -> dict:
     first = tokenizer()(row["reference"], add_special_tokens=False).input_ids[0]
     return {"strict": row["reply_ids"][:1] == [first], "strict_full": row["reply_ids"][:1] == [first]}
+
+
+def normalise(text: str) -> str:
+    """Text in lower case, without a leading article or "to", accents or punctuation.
+
+    A hyphen or apostrophe inside a word joins it (``non-corresponding``), a possessive
+    ``'s`` is dropped, and any other punctuation separates words (``petit(e)``, ``Peru/Ecuador``).
+    """
+    text = _ARTICLE.sub("", _LEADING.sub("", text.lower()))
+    text = _JOINER.sub("", _POSSESSIVE.sub("", text))
+    text = "".join(" " if unicodedata.category(c)[0] == "P" else c for c in unicodedata.normalize("NFD", text)
+                   if unicodedata.category(c)[0] != "M" and unicodedata.category(c) != "Lm")
+    return " ".join(text.split())
+
+
+def flexible_simple(row: dict) -> bool:
+    """The second simple-task score: the reply begins with the whole reference, as words.
+
+    Case, accents, punctuation (quotes, hyphens, apostrophes) and a leading article or
+    "to" are ignored; a parenthesis in the reference is optional (``Euro (EUR)``).
+    """
+    reply = normalise(row["answer_text"])
+    references = {normalise(row["reference"]), normalise(_PARENTHESIS.sub(" ", row["reference"]))} - {""}
+    return any(reply == ref or reply.startswith(ref + " ") for ref in references)
 
 
 def strict_complex(key: str, name: str, mode: str, rules: str | None, rows: list[dict]) -> dict[str, dict]:
