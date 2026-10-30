@@ -21,16 +21,17 @@ the setting that reproduces their Figs. 57 and 62; App. G.1 describes the first.
 Complex tasks (``run_fu``), rule style only: the rule heads are patched with the mean of
 each rule wording separately (its mean set, ``lth.store``); the control mean is the
 control task's mean under its original rules prompt. The ``-wrong`` families are the
-second check adapted: the original rules prompt of the first 100 items (10 in reasoning
-mode) answered wrongly under it, no control. Simple tasks are scored by the first token;
-complex tasks are generated greedily from the patched prompt and scored by Fu et al.'s
-runner, as in E0.
+second check adapted: the original rules prompt of the first 100 items (10 for the
+``reasoning`` tasks) answered wrongly under it, no control. Simple tasks are scored by the
+first token. Complex tasks, all five alike, are patched at the last prompt token only (as
+the simple tasks), over ``COMPLEX_ALPHAS``; the reply is generated greedily from the
+patched cache to EOS or ``COMPLEX_MAX_TOKENS`` tokens, as the saved outputs
+(``scripts/run_outputs.py``), and scored by Fu et al.'s runner on the whole reply.
 
 Writes ``results/patching_{family}.csv`` (with ``--levels``, the levels are added to the
 name): one row per task, style, head set, mean source, mean wording and alpha (for the
 simple tasks also per mean style), plus a baseline row (``source`` = ``none``) per task.
-In reasoning mode the first ``REASONING_ITEMS`` items are patched, over
-``REASONING_ALPHAS``.
+For the ``reasoning`` tasks the first ``REASONING_ITEMS`` items are patched.
 
 Every answer behind those accuracies is kept in ``results/answers/patching_{...}.jsonl.gz``
 (same name as the table): one line per patched prompt and alpha, and per baseline prompt,
@@ -56,17 +57,17 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from lth import RESULTS, gpu, simple  # noqa: E402
 
 ALPHAS = [-10, -6, -4, -2, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  # Yang et al., causal_fix_incorrect.py
-# Reasoning mode (proposal Sec. 5.3): a fixed sample of patched items and a coarser grid,
-# to bound the cost of long generations (user decision, 2026-10-27).
+# Complex tasks: the even alphas of Yang et al.'s grid and 1, the same for all five tasks,
+# to bound the cost of 1,024-token replies (user decision, 2026-10-30).
+COMPLEX_ALPHAS = [-10, -6, -4, -2, 0, 1, 2, 4, 6, 8, 10]
+# The long tasks (Set Game, Operator Function, Tapatan): a fixed sample of patched items
+# (user decision, 2026-10-27).
 REASONING_ITEMS = 10
-REASONING_ALPHAS = [0, 1, 4, 10]
 # The complex tasks' check runs on the rule style only (user decision, 2026-10-28); check 2
-# adds WRONG to the family name. Reasoning mode patches PATCH_ROWS rows at once (10 items x
-# 4 alphas: one batch per condition).
+# adds WRONG to the family name.
 STYLE = "rule"
 WRONG = "-wrong"
-COMPLEX_FAMILIES = tuple(f + w for f in ("complex", "reasoning", "reasoning-pre") for w in ("", WRONG))
-PATCH_ROWS = 40
+COMPLEX_FAMILIES = tuple(f + w for f in ("complex", "reasoning") for w in ("", WRONG))
 # Controls for the complex tasks: another task with the same answer format, same level.
 COMPLEX_CONTROL = {
     **{f"noun_class_agreement/{l}": f"lexical_category_inference/{l if l == 'easy' else l + '-or'}"
@@ -204,25 +205,23 @@ def run_fu(lm, heads_json, rows, log, family, levels):
     """The complex tasks, rule style only: each rule wording's own mean patched into the rule
     heads, one wording at a time, as for the simple tasks.
 
-    Check 1 (``complex``, ``reasoning``, ``reasoning-pre``) patches the prompts without task
-    information of the fixing items, with a control: the control task's mean under its
-    original rules prompt. Check 2 (the same names with ``-wrong``) patches the original
-    rules prompt of the first items answered wrongly under it, without a control. In
-    reasoning mode the patch stays on at every generated token and the final answer is
-    scored; ``reasoning-pre`` patches the heads and means of the pre-answer position."""
+    Check 1 (``complex``, ``reasoning``) patches the prompts without task information of the
+    fixing items, with a control: the control task's mean under its original rules prompt.
+    Check 2 (the same names with ``-wrong``) patches the original rules prompt of the first
+    items answered wrongly under it, without a control. The patch is at the last prompt
+    token only; each item's reply is generated once per alpha, all alphas in one batch."""
     from lth import fu
     from lth.store import CAP, done, load, run_dir
 
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-    from identify_heads import PRE, complex_styles
+    from identify_heads import complex_styles
     from run_complex import BARE, FIXING
-    from run_reasoning import N_ITEMS
+    from run_outputs import COMPLEX_MAX_TOKENS
 
     wrong = family.endswith(WRONG)
     found = family.removesuffix(WRONG)  # the heads.json family
-    reasoning = found != "complex"
-    suffix = PRE if found == "reasoning-pre" else ""
-    n_items, alphas = (REASONING_ITEMS, REASONING_ALPHAS) if reasoning else (CAP, ALPHAS)
+    reasoning = found != "complex"  # where the E0 runs, heads and means are stored
+    n_items, alphas = (REASONING_ITEMS if reasoning else CAP), COMPLEX_ALPHAS
     for key in levels or fu.STUDY_LEVELS:
         level = fu.TASK_LEVELS[key]
         directory = run_dir("reasoning" if reasoning else "complex", key)
@@ -246,39 +245,28 @@ def run_fu(lm, heads_json, rows, log, family, levels):
         item_set = set(items)
         log += fu_answers(level, fu.recorded_results(directory / "fu_out" / target), item_set, reasoning=reasoning,
                           family=family, task=key, style="", heads="", source="none", mean_wording="", alpha="")
-        means = [("task", w, *wording_mean(directory, w + suffix)) for w in complex_styles()[STYLE]]
+        means = [("task", w, *wording_mean(directory, w)) for w in complex_styles()[STYLE]]
         if not wrong:
             control = run_dir(directory.parent.name, COMPLEX_CONTROL[key])
-            means.append(("control", FIXING, *wording_mean(control, FIXING + suffix)))
+            means.append(("control", FIXING, *wording_mean(control, FIXING)))
         for name, heads in head_sets(heads_json[found][key][STYLE]).items():
             for source, wording, mean, n_mean in means:
                 if not heads or mean is None:
                     continue
                 start = time.time()
                 replies = {}
-                if reasoning:
-                    grid = [(item, alpha) for item in items for alpha in alphas]
-                    ids = [lm.encode_chat(prompts[item]) for item, _ in grid]
-                    for batch in lm.token_batches([len(i) for i in ids], fu.REASONING_MAX_TOKENS, PATCH_ROWS):
-                        edits = lm.mean_patch(heads, mean, [grid[r][1] for r in batch])
-                        out = lm.generate_batch([ids[r] for r in batch], fu.REASONING_MAX_TOKENS, edits=edits,
-                                                stop=lambda text: fu.answer_complete(level, text))
-                        for r, reply in zip(batch, out):
-                            replies[(prompts[grid[r][0]], grid[r][1])] = lm.decode(reply)
-                else:
-                    edits = lm.mean_patch(heads, mean, alphas)
-                    for item in items:
-                        out, _ = lm.generate(lm.encode_chat(prompts[item]), fu.MAX_TOKENS[level.task],
-                                             edits=edits, rows=len(alphas))
-                        replies.update(((prompts[item], alpha), reply) for alpha, reply in zip(alphas, out))
+                edits = lm.mean_patch(heads, mean, alphas)
+                for item in items:
+                    out, _ = lm.generate(lm.encode_chat(prompts[item]), COMPLEX_MAX_TOKENS,
+                                         edits=edits, rows=len(alphas))
+                    replies.update(((prompts[item], alpha), reply) for alpha, reply in zip(alphas, out))
                 condition = dict(family=family, task=key, style=STYLE, heads=name, source=source,
                                  mean_wording=wording)
                 for alpha in alphas:
                     with tempfile.TemporaryDirectory() as scratch:
-                        options = dict(n_test=N_ITEMS, batch=N_ITEMS, reasoning=True) if reasoning else {}
                         results = fu.run(level, "rules", lambda ps, a=alpha: [replies.get((p, a), "") for p in ps],
-                                         Path(scratch), rules=rules, **options)
-                    lines = fu_answers(level, results, item_set, reasoning=reasoning, **condition, alpha=alpha)
+                                         Path(scratch), rules=rules)
+                    lines = fu_answers(level, results, item_set, **condition, alpha=alpha)
                     log += lines
                     correct = [line["correct"] for line in lines]
                     rows.append(dict(**condition, n_heads=len(heads), n_prompts=len(correct), n_mean=n_mean,
