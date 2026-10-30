@@ -120,6 +120,7 @@ def score_unit(family, key, task, wording, mode, rules, cache, use_judge):
                         "straight_judged": evaluation.straight(family, r, answer),
                         "rule_check": rule_check(task, r, answer),
                         "reasons": evaluation.reasons(family, task, r, s, v)})
+            out["reason_group"] = evaluation.GROUP[out["reasons"][0]] if out["reasons"] else None
         scored.append(out)
     save_outputs(outputs_path(family, key, wording).with_name(f"{wording}.scored.jsonl.gz"), scored)
     return scored
@@ -146,6 +147,8 @@ def summary(family, key, wording, scored):
         row["rule_checked"] = len(checked)
         row["rule_disagrees"] = sum(x["rule_check"] != x["judged"] for x in checked)
         row["no_answer"] = sum(x["judge_verdict"] == "no_answer" for x in scored)
+        for group in evaluation.GROUPS:  # disagreements by the group of their primary reason
+            row[f"reason_{group}"] = sum(x["reason_group"] == group for x in scored)
     return row
 
 

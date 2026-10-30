@@ -8,8 +8,9 @@ Works on the saved outputs of ``scripts/run_outputs.py``, without the model:
   has no scorer in Fu's release, by the first label anywhere in the reply, as in E0;
 - the judge's question is neutral: for a simple task its description and the input word,
   for a complex task the item's original rules prompt (the same under every variant);
-- a disagreement between the two scores gets reasons, by rule where a rule can tell and
-  from the judge's ``relation`` otherwise (:func:`reasons`).
+- a disagreement between the two scores gets reasons, in three groups (where the answer is,
+  how it is written, which answer is right), by rule where a rule can tell and from the
+  judge's ``relation`` otherwise (:func:`reasons`).
 """
 
 from __future__ import annotations
@@ -41,10 +42,15 @@ SIMPLE_TASKS = {
 }
 
 # Disagreement reasons (proposal Sec. 5.5), in the order a primary reason is chosen.
-WRONG_BUT_RIGHT = ("truncation", "format_missing", "format_malformed", "first_vs_final", "case",
-                   "punctuation", "leading_phrase", "tokenization", "surface_variant",
-                   "valid_alternative", "reference_error", "other")
-RIGHT_BUT_WRONG = ("first_token_false_positive", "parser_luck", "other")
+WRONG_BUT_RIGHT = ("no_box", "leading_text", "earlier_answer", "case", "extra_characters", "tokenization",
+                   "surface_variant", "valid_alternative", "reference_error", "other")
+RIGHT_BUT_WRONG = ("parser_luck", "first_token_false_positive", "other")
+GROUPS = {"where": ("no_box", "leading_text", "earlier_answer", "parser_luck"),
+          "written": ("case", "extra_characters", "tokenization", "surface_variant",
+                      "first_token_false_positive"),
+          "which": ("valid_alternative", "reference_error"),
+          "other": ("other",)}
+GROUP = {reason: group for group, reasons in GROUPS.items() for reason in reasons}
 
 _BOXED = re.compile(r"\\boxed\{(.+?)\}", re.S)
 _TAPATAN_LABEL = re.compile(r"\b(A win|B win|continue)\b")
@@ -122,53 +128,70 @@ def primary_strict(task: str, scores: dict) -> bool:
     return scores["strict_full"]
 
 
-def reasons(family: str, task: str, row: dict, scores: dict, verdict: dict) -> list[str]:
-    """Why the strict score and the judge disagree, most specific first ([] if they agree).
+def squash(text: str) -> str:
+    """Text in lower case with whitespace collapsed, for finding one answer inside another."""
+    return " ".join((text or "").lower().split())
 
-    ``scores`` holds the strict scores, ``verdict`` the judge's answer for this reply.
+
+def reasons(family: str, task: str, row: dict, scores: dict, verdict: dict) -> list[str]:
+    """Why the strict score and the judge disagree, primary reason first ([] if they agree).
+
+    ``scores`` holds the strict scores, ``verdict`` the judge's answer for this reply, which
+    the judge copies as written in the reply. :data:`GROUP` gives each reason's group.
     """
     judged = verdict["verdict"] == "correct"
     if primary_strict(task, scores) == judged:
         return []
     reply = reply_for_judge(family, row)
-    answer, reference = verdict.get("answer") or "", str(row["reference"])
+    answer, reference = (verdict.get("answer") or "").strip(), str(row["reference"]).strip()
+    parsed = scores.get("parsed_full") or ""
     relation = verdict.get("relation")
     found = []
     if judged:  # strict wrong, judge right
-        if family == "complex":
-            if task in ("set_game", "operator_func"):
-                boxes = _BOXED.findall(row["reply_text"])
-                if not boxes:
-                    found.append("format_missing")
-                elif bare(scores.get("parsed_full") or "") != bare(answer) and len(boxes) > 1:
-                    found.append("first_vs_final")
-                else:
-                    found.append("format_malformed")
-            if task == "tapatan":
-                labels = _TAPATAN_LABEL.findall(row["reply_text"])
-                if not labels:
-                    found.append("format_missing")
-                if labels and labels[0] != labels[-1]:
-                    found.append("first_vs_final")
-        if relation == "case":
+        # Where the answer is.
+        if task in ("set_game", "operator_func"):
+            # The parser reads the first box; another card notation is left to the judge.
+            box = re.search(_BOXED, reply)
+            if not box:
+                found.append("no_box")
+            elif task == "operator_func" and squash(answer) and squash(answer) in squash(box.group(1)):
+                found.append("extra_characters")
+            elif squash(answer) and squash(answer) in squash(reply[box.end():]):
+                found.append("earlier_answer")
+        elif task == "tapatan":
+            # No label at all is a paraphrased label, a surface variant (from the judge).
+            labels = _TAPATAN_LABEL.findall(reply)
+            if labels and labels[0] != labels[-1]:
+                found.append("earlier_answer")
+        elif task in ("noun_class_agreement", "lexical_category_inference"):
+            # Fu's parsers read Yes or No: a different one read is an earlier answer; none
+            # read, where Lexical Category Inference needs it as the first word, is leading text.
+            if parsed and squash(bare(parsed)) != squash(bare(answer)):
+                found.append("earlier_answer")
+            elif not parsed and task == "lexical_category_inference" and squash(answer) in squash(reply):
+                found.append("leading_text")
+        elif answer and not bare(reply.lstrip()).lower().startswith(bare(answer).lower()):
+            found.append("leading_text")  # simple tasks: the first token is read
+        # How the answer is written.
+        if bare(answer).lower() == bare(reference).lower() and bare(answer) != bare(reference):
             found.append("case")
-        if relation == "punctuation":
-            found.append("punctuation")
-        # Complex tasks let the model reason first, so text before the answer is no reason.
-        if answer and family == "simple" and not bare(reply.lstrip()).startswith(bare(answer)):
-            found.append("leading_phrase")
+        if family == "simple" and answer and (bare(answer) != answer or (
+                not reply.lstrip().startswith(answer) and bare(reply.lstrip()).startswith(bare(answer)))):
+            found.append("extra_characters")  # simple tasks: quotes or markup before the first token
         if family == "simple" and relation == "identical" and reply.lstrip().startswith(answer):
             found.append("tokenization")
-        if relation in ("surface_variant", "valid_alternative"):
-            found.append(relation)
+        if relation == "surface_variant" or (relation == "punctuation" and "extra_characters" not in found):
+            found.append("surface_variant")  # punctuation inside the answer (U.S. for US)
+        # Which answer is right.
+        if relation == "valid_alternative":
+            found.append("valid_alternative")
         if verdict.get("reference_suspect"):
             found.append("reference_error")
         order = WRONG_BUT_RIGHT
     else:  # strict right, judge wrong
         if family == "simple":
             found.append("first_token_false_positive")
-        elif bare(scores.get("parsed_full") or scores.get("parsed") or "") != bare(answer):
+        elif squash(bare(parsed or scores.get("parsed") or "")) != squash(bare(answer)):
             found.append("parser_luck")
         order = RIGHT_BUT_WRONG
-    found = [r for r in order if r in found] or ["other"]
-    return found
+    return [r for r in order if r in found] or ["other"]
