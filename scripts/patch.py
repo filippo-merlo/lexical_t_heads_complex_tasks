@@ -27,7 +27,9 @@ Complex tasks (``run_fu``), all five alike, rule style only: the rule heads are 
 the mean of each rule wording separately (its mean set, ``lth.store``); the control mean is
 the control task's mean under its original rules prompt. Family ``complex-wrong`` is the
 second check adapted: the original rules prompt of the first 100 items answered wrongly
-under it, no control. The reply runs to EOS or ``COMPLEX_MAX_TOKENS`` tokens, over
+under it, with the same control (unlike the simple tasks' second check, which has none as
+in Yang et al.'s code): a reply that fails once can come out right under any change to the
+forward pass, and only the control tells such gains from task information (2026-10-31). The reply runs to EOS or ``COMPLEX_MAX_TOKENS`` tokens, over
 ``COMPLEX_ALPHAS``, and is scored by the flexible score (``lth.evaluation.flexible_complex``).
 
 Prompts are run in batches (padding masked, at most ``PATCH_TOKENS`` prompt-plus-reply
@@ -229,14 +231,15 @@ def score_complex(level, mode: str, rules: str | None, replies: dict[str, str], 
             for r in results if fu.item_id(r) in items]
 
 
-def run_fu(lm, heads_json, rows, log, family, levels):
+def run_fu(lm, heads_json, rows, log, family, levels, sources=("task", "control")):
     """The complex tasks, rule style only: each rule wording's own mean patched into the rule
     heads, one wording at a time, as for the simple tasks.
 
     Check 1 (``complex``) patches the prompts without task information of the fixing items,
-    with a control: the control task's mean under its original rules prompt. Check 2
-    (``complex-wrong``) patches the original rules prompt of the first 100 items answered
-    wrongly under it, without a control. The patch is at the last prompt token only."""
+    check 2 (``complex-wrong``) the original rules prompt of the first 100 items answered
+    wrongly under it; both with a control, the control task's mean under its original rules
+    prompt. ``sources`` limits the means to the task's (``task``) or the control's
+    (``control``). The patch is at the last prompt token only."""
     from lth import fu
     from lth.store import CAP, done, load, load_outputs, outputs_path, readings_dir
 
@@ -270,8 +273,8 @@ def run_fu(lm, heads_json, rows, log, family, levels):
                      item=i, expected=str(outputs[i]["reference"]), predicted=unpatched[i]["answer"],
                      correct=unpatched[i]["correct"], reply=outputs[i]["reply_text"]) for i in items]
         means = [("task", w, *wording_mean(directory, w)) for w in complex_styles()[STYLE]]
-        if not wrong:
-            means.append(("control", FIXING, *wording_mean(readings_dir("complex", COMPLEX_CONTROL[key]), FIXING)))
+        means.append(("control", FIXING, *wording_mean(readings_dir("complex", COMPLEX_CONTROL[key]), FIXING)))
+        means = [m for m in means if m[0] in sources]
         # One reply per distinct prompt (Tapatan's sample repeats boards).
         prompts = list(dict.fromkeys(outputs[i]["prompt"] for i in items))
         ids = [lm.encode_chat(p) for p in prompts]
@@ -306,6 +309,8 @@ def main() -> None:
     parser.add_argument("--tasks", nargs="+", default=None,
                         help="simple tasks to patch (default: all); the output file then ends in --part")
     parser.add_argument("--part", default=None, help="name of this share of the simple tasks")
+    parser.add_argument("--sources", nargs="+", choices=("task", "control"), default=["task", "control"],
+                        help="complex tasks: the means to patch; with one only, the output file names it")
     args = parser.parse_args()
     gpu.pin(args.gpu)
     sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -317,12 +322,14 @@ def main() -> None:
     rows: list[dict] = []
     log: list[dict] = []
     if args.family in COMPLEX_FAMILIES:
-        run_fu(lm, heads_json, rows, log, args.family, args.levels)
+        run_fu(lm, heads_json, rows, log, args.family, args.levels, tuple(args.sources))
     else:
         run_simple(lm, heads_json, rows, log, args.tasks or simple.TASKS, args.family)
     name = args.family + "".join("_" + level.replace("/", "-") for level in args.levels or [])
     if args.tasks:
         name += f".part-{args.part}"
+    if args.family in COMPLEX_FAMILIES and len(args.sources) == 1:
+        name += f".{args.sources[0]}"
     with (RESULTS / f"patching_{name}.csv").open("w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=list(rows[0]))
         writer.writeheader()

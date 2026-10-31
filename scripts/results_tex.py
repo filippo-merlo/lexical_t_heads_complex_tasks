@@ -316,9 +316,10 @@ def table_effects(patching: pd.DataFrame, cross: pd.DataFrame, e0: pd.DataFrame)
             header = [r" & & & " + group, r"\cmidrule(lr){4-6}\cmidrule(lr){7-9}", f"Task & {column} & Baseline & " + sets]
             write(name, tabular("@{}llccccccc@{}", header, rows))
 
-    # The complex tasks: rule heads only, so no style column; check 2 has no control.
+    # The complex tasks: rule heads only, so no style column; both checks have a control
+    # (check 2 since 2026-10-31).
     effect, base = effects(patching), baselines(patching)
-    for suffix, sources in (("", ("task", "control")), (WRONG, ("task",))):
+    for suffix, sources in (("", ("task", "control")), (WRONG, ("task", "control"))):
         rows = []
         for family, task in COMPLEX_ROWS:
             family += suffix
