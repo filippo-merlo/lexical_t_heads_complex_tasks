@@ -148,6 +148,15 @@ def e0_strict() -> pd.DataFrame:
     return acc.merge(chance, on=["family", "task"], how="left")
 
 
+def missing(e0: pd.DataFrame, family: str, task: str) -> str:
+    """Why a complex-task check has no rows: the second check of a task answered correctly on
+    every item under its original rules prompt (flexible score) has nothing to patch."""
+    orig = e0[(e0.family == "complex") & (e0.task == task) & (e0.wording == "orig")]
+    if family.endswith(WRONG) and len(orig) and orig.flexible.iloc[0] == 1:
+        return "no item answered wrongly"
+    return "not yet run"
+
+
 def load() -> dict:
     frames = [pd.read_csv(f) for f in sorted(RESULTS.glob("patching_*.csv"))]
     patching = pd.concat([f for f in frames if "mean_wording" in f], ignore_index=True)
@@ -294,7 +303,7 @@ def effect_rows(patching, effect, family, task, styles) -> list[str]:
     return rows
 
 
-def table_effects(patching: pd.DataFrame, cross: pd.DataFrame) -> None:
+def table_effects(patching: pd.DataFrame, cross: pd.DataFrame, e0: pd.DataFrame) -> None:
     group = r"\multicolumn{3}{c}{Task mean} & \multicolumn{3}{c}{Control mean} \\"
     sets = r"L & J & J only & L & J & J only \\"
     for family in SIMPLE_FAMILIES:
@@ -315,7 +324,7 @@ def table_effects(patching: pd.DataFrame, cross: pd.DataFrame) -> None:
             family += suffix
             if (family, task) not in base:
                 rows.append(f"{tex_name(family, task)} & \\multicolumn{{{2 + 3 * len(sources)}}}{{l}}"
-                            r"{\textit{not yet run}} \\")
+                            f"{{\\textit{{{missing(e0, family, task)}}}}} \\\\")
                 continue
             n, accuracy = base[(family, task)]
             cells = [num(effect.get((family, task, "rule", s, source))) for source in sources for s in SETS]
@@ -427,7 +436,7 @@ def empty_panel(ax, text: str) -> None:
     ax.text(0.5, 0.5, text, transform=ax.transAxes, ha="center", va="center", color=INK_2, fontsize=7)
 
 
-def figure_patching(patching: pd.DataFrame) -> None:
+def figure_patching(patching: pd.DataFrame, e0: pd.DataFrame) -> None:
     for family in SIMPLE_FAMILIES:
         if not (patching.family == family).any():
             continue
@@ -459,7 +468,7 @@ def figure_patching(patching: pd.DataFrame) -> None:
             ax, family = axes[i, j], found + suffix
             reference = constant_answer(family, task)
             if (family, task) not in ran:
-                empty_panel(ax, "not yet run")
+                empty_panel(ax, missing(e0, family, task))
             elif not curve_panel(ax, patching, family, task, "rule", reference):
                 empty_panel(ax, "no head set")
             else:
@@ -487,11 +496,11 @@ def main() -> None:
     table_e0_complex(data["e0"])
     table_e0_complex(data["e0"], "flexible", "e0_complex_flexible")
     table_heads(data["measures"], data["overlaps"])
-    table_effects(data["patching"], data["cross"])
+    table_effects(data["patching"], data["cross"], data["e0"])
     FIGURES.mkdir(exist_ok=True)
     figure_layers(data["heads"])
     figure_copy_share(data["measures"])
-    figure_patching(data["patching"])
+    figure_patching(data["patching"], data["e0"])
     print(f"wrote {TABLES} and {FIGURES}")
 
 
