@@ -1,0 +1,859 @@
+{
+ "simple": {
+  "antonym": {
+   "rule": {
+    "jhead": {
+     "wordings": [
+      "inst0",
+      "inst1",
+      "inst2",
+      "inst3",
+      "inst4"
+     ],
+     "n_prompts": 500,
+     "rule": "at least 1 templates, in the sets of fewer than 2 tasks",
+     "heads": [
+      [
+       12,
+       15,
+       0.14
+      ],
+      [
+       19,
+       1,
+       0.11
+      ],
+      [
+       20,
+       7,
+       0.97
+      ],
+      [
+       20,
+       9,
+       0.22
+      ],
+      [
+       23,
+       30,
+       0.39
+      ],
+      [
+       23,
+       31,
+       0.2
+      ],
+      [
+       25,
+       12,
+       0.95
+      ],
+      [
+       25,
+       18,
+       0.24
+      ]
+     ]
+    },
+    "logithead": {
+     "heads": []
+    }
+   }
+  },
+  "synonym": {
+   "rule": {
+    "jhead": {
+     "wordings": [
+      "inst0",
+      "inst1",
+      "inst2",
+      "inst3",
+      "inst4"
+     ],
+     "n_prompts": 500,
+     "rule": "at least 1 templates, in the sets of fewer than 2 tasks",
+     "heads": [
+      [
+       3,
+       11,
+       0.11
+      ],
+      [
+       4,
+       31,
+       0.1
+      ],
+      [
+       6,
+       3,
+       0.39
+      ],
+      [
+       11,
+       4,
+       0.51
+      ],
+      [
+       11,
+       16,
+       1.0
+      ],
+      [
+       12,
+       21,
+       0.29
+      ],
+      [
+       14,
+       12,
+       1.0
+      ],
+      [
+       15,
+       0,
+       0.13
+      ],
+      [
+       17,
+       2,
+       0.38
+      ],
+      [
+       17,
+       31,
+       0.62
+      ],
+      [
+       19,
+       5,
+       0.8
+      ],
+      [
+       19,
+       17,
+       0.33
+      ],
+      [
+       21,
+       21,
+       0.17
+      ],
+      [
+       24,
+       15,
+       0.15
+      ],
+      [
+       25,
+       13,
+       0.1
+      ],
+      [
+       26,
+       13,
+       0.23
+      ],
+      [
+       28,
+       30,
+       0.1
+      ],
+      [
+       28,
+       31,
+       0.12
+      ],
+      [
+       30,
+       9,
+       0.14
+      ],
+      [
+       31,
+       20,
+       0.27
+      ]
+     ]
+    },
+    "logithead": {
+     "heads": []
+    }
+   }
+  },
+  "singular-plural": {
+   "rule": {
+    "jhead": {
+     "wordings": [
+      "inst0",
+      "inst1",
+      "inst2",
+      "inst3",
+      "inst4"
+     ],
+     "n_prompts": 500,
+     "rule": "at least 1 templates, in the sets of fewer than 2 tasks",
+     "heads": [
+      [
+       7,
+       8,
+       0.77
+      ],
+      [
+       10,
+       5,
+       0.12
+      ],
+      [
+       12,
+       6,
+       0.61
+      ],
+      [
+       14,
+       30,
+       0.97
+      ],
+      [
+       17,
+       17,
+       1.0
+      ],
+      [
+       18,
+       11,
+       0.12
+      ],
+      [
+       27,
+       4,
+       0.68
+      ],
+      [
+       28,
+       18,
+       0.16
+      ],
+      [
+       30,
+       2,
+       0.17
+      ]
+     ]
+    },
+    "logithead": {
+     "heads": []
+    }
+   }
+  },
+  "present-past": {
+   "rule": {
+    "jhead": {
+     "wordings": [
+      "inst0",
+      "inst1",
+      "inst2",
+      "inst3",
+      "inst4"
+     ],
+     "n_prompts": 500,
+     "rule": "at least 1 templates, in the sets of fewer than 2 tasks",
+     "heads": [
+      [
+       19,
+       10,
+       0.1
+      ],
+      [
+       19,
+       24,
+       0.29
+      ],
+      [
+       20,
+       28,
+       0.35
+      ],
+      [
+       21,
+       9,
+       0.24
+      ]
+     ]
+    },
+    "logithead": {
+     "heads": []
+    }
+   }
+  },
+  "country-capital": {
+   "rule": {
+    "jhead": {
+     "wordings": [
+      "inst0",
+      "inst1",
+      "inst2",
+      "inst3",
+      "inst4"
+     ],
+     "n_prompts": 500,
+     "rule": "at least 1 templates, in the sets of fewer than 2 tasks",
+     "heads": [
+      [
+       3,
+       7,
+       0.97
+      ],
+      [
+       3,
+       15,
+       1.0
+      ],
+      [
+       10,
+       1,
+       0.83
+      ],
+      [
+       13,
+       18,
+       0.15
+      ],
+      [
+       14,
+       7,
+       0.46
+      ],
+      [
+       14,
+       23,
+       0.6
+      ],
+      [
+       16,
+       24,
+       0.77
+      ],
+      [
+       19,
+       22,
+       0.83
+      ],
+      [
+       24,
+       20,
+       0.95
+      ],
+      [
+       25,
+       4,
+       0.98
+      ],
+      [
+       25,
+       29,
+       0.1
+      ],
+      [
+       26,
+       24,
+       0.36
+      ],
+      [
+       29,
+       25,
+       0.54
+      ]
+     ]
+    },
+    "logithead": {
+     "heads": []
+    }
+   }
+  },
+  "country-currency": {
+   "rule": {
+    "jhead": {
+     "wordings": [
+      "inst0",
+      "inst1",
+      "inst2",
+      "inst3",
+      "inst4"
+     ],
+     "n_prompts": 500,
+     "rule": "at least 1 templates, in the sets of fewer than 2 tasks",
+     "heads": [
+      [
+       16,
+       10,
+       0.27
+      ],
+      [
+       17,
+       0,
+       0.99
+      ],
+      [
+       19,
+       13,
+       0.1
+      ],
+      [
+       19,
+       19,
+       0.45
+      ],
+      [
+       22,
+       27,
+       1.0
+      ],
+      [
+       23,
+       22,
+       0.98
+      ],
+      [
+       24,
+       17,
+       0.88
+      ],
+      [
+       24,
+       18,
+       0.89
+      ]
+     ]
+    },
+    "logithead": {
+     "heads": []
+    }
+   }
+  },
+  "landmark-country": {
+   "rule": {
+    "jhead": {
+     "wordings": [
+      "inst0",
+      "inst1",
+      "inst2",
+      "inst3",
+      "inst4"
+     ],
+     "n_prompts": 500,
+     "rule": "at least 1 templates, in the sets of fewer than 2 tasks",
+     "heads": [
+      [
+       20,
+       26,
+       0.19
+      ],
+      [
+       25,
+       6,
+       0.18
+      ]
+     ]
+    },
+    "logithead": {
+     "heads": []
+    }
+   }
+  },
+  "park-country": {
+   "rule": {
+    "jhead": {
+     "wordings": [
+      "inst0",
+      "inst1",
+      "inst2",
+      "inst3",
+      "inst4"
+     ],
+     "n_prompts": 500,
+     "rule": "at least 1 templates, in the sets of fewer than 2 tasks",
+     "heads": [
+      [
+       12,
+       10,
+       0.56
+      ],
+      [
+       12,
+       11,
+       0.11
+      ],
+      [
+       19,
+       26,
+       0.18
+      ]
+     ]
+    },
+    "logithead": {
+     "heads": []
+    }
+   }
+  },
+  "product-company": {
+   "rule": {
+    "jhead": {
+     "wordings": [
+      "inst0",
+      "inst1",
+      "inst2",
+      "inst3",
+      "inst4"
+     ],
+     "n_prompts": 500,
+     "rule": "at least 1 templates, in the sets of fewer than 2 tasks",
+     "heads": [
+      [
+       2,
+       13,
+       0.54
+      ],
+      [
+       3,
+       30,
+       0.11
+      ],
+      [
+       4,
+       1,
+       0.13
+      ],
+      [
+       4,
+       2,
+       0.19
+      ],
+      [
+       8,
+       16,
+       0.64
+      ],
+      [
+       13,
+       9,
+       0.6
+      ],
+      [
+       16,
+       3,
+       0.23
+      ],
+      [
+       18,
+       18,
+       0.95
+      ],
+      [
+       20,
+       18,
+       0.26
+      ],
+      [
+       21,
+       19,
+       0.14
+      ],
+      [
+       22,
+       10,
+       0.57
+      ],
+      [
+       23,
+       5,
+       0.59
+      ],
+      [
+       23,
+       9,
+       0.27
+      ],
+      [
+       24,
+       22,
+       0.94
+      ],
+      [
+       25,
+       0,
+       0.27
+      ],
+      [
+       26,
+       10,
+       0.99
+      ]
+     ]
+    },
+    "logithead": {
+     "heads": []
+    }
+   }
+  },
+  "next_item": {
+   "rule": {
+    "jhead": {
+     "wordings": [
+      "inst0",
+      "inst1",
+      "inst2",
+      "inst3",
+      "inst4"
+     ],
+     "n_prompts": 404,
+     "rule": "at least 1 templates, in the sets of fewer than 2 tasks",
+     "heads": [
+      [
+       9,
+       24,
+       0.17
+      ],
+      [
+       13,
+       29,
+       0.3
+      ],
+      [
+       14,
+       1,
+       0.29
+      ],
+      [
+       15,
+       13,
+       0.19
+      ],
+      [
+       23,
+       28,
+       0.98
+      ],
+      [
+       25,
+       24,
+       0.32
+      ],
+      [
+       26,
+       23,
+       1.0
+      ],
+      [
+       28,
+       8,
+       0.92
+      ],
+      [
+       28,
+       25,
+       0.12
+      ],
+      [
+       31,
+       8,
+       0.12
+      ]
+     ]
+    },
+    "logithead": {
+     "heads": []
+    }
+   }
+  },
+  "prev_item": {
+   "rule": {
+    "jhead": {
+     "wordings": [
+      "inst0",
+      "inst1",
+      "inst2",
+      "inst3",
+      "inst4"
+     ],
+     "n_prompts": 438,
+     "rule": "at least 1 templates, in the sets of fewer than 2 tasks",
+     "heads": [
+      [
+       8,
+       15,
+       0.1111
+      ],
+      [
+       9,
+       12,
+       0.27
+      ],
+      [
+       13,
+       19,
+       0.11
+      ],
+      [
+       14,
+       0,
+       0.11
+      ],
+      [
+       14,
+       4,
+       0.3556
+      ],
+      [
+       15,
+       29,
+       0.3778
+      ],
+      [
+       16,
+       12,
+       0.3
+      ],
+      [
+       17,
+       28,
+       0.6
+      ],
+      [
+       22,
+       0,
+       1.0
+      ],
+      [
+       24,
+       4,
+       0.8222
+      ],
+      [
+       24,
+       7,
+       0.27
+      ],
+      [
+       29,
+       17,
+       0.77
+      ],
+      [
+       31,
+       15,
+       0.22
+      ]
+     ]
+    },
+    "logithead": {
+     "heads": []
+    }
+   }
+  },
+  "english-french": {
+   "rule": {
+    "jhead": {
+     "wordings": [
+      "inst0",
+      "inst1",
+      "inst2",
+      "inst3",
+      "inst4"
+     ],
+     "n_prompts": 500,
+     "rule": "at least 1 templates, in the sets of fewer than 2 tasks",
+     "heads": [
+      [
+       10,
+       27,
+       0.13
+      ],
+      [
+       13,
+       1,
+       0.3
+      ],
+      [
+       14,
+       25,
+       0.15
+      ],
+      [
+       15,
+       16,
+       0.12
+      ],
+      [
+       17,
+       9,
+       0.12
+      ],
+      [
+       25,
+       23,
+       0.12
+      ]
+     ]
+    },
+    "logithead": {
+     "heads": []
+    }
+   }
+  },
+  "english-german": {
+   "rule": {
+    "jhead": {
+     "wordings": [
+      "inst0",
+      "inst1",
+      "inst2",
+      "inst3",
+      "inst4"
+     ],
+     "n_prompts": 500,
+     "rule": "at least 1 templates, in the sets of fewer than 2 tasks",
+     "heads": [
+      [
+       18,
+       14,
+       0.32
+      ]
+     ]
+    },
+    "logithead": {
+     "heads": []
+    }
+   }
+  },
+  "english-spanish": {
+   "rule": {
+    "jhead": {
+     "wordings": [
+      "inst0",
+      "inst1",
+      "inst2",
+      "inst3",
+      "inst4"
+     ],
+     "n_prompts": 500,
+     "rule": "at least 1 templates, in the sets of fewer than 2 tasks",
+     "heads": [
+      [
+       17,
+       8,
+       0.25
+      ],
+      [
+       20,
+       13,
+       0.35
+      ]
+     ]
+    },
+    "logithead": {
+     "heads": []
+    }
+   }
+  }
+ }
+}

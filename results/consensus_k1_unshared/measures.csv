@@ -1,0 +1,15 @@
+task,readout,n_k1,n_heads
+antonym,jhead,36,8
+synonym,jhead,49,20
+singular-plural,jhead,41,9
+present-past,jhead,19,4
+country-capital,jhead,62,13
+country-currency,jhead,48,8
+landmark-country,jhead,64,2
+park-country,jhead,50,3
+product-company,jhead,74,16
+next_item,jhead,60,10
+prev_item,jhead,71,13
+english-french,jhead,40,6
+english-german,jhead,34,1
+english-spanish,jhead,24,2
