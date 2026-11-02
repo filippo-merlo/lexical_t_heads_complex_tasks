@@ -16,6 +16,10 @@ proposal-minimal.tex, and the figures ``paper/figures/*.pdf``:
   ``effects_simple_wrong_cross`` the same for the second simple check (``simple-wrong``:
   wrongly answered 1-shot prompts patched, no control); ``effects_complex`` and
   ``effects_complex_wrong`` the two checks of the complex tasks' rule heads;
+- ``heads_consensus``, ``effects_consensus``, ``effects_consensus_control`` (E1b, from
+  ``results/consensus``, ``scripts/identify_consensus.py``): rule-style head sets that pass
+  Definition 1 under all five instruction templates, against E1's; the causal effect of
+  both with rule-style means in the two checks, and of the control mean in the first;
 - ``layers.pdf``: lexical task heads per layer under each readout (``heads.json``);
 - ``copy_share.pdf``: copy share per task, style and readout (``measures.csv``);
 - ``patching_simple.pdf``, ``patching_simple_wrong.pdf``, ``patching_complex.pdf``: accuracy
@@ -338,6 +342,51 @@ def table_effects(patching: pd.DataFrame, cross: pd.DataFrame, e0: pd.DataFrame)
         write("effects_complex" + suffix.replace("-", "_"), tabular("@{}lrc" + "c" * 3 * len(sources) + "@{}", header, rows))
 
 
+def table_consensus(patching: pd.DataFrame, measures: pd.DataFrame) -> None:
+    """E1b against E1: rule-style head sets and their causal effects with rule-style means."""
+    directory = RESULTS / "consensus"
+    if not (directory / "measures.csv").exists():
+        return
+    m = pd.read_csv(directory / "measures.csv").set_index(["task", "readout"])
+    rows = []
+    for task in simple.TASKS:
+        cells = []
+        for readout in READOUTS:
+            r = m.loc[(task, readout)]
+            cells += [str(int(r.n_e1)), str(int(r.n_heads))]
+        cells += [num(m.loc[(task, readout)].copy_share) for readout in READOUTS]
+        e1 = measures[(measures.family == "simple") & (measures.task == task) & (measures["style"] == "rule")]
+        cells += [num(e1[e1.readout == readout].copy_share.iloc[0]) for readout in READOUTS]
+        rows.append(" & ".join([tex_name("simple", task), *cells]) + r" \\")
+    header = [r" & \multicolumn{2}{c}{L} & \multicolumn{2}{c}{J} & \multicolumn{2}{c}{Copy share, E1b}"
+              r" & \multicolumn{2}{c}{Copy share, E1} \\",
+              r"\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}",
+              r"Task & E1 & E1b & E1 & E1b & L & J & L & J \\"]
+    write("heads_consensus", tabular("@{}lcccccccc@{}", header, rows))
+
+    frames = [pd.read_csv(f) for f in sorted(directory.glob("patching_*.csv"))]
+    if not frames:
+        return
+    consensus, _ = wording_curves(pd.concat(frames, ignore_index=True))
+    e1, e1b = effects(patching), effects(consensus)
+    for name, families, source in (("effects_consensus", SIMPLE_FAMILIES, "task"),
+                                   ("effects_consensus_control", ("simple",), "control")):
+        rows = []
+        for task in simple.TASKS:
+            cells = [num(e.get((family, task, "rule", s, source))) for family in families for s in SETS
+                     for e in (e1, e1b)]
+            rows.append(" & ".join([tex_name("simple", task), *cells]) + r" \\")
+        sets = " & ".join(rf"\multicolumn{{2}}{{c}}{{{label}}}" for label in ("L", "J", "J only"))
+        rules = "".join(rf"\cmidrule(lr){{{2 + 2 * i}-{3 + 2 * i}}}" for i in range(3 * len(families)))
+        if len(families) == 2:
+            header = [r" & \multicolumn{6}{c}{First check} & \multicolumn{6}{c}{Second check} \\",
+                      r"\cmidrule(lr){2-7}\cmidrule(lr){8-13}", f" & {sets} & {sets} \\\\", rules,
+                      "Task" + " & E1 & E1b" * 6 + r" \\"]
+        else:
+            header = [f" & {sets} \\\\", rules, "Task" + " & E1 & E1b" * 3 + r" \\"]
+        write(name, tabular("@{}l" + "c" * 6 * len(families) + "@{}", header, rows))
+
+
 # ------------------------------------------------------------------ figures
 
 
@@ -498,6 +547,7 @@ def main() -> None:
     table_e0_complex(data["e0"], "flexible", "e0_complex_flexible")
     table_heads(data["measures"], data["overlaps"])
     table_effects(data["patching"], data["cross"], data["e0"])
+    table_consensus(data["patching"], data["measures"])
     FIGURES.mkdir(exist_ok=True)
     figure_layers(data["heads"])
     figure_copy_share(data["measures"])
