@@ -252,21 +252,21 @@ Every experiment is run once, with greedy decoding, on Llama-3.1-8B-Instruct. Ea
 
 \paragraph{Output.} Head sets and measures (Table~\ref{tab:heads-simple}, Figures~\ref{fig:layers} and~\ref{fig:copy}); causal effects with means of the same style (Tables~\ref{tab:effects-simple} and~\ref{tab:effects-simple-wrong}) and of the other style (Tables~\ref{tab:effects-simple-cross} and~\ref{tab:effects-simple-wrong-cross}); accuracy against $\alpha$ (Figures~\ref{fig:patch-simple} and~\ref{fig:patch-simple-wrong}).
 
-\subsection{E1b: Heads from all instruction templates}\label{sec:e1b}
-\paragraph{Question.} H\ref{h:consensus}: do the rule-style lexical task heads that every instruction template yields carry the task more strongly than those of the most accurate template? A head that names the task under one template may be copying words of that template; one that names it under all five is less tied to a wording.
+\subsection{E1b: Heads from several instruction templates}\label{sec:e1b}
+\paragraph{Question.} H\ref{h:consensus}: do the rule-style lexical task heads that every instruction template yields carry the task more strongly than those of the most accurate template? A head that names the task under one template may be copying words of that template; one that names it under all five is less tied to a wording. After the result of H\ref{h:consensus}, we also ask how the causal effect changes when fewer templates are required. This second question has no hypothesis, and we report it as exploratory.
 
-\paragraph{Conditions.} 14 tasks $\times$ the rule style $\times$ 2 readouts, with the three head sets of E1 per pair: the consensus Logit-head set, the consensus J-head set, and the heads only the second contains. The example style is not part of E1b.
+\paragraph{Conditions.} 14 tasks $\times$ the rule style $\times$ 2 readouts (Logit-head, J-head) $\times$ 3 requirements: at least $k$ of the five templates, for $k\in\{1,3,5\}$. The heads found only by J-head and the example style are not part of E1b.
 
 \paragraph{Procedure.}
 \begin{enumerate}
 \item \emph{Identification prompts}: for each of the five instruction templates separately, its first 100 prompts in $P^{+}$ (all of them where fewer are answered correctly).
-\item \emph{Consensus sets}: under each readout, a head is in the set if it meets Definition~\ref{def:lth} on the prompts of every template. Since the rule-style set of E1 comes from one of the five templates, the consensus set is contained in it: E1b keeps the heads of E1 that every template confirms.
-\item \emph{Measures}: as in E1, with the share of the E1 set that the consensus set keeps.
+\item \emph{Head sets}: under each readout, a head is in the set for $k$ if it meets Definition~\ref{def:lth} on the prompts of at least $k$ templates. The rule-style set of E1 comes from one of the five templates, so the set for $k=5$ (the consensus set of H\ref{h:consensus}) is contained in it and the set for $k=1$ (the union of the five templates' sets) contains it; the set for $k=3$ is neither.
+\item \emph{Measures}: head count, and the heads each set shares with the E1 set.
 \item \emph{Causal checks}: both checks of E1, unchanged (patched items, means of both styles, control mean, $\alpha$, scoring); only the head sets differ.
-\item \emph{Comparison}: per task, readout and check, the causal effect of the consensus set against that of the E1 rule-style set with rule-style means, and in the first check the same for the control mean.
+\item \emph{Comparison}: per task, readout and check, the causal effect of each set against that of the E1 rule-style set with rule-style means, and in the first check the same for the control mean.
 \end{enumerate}
 
-\paragraph{Output.} Consensus sets and their measures (Table~\ref{tab:heads-consensus}); causal effects of the consensus and the E1 sets side by side (Table~\ref{tab:effects-consensus}).
+\paragraph{Output.} Head sets (Table~\ref{tab:heads-consensus}); causal effects of the E1 set and of the three sets side by side, in the first check (Table~\ref{tab:effects-consensus}), with the control mean (Table~\ref{tab:effects-consensus-control}), and in the second check (Table~\ref{tab:effects-consensus-wrong}).
 
 \subsection{E2: Complex tasks}\label{sec:e2}
 \paragraph{Question.} RQ1, H\ref{h:complex}, RQ2 on the complex tasks, and RQ3: are lexical task heads found and causally effective for complex tasks, under which readout, and are they shared between rule-based and example-based prompts?
@@ -403,32 +403,47 @@ Patched with the means of the other style, the head sets raise accuracy on the s
 \label{fig:patch-simple-wrong}
 \end{figure}
 
-\subsection{E1b: Heads from all instruction templates}\label{sec:res-e1b}
-\paragraph{Head sets} (Table~\ref{tab:heads-consensus}). Requiring all five templates keeps between none (synonym) and all (English--German) of the Logit-head heads of E1, and between 28\% (next-item) and 74\% (English--German) of the J-head heads. It removes most on next-item, singular--plural and park--country under both readouts and on synonym under J-head, and least on the translation tasks, landmark--country and country--currency under Logit-head. Synonym has no Logit-head set left, and on present--past every J-head head is also a Logit-head head, so these sets are not patched. The copy share is taken over the prompts of all five templates and is therefore not comparable with that of E1, which uses one.
+\subsection{E1b: Heads from several instruction templates}\label{sec:res-e1b}
+\paragraph{Head sets} (Table~\ref{tab:heads-consensus}). The three requirements give sets of very different sizes. Over all tasks, the union of the five templates' sets ($k=1$) has about 1.6 times as many heads as the E1 set under Logit-head and 1.8 times under J-head. The sets of the heads that at least three templates yield ($k=3$) are about as large as the E1 sets, and seven in eight of their heads are E1 heads. The consensus sets ($k=5$) keep three fifths of the Logit-head heads of E1 and just over half of the J-head heads. They keep least on next-item, singular--plural and park--country under both readouts and on synonym under J-head; synonym has no Logit-head consensus set, so it is not patched.
 
-\paragraph{Causal checks} (Tables~\ref{tab:effects-consensus} and~\ref{tab:effects-consensus-control}). The consensus sets raise accuracy more than the E1 sets on few tasks: in the first check on 3 tasks under Logit-head and 4 under J-head, and in the second on 4 under each readout. These are country--capital, park--country and product--company under both readouts and landmark--country under J-head, tasks on which the E1 sets were already effective; on country--capital and park--country the first check rises by 10 to 26 items. The control mean rises with it by more than three items only at the J-head set of park--country; elsewhere it changes by at most three items or falls. On the other tasks the smaller sets raise accuracy less, most in the second check on singular--plural and next-item and on the J-head sets of the translation tasks. On next-item the J-head set's gain in the first check disappears together with that of the control mean, which falls from 0.35 to 0.03: the heads every template confirms do not include those through which the control mean raised accuracy.
+\paragraph{Causal checks} (Tables~\ref{tab:effects-consensus}, \ref{tab:effects-consensus-control} and~\ref{tab:effects-consensus-wrong}). No requirement gives the largest effect on most tasks; which one does depends on the task.
 
-\paragraph{Hypothesis.} H\ref{h:consensus} is falsified: under each readout and in each check, the consensus sets raise accuracy more than the E1 sets on at most 4 of the 14 tasks. Keeping only the heads that every template yields helps where the E1 set already works, and there it raises accuracy further; where the effect rests on many heads, as on singular--plural and next-item, it removes part of the effect.
+The consensus sets give the largest effect of the four sets on tasks where the E1 sets were already effective. In the first check, these are country--capital and park--country under both readouts, product--company under Logit-head and landmark--country under J-head, with 7 to 26 more items than the E1 sets; in the second, country--capital, park--country and product--company under both readouts. The control mean rises with them by more than three items only at the J-head set of park--country. On most other tasks the consensus sets have a smaller effect than the E1 sets, most in the second check on singular--plural and next-item and under J-head on the translation tasks. On next-item, the J-head set's gain in the first check disappears together with that of the control mean.
+
+The union raises J-head's effect on three tasks where the E1 set had little: synonym and prev-item in the first check, and present--past in both, where the first check goes from no effect to 16 items and the second roughly doubles. In the first check, the control mean at these sets stays within two items of zero. The patched present--past prompts are answered with the past tense of the given verb; at the mean and $\alpha$ with the highest accuracy, 94 of the 100 replies differ, so the gain is not one answer repeated. In the first check it is largest at the largest $\alpha$, 10. Two further gains of the union are not specific to the task: on English--French the control mean rises almost as much, and on next-item the gain stays below that of the control mean. Under Logit-head the union lowers the first check's effect on park--country, landmark--country and product--company, and raises the second check's on next-item and present--past.
+
+The sets for $k=3$ behave like the E1 sets they mostly consist of. They gain on some tasks and lose on as many, and the union's effect on present--past is gone. Their largest change is on next-item under Logit-head, whose second-check effect falls by more than half; at the J-head set of landmark--country, the control mean rises.
+
+The three requirements thus trade off against each other. Heads that every template yields carry country--capital, park--country and product--company more strongly. Heads that only one or two templates yield add to J-head's effect on present--past, prev-item and synonym, and requiring three templates already removes them. The number of templates under which a head is found is therefore not by itself a measure of how strongly it carries the task.
+
+\paragraph{Hypothesis.} H\ref{h:consensus} is falsified: under each readout and in each check, the consensus sets raise accuracy more than the E1 sets on at most 4 of the 14 tasks. The sets for $k=1$ and $k=3$ fall outside H\ref{h:consensus}; they were added after its result and are exploratory.
 
 \begin{table}[tbp]
 \centering\footnotesize
 \input{tables/heads_consensus}
-\caption{E1b: rule-style head sets under Logit-head (L) and J-head (J), from the most accurate instruction template (E1, Table~\ref{tab:heads-simple}) and from all five templates (E1b: heads that meet Definition~\ref{def:lth} under each). The E1b set is contained in the E1 set. Copy share: over the identification prompts of the five templates (E1b) or of the one template (E1); --: empty set.}
+\caption{E1b: rule-style head sets under Logit-head (L) and J-head (J): from the most accurate instruction template (E1, Table~\ref{tab:heads-simple}), and the heads that meet Definition~\ref{def:lth} under at least $k$ of the five templates. The set for $k=1$ contains the E1 set and the set for $k=5$ is contained in it; for $k=3$, the heads it shares with the E1 set in brackets.}
 \label{tab:heads-consensus}
 \end{table}
 
 \begin{table}[tbp]
-\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\centering\footnotesize
 \input{tables/effects_consensus}
-\caption{E1b: causal effect of the rule-style head sets of E1 and of E1b with rule-style means, as in Tables~\ref{tab:effects-simple} (first check) and~\ref{tab:effects-simple-wrong} (second check). J only: heads in the J-head set and not in the Logit-head set of the same experiment; --: empty set.}
+\caption{E1b, first causal check: causal effect of the rule-style head sets of Table~\ref{tab:heads-consensus} with rule-style means, as in Table~\ref{tab:effects-simple}; 100 patched items per task. --: empty set.}
 \label{tab:effects-consensus}
 \end{table}
 
 \begin{table}[tbp]
 \centering\footnotesize
 \input{tables/effects_consensus_control}
-\caption{E1b, first check: causal effect of the control mean at the rule-style head sets of E1 and of E1b, as the control columns of Table~\ref{tab:effects-simple}.}
+\caption{E1b, first causal check: causal effect of the control mean at the head sets of Table~\ref{tab:heads-consensus}, as the control columns of Table~\ref{tab:effects-simple}.}
 \label{tab:effects-consensus-control}
+\end{table}
+
+\begin{table}[tbp]
+\centering\footnotesize
+\input{tables/effects_consensus_wrong}
+\caption{E1b, second causal check: causal effect of the head sets of Table~\ref{tab:heads-consensus} with rule-style means, as in Table~\ref{tab:effects-simple-wrong}. Items: the wrongly answered 1-shot prompts patched; the baseline is 0.}
+\label{tab:effects-consensus-wrong}
 \end{table}
 
 \subsection{E2: Complex tasks}\label{sec:res-e2}
@@ -527,6 +542,7 @@ Reused code and data: the lexical-task-head code of \citet{yang2026shared}; the 
 \item[2026-10-30] Head identification and the causal checks use the flexible score, replacing the first-token score (simple tasks) and the strict score (complex tasks): $P^{+}$ is the prompts answered correctly under it, with no condition that the answer comes first, for both families; the identification wordings, the head sets, the means, the patched items and the controls are chosen by it. Readings and means are taken from the prompts of the saved outputs. In the causal checks the reply is generated as the saved outputs and scored by the flexible score; for the simple tasks this replaces the first token, which is kept as a second score. Both complex-task checks patch 100 items on every task, replacing 10 on Set Game, Operator Function and Tapatan; Operator Function has no second check, as no item is answered wrongly under its original rules prompt. E1 and E2 are rerun.
 \item[2026-10-31] The second causal check of the complex tasks gets the control mean of the first check (the control task's mean under its original rules prompt, at the same heads and $\alpha$). Without it, zero-ablation already fixed part of the failures of Set Game and Tapatan, and on the two-label tasks the gains came with one label for every item. The simple tasks' second check stays without a control, as in the released script of \citet{yang2026shared}.
 \item[2026-11-02] E1b: rule-style heads of the simple tasks that meet Definition~\ref{def:lth} under all five instruction templates (H\ref{h:consensus}), patched with both causal checks of E1. Only the rule style and only the simple tasks.
+\item[2026-11-02] E1b extended after the result of H\ref{h:consensus}, as an exploratory question without a hypothesis: the heads that meet Definition~\ref{def:lth} under at least one and at least three of the five templates, patched with both checks. E1b now reports the Logit-head and J-head sets only, not the heads found only by J-head, and no copy share.
 \end{description}
 
 \end{document}
