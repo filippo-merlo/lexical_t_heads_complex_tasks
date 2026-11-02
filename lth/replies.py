@@ -28,6 +28,7 @@ PROCEDURES = {
     "k=1": (RESULTS / "consensus_k1", "at least 1 of 5 templates (union)"),
     "k=3": (RESULTS / "consensus_k3", "at least 3 of 5 templates"),
     "k=5": (RESULTS / "consensus", "all 5 templates"),
+    "k=1 no retrieval": (RESULTS / "consensus_k1_noretrieval", "k=1 minus the task's retrieval heads (any template, readout)"),
     "k=1 shared": (RESULTS / "consensus_k1_shared", "J-head k=1, heads in the sets of at least 2 tasks"),
     "k=1 unshared": (RESULTS / "consensus_k1_unshared", "J-head k=1, heads in no other task's set"),
     "L21H9": (RESULTS / "pp_L21H9", "present-past: the retrieval head among the k=1 unshared heads"),
