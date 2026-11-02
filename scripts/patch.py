@@ -98,6 +98,9 @@ def wording_mean(directory: Path, wording: str):
     return (torch.from_numpy(run["z_sum"] / n), n) if n else (None, 0)
 
 
+SETS = ("logithead", "jhead", "jhead_only")  # the head sets of head_sets
+
+
 def head_sets(heads: dict) -> dict[str, list[tuple[int, int]]]:
     logit = {(l, h) for l, h, _ in heads["logithead"]["heads"]}
     j = {(l, h) for l, h, _ in heads["jhead"]["heads"]}
@@ -128,14 +131,15 @@ def simple_mean(lm, ids: list[list[int]], items: list[int]):
     return total / len(items) if items else None
 
 
-def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple"):
+def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple", sets=SETS):
     """Yang et al.'s ``fix_corrupted_prompts_vary_prompt_instances_average_new``, with each
     style's heads (``intervention_component_prompt_type``) patched with the means of each
     style (``prompt_type_fix``), one source wording at a time, and their control.
 
     With ``family="simple-wrong"``, their ``fix_incorrect_prompts_vary_prompt_instances_average_new``
     instead: the patched prompts are the 1-shot prompts of the first 100 items answered
-    wrongly 1-shot, and there is no control (commented out in their code)."""
+    wrongly 1-shot, and there is no control (commented out in their code). ``sets``: the head
+    sets of ``head_sets`` to patch."""
     from run_outputs import SIMPLE_MAX_TOKENS, simple_answer
 
     from lth.evaluation import flexible_simple
@@ -189,7 +193,7 @@ def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple"):
             if style not in heads_json["simple"][task]:
                 continue
             for name, heads in head_sets(heads_json["simple"][task][style]).items():
-                if not heads:
+                if not heads or name not in sets:
                     continue
                 for mean_style, source, wording, items, mean in means:
                     if mean is None:
@@ -311,6 +315,8 @@ def main() -> None:
     parser.add_argument("--part", default=None, help="name of this share of the simple tasks")
     parser.add_argument("--sources", nargs="+", choices=("task", "control"), default=["task", "control"],
                         help="complex tasks: the means to patch; with one only, the output file names it")
+    parser.add_argument("--sets", nargs="+", choices=SETS, default=list(SETS),
+                        help="simple tasks: the head sets to patch (default: all three)")
     args = parser.parse_args()
     gpu.pin(args.gpu)
     sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -324,7 +330,7 @@ def main() -> None:
     if args.family in COMPLEX_FAMILIES:
         run_fu(lm, heads_json, rows, log, args.family, args.levels, tuple(args.sources))
     else:
-        run_simple(lm, heads_json, rows, log, args.tasks or simple.TASKS, args.family)
+        run_simple(lm, heads_json, rows, log, args.tasks or simple.TASKS, args.family, tuple(args.sets))
     name = args.family + "".join("_" + level.replace("/", "-") for level in args.levels or [])
     if args.tasks:
         name += f".part-{args.part}"

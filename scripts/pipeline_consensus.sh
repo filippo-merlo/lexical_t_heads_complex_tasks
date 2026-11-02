@@ -4,14 +4,17 @@
 # its tables there through LTH_RESULTS). Means, control, alpha and patched items as in E1.
 # Start it detached:
 #   setsid nohup scripts/pipeline_consensus.sh > logs/consensus/pipeline.log 2>&1 < /dev/null &
+# LTH_RESULTS=results/consensus_k3 runs it on another set of identify_consensus.py, with its
+# logs in logs/consensus_k3. LTH_SETS="logithead jhead" patches only those head sets.
 # One job queue on GPUs 0, 2, 3, 5 (model loads 90 s apart), then the shares merged into
 # results/consensus/patching_<family>.csv and its answers. Writes logs/consensus/pipeline.done.
 set -uo pipefail
 cd "$(dirname "$0")/.."
 PY=.venv/bin/python
 GPUS=(0 2 3 5)
-LOGS=logs/consensus
-export LTH_RESULTS=results/consensus
+export LTH_RESULTS=${LTH_RESULTS:-results/consensus}
+LOGS=logs/$(basename "$LTH_RESULTS")
+SETS=${LTH_SETS:-logithead jhead jhead_only}
 mkdir -p $LOGS
 
 say() { echo "[$(date '+%F %T')] $*"; }
@@ -25,7 +28,7 @@ worker() {  # gpu queue
     while job=$(next_job "$2") && [ -n "$job" ]; do
         flock $LOGS/load.lock sleep 90
         read -r family share tasks <<< "$job"
-        $PY scripts/patch.py --gpu "$1" --family "$family" --tasks $tasks --part "$share" \
+        $PY scripts/patch.py --gpu "$1" --family "$family" --tasks $tasks --part "$share" --sets $SETS \
             > "$LOGS/patch_$family.part-$share.log" 2>&1
         say "GPU $1: $family $share exit $?"
     done
@@ -50,12 +53,12 @@ done
 wait "${lanes[@]}"
 
 $PY - <<'PY'
-import gzip, shutil
+import gzip, os, shutil
 from pathlib import Path
 
 import pandas as pd
 
-results = Path("results/consensus")
+results = Path(os.environ["LTH_RESULTS"])
 for family in ("simple", "simple-wrong"):
     parts = sorted(results.glob(f"patching_{family}.part-*.csv"))
     answers = sorted((results / "answers").glob(f"patching_{family}.part-*.jsonl.gz"))
