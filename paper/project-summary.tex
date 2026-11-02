@@ -97,6 +97,8 @@ $k=1$ (union) & Exploratory. & Helps J-head on present--past (0$\to$16 items), s
 $k=3$ & Exploratory. & Mostly the E1 heads; behaves like E1. & -- \\
 $k=1$, shared & J-head union, kept only heads in the union sets of $\geq 2$ tasks (keeps 15--62 of 19--74 heads per task); both checks. & \textbf{Not successful.} Removes most of the union's gains: present--past 16$\to$1 items (check 1), 0.64$\to$0.45 (check 2); synonym 0.21$\to$0.13. Only country--capital rises (0.60$\to$0.69). Shared heads do not carry the task better. & \no \\
 $k=1$, 4 present--past heads & The 4 heads only present--past's union set contains (L19H10, L19H24, L20H28, L21H9; none in E1); both checks, present--past only. & Check 1: no effect alone (0.01); needs the other 15 heads too. Check 2: 0.63, as the whole 19-head union (0.64); rises with $\alpha$ up to 10, real past forms (60/61 distinct replies); $\alpha=0$ gives 0.02. & \mixed \\
+Replies, present--past & Each patched reply sorted by kind, per head set and $\alpha$ (J-head, rule means; notebook below). & Shared heads make the model \emph{name} the task (``past tense of assess'': 65\% of replies in check 1, 73\% in check 2 at $\alpha=10$) without doing it. The 4 unshared heads make it give \emph{a form of the input}: from a bare prompt it repeats the verb (44\%), when the prompt shows the task they fix the inflection. Together (union) they give the answer. One task; heuristic reply kinds. & -- \\
+Replies, all tasks & Same, every task. & Many patched replies contain the expected answer after a prefix the flexible score rejects (``Capital -- Tbilisi'', ``plural needles'', ``Country -- Russia, \dots''): 19--33\% of E1 J-head replies at $\alpha=4$ on capitals, landmark, antonym, synonym, singular--plural. Not all are answers (``opposite of solid'' for \emph{hollow}). & -- \\
 \midrule
 \multicolumn{4}{@{}l}{\textbf{E2 --- complex tasks} (5 tasks $\times$ rule/example/combined $\times$ 2 readouts)} \\
 Head sets & 100 prompts per style (fewer where few correct). & Heads found for every task and style, but counts not comparable with E1 (term lists 10$\times$ longer; Set Game example $P^+$ = 1 prompt). J-head again larger, layers 10--19; covers 44--91\% of Logit-head. Rule/example overlap 48--94\%. & \mixed \\
@@ -143,6 +145,8 @@ H4 all-template heads & Falsified: better on $\leq$4/14 tasks. & \no \\
 \bottomrule
 \end{tabularx}
 \normalsize
+
+\textbf{Inspecting replies:} \texttt{notebooks/patching\_outputs.py} (marimo) shows the simple-task patched replies for every manipulation: task, check, procedure (E1, $k=1/3/5$, shared/unshared), readout, head and mean style, mean source and wording, $\alpha$; accuracy, the share of the most common reply, reply kinds, and each item's replies.
 
 \textbf{Not pursued:} function vectors, function-specific heads, hidden-state differences (scope, 10-27); fp32 Head-JLens fit ($\approx$136 GPU-h, declined); hand-labelled validation of the judge.
 
