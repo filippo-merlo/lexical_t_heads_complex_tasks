@@ -30,6 +30,8 @@ PROCEDURES = {
     "k=5": (RESULTS / "consensus", "all 5 templates"),
     "k=1 shared": (RESULTS / "consensus_k1_shared", "J-head k=1, heads in the sets of at least 2 tasks"),
     "k=1 unshared": (RESULTS / "consensus_k1_unshared", "J-head k=1, heads in no other task's set"),
+    "L21H9": (RESULTS / "pp_L21H9", "present-past: the retrieval head among the k=1 unshared heads"),
+    "L19H10 L19H24 L20H28": (RESULTS / "pp_3heads", "present-past: the other k=1 unshared heads"),
 }
 HEAD_SETS = {"logithead": "Logit-head", "jhead": "J-head", "jhead_only": "J only"}
 KINDS = ("correct", "contains the answer", "names the task", "repeats the input", "other form of the input",

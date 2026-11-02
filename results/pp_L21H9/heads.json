@@ -1,0 +1,21 @@
+{
+ "simple": {
+  "present-past": {
+   "rule": {
+    "jhead": {
+     "rule": "hand-picked: L21H9",
+     "heads": [
+      [
+       21,
+       9,
+       null
+      ]
+     ]
+    },
+    "logithead": {
+     "heads": []
+    }
+   }
+  }
+ }
+}

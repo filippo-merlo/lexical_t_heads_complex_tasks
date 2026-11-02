@@ -135,7 +135,8 @@ def _(chosen, head_style, mo, pd, readout, replies, task):
 
 @app.cell
 def _(alt, baseline, mo, patched, pd, replies):
-    PROC_COLORS = dict(zip(replies.PROCEDURES, ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300"]))
+    PROC_COLORS = dict(zip(replies.PROCEDURES, ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300",
+                                                "#6250d6", "#e34948"]))
 
     def _curves():
         acc = (patched.groupby(["procedure", "alpha"])
