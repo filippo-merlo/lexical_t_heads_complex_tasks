@@ -1,0 +1,168 @@
+procedure,task,style,readout,n_heads,n_retrieval,n_both,both
+E1,antonym,rule,logithead,14,14,1,L20H9
+E1,antonym,rule,jhead,21,34,3,L15H14 L17H21 L20H9
+E1,antonym,example,logithead,10,16,0,
+E1,antonym,example,jhead,15,27,1,L20H9
+E1,synonym,rule,logithead,2,10,1,L17H21
+E1,synonym,rule,jhead,22,33,5,L13H21 L17H20 L17H21 L17H31 L20H8
+E1,synonym,example,logithead,2,11,0,
+E1,synonym,example,jhead,11,40,0,
+E1,singular-plural,rule,logithead,20,31,1,L25H7
+E1,singular-plural,rule,jhead,24,44,1,L25H7
+E1,singular-plural,example,logithead,19,29,0,
+E1,singular-plural,example,jhead,20,51,1,L21H5
+E1,present-past,rule,logithead,10,26,2,L17H21 L26H19
+E1,present-past,rule,jhead,7,35,1,L17H21
+E1,present-past,example,logithead,6,27,0,
+E1,present-past,example,jhead,4,40,1,L17H21
+E1,country-capital,rule,logithead,21,14,0,
+E1,country-capital,rule,jhead,35,27,1,L21H14
+E1,country-capital,example,logithead,13,14,0,
+E1,country-capital,example,jhead,36,27,1,L21H14
+E1,country-currency,rule,logithead,17,16,0,
+E1,country-currency,rule,jhead,33,35,0,
+E1,country-currency,example,logithead,15,16,0,
+E1,country-currency,example,jhead,27,48,1,L16H8
+E1,landmark-country,rule,logithead,23,17,1,L17H15
+E1,landmark-country,rule,jhead,27,40,7,L16H25 L17H4 L21H10 L22H16 L23H25 L29H30 L31H30
+E1,landmark-country,example,logithead,16,20,1,L20H1
+E1,landmark-country,example,jhead,14,65,4,L16H25 L17H4 L22H16 L29H30
+E1,park-country,rule,logithead,24,12,0,
+E1,park-country,rule,jhead,24,27,0,
+E1,park-country,example,logithead,14,19,1,L20H1
+E1,park-country,example,jhead,12,62,1,L16H25
+E1,product-company,rule,logithead,30,14,1,L31H6
+E1,product-company,rule,jhead,40,33,4,L6H22 L15H25 L29H31 L31H6
+E1,product-company,example,logithead,16,18,1,L29H28
+E1,product-company,example,jhead,25,45,2,L15H25 L16H25
+E1,next_item,rule,logithead,35,41,1,L31H1
+E1,next_item,rule,jhead,47,61,3,L15H5 L15H7 L22H13
+E1,next_item,example,logithead,9,61,0,
+E1,next_item,example,jhead,17,65,3,L12H29 L15H5 L15H7
+E1,prev_item,rule,logithead,20,38,0,
+E1,prev_item,rule,jhead,35,58,2,L20H23 L28H10
+E1,prev_item,example,logithead,7,64,0,
+E1,prev_item,example,jhead,17,70,0,
+E1,english-french,rule,logithead,11,7,0,
+E1,english-french,rule,jhead,22,7,0,
+E1,english-french,example,logithead,5,5,0,
+E1,english-french,example,jhead,15,6,0,
+E1,english-german,rule,logithead,7,5,0,
+E1,english-german,rule,jhead,19,5,0,
+E1,english-german,example,logithead,6,6,0,
+E1,english-german,example,jhead,14,5,0,
+E1,english-spanish,rule,logithead,6,5,0,
+E1,english-spanish,rule,jhead,14,6,0,
+E1,english-spanish,example,logithead,3,6,0,
+E1,english-spanish,example,jhead,10,6,0,
+k=1,antonym,rule,logithead,30,14,3,L20H8 L20H9 L25H18
+k=1,antonym,rule,jhead,36,34,6,L15H14 L17H21 L20H8 L20H9 L25H18 L30H1
+k=1,synonym,rule,logithead,11,10,1,L17H21
+k=1,synonym,rule,jhead,49,33,7,L13H21 L17H7 L17H20 L17H21 L17H31 L20H8 L20H23
+k=1,singular-plural,rule,logithead,38,31,3,L21H26 L22H27 L25H7
+k=1,singular-plural,rule,jhead,41,44,3,L21H26 L25H7 L30H2
+k=1,present-past,rule,logithead,17,26,2,L17H21 L26H19
+k=1,present-past,rule,jhead,19,35,2,L17H21 L21H9
+k=1,country-capital,rule,logithead,36,14,0,
+k=1,country-capital,rule,jhead,62,27,1,L21H14
+k=1,country-currency,rule,logithead,22,16,0,
+k=1,country-currency,rule,jhead,48,35,1,L16H8
+k=1,landmark-country,rule,logithead,38,17,1,L17H15
+k=1,landmark-country,rule,jhead,64,40,9,L8H19 L16H25 L17H4 L17H15 L21H10 L22H16 L23H25 L29H30 L31H30
+k=1,park-country,rule,logithead,38,12,0,
+k=1,park-country,rule,jhead,50,27,2,L6H22 L17H15
+k=1,product-company,rule,logithead,42,14,1,L31H6
+k=1,product-company,rule,jhead,74,33,7,L6H22 L15H25 L15H26 L17H15 L29H30 L29H31 L31H6
+k=1,next_item,rule,logithead,45,41,1,L31H1
+k=1,next_item,rule,jhead,60,61,4,L15H5 L15H7 L22H13 L31H1
+k=1,prev_item,rule,logithead,36,38,0,
+k=1,prev_item,rule,jhead,71,58,9,L12H28 L12H29 L13H19 L15H5 L16H29 L20H21 L20H23 L28H10 L31H1
+k=1,english-french,rule,logithead,15,7,0,
+k=1,english-french,rule,jhead,40,7,0,
+k=1,english-german,rule,logithead,13,5,0,
+k=1,english-german,rule,jhead,34,5,0,
+k=1,english-spanish,rule,logithead,8,5,0,
+k=1,english-spanish,rule,jhead,24,6,0,
+k=3,antonym,rule,logithead,17,14,2,L20H8 L20H9
+k=3,antonym,rule,jhead,22,34,4,L15H14 L17H21 L20H8 L20H9
+k=3,synonym,rule,logithead,2,10,1,L17H21
+k=3,synonym,rule,jhead,21,33,5,L13H21 L17H20 L17H21 L17H31 L20H8
+k=3,singular-plural,rule,logithead,17,31,1,L25H7
+k=3,singular-plural,rule,jhead,23,44,2,L25H7 L30H2
+k=3,present-past,rule,logithead,10,26,2,L17H21 L26H19
+k=3,present-past,rule,jhead,7,35,1,L17H21
+k=3,country-capital,rule,logithead,22,14,0,
+k=3,country-capital,rule,jhead,36,27,1,L21H14
+k=3,country-currency,rule,logithead,16,16,0,
+k=3,country-currency,rule,jhead,31,35,1,L16H8
+k=3,landmark-country,rule,logithead,25,17,1,L17H15
+k=3,landmark-country,rule,jhead,29,40,7,L16H25 L17H4 L21H10 L22H16 L23H25 L29H30 L31H30
+k=3,park-country,rule,logithead,24,12,0,
+k=3,park-country,rule,jhead,25,27,0,
+k=3,product-company,rule,logithead,28,14,1,L31H6
+k=3,product-company,rule,jhead,37,33,3,L15H25 L29H31 L31H6
+k=3,next_item,rule,logithead,20,41,0,
+k=3,next_item,rule,jhead,28,61,2,L15H7 L22H13
+k=3,prev_item,rule,logithead,21,38,0,
+k=3,prev_item,rule,jhead,33,58,3,L12H29 L20H23 L28H10
+k=3,english-french,rule,logithead,10,7,0,
+k=3,english-french,rule,jhead,18,7,0,
+k=3,english-german,rule,logithead,9,5,0,
+k=3,english-german,rule,jhead,17,5,0,
+k=3,english-spanish,rule,logithead,6,5,0,
+k=3,english-spanish,rule,jhead,16,6,0,
+k=5,antonym,rule,logithead,11,14,1,L20H9
+k=5,antonym,rule,jhead,13,34,3,L15H14 L17H21 L20H9
+k=5,synonym,rule,jhead,7,33,2,L13H21 L17H21
+k=5,singular-plural,rule,logithead,7,31,1,L25H7
+k=5,singular-plural,rule,jhead,8,44,1,L25H7
+k=5,present-past,rule,logithead,4,26,1,L17H21
+k=5,present-past,rule,jhead,3,35,1,L17H21
+k=5,country-capital,rule,logithead,14,14,0,
+k=5,country-capital,rule,jhead,25,27,1,L21H14
+k=5,country-currency,rule,logithead,14,16,0,
+k=5,country-currency,rule,jhead,23,35,0,
+k=5,landmark-country,rule,logithead,19,17,1,L17H15
+k=5,landmark-country,rule,jhead,15,40,6,L16H25 L17H4 L21H10 L22H16 L23H25 L29H30
+k=5,park-country,rule,logithead,11,12,0,
+k=5,park-country,rule,jhead,12,27,0,
+k=5,product-company,rule,logithead,20,14,1,L31H6
+k=5,product-company,rule,jhead,25,33,2,L15H25 L29H31
+k=5,next_item,rule,logithead,11,41,0,
+k=5,next_item,rule,jhead,13,61,1,L22H13
+k=5,prev_item,rule,logithead,11,38,0,
+k=5,prev_item,rule,jhead,20,58,0,
+k=5,english-french,rule,logithead,10,7,0,
+k=5,english-french,rule,jhead,13,7,0,
+k=5,english-german,rule,logithead,7,5,0,
+k=5,english-german,rule,jhead,14,5,0,
+k=5,english-spanish,rule,logithead,5,5,0,
+k=5,english-spanish,rule,jhead,8,6,0,
+k=1 shared,antonym,rule,jhead,28,34,4,L15H14 L17H21 L20H8 L30H1
+k=1 shared,synonym,rule,jhead,29,33,6,L13H21 L17H7 L17H20 L17H21 L20H8 L20H23
+k=1 shared,singular-plural,rule,jhead,32,44,2,L21H26 L25H7
+k=1 shared,present-past,rule,jhead,15,35,1,L17H21
+k=1 shared,country-capital,rule,jhead,49,27,1,L21H14
+k=1 shared,country-currency,rule,jhead,40,35,1,L16H8
+k=1 shared,landmark-country,rule,jhead,62,40,9,L8H19 L16H25 L17H4 L17H15 L21H10 L22H16 L23H25 L29H30 L31H30
+k=1 shared,park-country,rule,jhead,47,27,2,L6H22 L17H15
+k=1 shared,product-company,rule,jhead,58,33,7,L6H22 L15H25 L15H26 L17H15 L29H30 L29H31 L31H6
+k=1 shared,next_item,rule,jhead,50,61,4,L15H5 L15H7 L22H13 L31H1
+k=1 shared,prev_item,rule,jhead,58,58,8,L12H28 L12H29 L15H5 L16H29 L20H21 L20H23 L28H10 L31H1
+k=1 shared,english-french,rule,jhead,34,7,0,
+k=1 shared,english-german,rule,jhead,33,5,0,
+k=1 shared,english-spanish,rule,jhead,22,6,0,
+k=1 unshared,antonym,rule,jhead,8,34,2,L20H9 L25H18
+k=1 unshared,synonym,rule,jhead,20,33,1,L17H31
+k=1 unshared,singular-plural,rule,jhead,9,44,1,L30H2
+k=1 unshared,present-past,rule,jhead,4,35,1,L21H9
+k=1 unshared,country-capital,rule,jhead,13,27,0,
+k=1 unshared,country-currency,rule,jhead,8,35,0,
+k=1 unshared,landmark-country,rule,jhead,2,40,0,
+k=1 unshared,park-country,rule,jhead,3,27,0,
+k=1 unshared,product-company,rule,jhead,16,33,0,
+k=1 unshared,next_item,rule,jhead,10,61,0,
+k=1 unshared,prev_item,rule,jhead,13,58,1,L13H19
+k=1 unshared,english-french,rule,jhead,6,7,0,
+k=1 unshared,english-german,rule,jhead,1,5,0,
+k=1 unshared,english-spanish,rule,jhead,2,6,0,
