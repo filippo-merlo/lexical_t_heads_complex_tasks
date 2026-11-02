@@ -404,7 +404,7 @@ Patched with the means of the other style, the head sets raise accuracy on the s
 \end{figure}
 
 \subsection{E1b: Heads from several instruction templates}\label{sec:res-e1b}
-\paragraph{Head sets} (Table~\ref{tab:heads-consensus}). The three requirements give sets of very different sizes. Over all tasks, the union of the five templates' sets ($k=1$) has about 1.6 times as many heads as the E1 set under Logit-head and 1.8 times under J-head. The sets of the heads that at least three templates yield ($k=3$) are about as large as the E1 sets, and seven in eight of their heads are E1 heads. The consensus sets ($k=5$) keep three fifths of the Logit-head heads of E1 and just over half of the J-head heads. They keep least on next-item, singular--plural and park--country under both readouts and on synonym under J-head; synonym has no Logit-head consensus set, so it is not patched.
+\paragraph{Head sets} (Table~\ref{tab:heads-consensus}). The three requirements give sets of very different sizes, all small against the model's 1,024 heads: even the union averages under 5\% of them per task under J-head, and its sets of all tasks together cover about a quarter. Over all tasks, the union of the five templates' sets ($k=1$) has about 1.6 times as many heads as the E1 set under Logit-head and 1.8 times under J-head. The sets of the heads that at least three templates yield ($k=3$) are about as large as the E1 sets, and seven in eight of their heads are E1 heads. The consensus sets ($k=5$) keep three fifths of the Logit-head heads of E1 and just over half of the J-head heads. They keep least on next-item, singular--plural and park--country under both readouts and on synonym under J-head; synonym has no Logit-head consensus set, so it is not patched.
 
 \paragraph{Causal checks} (Tables~\ref{tab:effects-consensus}, \ref{tab:effects-consensus-control} and~\ref{tab:effects-consensus-wrong}). No requirement gives the largest effect on most tasks; which one does depends on the task.
 
@@ -419,9 +419,9 @@ The three requirements thus trade off against each other. Heads that every templ
 \paragraph{Hypothesis.} H\ref{h:consensus} is falsified: under each readout and in each check, the consensus sets raise accuracy more than the E1 sets on at most 4 of the 14 tasks. The sets for $k=1$ and $k=3$ fall outside H\ref{h:consensus}; they were added after its result and are exploratory.
 
 \begin{table}[tbp]
-\centering\footnotesize
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
 \input{tables/heads_consensus}
-\caption{E1b: rule-style head sets under Logit-head (L) and J-head (J): from the most accurate instruction template (E1, Table~\ref{tab:heads-simple}), and the heads that meet Definition~\ref{def:lth} under at least $k$ of the five templates. The set for $k=1$ contains the E1 set and the set for $k=5$ is contained in it; for $k=3$, the heads it shares with the E1 set in brackets.}
+\caption{E1b: rule-style head sets under Logit-head (L) and J-head (J): from the most accurate instruction template (E1, Table~\ref{tab:heads-simple}), and the heads that meet Definition~\ref{def:lth} under at least $k$ of the five templates. Each cell: number of heads and, in brackets, its share of the model's 1,024 heads in \%. Distinct: heads in the set of at least one task. The set for $k=1$ contains the E1 set and the set for $k=5$ is contained in it; of the heads in the sets for $k=3$, summed over tasks, 198 of 227 (L) and 300 of 343 (J) are in the E1 sets.}
 \label{tab:heads-consensus}
 \end{table}
 

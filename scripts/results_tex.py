@@ -74,6 +74,7 @@ STYLES = ("rule", "example", "combined")
 SETS = ("logithead", "jhead", "jhead_only")
 #: E1b: heads that pass Definition 1 under at least k of the five instruction templates.
 CONSENSUS_K = (1, 3, 5)
+MODEL_HEADS = 32 * 32  # Llama-3.1-8B-Instruct: 32 layers of 32 heads
 # Tasks with a fixed label set, and their label fields (as scripts/e0_table.py).
 LABEL_FIELDS = {"noun_class_agreement": "expected_label", "lexical_category_inference": "expected_answer"}
 
@@ -353,25 +354,29 @@ def table_consensus(patching: pd.DataFrame) -> None:
     dirs = {k: RESULTS / ("consensus" if k == 5 else f"consensus_k{k}") for k in CONSENSUS_K}
     if not all((d / "measures.csv").exists() for d in dirs.values()):
         return
-    m = {k: pd.read_csv(d / "measures.csv").set_index(["task", "readout"]) for k, d in dirs.items()}
     readouts = ("logithead", "jhead")
     sets = " & ".join(rf"\multicolumn{{4}}{{c}}{{{label}}}" for label in ("L", "J"))
     columns = "Task" + " & E1 & $k=1$ & $k=3$ & $k=5$" * 2
 
+    def share(n: float, digits: int = 0) -> str:  # a head count and its share of the model's heads, in %
+        return f"{n:.{digits}f} ({100 * n / MODEL_HEADS:.1f})"
+
+    head_sets = {"E1": json.loads((RESULTS / "heads.json").read_text())["simple"],
+                 **{k: json.loads((d / "heads.json").read_text())["simple"] for k, d in dirs.items()}}
     rows = []
     for task in simple.TASKS:
-        cells = []
-        for readout in readouts:
-            r = {k: m[k].loc[(task, readout)] for k in CONSENSUS_K}
-            cells += [str(int(r[1].n_e1)), str(int(r[1].n_heads)),
-                      f"{int(r[3].n_heads)} ({int(r[3].n_both)})", str(int(r[5].n_heads))]
+        cells = [share(len(head_sets[key][task]["rule"][readout]["heads"]))
+                 for readout in readouts for key in ("E1", *CONSENSUS_K)]
         rows.append(" & ".join([tex_name("simple", task), *cells]) + r" \\")
-    total = []
+    mean, distinct = [], []
     for readout in readouts:
-        t = {k: m[k].xs(readout, level="readout") for k in CONSENSUS_K}
-        total += [str(int(t[1].n_e1.sum())), str(int(t[1].n_heads.sum())),
-                  f"{int(t[3].n_heads.sum())} ({int(t[3].n_both.sum())})", str(int(t[5].n_heads.sum()))]
-    rows += [r"\midrule", " & ".join(["All tasks", *total]) + r" \\"]
+        for key in ("E1", *CONSENSUS_K):
+            per_task = [{(l, h) for l, h, _ in head_sets[key][task]["rule"][readout]["heads"]}
+                        for task in simple.TASKS]
+            mean.append(share(sum(map(len, per_task)) / len(per_task), 1))
+            distinct.append(share(len(set().union(*per_task))))
+    rows += [r"\midrule", " & ".join(["Mean per task", *mean]) + r" \\",
+             " & ".join(["Distinct, all tasks", *distinct]) + r" \\"]
     header = [f" & {sets} \\\\", r"\cmidrule(lr){2-5}\cmidrule(lr){6-9}", columns + r" \\"]
     write("heads_consensus", tabular("@{}lcccccccc@{}", header, rows))
 
