@@ -6,6 +6,9 @@ rule-defined tasks of Fu et al. (2026). Each attention head is read with two rea
 the per-head logit lens (Logit-head) and Head-JLens (J-head). The identified heads are
 then tested by mean activation patching.
 
+The project has two parts: Part I works on the identification method on the simple tasks; Part II
+applies it to the complex tasks.
+
 ## Setup
 
 ```bash

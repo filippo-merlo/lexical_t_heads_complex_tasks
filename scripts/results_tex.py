@@ -22,8 +22,10 @@ proposal-minimal.tex, and the figures ``paper/figures/*.pdf``:
   instruction templates (``results/consensus_k1``, ``consensus_k3``, ``consensus``), against
   E1's; their causal effect with rule-style means in the two checks, and of the control mean
   in the first;
-- ``layers.pdf``: lexical task heads per layer under each readout (``heads.json``);
-- ``copy_share.pdf``: copy share per task, style and readout (``measures.csv``);
+- ``layers_simple.pdf``, ``layers_complex.pdf``: lexical task heads per layer under each
+  readout (``heads.json``), one figure per task family (Parts I and II of the proposal);
+- ``copy_share_simple.pdf``, ``copy_share_complex.pdf``: copy share per task, style and
+  readout (``measures.csv``);
 - ``patching_simple.pdf``, ``patching_simple_wrong.pdf``, ``patching_complex.pdf``: accuracy
   against alpha.
 
@@ -414,37 +416,33 @@ def style_axes(ax) -> None:
         ax.spines[side].set_visible(False)
 
 
-def figure_layers(heads: dict) -> None:
-    """Heads per layer, summed over the task and style sets of each panel."""
-    panels = [("Simple", ("simple",)), ("Complex", ("complex",))]
-    fig, axes = plt.subplots(1, 2, figsize=(6.3, 1.9), sharex=True)
-    for ax, (title, families) in zip(axes, panels):
-        for readout in READOUTS:
-            counts = [0] * 32
-            for family in families:
-                for styles in heads.get(family, {}).values():
-                    for sets in styles.values():
-                        for layer, _, _ in sets[readout]["heads"]:
-                            counts[layer] += 1
-            ax.plot(range(32), counts, color=SET_COLOUR[readout], label=SET_LABEL[readout])
-        ax.set_title(title, loc="left")
-        ax.set_xlabel("layer")
-        ax.set_xticks([0, 8, 16, 24, 31])
-        style_axes(ax)
-    axes[0].set_ylabel("heads")
-    axes[0].legend(loc="upper left")
+def figure_layers(heads: dict, family: str) -> None:
+    """Heads per layer, summed over the task and style sets of one family."""
+    fig, ax = plt.subplots(figsize=(3.4, 1.9))
+    for readout in READOUTS:
+        counts = [0] * 32
+        for styles in heads.get(family, {}).values():
+            for sets in styles.values():
+                for layer, _, _ in sets[readout]["heads"]:
+                    counts[layer] += 1
+        ax.plot(range(32), counts, color=SET_COLOUR[readout], label=SET_LABEL[readout])
+    ax.set_xlabel("layer")
+    ax.set_xticks([0, 8, 16, 24, 31])
+    style_axes(ax)
+    ax.set_ylabel("heads")
+    ax.legend(loc="upper left")
     fig.tight_layout()
-    fig.savefig(FIGURES / "layers.pdf")
+    fig.savefig(FIGURES / f"layers_{family}.pdf")
     plt.close(fig)
 
 
-def figure_copy_share(measures: pd.DataFrame) -> None:
-    rows = [("simple", t) for t in simple.TASKS] + [("complex", k) for k in COMPLEX_NAMES]
-    y = {row: i + (i >= len(simple.TASKS)) for i, row in enumerate(rows)}  # a gap between the families
-    fig, axes = plt.subplots(1, 3, figsize=(6.3, 3.6), sharey=True)
-    for ax, style in zip(axes, STYLES):
-        for (kind, task), pos in y.items():
-            m = measures[(measures.family == kind) & (measures.task == task) & (measures["style"] == style)]
+def figure_copy_share(measures: pd.DataFrame, family: str) -> None:
+    tasks = simple.TASKS if family == "simple" else list(COMPLEX_NAMES)
+    styles = STYLES[:2] if family == "simple" else STYLES
+    fig, axes = plt.subplots(1, len(styles), figsize=(2.1 * len(styles), 0.6 + 0.2 * len(tasks)), sharey=True)
+    for ax, style in zip(axes, styles):
+        for pos, task in enumerate(tasks):
+            m = measures[(measures.family == family) & (measures.task == task) & (measures["style"] == style)]
             for readout, dy in zip(READOUTS, (-0.17, 0.17)):
                 value = m[m.readout == readout].copy_share
                 if len(value) and pd.notna(value.iloc[0]):
@@ -454,12 +452,12 @@ def figure_copy_share(measures: pd.DataFrame) -> None:
         ax.set_xlabel("copy share")
         ax.grid(axis="y", visible=False)
         style_axes(ax)
-    axes[0].set_yticks(list(y.values()), [plot_name(k, t) for k, t in y])
+    axes[0].set_yticks(range(len(tasks)), [plot_name(family, t) for t in tasks])
     axes[0].invert_yaxis()
     handles = [plt.Line2D([], [], color=SET_COLOUR[r], marker="o", lw=0, ms=4) for r in READOUTS]
     fig.legend(handles, [SET_LABEL[r] for r in READOUTS], loc="upper right", ncol=2)
-    fig.tight_layout(rect=(0, 0, 1, 0.95))
-    fig.savefig(FIGURES / "copy_share.pdf")
+    fig.tight_layout(rect=(0, 0, 1, 1 - 0.18 / (0.6 + 0.2 * len(tasks))))
+    fig.savefig(FIGURES / f"copy_share_{family}.pdf")
     plt.close(fig)
 
 
@@ -568,8 +566,9 @@ def main() -> None:
     table_effects(data["patching"], data["cross"], data["e0"])
     table_consensus(data["patching"])
     FIGURES.mkdir(exist_ok=True)
-    figure_layers(data["heads"])
-    figure_copy_share(data["measures"])
+    for family in ("simple", "complex"):
+        figure_layers(data["heads"], family)
+        figure_copy_share(data["measures"], family)
     figure_patching(data["patching"], data["e0"])
     print(f"wrote {TABLES} and {FIGURES}")
 
