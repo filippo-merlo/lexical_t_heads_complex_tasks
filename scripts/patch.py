@@ -132,7 +132,7 @@ def simple_mean(lm, ids: list[list[int]], items: list[int]):
 
 
 def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple", sets=SETS,
-               set_list=False, same_style=False):
+               set_list=False, same_style=False, alphas=ALPHAS):
     """Yang et al.'s ``fix_corrupted_prompts_vary_prompt_instances_average_new``, with each
     style's heads (``intervention_component_prompt_type``) patched with the means of each
     style (``prompt_type_fix``), one source wording at a time, and their control.
@@ -141,8 +141,10 @@ def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple", s
     instead: the patched prompts are the 1-shot prompts of the first 100 items answered
     wrongly 1-shot, and there is no control (commented out in their code). ``sets``: the head
     sets of ``head_sets`` to patch. ``set_list``: patch instead the sets listed under each
-    task's ``sets`` key, ``[style, name, heads]`` (``scripts/rank_heads.py``). ``same_style``:
-    patch each set with the means of its own style only."""
+    task's ``sets`` key, ``[style, name, heads]`` (``scripts/rank_heads.py``); a set that equals
+    an earlier one of the same style is not patched again, its rows and answers are copied
+    under its own name. ``same_style``: patch each set with the means of its own style only.
+    ``alphas``: the scaling factors."""
     from run_outputs import SIMPLE_MAX_TOKENS, simple_answer
 
     from lth.evaluation import flexible_simple
@@ -199,15 +201,23 @@ def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple", s
             candidates = [(style, name, heads) for style in simple.WORDINGS if style in heads_json["simple"][task]
                           for name, heads in head_sets(heads_json["simple"][task][style]).items()
                           if heads and name in sets]
+        first_of = {}  # (style, heads) -> name of the first set patched with these heads
         for style, name, heads in candidates:
+            same = first_of.setdefault((style, frozenset(heads)), name) if set_list else name
+            if same != name:
+                rows += [{**r, "heads": name} for r in rows if r["task"] == task and r["family"] == family
+                         and r["style"] == style and r["heads"] == same]
+                log += [{**r, "heads": name} for r in log if r["task"] == task and r["family"] == family
+                        and r["style"] == style and r["heads"] == same]
+                continue
             for mean_style, source, wording, items, mean in means:
                 if mean is None or (same_style and mean_style != style):
                     continue
                 condition = dict(family=family, task=task, style=style, heads=name, source=source,
                                  mean_style=mean_style, mean_wording=wording)
-                replies = generate_patched(lm, patched, heads, mean, ALPHAS, SIMPLE_MAX_TOKENS,
+                replies = generate_patched(lm, patched, heads, mean, alphas, SIMPLE_MAX_TOKENS,
                                            PATCH_ROWS["simple"], stop=stop)
-                for alpha in ALPHAS:
+                for alpha in alphas:
                     hits = tokens = 0
                     for p, i in enumerate(fixed):
                         reply = replies[p, alpha]
@@ -324,6 +334,8 @@ def main() -> None:
                         help="simple tasks: the head sets to patch (default: all three)")
     parser.add_argument("--set-list", action="store_true",
                         help="simple tasks: patch the sets listed in heads.json (scripts/rank_heads.py)")
+    parser.add_argument("--alphas", nargs="+", type=float, default=None,
+                        help="simple tasks: the scaling factors (default: ALPHAS, Yang et al.'s 15)")
     parser.add_argument("--same-style", action="store_true",
                         help="simple tasks: patch each set with the means of its own style only")
     args = parser.parse_args()
@@ -340,7 +352,7 @@ def main() -> None:
         run_fu(lm, heads_json, rows, log, args.family, args.levels, tuple(args.sources))
     else:
         run_simple(lm, heads_json, rows, log, args.tasks or simple.TASKS, args.family, tuple(args.sets),
-                   args.set_list, args.same_style)
+                   args.set_list, args.same_style, args.alphas or ALPHAS)
     name = args.family + "".join("_" + level.replace("/", "-") for level in args.levels or [])
     if args.tasks:
         name += f".part-{args.part}"
