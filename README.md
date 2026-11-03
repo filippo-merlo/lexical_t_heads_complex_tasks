@@ -38,6 +38,9 @@ Every GPU script skips work already on disk, so an interrupted run resumes.
   - `fu.py`: Fu et al.'s tasks, run through their own code.
   - `terms.py`: term lists and their token ids.
   - `store.py`: what each run keeps.
+  - `headvis.py`: attention scores and patterns of heads on chosen prompts (for `notebooks/headvis.py`).
+- `notebooks/`: marimo notebooks. `headvis.py` is a live app (GPU) for chosen heads on chosen prompts,
+  Neuronpedia HeadVis-style: `LTH_GPU=0 uv run marimo run notebooks/headvis.py --headless --port 2719`.
 - `paper/`: the proposal (`proposal-minimal.tex`), its appendices, bibliography, tables and figures.
 - `materials/`: the generation prompts (proposal App. B) and the checked wordings and term lists.
 - `third_party/`, `data/`: fetched sources and run outputs (not tracked).
