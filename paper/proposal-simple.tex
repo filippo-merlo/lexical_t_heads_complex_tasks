@@ -372,6 +372,14 @@ On the simple tasks, rule-style lexical task heads that meet Definition~\ref{def
 \label{tab:effects-consensus-wrong}
 \end{table}
 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/patching_consensus_k5.pdf}
+\caption{E1b, consensus sets ($k=5$): accuracy against $\alpha$ for the rule-style sets with rule-style means, averaged over the five instruction templates. For each task, the first check (zero-shot prompts of the first 100 items answered correctly with one shot) and the second (1-shot prompts answered wrongly; no control mean). Solid: the head set's mean over the task's prompts; dotted: the control mean at the same heads; dashed: unpatched accuracy. Synonym has no Logit-head consensus set.}
+\label{fig:patch-consensus}
+\end{figure}
+
 % =====================================================================
 \section{E1b, exploratory: heads from at least one or three templates}\label{sec:k13}
 \subsection{Design}
@@ -390,13 +398,42 @@ The sets for $k=3$ behave like the E1 sets they mostly consist of. They gain on 
 
 The three requirements thus trade off against each other. Heads that every template yields carry country--capital, park--country and product--company more strongly. Heads that only one or two templates yield add to J-head's effect on present--past, prev-item and synonym, and requiring three templates already removes them. The number of templates under which a head is found is therefore not by itself a measure of how strongly it carries the task.
 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/patching_consensus_k1.pdf}
+\caption{E1b, heads from at least one template ($k=1$, the union), as Figure~\ref{fig:patch-consensus}.}
+\label{fig:patch-k1}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/patching_consensus_k3.pdf}
+\caption{E1b, heads from at least three templates ($k=3$), as Figure~\ref{fig:patch-consensus}.}
+\label{fig:patch-k3}
+\end{figure}
+
 % =====================================================================
 \section{Shared heads of the union}\label{sec:shared}
 \ph{S1}{Shared heads of the union}{J-head $k=1$ sets restricted to heads in the union sets of at least two tasks; both checks, all tasks (da04856).}
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/patching_shared.pdf}
+\caption{J-head union sets ($k=1$) restricted to the heads that are also in the union set of at least one other task, as Figure~\ref{fig:patch-consensus}.}
+\label{fig:patch-shared}
+\end{figure}
+
 % =====================================================================
 \section{Present--past: the union's four unshared heads}\label{sec:pp4}
 \ph{S2}{Present--past: the union's four unshared heads}{The 4 heads only present--past's J-head union set contains (L19H10, L19H24, L20H28, L21H9); both checks, present--past only (c8c6fb8).}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/patching_pp_unshared.pdf}
+\caption{Present--past, J-head, rule-style means averaged over the five instruction templates: the union set ($k=1$, 19 heads), its 15 heads that are also in another task's union set (shared), and its 4 other heads (unshared: L19H10, L19H24, L20H28, L21H9). Left: first check (100 items); right: second check (61 items, no control mean). Solid: task mean; dotted: control mean at the same heads; dashed: unpatched accuracy.}
+\label{fig:patch-pp-unshared}
+\end{figure}
 
 % =====================================================================
 \section{Patched replies by kind}\label{sec:replies}
@@ -410,9 +447,23 @@ The three requirements thus trade off against each other. Heads that every templ
 \section{Present--past: L21H9 and the other three heads}\label{sec:pp-split}
 \ph{S5}{Present--past: L21H9 and the other three heads}{L21H9 alone, and L19H10, L19H24, L20H28 alone; both checks (42a8033).}
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/patching_pp_split.pdf}
+\caption{Present--past, as Figure~\ref{fig:patch-pp-unshared}: the 4 unshared heads, L21H9 alone, and the other three (L19H10, L19H24, L20H28) alone.}
+\label{fig:patch-pp-split}
+\end{figure}
+
 % =====================================================================
 \section{The union without retrieval heads}\label{sec:noretrieval}
 \ph{S6}{The union without retrieval heads}{$k=1$ sets minus every retrieval head of the task; both checks, all tasks (2b0e939).}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/patching_noretrieval.pdf}
+\caption{Union sets ($k=1$) without the task's retrieval heads (found under any template and either readout), as Figure~\ref{fig:patch-consensus}.}
+\label{fig:patch-noretrieval}
+\end{figure}
 
 \section{Plan}\label{sec:plan}
 \paragraph{Steps.}

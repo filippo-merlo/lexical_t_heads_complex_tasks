@@ -27,7 +27,11 @@ proposal-simple.tex or proposal-complex.tex, and the figures ``paper/figures/*.p
 - ``copy_share_simple.pdf``, ``copy_share_complex.pdf``: copy share per task, style and
   readout (``measures.csv``);
 - ``patching_simple.pdf``, ``patching_simple_wrong.pdf``, ``patching_complex.pdf``: accuracy
-  against alpha.
+  against alpha;
+- ``patching_consensus_k{1,3,5}.pdf``, ``patching_shared.pdf``, ``patching_noretrieval.pdf``: the
+  same for the rule-style sets of E1b and its follow-ups (``results/consensus*``), both checks
+  side by side; ``patching_pp_unshared.pdf``, ``patching_pp_split.pdf``: present--past, J-head
+  subsets of its union set (``consensus_k1_shared``, ``_unshared``, ``pp_L21H9``, ``pp_3heads``).
 
 Conditions without output yet (a causal check still to run) are marked in the tables and
 left blank in the figures, so the script can be rerun as results arrive.
@@ -83,6 +87,9 @@ LABEL_FIELDS = {"noun_class_agreement": "expected_label", "lexical_category_infe
 # The style of head_level_jlens/scripts/figures.py: blue for J-head, orange for Logit-head,
 # grey for context; the third series (heads only J-head finds) takes the next slot, aqua.
 BLUE, ORANGE, AQUA, GREY = "#2a78d6", "#eb6834", "#1baf7a", "#898781"
+# Present--past subsets of the J-head union set: blue (the union, as J-head), then magenta,
+# green, yellow (dataviz validator: all pairs pass CVD and normal-vision separation).
+MAGENTA, GREEN, YELLOW = "#e87ba4", "#008300", "#eda100"
 INK, INK_2, SURFACE = "#0b0b0b", "#52514e", "#fcfcfb"
 GRIDLINE, AXIS_LINE = "#e1e0d9", "#c3c2b7"
 SET_COLOUR = {"logithead": ORANGE, "jhead": BLUE, "jhead_only": AQUA}
@@ -461,7 +468,7 @@ def figure_copy_share(measures: pd.DataFrame, family: str) -> None:
     plt.close(fig)
 
 
-def curve_panel(ax, patching, family, task, style, reference=None) -> bool:
+def curve_panel(ax, patching, family, task, style, reference=None, sets=SETS) -> bool:
     """Accuracy against alpha for one condition; False if it has no patched rows."""
     rows = patching[(patching.family == family) & (patching.task == task) & (patching["style"] == style)]
     if rows.empty:
@@ -470,7 +477,7 @@ def curve_panel(ax, patching, family, task, style, reference=None) -> bool:
     ax.axhline(base.accuracy.iloc[0], color=GREY, lw=0.9, ls=(0, (4, 2)), zorder=1)
     if reference is not None:
         ax.axhline(reference, color=INK_2, lw=0.8, ls=(0, (7, 2, 1.5, 2)), zorder=1)
-    for s in SETS:
+    for s in sets:
         for source in ("task", "control"):
             r = rows[(rows.heads == s) & (rows.source == source)].sort_values("alpha")
             if len(r):
@@ -480,9 +487,9 @@ def curve_panel(ax, patching, family, task, style, reference=None) -> bool:
     return True
 
 
-def curve_legend(fig, constant: bool = False, control: bool = True) -> None:
-    handles = [plt.Line2D([], [], color=SET_COLOUR[s]) for s in SETS]
-    labels = [f"{SET_LABEL[s]}, task mean" for s in SETS]
+def curve_legend(fig, constant: bool = False, control: bool = True, sets=SETS) -> None:
+    handles = [plt.Line2D([], [], color=SET_COLOUR[s]) for s in sets]
+    labels = [f"{SET_LABEL[s]}, task mean" for s in sets]
     if control:
         handles.append(plt.Line2D([], [], color=INK_2, ls=CONTROL_STYLE, lw=0.9))
         labels.append("control mean (same colours)")
@@ -555,6 +562,76 @@ def figure_patching(patching: pd.DataFrame, e0: pd.DataFrame) -> None:
     plt.close(fig)
 
 
+def rule_curves(directory: Path) -> pd.DataFrame | None:
+    """The rule-style sets of one E1b result folder, patched with rule-style means."""
+    frames = [pd.read_csv(f) for f in sorted(directory.glob("patching_*.csv"))]
+    if not frames:
+        return None
+    curves, _ = wording_curves(pd.concat(frames, ignore_index=True))
+    return curves
+
+
+def figure_rule_sets(directory: Path, name: str, sets) -> None:
+    """Accuracy against alpha for the rule-style sets of E1b or a follow-up: each task's two
+    checks side by side (first check with its control mean, second without)."""
+    curves = rule_curves(directory)
+    if curves is None:
+        return
+    fig, axes = plt.subplots(7, 4, figsize=(6.3, 8.4), sharex=True, sharey=True)
+    for i, task in enumerate(simple.TASKS):
+        for j, (family, check) in enumerate((("simple", "check 1"), ("simple-wrong", "check 2"))):
+            ax = axes[i // 2, 2 * (i % 2) + j]
+            if not curve_panel(ax, curves, family, task, "rule", sets=sets):
+                empty_panel(ax, "no head set")
+            ax.set_title(f"{plot_name('simple', task)}, {check}", loc="left", fontsize=7)
+            ax.set_ylim(-0.03, 1.03)
+            style_axes(ax)
+    for ax in axes[-1]:
+        ax.set_xlabel(r"$\alpha$")
+        ax.set_xticks([-10, -5, 0, 5, 10])
+    for ax in axes[:, 0]:
+        ax.set_ylabel("accuracy")
+    curve_legend(fig, sets=sets)
+    fig.tight_layout(rect=(0, 0, 1, 0.96))
+    fig.savefig(FIGURES / f"patching_{name}.pdf")
+    plt.close(fig)
+
+
+def figure_present_past(name: str, series) -> None:
+    """Present--past, J-head subsets of the union set with rule-style means: one curve per
+    subset ``(label, result folder, colour)``, the two checks side by side."""
+    loaded = [(label, rule_curves(RESULTS / folder), colour) for label, folder, colour in series]
+    if any(c is None for _, c, _ in loaded):
+        return
+    fig, axes = plt.subplots(1, 2, figsize=(6.3, 2.3), sharey=True)
+    checks = (("simple", "check 1: zero-shot prompts"), ("simple-wrong", "check 2: 1-shot prompts answered wrongly"))
+    for ax, (family, title) in zip(axes, checks):
+        base = None
+        for label, curves, colour in loaded:
+            rows = curves[(curves.family == family) & (curves.task == "present-past") & (curves.heads == "jhead")]
+            base = curves[(curves.family == family) & (curves.task == "present-past") & (curves.source == "none")]
+            for source in ("task", "control"):
+                r = rows[rows.source == source].sort_values("alpha")
+                if len(r):
+                    ax.plot(r.alpha, r.accuracy, color=colour, lw=1.3 if source == "task" else 0.9,
+                            ls="-" if source == "task" else CONTROL_STYLE, zorder=3 if source == "task" else 2)
+        ax.axhline(base.accuracy.iloc[0], color=GREY, lw=0.9, ls=(0, (4, 2)), zorder=1)
+        ax.set_title(title, loc="left", fontsize=7)
+        ax.set_xlabel(r"$\alpha$")
+        ax.set_xticks([-10, -5, 0, 5, 10])
+        ax.set_ylim(-0.03, 1.03)
+        style_axes(ax)
+    axes[0].set_ylabel("accuracy")
+    handles = [plt.Line2D([], [], color=c) for _, _, c in loaded]
+    labels = [label for label, _, _ in loaded]
+    handles += [plt.Line2D([], [], color=INK_2, ls=CONTROL_STYLE, lw=0.9), plt.Line2D([], [], color=GREY, ls=(0, (4, 2)), lw=0.9)]
+    labels += ["control mean (same colours)", "unpatched"]
+    fig.legend(handles, labels, loc="upper center", ncol=3)
+    fig.tight_layout(rect=(0, 0, 1, 0.8))
+    fig.savefig(FIGURES / f"patching_{name}.pdf")
+    plt.close(fig)
+
+
 def main() -> None:
     argparse.ArgumentParser(description=__doc__.split("\n\n")[0]).parse_args()
     data = load()
@@ -570,6 +647,17 @@ def main() -> None:
         figure_layers(data["heads"], family)
         figure_copy_share(data["measures"], family)
     figure_patching(data["patching"], data["e0"])
+    readouts = ("logithead", "jhead")
+    for k in CONSENSUS_K:
+        figure_rule_sets(RESULTS / ("consensus" if k == 5 else f"consensus_k{k}"), f"consensus_k{k}", readouts)
+    figure_rule_sets(RESULTS / "consensus_k1_shared", "shared", ("jhead",))
+    figure_rule_sets(RESULTS / "consensus_k1_noretrieval", "noretrieval", readouts)
+    figure_present_past("pp_unshared", (("union, 19 heads", "consensus_k1", BLUE),
+                                        ("shared, 15 heads", "consensus_k1_shared", YELLOW),
+                                        ("unshared, 4 heads", "consensus_k1_unshared", MAGENTA)))
+    figure_present_past("pp_split", (("unshared, 4 heads", "consensus_k1_unshared", MAGENTA),
+                                     ("L21H9", "pp_L21H9", GREEN),
+                                     ("L19H10, L19H24, L20H28", "pp_3heads", YELLOW)))
     print(f"wrote {TABLES} and {FIGURES}")
 
 
