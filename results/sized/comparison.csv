@@ -1,0 +1,225 @@
+pair,check,task,winner,verdict
+"J-head vs Logit-head, rule style",first check,antonym,b,mixed
+"J-head vs Logit-head, rule style",first check,synonym,a,holds
+"J-head vs Logit-head, rule style",first check,singular-plural,b,mixed
+"J-head vs Logit-head, rule style",first check,present-past,a,mixed
+"J-head vs Logit-head, rule style",first check,country-capital,b,reverses
+"J-head vs Logit-head, rule style",first check,country-currency,a,mixed
+"J-head vs Logit-head, rule style",first check,landmark-country,b,holds
+"J-head vs Logit-head, rule style",first check,park-country,a,mixed
+"J-head vs Logit-head, rule style",first check,product-company,a,mixed
+"J-head vs Logit-head, rule style",first check,next_item,a,holds
+"J-head vs Logit-head, rule style",first check,prev_item,b,mixed
+"J-head vs Logit-head, rule style",first check,english-french,a,mixed
+"J-head vs Logit-head, rule style",first check,english-german,a,mixed
+"J-head vs Logit-head, rule style",first check,english-spanish,a,holds
+"J-head vs Logit-head, rule style",second check,antonym,a,mixed
+"J-head vs Logit-head, rule style",second check,synonym,a,holds
+"J-head vs Logit-head, rule style",second check,singular-plural,a,holds
+"J-head vs Logit-head, rule style",second check,present-past,b,reverses
+"J-head vs Logit-head, rule style",second check,country-capital,a,holds
+"J-head vs Logit-head, rule style",second check,country-currency,b,mixed
+"J-head vs Logit-head, rule style",second check,landmark-country,b,mixed
+"J-head vs Logit-head, rule style",second check,park-country,a,mixed
+"J-head vs Logit-head, rule style",second check,product-company,a,mixed
+"J-head vs Logit-head, rule style",second check,next_item,a,holds
+"J-head vs Logit-head, rule style",second check,prev_item,a,mixed
+"J-head vs Logit-head, rule style",second check,english-french,a,holds
+"J-head vs Logit-head, rule style",second check,english-german,a,holds
+"J-head vs Logit-head, rule style",second check,english-spanish,a,holds
+"J-head vs Logit-head, example style",first check,antonym,b,mixed
+"J-head vs Logit-head, example style",first check,synonym,a,holds
+"J-head vs Logit-head, example style",first check,singular-plural,a,holds
+"J-head vs Logit-head, example style",first check,present-past,a,holds
+"J-head vs Logit-head, example style",first check,country-capital,a,mixed
+"J-head vs Logit-head, example style",first check,country-currency,a,holds
+"J-head vs Logit-head, example style",first check,landmark-country,b,mixed
+"J-head vs Logit-head, example style",first check,park-country,b,mixed
+"J-head vs Logit-head, example style",first check,product-company,a,mixed
+"J-head vs Logit-head, example style",first check,next_item,a,mixed
+"J-head vs Logit-head, example style",first check,prev_item,a,mixed
+"J-head vs Logit-head, example style",first check,english-french,a,reverses
+"J-head vs Logit-head, example style",first check,english-german,b,mixed
+"J-head vs Logit-head, example style",first check,english-spanish,a,holds
+"J-head vs Logit-head, example style",second check,antonym,a,mixed
+"J-head vs Logit-head, example style",second check,synonym,a,holds
+"J-head vs Logit-head, example style",second check,singular-plural,a,holds
+"J-head vs Logit-head, example style",second check,present-past,b,reverses
+"J-head vs Logit-head, example style",second check,country-capital,a,mixed
+"J-head vs Logit-head, example style",second check,country-currency,b,mixed
+"J-head vs Logit-head, example style",second check,landmark-country,b,mixed
+"J-head vs Logit-head, example style",second check,park-country,b,mixed
+"J-head vs Logit-head, example style",second check,product-company,a,holds
+"J-head vs Logit-head, example style",second check,next_item,a,holds
+"J-head vs Logit-head, example style",second check,prev_item,a,mixed
+"J-head vs Logit-head, example style",second check,english-french,a,holds
+"J-head vs Logit-head, example style",second check,english-german,,mixed
+"J-head vs Logit-head, example style",second check,english-spanish,a,holds
+"$k=1$ vs E1, Logit-head",first check,antonym,b,holds
+"$k=1$ vs E1, Logit-head",first check,synonym,b,mixed
+"$k=1$ vs E1, Logit-head",first check,singular-plural,b,mixed
+"$k=1$ vs E1, Logit-head",first check,present-past,a,mixed
+"$k=1$ vs E1, Logit-head",first check,country-capital,b,mixed
+"$k=1$ vs E1, Logit-head",first check,country-currency,b,mixed
+"$k=1$ vs E1, Logit-head",first check,landmark-country,b,mixed
+"$k=1$ vs E1, Logit-head",first check,park-country,b,mixed
+"$k=1$ vs E1, Logit-head",first check,product-company,b,mixed
+"$k=1$ vs E1, Logit-head",first check,next_item,a,mixed
+"$k=1$ vs E1, Logit-head",first check,prev_item,a,mixed
+"$k=1$ vs E1, Logit-head",first check,english-french,,mixed
+"$k=1$ vs E1, Logit-head",first check,english-german,,mixed
+"$k=1$ vs E1, Logit-head",first check,english-spanish,,mixed
+"$k=1$ vs E1, Logit-head",second check,antonym,b,holds
+"$k=1$ vs E1, Logit-head",second check,synonym,a,mixed
+"$k=1$ vs E1, Logit-head",second check,singular-plural,a,holds
+"$k=1$ vs E1, Logit-head",second check,present-past,a,mixed
+"$k=1$ vs E1, Logit-head",second check,country-capital,,mixed
+"$k=1$ vs E1, Logit-head",second check,country-currency,a,mixed
+"$k=1$ vs E1, Logit-head",second check,landmark-country,b,mixed
+"$k=1$ vs E1, Logit-head",second check,park-country,a,mixed
+"$k=1$ vs E1, Logit-head",second check,product-company,b,mixed
+"$k=1$ vs E1, Logit-head",second check,next_item,a,mixed
+"$k=1$ vs E1, Logit-head",second check,prev_item,a,reverses
+"$k=1$ vs E1, Logit-head",second check,english-french,a,mixed
+"$k=1$ vs E1, Logit-head",second check,english-german,a,mixed
+"$k=1$ vs E1, Logit-head",second check,english-spanish,a,holds
+"$k=3$ vs E1, Logit-head",first check,antonym,a,mixed
+"$k=3$ vs E1, Logit-head",first check,synonym,,mixed
+"$k=3$ vs E1, Logit-head",first check,singular-plural,b,mixed
+"$k=3$ vs E1, Logit-head",first check,present-past,,mixed
+"$k=3$ vs E1, Logit-head",first check,country-capital,b,holds
+"$k=3$ vs E1, Logit-head",first check,country-currency,b,mixed
+"$k=3$ vs E1, Logit-head",first check,landmark-country,b,mixed
+"$k=3$ vs E1, Logit-head",first check,park-country,b,mixed
+"$k=3$ vs E1, Logit-head",first check,product-company,b,mixed
+"$k=3$ vs E1, Logit-head",first check,next_item,b,mixed
+"$k=3$ vs E1, Logit-head",first check,prev_item,b,mixed
+"$k=3$ vs E1, Logit-head",first check,english-french,,mixed
+"$k=3$ vs E1, Logit-head",first check,english-german,,mixed
+"$k=3$ vs E1, Logit-head",first check,english-spanish,,mixed
+"$k=3$ vs E1, Logit-head",second check,antonym,b,holds
+"$k=3$ vs E1, Logit-head",second check,synonym,,mixed
+"$k=3$ vs E1, Logit-head",second check,singular-plural,a,holds
+"$k=3$ vs E1, Logit-head",second check,present-past,b,mixed
+"$k=3$ vs E1, Logit-head",second check,country-capital,a,holds
+"$k=3$ vs E1, Logit-head",second check,country-currency,b,mixed
+"$k=3$ vs E1, Logit-head",second check,landmark-country,b,mixed
+"$k=3$ vs E1, Logit-head",second check,park-country,b,mixed
+"$k=3$ vs E1, Logit-head",second check,product-company,a,mixed
+"$k=3$ vs E1, Logit-head",second check,next_item,b,mixed
+"$k=3$ vs E1, Logit-head",second check,prev_item,a,mixed
+"$k=3$ vs E1, Logit-head",second check,english-french,a,mixed
+"$k=3$ vs E1, Logit-head",second check,english-german,a,mixed
+"$k=3$ vs E1, Logit-head",second check,english-spanish,,mixed
+"$k=5$ vs E1, Logit-head",first check,antonym,b,holds
+"$k=5$ vs E1, Logit-head",first check,synonym,,mixed
+"$k=5$ vs E1, Logit-head",first check,singular-plural,b,mixed
+"$k=5$ vs E1, Logit-head",first check,present-past,,mixed
+"$k=5$ vs E1, Logit-head",first check,country-capital,a,mixed
+"$k=5$ vs E1, Logit-head",first check,country-currency,b,mixed
+"$k=5$ vs E1, Logit-head",first check,landmark-country,b,holds
+"$k=5$ vs E1, Logit-head",first check,park-country,a,holds
+"$k=5$ vs E1, Logit-head",first check,product-company,a,reverses
+"$k=5$ vs E1, Logit-head",first check,next_item,b,mixed
+"$k=5$ vs E1, Logit-head",first check,prev_item,b,holds
+"$k=5$ vs E1, Logit-head",first check,english-french,,mixed
+"$k=5$ vs E1, Logit-head",first check,english-german,,mixed
+"$k=5$ vs E1, Logit-head",first check,english-spanish,,mixed
+"$k=5$ vs E1, Logit-head",second check,antonym,b,holds
+"$k=5$ vs E1, Logit-head",second check,synonym,,mixed
+"$k=5$ vs E1, Logit-head",second check,singular-plural,b,holds
+"$k=5$ vs E1, Logit-head",second check,present-past,b,reverses
+"$k=5$ vs E1, Logit-head",second check,country-capital,a,mixed
+"$k=5$ vs E1, Logit-head",second check,country-currency,b,holds
+"$k=5$ vs E1, Logit-head",second check,landmark-country,b,mixed
+"$k=5$ vs E1, Logit-head",second check,park-country,a,mixed
+"$k=5$ vs E1, Logit-head",second check,product-company,a,mixed
+"$k=5$ vs E1, Logit-head",second check,next_item,b,mixed
+"$k=5$ vs E1, Logit-head",second check,prev_item,b,mixed
+"$k=5$ vs E1, Logit-head",second check,english-french,a,mixed
+"$k=5$ vs E1, Logit-head",second check,english-german,,mixed
+"$k=5$ vs E1, Logit-head",second check,english-spanish,a,mixed
+"$k=1$ vs E1, J-head",first check,antonym,b,holds
+"$k=1$ vs E1, J-head",first check,synonym,a,mixed
+"$k=1$ vs E1, J-head",first check,singular-plural,b,mixed
+"$k=1$ vs E1, J-head",first check,present-past,a,holds
+"$k=1$ vs E1, J-head",first check,country-capital,a,mixed
+"$k=1$ vs E1, J-head",first check,country-currency,b,mixed
+"$k=1$ vs E1, J-head",first check,landmark-country,a,mixed
+"$k=1$ vs E1, J-head",first check,park-country,b,mixed
+"$k=1$ vs E1, J-head",first check,product-company,a,mixed
+"$k=1$ vs E1, J-head",first check,next_item,a,mixed
+"$k=1$ vs E1, J-head",first check,prev_item,a,mixed
+"$k=1$ vs E1, J-head",first check,english-french,a,mixed
+"$k=1$ vs E1, J-head",first check,english-german,a,mixed
+"$k=1$ vs E1, J-head",first check,english-spanish,b,mixed
+"$k=1$ vs E1, J-head",second check,antonym,b,mixed
+"$k=1$ vs E1, J-head",second check,synonym,b,mixed
+"$k=1$ vs E1, J-head",second check,singular-plural,b,mixed
+"$k=1$ vs E1, J-head",second check,present-past,a,holds
+"$k=1$ vs E1, J-head",second check,country-capital,a,mixed
+"$k=1$ vs E1, J-head",second check,country-currency,b,mixed
+"$k=1$ vs E1, J-head",second check,landmark-country,b,mixed
+"$k=1$ vs E1, J-head",second check,park-country,,mixed
+"$k=1$ vs E1, J-head",second check,product-company,a,holds
+"$k=1$ vs E1, J-head",second check,next_item,a,mixed
+"$k=1$ vs E1, J-head",second check,prev_item,b,mixed
+"$k=1$ vs E1, J-head",second check,english-french,a,mixed
+"$k=1$ vs E1, J-head",second check,english-german,a,holds
+"$k=1$ vs E1, J-head",second check,english-spanish,a,mixed
+"$k=3$ vs E1, J-head",first check,antonym,a,mixed
+"$k=3$ vs E1, J-head",first check,synonym,b,mixed
+"$k=3$ vs E1, J-head",first check,singular-plural,b,holds
+"$k=3$ vs E1, J-head",first check,present-past,b,mixed
+"$k=3$ vs E1, J-head",first check,country-capital,a,mixed
+"$k=3$ vs E1, J-head",first check,country-currency,b,holds
+"$k=3$ vs E1, J-head",first check,landmark-country,b,mixed
+"$k=3$ vs E1, J-head",first check,park-country,b,mixed
+"$k=3$ vs E1, J-head",first check,product-company,b,reverses
+"$k=3$ vs E1, J-head",first check,next_item,b,mixed
+"$k=3$ vs E1, J-head",first check,prev_item,a,mixed
+"$k=3$ vs E1, J-head",first check,english-french,b,mixed
+"$k=3$ vs E1, J-head",first check,english-german,b,mixed
+"$k=3$ vs E1, J-head",first check,english-spanish,b,mixed
+"$k=3$ vs E1, J-head",second check,antonym,a,mixed
+"$k=3$ vs E1, J-head",second check,synonym,a,mixed
+"$k=3$ vs E1, J-head",second check,singular-plural,a,mixed
+"$k=3$ vs E1, J-head",second check,present-past,,mixed
+"$k=3$ vs E1, J-head",second check,country-capital,,mixed
+"$k=3$ vs E1, J-head",second check,country-currency,a,mixed
+"$k=3$ vs E1, J-head",second check,landmark-country,b,mixed
+"$k=3$ vs E1, J-head",second check,park-country,b,mixed
+"$k=3$ vs E1, J-head",second check,product-company,b,mixed
+"$k=3$ vs E1, J-head",second check,next_item,a,mixed
+"$k=3$ vs E1, J-head",second check,prev_item,b,mixed
+"$k=3$ vs E1, J-head",second check,english-french,b,mixed
+"$k=3$ vs E1, J-head",second check,english-german,b,holds
+"$k=3$ vs E1, J-head",second check,english-spanish,b,mixed
+"$k=5$ vs E1, J-head",first check,antonym,b,holds
+"$k=5$ vs E1, J-head",first check,synonym,b,holds
+"$k=5$ vs E1, J-head",first check,singular-plural,b,holds
+"$k=5$ vs E1, J-head",first check,present-past,b,none
+"$k=5$ vs E1, J-head",first check,country-capital,a,mixed
+"$k=5$ vs E1, J-head",first check,country-currency,b,mixed
+"$k=5$ vs E1, J-head",first check,landmark-country,a,mixed
+"$k=5$ vs E1, J-head",first check,park-country,a,holds
+"$k=5$ vs E1, J-head",first check,product-company,a,mixed
+"$k=5$ vs E1, J-head",first check,next_item,b,mixed
+"$k=5$ vs E1, J-head",first check,prev_item,a,holds
+"$k=5$ vs E1, J-head",first check,english-french,b,mixed
+"$k=5$ vs E1, J-head",first check,english-german,b,mixed
+"$k=5$ vs E1, J-head",first check,english-spanish,b,mixed
+"$k=5$ vs E1, J-head",second check,antonym,b,holds
+"$k=5$ vs E1, J-head",second check,synonym,a,reverses
+"$k=5$ vs E1, J-head",second check,singular-plural,b,holds
+"$k=5$ vs E1, J-head",second check,present-past,b,none
+"$k=5$ vs E1, J-head",second check,country-capital,a,mixed
+"$k=5$ vs E1, J-head",second check,country-currency,a,mixed
+"$k=5$ vs E1, J-head",second check,landmark-country,b,mixed
+"$k=5$ vs E1, J-head",second check,park-country,a,mixed
+"$k=5$ vs E1, J-head",second check,product-company,a,mixed
+"$k=5$ vs E1, J-head",second check,next_item,b,holds
+"$k=5$ vs E1, J-head",second check,prev_item,b,mixed
+"$k=5$ vs E1, J-head",second check,english-french,b,mixed
+"$k=5$ vs E1, J-head",second check,english-german,b,holds
+"$k=5$ vs E1, J-head",second check,english-spanish,b,mixed

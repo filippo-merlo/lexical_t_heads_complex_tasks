@@ -493,7 +493,82 @@ The three requirements thus trade off against each other. Heads that every templ
 \paragraph{Output.} Head sets and measures (\texttt{results/sized}); causal effects at each size; accuracy against $\alpha$.
 
 \subsection{Results}\label{sec:res-sized}
-\ph{S7}{Results}{Run on GPUs 0 and 2 (\texttt{scripts/rank\_heads.py}, \texttt{scripts/pipeline\_consensus.sh} with \texttt{LTH\_RESULTS=results/sized}).}
+\paragraph{Head sets.} Where a threshold set has at least $N$ heads, the set of size $N$ is its $N$ highest-ranked heads; where it has fewer, the set adds the highest-ranked heads below the threshold. Below-threshold heads are therefore rare at size 5 and more frequent at size 20, more so under Logit-head, whose threshold sets are smaller. At each size, the Logit-head and J-head sets of the same rule share about three in five of their heads.
+
+\paragraph{Readouts} (Tables~\ref{tab:sized-summary}--\ref{tab:sized-readouts-control}, Figure~\ref{fig:sized-readouts}). J-head's advantage over Logit-head does not come from its larger sets. Taking the differences between the threshold sets of at least 0.05 (a descriptive cut, not part of the pre-stated comparison), J-head had the larger effect on most of them, in both styles and both checks, and on about two thirds of these it is larger at every size as well; on none is Logit-head. The few tasks on which Logit-head's threshold set had the larger effect do not keep it: on country--capital (rule style, first check) and present--past (rule style, second check) J-head is larger at every size. On country--capital, J-head's threshold set has more than one and a half times as many heads as Logit-head's, and its effect falls with the number of heads; on landmark--country and park--country (example style, first check) the order changes with the size.
+
+\paragraph{Template rules} (Tables~\ref{tab:sized-summary}, \ref{tab:sized-rules} and~\ref{tab:sized-rules-wrong}, Figures~\ref{fig:sized-rules-logithead} and~\ref{fig:sized-rules-jhead}). Most differences between E1 and the rules of E1b change direction with the size, so they come from how many heads a rule selects, or from single heads, rather than from the rule. The few that hold at equal size are mostly about the consensus heads. In the second check, the consensus heads ($k=5$) have smaller effects than the E1 heads of the same number on several tasks, under J-head (antonym, singular--plural, next-item, English--German) and on singular--plural under Logit-head; few consensus sets of size 20 are formed, so this rests mostly on sizes 5 and 10. In the first check, the consensus heads have the larger effect on park--country under both readouts, a task on which the control mean also has large effects (below). The union's gain on present--past under J-head (Sec.~\ref{sec:res-k13}) holds as well, but at equal size it appears only at size 20 (below).
+
+\paragraph{Size.} The effect does not grow steadily with the number of heads. On country--capital in the rule style, the five highest-ranked heads give the largest effect under both readouts; on next-item and prev-item in the second check, and on singular--plural in the example style, the sets of size 20 give the largest. Some single sizes stand out against both neighbours, such as the Logit-head example set of antonym at size 20 in the first check, which is the only antonym set with a large effect.
+
+\paragraph{One head on present--past.} Under J-head with example-style heads, the first check has no effect at the threshold set, which has four heads, and a large one at sizes 5 and 10, with no effect of the control mean. The fifth head added, L15H1, matches on 7\% of the identification prompts, below the threshold. It is also in the J-head union set of size 20 for the rule style, the only rule-style set with an effect on present--past in the first check, and in no other set of the task. The patched replies begin with the past tense of the given verb and differ from item to item. That L15H1 carries the effect is so far a comparison across sets; patching it alone, and the sets without it, would test it.
+
+\paragraph{Control mean} (Table~\ref{tab:sized-readouts-control}). On park--country the control mean has large effects at most sizes, in some sets as large as those of the task mean. The patched model answers with a title that begins with the country's name, such as ``Albania's Hidden Gem'', which the flexible score accepts. The control mean also comes close to or exceeds the task mean at the J-head example sets of singular--plural (size 5) and next-item (size 20). Effects on these tasks are not specific to the task.
+
+Thus, at equal size, the difference between the readouts largely remains, while the differences between template rules mostly do not.
+
+\begin{table}[H]
+\centering\footnotesize
+\input{tables/sized_summary}
+\caption{Equal-size sets: for each pair and check, the number of tasks on which the first or the second had the larger effect between the threshold sets, and of these, on how many the same one is larger at every size for which both sets are formed (holds) and on how many the other one is (reverses). Cells: tasks / holds / reverses. Effects of the threshold sets over the nine values of $\alpha$ of the procedure; ties and tasks without both threshold sets are counted on neither side. Every difference is counted, however small.}
+\label{tab:sized-summary}
+\end{table}
+
+\begin{table}[H]
+\centering\footnotesize
+\input{tables/sized_readouts}
+\caption{Equal-size sets, E1 rule, first causal check: causal effect of the $N$ highest-ranked heads with means of their own style, as in Table~\ref{tab:effects-simple}, over the nine values of $\alpha$. L: Logit-head, J: J-head. --: set not formed (fewer than $N$ heads match on any prompt).}
+\label{tab:sized-readouts}
+\end{table}
+
+\begin{table}[H]
+\centering\footnotesize
+\input{tables/sized_readouts_wrong}
+\caption{Equal-size sets, E1 rule, second causal check, as Table~\ref{tab:sized-readouts}. Items: the wrongly answered 1-shot prompts patched; the baseline is 0.}
+\label{tab:sized-readouts-wrong}
+\end{table}
+
+\begin{table}[H]
+\centering\footnotesize
+\input{tables/sized_readouts_control}
+\caption{Equal-size sets, E1 rule, first causal check: causal effect of the control mean at the sets of Table~\ref{tab:sized-readouts}.}
+\label{tab:sized-readouts-control}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/sized_readouts.pdf}
+\caption{Equal-size sets, E1 rule: causal effect against the number of heads (log scale), per task, in the first and the second check. Filled markers: sets of size 5, 10 and 20; hollow markers: the threshold set, at its own size. Solid: rule style; dashed: example style.}
+\label{fig:sized-readouts}
+\end{figure}
+
+\begin{table}[H]
+\centering\footnotesize\setlength{\tabcolsep}{4.5pt}
+\input{tables/sized_rules}
+\caption{Equal-size sets, rule style, first causal check: causal effect of the $N$ highest-ranked heads under the rule of E1 and the rules of E1b (at least $k$ of the five templates), as Table~\ref{tab:sized-readouts}.}
+\label{tab:sized-rules}
+\end{table}
+
+\begin{table}[H]
+\centering\footnotesize\setlength{\tabcolsep}{4.5pt}
+\input{tables/sized_rules_wrong}
+\caption{Equal-size sets, rule style, second causal check, as Table~\ref{tab:sized-rules}. The baseline is 0.}
+\label{tab:sized-rules-wrong}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/sized_rules_logithead.pdf}
+\caption{Equal-size sets, rule style, Logit-head: causal effect against the number of heads under the rule of E1 and the rules of E1b, as Figure~\ref{fig:sized-readouts}.}
+\label{fig:sized-rules-logithead}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/sized_rules_jhead.pdf}
+\caption{Equal-size sets, rule style, J-head, as Figure~\ref{fig:sized-rules-logithead}.}
+\label{fig:sized-rules-jhead}
+\end{figure}
 
 \section{Plan}\label{sec:plan}
 \paragraph{Steps.}
@@ -502,7 +577,7 @@ The three requirements thus trade off against each other. Heads that every templ
 \item Run E1 under the flexible score, with both causal checks.
 \item Run E1b on the rule-style heads ($k=5$, H\ref{h:consensus}), and its exploratory sets for $k=1$ and~3.
 \item Run the follow-ups of the union sets (Secs.~\ref{sec:shared}--\ref{sec:noretrieval}) and write them up.
-\item Run the equal-size sets (Sec.~\ref{sec:sized}) and write up their results.
+\item Run the equal-size sets (Sec.~\ref{sec:sized}) and write up their results (done).
 \end{enumerate}
 Reused code and data: the lexical-task-head code of \citet{yang2026shared}; the Head-JLens code and matrices of \citet{merlo2026headjlens}; the task datasets of \citet{todd2024function}.
 
@@ -539,6 +614,7 @@ Reused code and data: the lexical-task-head code of \citet{yang2026shared}; the 
 \item[2026-11-02] E1b extended after the result of H\ref{h:consensus}, as an exploratory question without a hypothesis: the heads that meet Definition~\ref{def:lth} under at least one and at least three of the five templates, patched with both checks. E1b now reports the Logit-head and J-head sets only, not the heads found only by J-head, and no copy share.
 \item[2026-11-03] The project is split into two documents: \texttt{proposal-simple}, the identification method on the simple tasks (E0 for the simple tasks, E1, E1b), and \texttt{proposal-complex}, the complex tasks (E0 for the complex tasks, E2). Work continues on the simple tasks for now. The readout hypothesis is stated once per document, with its criteria unchanged.
 \item[2026-11-03] \texttt{proposal-simple} is reorganised: the replication of \citet{yang2026shared} under both readouts first, then one section per change tried, each with its design followed by its results.
+\item[2026-11-03] Head sets of equal size (Sec.~\ref{sec:sized}): the $N\in\{5,10,20\}$ highest-ranked heads under each readout and rule, only among heads that match on at least one prompt; patched with own-style means at nine values of $\alpha$ ($-10$, $-4$, 2, 3, 4, 5, 6, 8, 10) to shorten the run, with the threshold sets compared over the same nine; identical sets are patched once.
 \end{description}
 
 \end{document}
