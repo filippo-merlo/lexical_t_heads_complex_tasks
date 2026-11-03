@@ -1,0 +1,420 @@
+% =====================================================================
+%  var-task-rep -- Minimal proposal skeleton
+%  One grey box per section. Add \subsection{...} freely inside any
+%  section; each new subsection can carry its own box: \ph{ID}{title}{notes}.
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{fvextra}
+\DefineVerbatimEnvironment{promptbox}{Verbatim}{breaklines,breakanywhere,fontsize=\footnotesize,frame=single,framesep=2mm}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[round,authoryear]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=green!40!black,urlcolor=blue!60!black]{hyperref}
+
+% Placeholder box: \ph{ID}{What goes here}{Notes}
+\definecolor{phframe}{gray}{0.55}
+\definecolor{phback}{gray}{0.95}
+\newcommand{\ph}[3]{%
+  \hypertarget{ph:#1}{}%
+  \begin{tcolorbox}[enhanced,breakable,colback=phback,colframe=phframe,
+    boxrule=0.4pt,arc=1mm,left=2mm,right=2mm,top=1mm,bottom=1mm,
+    fonttitle=\sffamily\small\bfseries,coltitle=black,colbacktitle=gray!25,
+    title={[#1]\quad TO WRITE --- #2}]
+  \small #3
+  \end{tcolorbox}}
+
+% Inline value to be decided
+\newcommand{\tbd}[1]{\textcolor{red!70!black}{\textsf{[TBD: #1]}}}
+
+% Link back to the status table, placed under each section heading
+\newcommand{\backtostatus}{\noindent{\hfill\footnotesize\hyperref[sec:status]{$\uparrow$\,status}}\par}
+
+% Status row: \strow{label}{name}{content}{status}
+\newcommand{\strow}[4]{\hyperref[#1]{#2} & #3 & #4 \\}
+
+\newtheorem{definition}{Definition}
+\newtheorem{hypothesis}{Hypothesis}
+
+\title{Lexical Task Heads: Identifying Them on Simple Tasks\\ with Logit Lens and Jacobian Lens Readouts}
+\author{Filippo Merlo}
+\date{Draft --- \today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\phantomsection\label{sec:abstract}
+Lexical task heads are attention heads whose output, decoded into the vocabulary, names the task the prompt asks for \citep{yang2026shared}. They were identified with the per-head logit lens on simple single-step tasks, such as mapping a country to its capital. We work on how they are identified, on 14 of these tasks in Llama-3.1-8B-Instruct: whether the method of \citet{yang2026shared} reproduces, whether Head-JLens \citep{merlo2026headjlens}, which decodes each head's output after mapping it through a Jacobian of the remaining layers averaged over many texts, finds lexical task heads that the logit lens misses, and which heads to keep when a task is asked for in several wordings. Heads are identified under both readouts with rule-based and example-based prompts and tested by activation patching. A companion document applies the method to complex, rule-defined tasks.
+\end{abstract}
+
+\section{Introduction}\label{sec:intro}
+A language model's accuracy on a task can change a great deal with the wording of the prompt that asks for it: on Llama-3.1-8B-Instruct, prompts for the same antonym items differ in accuracy by up to a factor of four \citep[Fig.~1]{yang2026shared}. \citet{yang2026shared} explain part of this variation with \emph{lexical task heads}, attention heads whose outputs, decoded into the vocabulary with the logit lens, name the task (``opposite'' for antonyms, ``cities'' for capitals). The heads are largely shared between instruction-based and example-based prompts, patching their mean activation into a prompt without task information raises task accuracy, and prompts that fail activate them less.
+
+The identification step leaves open choices that this document works on. First, the readout: the logit lens decodes a head's output directly and leaves out the computation of the layers that follow it; \citet[Sec.~4]{yang2026shared} note that task representations ``encoded in a non-lexical, abstract format'' may not project cleanly to tokens. Head-JLens reads each head through a Jacobian map of the remaining layers, and on Llama-3.1-8B-Instruct it ranks annotated intermediate words, which the prompt never states (such as the bridge entity of a two-hop question), higher than the per-head logit lens at most layers on five of six evaluation sets \citep[Sec.~3]{merlo2026headjlens}. Second, the prompts the heads are read from: the code of \citet{yang2026shared} reads the rule-style heads from one instruction template, the most accurate, although each task has five.
+
+We therefore ask whether the method of \citet{yang2026shared} reproduces on our setup, how the logit lens and Head-JLens compare as readouts for identifying lexical task heads, and which heads should be kept when a task is asked for in several wordings. A companion document (\texttt{proposal-complex.tex}) applies the method to the complex, rule-defined tasks of \citet{fu2026rules}.
+
+\paragraph{Contributions.}
+\begin{enumerate}
+\item A replication of the lexical-task-head method of \citet{yang2026shared} on Llama-3.1-8B-Instruct, with both the causal check their paper describes and the one their released code runs.
+\item A comparison of the per-head logit lens and Head-JLens for identifying lexical task heads, with a causal check of the heads each finds.
+\item A comparison of rules for selecting heads across instruction templates.
+\end{enumerate}
+
+\paragraph{Scope.} We do not explain behavioural variation across wordings (the failure analyses of \citealp[Sec.~2.4]{yang2026shared}), and we use one model.
+
+\section{Related work}\label{sec:background}
+\paragraph{Task representations across prompting styles.} Function vectors are sums of the mean outputs of a few attention heads that, added to the residual stream, trigger a task in another context \citep{todd2024function}. \citet{davidson2025different} extract them from instructions as well as from demonstrations and find that the two prompting styles engage mostly different heads: of the 20 top heads in each model, 2 to 7 are shared. \citet{yang2026shared} identify a different kind of task representation, lexical task heads, whose outputs decode to words describing the task; 73\% of them are shared between instruction-based and example-based prompts on average, and they are largely disjoint from function-vector heads \citep[App.~I]{yang2026shared}. We work on how lexical task heads are identified.
+
+\paragraph{Reading attention heads in the vocabulary.} The logit lens decodes an intermediate state with the model's final normalization and unembedding \citep{nostalgebraist2020logitlens}; applied to one head's output, it is the readout of \citet{yang2026shared}. The Jacobian lens of \citet{gurnee2026workspace} instead maps a residual-stream state through a Jacobian of the remaining layers, averaged over many texts. Head-JLens moves this map to the concatenated head outputs, so that each head is read through the layers that follow it; in Llama-3.1-8B-Instruct it ranks annotated intermediate words higher than the per-head logit lens at most layers on five of six evaluation sets, and heads selected with it are better sites for edits \citep{merlo2026headjlens}. We compare the two readouts on a different use: identifying task-descriptive heads.
+
+\section{Research questions}\label{sec:rq}
+\begin{description}
+\item[RQ1] How do the per-head logit lens and Head-JLens compare as readouts for identifying lexical task heads on the simple tasks?
+\end{description}
+
+\begin{hypothesis}[replication]\label{h:rep}
+On the simple tasks, Logit-head reproduces \citet{yang2026shared}: lexical task heads are found for every task, and patching them into prompts without task information raises accuracy above the unpatched baseline. \emph{Falsified} if, on the same model, the method finds no heads or no accuracy gain for tasks where \citet{yang2026shared} report both.
+\end{hypothesis}
+
+\begin{hypothesis}[readouts]\label{h:readout}
+Following \citet{merlo2026headjlens}, on the simple tasks J-head identifies at least the lexical task heads that Logit-head identifies, and the heads found only by J-head have a causal effect above baseline. \emph{Falsified} if the J-head set misses heads of the Logit-head set, or if the heads found only by J-head have no causal effect.
+\end{hypothesis}
+
+\begin{hypothesis}[several wordings]\label{h:consensus}
+On the simple tasks, rule-style lexical task heads that meet Definition~\ref{def:lth} under every instruction template, not only under the most accurate one, carry the task more strongly: patched as in E1, they raise accuracy more than the heads of the most accurate template, and the control mean does not raise it more. \emph{Falsified} if, under each readout and in each causal check, their causal effect is larger on at most half of the 14 tasks, or if their larger effects come with a larger effect of the control mean.
+\end{hypothesis}
+
+
+\section{Framework}\label{sec:framework}
+\paragraph{Tasks and prompts.} A task $t$ is given by a dataset $D_t$ of inputs and correct outputs. Each prompt for $t$ has a style $s\in\{\text{rule},\text{example}\}$: its task information is an instruction or a set of demonstrations, followed by the input $x$. $P_{t,s}$ is the set of prompts of style $s$ for $t$, and $P^{+}_{t,s}\subseteq P_{t,s}$ the prompts whose heads are read: those the model answers correctly under the flexible score of Sec.~\ref{sec:evaluation}, whether or not the answer is the first generated text.
+
+\paragraph{Heads and readouts.} Following \citet[Sec.~2]{merlo2026headjlens}, $z_{l,h}(p)$ is the output of head $h$ in layer $l$ at the last position of $p$, before the output projection, and $c_{l,h}(p)=W^{(h)}_{O,l}z_{l,h}(p)$ its write to the residual stream. With $q_v=g\odot w_v$ the gain-scaled unembedding row of token $v$, the two readouts score $v$ by
+\[
+\ell^{\mathrm{L}}_{l,h}(p)[v]=q_v^\top c_{l,h}(p)\quad\text{(Logit-head)},\qquad
+\ell^{\mathrm{J}}_{l,h}(p)[v]=q_v^\top J_{l,h}\,z_{l,h}(p)\quad\text{(J-head)}.
+\]
+$T^{R}_{k,l,h}(p)$ is the set of the $k$ highest-scoring tokens under readout $R\in\{\mathrm{L},\mathrm{J}\}$, and $V_t$ the term list of task $t$.
+
+\begin{definition}[Lexical task head]\label{def:lth}
+Following \citet[Sec.~2.2.2]{yang2026shared}, head $(l,h)$ is a lexical task head for $t$ on prompt $p$ under readout $R$ if $|T^{R}_{k,l,h}(p)\cap V_t|\geq n$. It is a lexical task head for $t$ and style $s$ if this holds for at least a fraction $\rho$ of the prompts in $P^{+}_{t,s}$. We use $n=1$, $k=10$, $\rho=0.1$, as \citet{yang2026shared}. $H^{R}_{t,s}$ denotes the set of such heads.
+\end{definition}
+
+\section{Methods}\label{sec:methods}
+
+\subsection{Model}\label{sec:model}
+Llama-3.1-8B-Instruct: it is the main model of \citet{yang2026shared}, and the only model with released Head-JLens matrices.
+
+\subsection{Tasks}\label{sec:tasks}
+The 14 tasks used by both \citet{yang2026shared} and \citet{davidson2025different}, with the datasets of \citet{todd2024function}: antonym, synonym, singular--plural, present--past, country--capital, country--currency, landmark--country, park--country, product--company, next-item, prev-item, English--French, English--German, English--Spanish.
+Rule-based prompts: the five instruction templates per task of \citet[App.~A.3.1]{yang2026shared}.
+Example-based prompts: 1, 5, 10, 20 and 30 shots \citep[App.~A.3]{yang2026shared}.
+
+\paragraph{Why these tasks.} Lexical task heads and their term lists were defined on these tasks \citep{yang2026shared}, so the method applies unchanged and our results can be compared with theirs.
+
+\paragraph{Answer format.} As in \citet{yang2026shared}: their prompt templates, as raw text without the chat template. Decoding is greedy, so that the prompt whose heads are read and the scored answer always match. Lexical task heads are read at the last prompt token, before any generated text.
+
+\subsection{Task-representation methods}\label{sec:trmethods}
+\paragraph{Lexical task heads} \citep[Sec.~2.2.2]{yang2026shared}.
+Each attention head's output at the last prompt token is decoded with the two readouts of Sec.~\ref{sec:framework}: Logit-head, the per-head logit lens used by \citet{yang2026shared} \citep{nostalgebraist2020logitlens}, and J-head (Head-JLens), which applies the head's columns $J_{l,h}$ of the per-layer Jacobian map fitted on WikiText-103 \citep[Sec.~2]{merlo2026headjlens}. Fitted matrices for Llama-3.1-8B-Instruct are released with \citet[Sec.~S4]{merlo2026headjlens}.
+Under each readout, lexical task heads are identified with Definition~\ref{def:lth}.
+$P^{+}_{t,s}$ is taken as in the code of \citet{yang2026shared}: the first 100 prompts in $P^{+}$ under one wording, the 5-shot prompts for the example style and the instruction template with the highest accuracy for the rule style. Term lists: \citet[App.~A.2.1]{yang2026shared}.
+
+\paragraph{Simple tasks as in the source code.} The simple tasks are run as in the code of \citet{yang2026shared}, with three departures. First, padding: their code passes prompts to the model in batches of 20, padded on the left, without an attention mask, so that the model attends to the padding; we pass the mask and the matching positions, so that each prompt is computed as if run alone. Second, the J-head readout. Third, the precision of the forward pass: bfloat16, in which the Head-JLens matrices were fitted.
+
+\paragraph{Why these readouts.} Lexical task heads locate a task representation and give its content in words \citep{yang2026shared}. Logit-head reproduces their readout. J-head reads each head through the layers that follow it: in Llama-3.1-8B-Instruct it ranks unstated intermediate words higher than Logit-head at most layers on five of six evaluation sets, and its readouts are better guides for edits \citep[Secs.~3--4]{merlo2026headjlens}. A lexical task head's decoded task word is likewise not the answer, and \citet[Sec.~4]{yang2026shared} note that their logit-lens criterion may miss task representations that do not project cleanly to tokens.
+
+\subsection{Causal check}\label{sec:causal}
+The causal check of \citet[Sec.~2.3.2, App.~G]{yang2026shared} tests whether a head set carries the task: the heads' mean output on task prompts is written into prompts that do not state the task, and we measure whether the model then performs it.
+\begin{enumerate}
+\item \emph{Patched prompts}: prompts without task information, the zero-shot prompts of \citet{yang2026shared}, for items that the model answers correctly when the task is given. Their unpatched accuracy is the baseline.
+\item \emph{Mean output}: for each head in the set, the mean of $c_{l,h}$ over the first 100 prompts of a wording answered correctly, leaving out the patched items. As in the code of \citet{yang2026shared}, each wording of a style (each instruction template, each number of shots) gives its own mean and its own patch.
+\item \emph{Patch}: at the last position of each patched prompt, the output of every head in the set is replaced by its mean output times a scaling factor $\alpha\in\{-10,-6,-4,-2,0,1,2,\dots,10\}$, the values of \citet{yang2026shared}. The model answers from the patched prompt, generated as the saved outputs of Sec.~\ref{sec:evaluation}, and the answer is scored by the flexible score. This replaces the first generated token, which the code of \citet{yang2026shared} reads; the first-token score is kept beside it.
+\item \emph{Control}: the same patch at the same heads, with the mean output of a different task. A head set carries the task if its own mean raises accuracy and the control mean does not; a gain under both points to the answer format rather than the task.
+\end{enumerate}
+Three head sets are patched for each task and style: $H^{\mathrm{L}}_{t,s}$, $H^{\mathrm{J}}_{t,s}$, and the heads found only by J-head, $H^{\mathrm{J}}_{t,s}\setminus H^{\mathrm{L}}_{t,s}$. We report the accuracy at each $\alpha$ averaged over the wordings of the mean's style.
+For every task the patch is applied at the last prompt position only, as in \citet{yang2026shared}; the reply is then generated without it, and its answer is scored.
+Which items are patched and which means and control tasks are used are given in E1 (Sec.~\ref{sec:e1}).
+
+\subsection{Answer evaluation}\label{sec:evaluation}
+We score every reply in more than one way because of what \citet{hua2025flaw} show about scoring and prompt wording. They evaluate seven LLMs, Llama-3.1-8B-Instruct among them, on six benchmarks under twelve prompt templates each. Each reply is scored twice: once with the benchmark's usual rule (log-likelihood over the answer options, or extraction and matching of the answer string), and once by an LLM judge that sees the question, the reference answer and the reply. Under the rules, accuracy varies much more across templates than under the judge (Gemma-2 on ARC-Challenge: standard deviation 0.28 against 0.005). The ranking of the models also changes from template to template (mean Spearman correlation between templates 0.30 against 0.92). The rules mark answers wrong that are correct but phrased or formatted differently. Much of the measured sensitivity to prompt wording therefore comes from the scoring, not from the model. A rule built to accept equivalent answers (symbolic equivalence on MATH) varies as little as the judge. The judge's verdicts agree with those of three human annotators (Cohen's $\kappa$ 0.92 over all benchmarks, lowest 0.67 on NarrativeQA) and with those of a second judge model. This matters here because E0 compares prompt styles and wordings by accuracy, and a difference between wordings may only be a difference in how the answers are written. The source evaluation we use is a rigid matcher: \citet{yang2026shared} compare only the first generated token with the first token of the single reference answer. A capitalized German noun (\emph{Gemeinde} for the reference \emph{gemeinde}), an answer in quotes, or another valid synonym is therefore wrong, and a first token that only begins the reference (\emph{Niger} for \emph{Nigeria}) is right. For a numeric reference the first token is the leading space alone (the tokenizer splits \texttt{" 2"} into \texttt{" "} and \texttt{"2"}), so any number counts as correct: in E0 all 29 numeric items of next-item and of prev-item are scored correct under every instruction template. In a first check on the stored E0 replies, most of the spread across instruction templates on the translation and next-item tasks goes once case, quotes and leading articles are ignored. We therefore evaluate every E0 prompt in two ways, from one saved output, and also with a flexible score that ignores how the answer is written.
+\begin{enumerate}
+\item \emph{Saved output.} Every reply is generated once, with greedy decoding, and saved with its prompt, input, reference answer, generated token ids and text, number of tokens, and why generation stopped, so that every score and analysis below can be recomputed without running the model again. Replies are generated from raw text, without the chat template, in batches of 20 as in \citet{yang2026shared}, with the padding masked. A reply ends at the first of: the delimiter \texttt{;} of the example prompts, a newline once the reply has begun, the end-of-sequence token, or 32 new tokens, twice the longest reference answer (15 tokens). Under greedy decoding the first tokens of a reply do not depend on how long generation runs, so the reply cut to a shorter limit is the reply that limit would give.
+\item \emph{Strict score}: the source evaluation, unchanged, on the full reply: the first generated token against the first token of the reference \citep{yang2026shared}. Computed on the replies cut to the E0 limits, it must reproduce the E0 accuracies; differences can only come from batch numerics and are reported.
+\item \emph{Flexible score}: the reply, up to where it stops, begins with the whole reference answer, as words. Case, accents, punctuation and one leading article or \emph{to} are ignored. A hyphen or apostrophe inside a word joins it (\emph{non-corresponding} matches \emph{noncorresponding}), a possessive \emph{'s} is dropped, and any other punctuation separates words (\emph{petit(e)} matches \emph{petit}); a part of the reference in parentheses is optional (\emph{Euro} matches \emph{Euro (EUR)}). It removes the formatting errors of the first-token score (case, quotes, articles) and its false positives (\emph{Niger} for \emph{Nigeria}). Another spelling of a name (\emph{Luxembourg} for \emph{Luxembourg City}) and another valid answer remain wrong; these are left to the judge.
+\item \emph{Judged score}: an LLM judge (GPT-5.5) receives a neutral description of the task (not the prompt wording being evaluated), the item's input, the reference answer and the full reply, but not the strict score. It returns whether the reply's final answer is correct, the answer it extracted, and, where it disagrees with the strict score, the reasons (below). The judge evaluates the final answer, not the reasoning, accepts a different answer when the task admits one (another synonym, antonym or translation), and counts two conflicting final answers as wrong. Every reply is judged, including those the strict score accepts.
+\item \emph{Straight away}: the reply begins with the answer the judge extracted, after leading whitespace, rather than with a quote, an article or another preamble.
+\end{enumerate}
+\paragraph{Reasons for disagreement.} Each reply that the strict score marks wrong and the judge right gets one or more reasons from three groups; its primary reason is the first that applies, in the order below. Reasons that a rule can detect (a missing box, case, punctuation) are assigned by rule; the judge assigns the others.
+\begin{enumerate}
+\item \emph{Where the answer is}: the strict score reads a part of the reply that does not hold the final answer.
+\begin{itemize}
+\item \emph{Leading text}: text before the answer (\emph{The answer is}, an article, the input repeated) where the score reads the first token or word.
+\item \emph{Earlier answer}: the score read an earlier answer, which the model then revised or restated correctly.
+\end{itemize}
+\item \emph{How the answer is written}: the score finds the answer but does not accept its form.
+\begin{itemize}
+\item \emph{Case}: the answer differs from the reference only in capitalization.
+\item \emph{Extra characters}: quotes, a final period, or Markdown or \LaTeX{} around the answer.
+\item \emph{Tokenization}: the same word, whose first token differs from the first token of the reference.
+\item \emph{Surface variant}: the same answer written differently: diacritics, number format or spelled-out numbers, inflection, abbreviation.
+\end{itemize}
+\item \emph{Which answer is right}: a \emph{valid alternative}, a different answer that is also correct, which a single reference cannot accept; or a \emph{reference error}, a reference that appears wrong, checked by hand.
+\item \emph{Other}.
+\end{enumerate}
+Replies that the strict score marks right and the judge wrong get reasons from the same groups: a \emph{first-token false positive} (a first token that only begins the reference, as \emph{Niger} for \emph{Nigeria}) is a matter of how the answer is written.
+\paragraph{What changes.} Head identification, $P^{+}_{t,s}$ and the causal checks use the flexible score, so the selection of the identification wordings, the head sets, the means, the patched items and the scoring of the patched replies are redone together. The judged score is not used for them: it also accepts other valid answers, which the reference of the patched items does not contain. Under the flexible score the most accurate instruction template changes on antonym (template~3 to~2), country--capital (1 to~3) and English--German (3 to~1).
+
+\paragraph{Second check.} The code of \citet{yang2026shared} releases one script for this check (\texttt{causal\_fix\_incorrect.py}), and it differs from the procedure described in their App.~G.1, which we follow above, in the patched prompts. Instead of prompts without task information, it patches prompts that give the task and are answered wrongly: the 1-shot prompts of the items answered wrongly with one shot. These prompts show the answer format, and their unpatched accuracy is 0 by construction. Head sets, means, $\alpha$ and scoring are as above, and the script has no control. We run it as a second check and report both.
+
+\subsection{Measures}\label{sec:measures}
+For each task $t$, style $s$ and readout $R$:
+\begin{itemize}
+\item \emph{Accuracy} of each prompt, with the evaluation of \citet{yang2026shared}; in E0 also the judged accuracy and the flexible accuracy (Sec.~\ref{sec:evaluation}).
+\item \emph{Head count} $|H^{R}_{t,s}|$ and the distribution of the heads over layers.
+\item \emph{Overlap} between two head sets $A$ and $B$: $|A\cap B|/|A|$ and $|A\cap B|/|B|$. Compared pairs: $H^{\mathrm{L}}_{t,s}$ and $H^{\mathrm{J}}_{t,s}$ (RQ1); $H^{R}_{t,\text{rule}}$ and $H^{R}_{t,\text{example}}$.
+\item \emph{Causal effect}: the highest accuracy over $\alpha$ minus the unpatched accuracy, for the head set and for the control.
+\item \emph{Copy share}: the share of prompts on which a head's matched terms ($T^{R}_{k,l,h}(p)\cap V_t$) occur in the prompt text, averaged over the heads of $H^{R}_{t,s}$. It separates heads that may copy task words from the prompt from heads that do not.
+\end{itemize}
+
+\section{Experiments}\label{sec:experiments}
+Every experiment is run once, with greedy decoding, on Llama-3.1-8B-Instruct. Each one is described below by the conditions it crosses and the steps it runs; the methods of Sec.~\ref{sec:methods} are referred to where they are defined.
+
+\subsection{E0: Behavioural baseline}\label{sec:e0}
+\paragraph{Question.} On which tasks and prompt styles does the model perform above chance, and does it answer straight away?
+
+\paragraph{Conditions.} The 14 tasks, each on every item of its dataset, under eleven prompts: the five instruction templates (rule style), 1, 5, 10, 20 and 30 shots (example style), and the zero-shot prompt (no task information).
+
+\paragraph{Procedure.}
+\begin{enumerate}
+\item Generate the model's answer to every prompt and score it with the evaluation of the source paper: the first generated token against the first token of the correct answer.
+\item Compare each accuracy with chance, 0 for these open answers.
+\item Evaluate every prompt again from its saved output (Sec.~\ref{sec:evaluation}): the strict score, the flexible score, the judged score, and the reasons for each disagreement.
+\end{enumerate}
+
+\paragraph{Output.} Accuracy per task and prompt (Table~\ref{tab:e0-simple}); for every task and prompt, the strict and judged accuracy, the share answered straight away, the four counts of agreement and disagreement between the two scores, and the disagreements by reason; for every task, the standard deviation of accuracy across the prompts of a style under each score \citep{hua2025flaw}, the Spearman correlation between the two scores' rankings of these prompts, and whether the most accurate instruction template changes; for each task and style, the prompts $P^{+}_{t,s}$ used by E1 and, for the rule style, the most accurate template from which they are taken; the items answered correctly and wrongly, which select the patched items of the causal checks.
+
+\subsection{E1: Simple tasks}\label{sec:e1}
+\paragraph{Question.} H\ref{h:rep}, RQ1 and H\ref{h:readout}: does Logit-head reproduce \citet{yang2026shared} on our setup, and how does J-head differ from it where the method is known to work?
+
+\paragraph{Conditions.} 14 tasks $\times$ 2 styles (rule, example) $\times$ 2 readouts (Logit-head, J-head). Each pair of task and style gives three head sets: $H^{\mathrm{L}}_{t,s}$, $H^{\mathrm{J}}_{t,s}$, and the heads found only by J-head, $H^{\mathrm{J}}_{t,s}\setminus H^{\mathrm{L}}_{t,s}$.
+
+\paragraph{Procedure.}
+\begin{enumerate}
+\item \emph{Identification prompts}: $P^{+}_{t,\text{rule}}$, the first 100 prompts answered correctly under the most accurate of the five instruction templates; $P^{+}_{t,\text{example}}$, the first 100 answered correctly with five shots.
+\item \emph{Head sets}: decode every head at the last prompt token under both readouts and apply Definition~\ref{def:lth}.
+\item \emph{Measures} (Sec.~\ref{sec:measures}): head count and layers of each set; overlap of the Logit-head and J-head sets of each style (RQ1), and of the rule-style and example-style sets of each readout; copy share.
+\item \emph{First causal check} (Sec.~\ref{sec:causal}). Patched items: the first 100 items answered correctly with one shot. Patched prompts: their zero-shot prompts, whose unpatched accuracy is the baseline. Means: one per source wording, each over the first 100 prompts of that wording answered correctly, leaving out the patched items; there are ten, the five instruction templates and the five shot counts. Each head set is patched with the five means of its own style and, across styles, with the five means of the other style. Control: the mean of the control task of \citet{yang2026shared} at the same heads, one per style of mean, taken as in their code: over the control task's 1-shot prompts, at all the items it answers correctly with one shot (for example-style means) or under the second instruction template (for rule-style means). Scaling: the 15 values of $\alpha$ in Sec.~\ref{sec:causal}; $\alpha=1$ writes the mean itself, $\alpha=0$ sets the heads to zero, and a negative $\alpha$ reverses its sign.
+\item \emph{Second causal check} (Sec.~\ref{sec:causal}). Patched items: the first 100 items answered wrongly with one shot, or all of them where fewer are wrong. Patched prompts: their 1-shot prompts, whose unpatched accuracy is 0 by construction. Head sets, means and $\alpha$ as in the first check; no control.
+\item \emph{Scoring}: the reply generated from each patched prompt, as the saved outputs of the simple tasks (Sec.~\ref{sec:evaluation}), scored by the flexible score; the first-token score is kept beside it. Accuracy at each $\alpha$ is averaged over the five means of a style; the causal effect is the highest of these averages minus the baseline.
+\end{enumerate}
+
+\paragraph{Output.} Head sets and measures (Table~\ref{tab:heads-simple}, Figures~\ref{fig:layers-simple} and~\ref{fig:copy-simple}); causal effects with means of the same style (Tables~\ref{tab:effects-simple} and~\ref{tab:effects-simple-wrong}) and of the other style (Tables~\ref{tab:effects-simple-cross} and~\ref{tab:effects-simple-wrong-cross}); accuracy against $\alpha$ (Figures~\ref{fig:patch-simple} and~\ref{fig:patch-simple-wrong}).
+
+\subsection{E1b: Heads from several instruction templates}\label{sec:e1b}
+\paragraph{Question.} H\ref{h:consensus}: do the rule-style lexical task heads that every instruction template yields carry the task more strongly than those of the most accurate template? A head that names the task under one template may be copying words of that template; one that names it under all five is less tied to a wording. After the result of H\ref{h:consensus}, we also ask how the causal effect changes when fewer templates are required. This second question has no hypothesis, and we report it as exploratory.
+
+\paragraph{Conditions.} 14 tasks $\times$ the rule style $\times$ 2 readouts (Logit-head, J-head) $\times$ 3 requirements: at least $k$ of the five templates, for $k\in\{1,3,5\}$. The heads found only by J-head and the example style are not part of E1b.
+
+\paragraph{Procedure.}
+\begin{enumerate}
+\item \emph{Identification prompts}: for each of the five instruction templates separately, its first 100 prompts in $P^{+}$ (all of them where fewer are answered correctly).
+\item \emph{Head sets}: under each readout, a head is in the set for $k$ if it meets Definition~\ref{def:lth} on the prompts of at least $k$ templates. The rule-style set of E1 comes from one of the five templates, so the set for $k=5$ (the consensus set of H\ref{h:consensus}) is contained in it and the set for $k=1$ (the union of the five templates' sets) contains it; the set for $k=3$ is neither.
+\item \emph{Measures}: head count, and the heads each set shares with the E1 set.
+\item \emph{Causal checks}: both checks of E1, unchanged (patched items, means of both styles, control mean, $\alpha$, scoring); only the head sets differ.
+\item \emph{Comparison}: per task, readout and check, the causal effect of each set against that of the E1 rule-style set with rule-style means, and in the first check the same for the control mean.
+\end{enumerate}
+
+\paragraph{Output.} Head sets (Table~\ref{tab:heads-consensus}); causal effects of the E1 set and of the three sets side by side, in the first check (Table~\ref{tab:effects-consensus}), with the control mean (Table~\ref{tab:effects-consensus-control}), and in the second check (Table~\ref{tab:effects-consensus-wrong}).
+
+\section{Results}\label{sec:results}
+Tables~\ref{tab:e0-simple}--\ref{tab:effects-consensus-wrong} and Figures~\ref{fig:layers-simple}--\ref{fig:patch-simple-wrong} are generated from the result files by \texttt{scripts/results\_tex.py}. E0 accuracies are the strict scores of the saved outputs (Sec.~\ref{sec:evaluation}). Head sets and causal checks use the flexible score (Sec.~\ref{sec:evaluation}, ``What changes''): $P^{+}$, the means and the patched items are chosen by it, and causal-check accuracies are the flexible scores of the replies generated from the patched prompts, over the patched items (Sec.~\ref{sec:experiments}).
+
+\subsection{E0: Behavioural baseline}\label{sec:res-e0}
+\paragraph{Simple tasks} (Table~\ref{tab:e0-simple}). Every task is answered well above its zero-shot accuracy under both styles, and the zero-shot prompts are almost never answered correctly. Accuracy rises from one to five shots and changes little after that. The instruction templates differ most on the translation tasks, next-item, prev-item, park--country and synonym, where one or two templates fall well below the others.
+
+Under the flexible score (Table~\ref{tab:e0-simple-flexible}), most of the spread across instruction templates on the three translation tasks goes away: their weakest templates answer in quotes or with capitalized German nouns. On next-item, prev-item and park--country the spread stays, so there the weak templates are weaker in what they answer, not only in how. German example prompts gain at every number of shots, and antonym and synonym gain on their weakest template; the other tasks change little. On numeric next-item items, which the first-token score accepts whatever the number, three of the five templates lose between 7 and 14 of 29 items.
+
+\begin{table}[tbp]
+\centering\footnotesize
+\input{tables/e0_simple}
+\caption{E0, simple tasks: strict accuracy per prompt style. Rule: the five instruction templates of \citet{yang2026shared}, mean and range; example: by number of shots; zero-shot: the prompts without task information. Items: dataset size.}
+\label{tab:e0-simple}
+\end{table}
+
+\begin{table}[tbp]
+\centering\footnotesize
+\input{tables/e0_simple_flexible}
+\caption{E0, simple tasks: flexible accuracy per prompt style (Sec.~\ref{sec:evaluation}), on the same saved replies and with the same layout as Table~\ref{tab:e0-simple}.}
+\label{tab:e0-simple-flexible}
+\end{table}
+
+\subsection{E1: Simple tasks}\label{sec:res-e1}
+\paragraph{Head sets} (Table~\ref{tab:heads-simple}, Figures~\ref{fig:layers-simple} and~\ref{fig:copy-simple}). Logit-head finds lexical task heads for every task under both styles, from two heads (synonym) upward. J-head finds more heads than Logit-head on 23 of the 28 pairs of task and style. Nearly two thirds of the heads it adds lie in layers 10 to 19, whereas most Logit-head heads lie in layer 20 or later (Figure~\ref{fig:layers-simple}). The J-head set contains the whole Logit-head set on 4 of the 28 pairs, and at least half of it on every pair. Rule-style sets are at least as large as example-style sets on every task except country--capital under J-head, where they differ by one head, and most heads of an example-style set are also in the rule-style set, except on synonym under both readouts and singular--plural under Logit-head. The copy share is high under most rule-style prompts, whose instructions contain task words, and lower on antonym, country--capital, singular--plural and synonym, where the heads also decode task words that the instruction does not contain; under example-style prompts it is close to zero except on country--capital (Figure~\ref{fig:copy-simple}).
+
+\paragraph{Causal check} (Tables~\ref{tab:effects-simple} and~\ref{tab:effects-simple-cross}, Figure~\ref{fig:patch-simple}). Patching the mean output of the Logit-head set, with means of its own style, raises accuracy above the unpatched baseline by at least ten items on country--capital, landmark--country, park--country and product--company under both styles, and on country--currency, next-item and singular--plural with examples. It has almost no effect on antonym, synonym, present--past, prev-item and the three translation tasks. Gains appear at positive $\alpha$; averaged over tasks and head sets, accuracy is highest at $\alpha=4$. The control mean raises accuracy much less than the task mean, except on park--country, where it raises it by a comparable amount, and on next-item, where at the J-head set and at the heads found only by J-head it raises it as much or more.
+
+The J-head set raises accuracy as much as the Logit-head set or more on most tasks, and also on synonym and prev-item with examples, where the Logit-head set does not; it raises it less on landmark--country with examples and on country--capital with rules. The heads found only by J-head raise accuracy by themselves on most tasks where the J-head set does, most strongly on singular--plural and country--capital with examples and on landmark--country with rules. The control mean at those heads raises it less, except on next-item.
+
+Patched with the means of the other style, the head sets raise accuracy on the same tasks, often by a comparable amount or more. On singular--plural, the rule-style J-head set and the heads found only by J-head raise accuracy with example-style means (to 0.74 and 0.82) but hardly with their own; the rule-style Logit-head set does neither. Antonym, present--past and the translation tasks gain at most six items under any pairing.
+
+\paragraph{Second causal check} (Tables~\ref{tab:effects-simple-wrong} and~\ref{tab:effects-simple-wrong-cross}, Figure~\ref{fig:patch-simple-wrong}). Every head set raises accuracy above zero on every task, under both styles and with means of either style, from a few items on synonym to most of the patched items on singular--plural, country--capital and, with the example-style J-head sets, next-item and prev-item. This includes antonym, present--past and the translation tasks, where patching the zero-shot prompts has almost no effect. Under Logit-head the gains are largest on singular--plural, country--capital and present--past and smallest on synonym and the translation tasks, the order reported by \citet[Figs.~57 and~62]{yang2026shared}, and as there park--country also gains at negative $\alpha$. On landmark--country, park--country and product--company the gains are smaller than with the zero-shot prompts. The J-head set raises accuracy about as much as the Logit-head set or more on most tasks, and far more on next-item and prev-item with examples; it raises it less on present--past with rules. The heads found only by J-head raise it on every task where that set is not empty, least on landmark--country with examples.
+
+\paragraph{Hypotheses.} For H\ref{h:rep}, lexical task heads are found for every simple task. With the zero-shot prompts described by \citet[App.~G.1]{yang2026shared}, patching the Logit-head set raises accuracy by at least ten items on seven tasks with means of its own style; there is no such gain on antonym, synonym, present--past, prev-item or the three translation tasks, and on park--country the control mean raises accuracy as well. With the 1-shot prompts of their released script, patching raises accuracy on all fourteen tasks, in the per-task pattern of their Figs.~57 and~62. H\ref{h:rep} is therefore falsified for the procedure their paper describes and holds for the setting of their released code, which reproduces their figures: the gains they report on present--past and the translation tasks need prompts that show the answer format. The verdict is the same as under the first-token score. For H\ref{h:readout}, the first condition fails, since the J-head set misses part of the Logit-head set on 24 of 28 pairs, and the second holds in both checks: heads found only by J-head have causal effects of their own. H\ref{h:readout} is therefore falsified by its first condition.
+
+\begin{table}[tbp]
+\centering\footnotesize
+\input{tables/heads_simple}
+\caption{E1: lexical task heads per task and style under Logit-head (L) and J-head (J). L$\cap$J: heads in both sets. Rule $\cap$ example: heads in both the rule-style and the example-style set of a readout. Identification prompts: 100 per task and style, the first answered correctly under the most accurate instruction template (rule) and under 5-shot prompts (example).}
+\label{tab:heads-simple}
+\end{table}
+
+\begin{table}[tbp]
+\centering\footnotesize
+\input{tables/effects_simple}
+\caption{E1 causal check: causal effect, the highest accuracy over $\alpha\in[-10,10]$ minus the unpatched accuracy (baseline), on the 100 patched items of each task; accuracy is the flexible score of the reply generated from each patched prompt. The head set of each style is patched with means of the same style, and accuracy is averaged over the style's five source wordings before the maximum is taken. Task mean: the head set's mean output over the task's own prompts; control mean: over the control task's prompts (Sec.~\ref{sec:e1}). L: Logit-head set; J: J-head set; J only: heads in the J-head set and not in the Logit-head set. --: empty set.}
+\label{tab:effects-simple}
+\end{table}
+
+\begin{table}[tbp]
+\centering\footnotesize
+\input{tables/effects_simple_cross}
+\caption{E1 causal check across styles, as Table~\ref{tab:effects-simple}, with the head set of each style (Heads) patched with the means of the other style: rule-style heads with the means of the five shot counts, example-style heads with the means of the five instruction templates.}
+\label{tab:effects-simple-cross}
+\end{table}
+
+\begin{table}[tbp]
+\centering\footnotesize
+\input{tables/effects_simple_wrong}
+\caption{E1, second causal check, as Table~\ref{tab:effects-simple}, with the 1-shot prompts of the first 100 items answered wrongly with one shot patched; fewer items are wrong on singular--plural (26), country--capital (27), park--country (45), present--past (61) and country--currency (65). Unpatched accuracy is 0 by construction. No control mean.}
+\label{tab:effects-simple-wrong}
+\end{table}
+
+\begin{table}[tbp]
+\centering\footnotesize
+\input{tables/effects_simple_wrong_cross}
+\caption{E1, second causal check across styles, as Table~\ref{tab:effects-simple-cross}.}
+\label{tab:effects-simple-wrong-cross}
+\end{table}
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=0.55\textwidth]{figures/layers_simple.pdf}
+\caption{Lexical task heads per layer under each readout, summed over the head sets of all simple tasks and styles, at the last prompt token.}
+\label{fig:layers-simple}
+\end{figure}
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=0.7\textwidth]{figures/copy_share_simple.pdf}
+\caption{Copy share of each simple-task head set (Sec.~\ref{sec:measures}): the share of prompts on which a head's matched terms occur in the prompt text, averaged over the set.}
+\label{fig:copy-simple}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{figures/patching_simple.pdf}
+\caption{E1 causal check: accuracy on the 100 patched items of each task against $\alpha$, with each style's head set patched with means of the same style, averaged over the style's five source wordings. Solid: the head set's mean over the task's prompts; dotted: the control mean at the same heads; dashed: unpatched accuracy.}
+\label{fig:patch-simple}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{figures/patching_simple_wrong.pdf}
+\caption{E1, second causal check, as Figure~\ref{fig:patch-simple}, with the wrongly answered 1-shot prompts patched. No control mean.}
+\label{fig:patch-simple-wrong}
+\end{figure}
+
+\subsection{E1b: Heads from several instruction templates}\label{sec:res-e1b}
+\paragraph{Head sets} (Table~\ref{tab:heads-consensus}). The three requirements give sets of very different sizes, all small against the model's 1,024 heads: even the union averages under 5\% of them per task under J-head, and its sets of all tasks together cover about a quarter. Over all tasks, the union of the five templates' sets ($k=1$) has about 1.6 times as many heads as the E1 set under Logit-head and 1.8 times under J-head. The sets of the heads that at least three templates yield ($k=3$) are about as large as the E1 sets, and seven in eight of their heads are E1 heads. The consensus sets ($k=5$) keep three fifths of the Logit-head heads of E1 and just over half of the J-head heads. They keep least on next-item, singular--plural and park--country under both readouts and on synonym under J-head; synonym has no Logit-head consensus set, so it is not patched.
+
+\paragraph{Causal checks} (Tables~\ref{tab:effects-consensus}, \ref{tab:effects-consensus-control} and~\ref{tab:effects-consensus-wrong}). No requirement gives the largest effect on most tasks; which one does depends on the task.
+
+The consensus sets give the largest effect of the four sets on tasks where the E1 sets were already effective. In the first check, these are country--capital and park--country under both readouts, product--company under Logit-head and landmark--country under J-head, with 7 to 26 more items than the E1 sets; in the second, country--capital, park--country and product--company under both readouts. The control mean rises with them by more than three items only at the J-head set of park--country. On most other tasks the consensus sets have a smaller effect than the E1 sets, most in the second check on singular--plural and next-item and under J-head on the translation tasks. On next-item, the J-head set's gain in the first check disappears together with that of the control mean.
+
+The union raises J-head's effect on three tasks where the E1 set had little: synonym and prev-item in the first check, and present--past in both, where the first check goes from no effect to 16 items and the second roughly doubles. In the first check, the control mean at these sets stays within two items of zero. The patched present--past prompts are answered with the past tense of the given verb; at the mean and $\alpha$ with the highest accuracy, 94 of the 100 replies differ, so the gain is not one answer repeated. In the first check it is largest at the largest $\alpha$, 10. Two further gains of the union are not specific to the task: on English--French the control mean rises almost as much, and on next-item the gain stays below that of the control mean. Under Logit-head the union lowers the first check's effect on park--country, landmark--country and product--company, and raises the second check's on next-item and present--past.
+
+The sets for $k=3$ behave like the E1 sets they mostly consist of. They gain on some tasks and lose on as many, and the union's effect on present--past is gone. Their largest change is on next-item under Logit-head, whose second-check effect falls by more than half; at the J-head set of landmark--country, the control mean rises.
+
+The three requirements thus trade off against each other. Heads that every template yields carry country--capital, park--country and product--company more strongly. Heads that only one or two templates yield add to J-head's effect on present--past, prev-item and synonym, and requiring three templates already removes them. The number of templates under which a head is found is therefore not by itself a measure of how strongly it carries the task.
+
+\paragraph{Hypothesis.} H\ref{h:consensus} is falsified: under each readout and in each check, the consensus sets raise accuracy more than the E1 sets on at most 4 of the 14 tasks. The sets for $k=1$ and $k=3$ fall outside H\ref{h:consensus}; they were added after its result and are exploratory.
+
+\begin{table}[tbp]
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\input{tables/heads_consensus}
+\caption{E1b: rule-style head sets under Logit-head (L) and J-head (J): from the most accurate instruction template (E1, Table~\ref{tab:heads-simple}), and the heads that meet Definition~\ref{def:lth} under at least $k$ of the five templates. Each cell: number of heads and, in brackets, its share of the model's 1,024 heads in \%. Distinct: heads in the set of at least one task. The set for $k=1$ contains the E1 set and the set for $k=5$ is contained in it; of the heads in the sets for $k=3$, summed over tasks, 198 of 227 (L) and 300 of 343 (J) are in the E1 sets.}
+\label{tab:heads-consensus}
+\end{table}
+
+\begin{table}[tbp]
+\centering\footnotesize
+\input{tables/effects_consensus}
+\caption{E1b, first causal check: causal effect of the rule-style head sets of Table~\ref{tab:heads-consensus} with rule-style means, as in Table~\ref{tab:effects-simple}; 100 patched items per task. --: empty set.}
+\label{tab:effects-consensus}
+\end{table}
+
+\begin{table}[tbp]
+\centering\footnotesize
+\input{tables/effects_consensus_control}
+\caption{E1b, first causal check: causal effect of the control mean at the head sets of Table~\ref{tab:heads-consensus}, as the control columns of Table~\ref{tab:effects-simple}.}
+\label{tab:effects-consensus-control}
+\end{table}
+
+\begin{table}[tbp]
+\centering\footnotesize
+\input{tables/effects_consensus_wrong}
+\caption{E1b, second causal check: causal effect of the head sets of Table~\ref{tab:heads-consensus} with rule-style means, as in Table~\ref{tab:effects-simple-wrong}. Items: the wrongly answered 1-shot prompts patched; the baseline is 0.}
+\label{tab:effects-consensus-wrong}
+\end{table}
+
+\section{Plan}\label{sec:plan}
+\paragraph{Steps.}
+\begin{enumerate}
+\item Run E0. Evaluate its saved outputs with the strict and the judged score (Sec.~\ref{sec:evaluation}).
+\item Run E1, and E1b on its rule-style heads.
+\end{enumerate}
+Reused code and data: the lexical-task-head code of \citet{yang2026shared}; the Head-JLens code and matrices of \citet{merlo2026headjlens}; the task datasets of \citet{todd2024function}.
+
+\paragraph{Limitations.} One model. Rule-based prompts contain task words, so a head may decode them by copying from the prompt; the copy share measures this but does not decide it. Under J-head, some sites rank tokens highly on unrelated prompts as well \citep[Sec.~3.6]{merlo2026headjlens}, so a larger J-head set is not by itself evidence of more task representation; the causal check is needed. $P^{+}$ and the patched items are chosen by the flexible score, which accepts only the reference answer: a prompt answered with another valid answer is counted as wrong. The judged score depends on one LLM judge, which is not checked against hand labels here; \citet{hua2025flaw} find that LLM judges agree with human annotators on other tasks.
+
+
+\paragraph{Deliverables.} Head sets, measures and causal-check curves for every task, style and readout.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\clearpage
+\section*{Decision log}\label{app:decisions}
+\addcontentsline{toc}{section}{Decision log}
+\begin{description}
+\item[2026-10-27] Scope: test the lexical-task-head method of \citet{yang2026shared} on complex tasks and compare the per-head logit lens with Head-JLens. New title.
+\item[2026-10-27] Tasks: the 14 simple tasks shared by \citet{yang2026shared} and \citet{davidson2025different}; the five tasks of \citet{fu2026rules}.
+\item[2026-10-27] No main condition: rule-based and example-based prompts are treated alike (replacing the earlier choice of rules as main and examples as secondary).
+\item[2026-10-27] Method: lexical task heads, with Logit-head and J-head readouts. Function vectors, function-specific heads and the hidden-state difference between prompts are not used for now.
+\item[2026-10-27] Answer format as in the source studies.
+\item[2026-10-27] Model: Llama-3.1-8B-Instruct, the main model of \citet{yang2026shared} and the only one with released Head-JLens matrices.
+\item[2026-10-27] Accuracy is computed with each source paper's evaluation.
+\item[2026-10-27] Prompts on which the model does not answer straight away are left out; other ways of handling them are considered after E0.
+\item[2026-10-28] The simple tasks follow the code of \citet{yang2026shared} exactly, except for the J-head readout and the bfloat16 precision of the Head-JLens matrices: five instruction templates (their code and paper do not use the sixth template of their instruction file); heads from one wording per style (5-shot, and the most accurate template); one mean and one patch per source wording; their control mean; their batching. This replaces, for the simple tasks, the pooling of prompts and means over wordings and the use of six templates. E1 was rerun.
+\item[2026-10-28] Simple tasks: the padding of each batch is masked. The code of \citet{yang2026shared} passes no attention mask, so the model attends to the padding, which their paper does not describe. E1 was rerun.
+\item[2026-10-28] Simple tasks: a second causal check with the setting of the one causal script of \citet{yang2026shared} (wrongly answered 1-shot prompts patched, no control). It reproduces their Figs.~57 and~62, which the zero-shot procedure of their App.~G.1 does not; both checks are reported.
+\item[2026-10-29] Answer evaluation (Sec.~\ref{sec:evaluation}), after \citet{hua2025flaw}: every E0 reply is generated once with longer limits and saved; each is scored with the source evaluation and with a GPT-5.5 judge, and every disagreement is given a reason. The judge sees every reply, not only those the strict score rejects. Head identification and the causal checks keep the strict score until this evaluation is done.
+\item[2026-10-29] One generation scheme per group of tasks (Sec.~\ref{sec:evaluation}). Simple tasks: a reply ends at \texttt{;}, at a newline once the reply has begun (a leading newline no longer ends it), at the end of sequence, or at 32 new tokens. Complex tasks: a reply ends at the end of sequence or at 1,024 new tokens, for all five tasks; this replaces the limit of 6,000 in reasoning mode and the stop once the scored answer is complete. The saved outputs are generated again under this scheme. Head identification and the causal checks in reasoning mode were run with the earlier limit of 6,000 tokens and the stop at the answer.
+\item[2026-10-29] Heads are read at the last prompt token only; the pre-answer position is dropped, with its results. Which prompts form $P^{+}$ for the complex tasks is decided later. Causal checks: the patch is applied at the last prompt position only, for every task, and every task uses the same 15 values of $\alpha$.
+\item[2026-10-30] Simple tasks: a second, flexible score next to the first-token score, which is unchanged: the whole reference at the start of the reply, ignoring case, accents, punctuation and a leading article (Sec.~\ref{sec:evaluation}). It is reported for E0; head identification and the causal checks keep the first-token score.
+\item[2026-10-30] No hand-labelled validation of the judge; its use rests on the human check of \citet{hua2025flaw}.
+\item[2026-10-30] Head identification and the causal checks use the flexible score, replacing the first-token score (simple tasks) and the strict score (complex tasks): $P^{+}$ is the prompts answered correctly under it, with no condition that the answer comes first, for both families; the identification wordings, the head sets, the means, the patched items and the controls are chosen by it. Readings and means are taken from the prompts of the saved outputs. In the causal checks the reply is generated as the saved outputs and scored by the flexible score; for the simple tasks this replaces the first token, which is kept as a second score. Both complex-task checks patch 100 items on every task, replacing 10 on Set Game, Operator Function and Tapatan; Operator Function has no second check, as no item is answered wrongly under its original rules prompt. E1 and E2 are rerun.
+\item[2026-11-02] E1b: rule-style heads of the simple tasks that meet Definition~\ref{def:lth} under all five instruction templates (H\ref{h:consensus}), patched with both causal checks of E1. Only the rule style and only the simple tasks.
+\item[2026-11-02] E1b extended after the result of H\ref{h:consensus}, as an exploratory question without a hypothesis: the heads that meet Definition~\ref{def:lth} under at least one and at least three of the five templates, patched with both checks. E1b now reports the Logit-head and J-head sets only, not the heads found only by J-head, and no copy share.
+\item[2026-11-03] The project is split into two documents: \texttt{proposal-simple}, the identification method on the simple tasks (E0 for the simple tasks, E1, E1b), and \texttt{proposal-complex}, the complex tasks (E0 for the complex tasks, E2). Work continues on the simple tasks for now. The readout hypothesis is stated once per document, with its criteria unchanged.
+\end{description}
+
+\end{document}

@@ -1,7 +1,7 @@
 """Tables and figures of the proposal's Results section, from results/ (no GPU).
 
 Writes the tabulars ``paper/tables/*.tex``, each ``\\input`` inside a table float of
-proposal-minimal.tex, and the figures ``paper/figures/*.pdf``:
+proposal-simple.tex or proposal-complex.tex, and the figures ``paper/figures/*.pdf``:
 - ``e0_simple``, ``e0_complex``: strict accuracy per style and wording of the saved outputs
   (``answer_eval/accuracy.csv``, ``scripts/score_outputs.py``; chance from ``e0_accuracy.csv``);
   ``e0_simple_flexible``, ``e0_complex_flexible``: the same under the flexible score;

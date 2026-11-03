@@ -1,13 +1,15 @@
 # Lexical task heads beyond simple tasks
 
-Code for the project described in `paper/proposal-minimal.tex`. It identifies the lexical task
+Code for the project described in `paper/proposal-simple.tex` and `paper/proposal-complex.tex`. It
+identifies the lexical task
 heads of Yang et al. (2026) in Llama-3.1-8B-Instruct, on 14 simple tasks and on the five
 rule-defined tasks of Fu et al. (2026). Each attention head is read with two readouts:
 the per-head logit lens (Logit-head) and Head-JLens (J-head). The identified heads are
 then tested by mean activation patching.
 
-The project has two parts: Part I works on the identification method on the simple tasks; Part II
-applies it to the complex tasks.
+The project has two parts, each with its own proposal and schematic summary: the identification
+method on the simple tasks (`proposal-simple.tex`, `summary-simple.tex`), and the complex tasks
+(`proposal-complex.tex`, `summary-complex.tex`).
 
 ## Setup
 
@@ -44,6 +46,7 @@ Every GPU script skips work already on disk, so an interrupted run resumes.
   - `headvis.py`: attention scores and patterns of heads on chosen prompts (for `notebooks/headvis.py`).
 - `notebooks/`: marimo notebooks. `headvis.py` is a live app (GPU) for chosen heads on chosen prompts,
   Neuronpedia HeadVis-style: `LTH_GPU=0 uv run marimo run notebooks/headvis.py --headless --port 2719`.
-- `paper/`: the proposal (`proposal-minimal.tex`), its appendices, bibliography, tables and figures.
+- `paper/`: the two proposals and their summaries, the appendices (complex tasks), bibliography,
+  tables and figures.
 - `materials/`: the generation prompts (proposal App. B) and the checked wordings and term lists.
 - `third_party/`, `data/`: fetched sources and run outputs (not tracked).

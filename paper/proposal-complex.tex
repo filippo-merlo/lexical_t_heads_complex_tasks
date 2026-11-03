@@ -1,0 +1,375 @@
+% =====================================================================
+%  var-task-rep -- Minimal proposal skeleton
+%  One grey box per section. Add \subsection{...} freely inside any
+%  section; each new subsection can carry its own box: \ph{ID}{title}{notes}.
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{fvextra}
+\DefineVerbatimEnvironment{promptbox}{Verbatim}{breaklines,breakanywhere,fontsize=\footnotesize,frame=single,framesep=2mm}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[round,authoryear]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=green!40!black,urlcolor=blue!60!black]{hyperref}
+
+% Placeholder box: \ph{ID}{What goes here}{Notes}
+\definecolor{phframe}{gray}{0.55}
+\definecolor{phback}{gray}{0.95}
+\newcommand{\ph}[3]{%
+  \hypertarget{ph:#1}{}%
+  \begin{tcolorbox}[enhanced,breakable,colback=phback,colframe=phframe,
+    boxrule=0.4pt,arc=1mm,left=2mm,right=2mm,top=1mm,bottom=1mm,
+    fonttitle=\sffamily\small\bfseries,coltitle=black,colbacktitle=gray!25,
+    title={[#1]\quad TO WRITE --- #2}]
+  \small #3
+  \end{tcolorbox}}
+
+% Inline value to be decided
+\newcommand{\tbd}[1]{\textcolor{red!70!black}{\textsf{[TBD: #1]}}}
+
+% Link back to the status table, placed under each section heading
+\newcommand{\backtostatus}{\noindent{\hfill\footnotesize\hyperref[sec:status]{$\uparrow$\,status}}\par}
+
+% Status row: \strow{label}{name}{content}{status}
+\newcommand{\strow}[4]{\hyperref[#1]{#2} & #3 & #4 \\}
+
+\newtheorem{definition}{Definition}
+\newtheorem{hypothesis}{Hypothesis}
+
+\title{Lexical Task Heads beyond Simple Tasks:\\ Complex Rule-Defined Tasks}
+\author{Filippo Merlo}
+\date{Draft --- \today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\phantomsection\label{sec:abstract}
+Lexical task heads are attention heads whose output, decoded into the vocabulary, names the task the prompt asks for \citep{yang2026shared}. They were identified with the per-head logit lens on simple single-step tasks, such as mapping a country to its capital. We ask whether the same method finds them for complex tasks defined by explicit rules \citep{fu2026rules}, which need several inference steps, and whether Head-JLens \citep{merlo2026headjlens}, which decodes each head's output after mapping it through a Jacobian of the remaining layers averaged over many texts, finds lexical task heads on them that the logit lens misses. In Llama-3.1-8B-Instruct, we identify lexical task heads under both readouts on 5 complex tasks at their easy level, with rule-based, example-based and combined prompts, and test each head set by activation patching. The identification method and its results on simple tasks are given in a companion document.
+\end{abstract}
+
+\section{Introduction}\label{sec:intro}
+A language model's accuracy on a task can change a great deal with the wording of the prompt that asks for it: on Llama-3.1-8B-Instruct, prompts for the same antonym items differ in accuracy by up to a factor of four \citep[Fig.~1]{yang2026shared}. \citet{yang2026shared} explain part of this variation with \emph{lexical task heads}, attention heads whose outputs, decoded into the vocabulary with the logit lens, name the task (``opposite'' for antonyms, ``cities'' for capitals). The heads are largely shared between instruction-based and example-based prompts, patching their mean activation into a prompt without task information raises task accuracy, and prompts that fail activate them less.
+
+Two limits of that work motivate this project. First, its 17 tasks are simple single-step mappings (country to capital, word to antonym), and the authors note that ``it remains unclear if these shared lexical mechanisms hold for more abstract tasks or tasks that are less easily defined by simple vocabulary clusters'' \citep[Sec.~4]{yang2026shared}. \citet{fu2026rules} provide such tasks: five novel tasks defined by explicit rules (a card game, a board game, a composed arithmetic operator, noun-class agreement in an artificial language, and lexical-category inference), each at three difficulty levels and each given as rules, as examples or as both. Second, the logit lens decodes a head's output directly and leaves out the computation of the layers that follow it; \citet[Sec.~4]{yang2026shared} note that task representations ``encoded in a non-lexical, abstract format'' may not project cleanly to tokens. Head-JLens reads each head through a Jacobian map of the remaining layers, and on Llama-3.1-8B-Instruct it ranks annotated intermediate words, which the prompt never states (such as the bridge entity of a two-hop question), higher than the per-head logit lens at most layers on five of six evaluation sets \citep[Sec.~3]{merlo2026headjlens}.
+
+We therefore ask whether \citeauthor{yang2026shared}'s method identifies lexical task heads for the complex tasks of \citet{fu2026rules}, and how the logit lens and Head-JLens compare as readouts for identifying them. The method is worked out on the simple tasks in a companion document (\texttt{proposal-simple.tex}); this document uses its methods and compares with its results.
+
+\paragraph{Contributions.}
+\begin{enumerate}
+\item A test of the lexical-task-head method on complex, rule-defined tasks, with a causal check of the identified heads.
+\item A comparison of the per-head logit lens and Head-JLens for identifying lexical task heads on these tasks.
+\end{enumerate}
+
+\paragraph{Scope.} We do not explain behavioural variation across wordings (the failure analyses of \citealp[Sec.~2.4]{yang2026shared}), and we use one model.
+
+\section{Related work}\label{sec:background}
+\paragraph{Task representations across prompting styles.} Function vectors are sums of the mean outputs of a few attention heads that, added to the residual stream, trigger a task in another context \citep{todd2024function}. \citet{davidson2025different} extract them from instructions as well as from demonstrations and find that the two prompting styles engage mostly different heads: of the 20 top heads in each model, 2 to 7 are shared. \citet{yang2026shared} identify a different kind of task representation, lexical task heads, whose outputs decode to words describing the task; 73\% of them are shared between instruction-based and example-based prompts on average, and they are largely disjoint from function-vector heads \citep[App.~I]{yang2026shared}. We test the lexical-task-head method on complex tasks.
+
+\paragraph{Reading attention heads in the vocabulary.} The logit lens decodes an intermediate state with the model's final normalization and unembedding \citep{nostalgebraist2020logitlens}; applied to one head's output, it is the readout of \citet{yang2026shared}. The Jacobian lens of \citet{gurnee2026workspace} instead maps a residual-stream state through a Jacobian of the remaining layers, averaged over many texts. Head-JLens moves this map to the concatenated head outputs, so that each head is read through the layers that follow it; in Llama-3.1-8B-Instruct it ranks annotated intermediate words higher than the per-head logit lens at most layers on five of six evaluation sets, and heads selected with it are better sites for edits \citep{merlo2026headjlens}. We compare the two readouts on a different use: identifying task-descriptive heads.
+
+\paragraph{Learning tasks from rules and from examples.} \citet{fu2026rules} compare learning from rules, from examples and from both on five novel tasks. Rules outperform examples overall, adding examples to rules gives no significant gain, and the advantage of rules is largest for tasks that need algebraic computation. Their study is behavioural; we use their tasks to study task representations.
+
+\section{Research questions}\label{sec:rq}
+\begin{description}
+\item[RQ1] Does the method of \citet{yang2026shared} identify lexical task heads for the complex tasks of \citet{fu2026rules} under rule-based and example-based prompts, and do the identified heads have a causal effect on task accuracy?
+\item[RQ2] How do the two readouts compare for identifying lexical task heads on the complex tasks?
+\item[RQ3] Are the lexical task heads of a complex task shared between rule-based and example-based prompts, as \citet{yang2026shared} find for simple tasks?
+\end{description}
+
+\begin{hypothesis}[complex tasks]\label{h:complex}
+Following the limitation stated by \citet[Sec.~4]{yang2026shared}, the complex tasks yield fewer lexical task heads per task and a smaller causal effect than the simple tasks under Logit-head. \emph{Falsified} if they yield as many heads with as large an effect.
+\end{hypothesis}
+
+\begin{hypothesis}[readouts]\label{h:readout}
+Following \citet{merlo2026headjlens}, on the complex tasks J-head identifies at least the lexical task heads that Logit-head identifies, and the heads found only by J-head have a causal effect above baseline. \emph{Falsified} if the J-head set misses heads of the Logit-head set, or if the heads found only by J-head have no causal effect.
+\end{hypothesis}
+
+
+\section{Framework}\label{sec:framework}
+\paragraph{Tasks and prompts.} A task $t$ is given by a dataset $D_t$ of inputs and correct outputs. For the complex tasks we use the easy level of each (Sec.~\ref{sec:tasks}). Each prompt for $t$ has a style $s\in\{\text{rule},\text{example},\text{combined}\}$: its task information is a rule text, a set of demonstrations, or both, followed by the input $x$. $P_{t,s}$ is the set of prompts of style $s$ for $t$, and $P^{+}_{t,s}\subseteq P_{t,s}$ the prompts whose heads are read: those the model answers correctly under the flexible score of Sec.~\ref{sec:evaluation}, for both families of tasks, whether or not the answer is the first generated text.
+
+\paragraph{Heads and readouts.} Following \citet[Sec.~2]{merlo2026headjlens}, $z_{l,h}(p)$ is the output of head $h$ in layer $l$ at the last position of $p$, before the output projection, and $c_{l,h}(p)=W^{(h)}_{O,l}z_{l,h}(p)$ its write to the residual stream. With $q_v=g\odot w_v$ the gain-scaled unembedding row of token $v$, the two readouts score $v$ by
+\[
+\ell^{\mathrm{L}}_{l,h}(p)[v]=q_v^\top c_{l,h}(p)\quad\text{(Logit-head)},\qquad
+\ell^{\mathrm{J}}_{l,h}(p)[v]=q_v^\top J_{l,h}\,z_{l,h}(p)\quad\text{(J-head)}.
+\]
+$T^{R}_{k,l,h}(p)$ is the set of the $k$ highest-scoring tokens under readout $R\in\{\mathrm{L},\mathrm{J}\}$, and $V_t$ the term list of task $t$.
+
+\begin{definition}[Lexical task head]\label{def:lth}
+Following \citet[Sec.~2.2.2]{yang2026shared}, head $(l,h)$ is a lexical task head for $t$ on prompt $p$ under readout $R$ if $|T^{R}_{k,l,h}(p)\cap V_t|\geq n$. It is a lexical task head for $t$ and style $s$ if this holds for at least a fraction $\rho$ of the prompts in $P^{+}_{t,s}$. We use $n=1$, $k=10$, $\rho=0.1$, as \citet{yang2026shared}. $H^{R}_{t,s}$ denotes the set of such heads.
+\end{definition}
+
+\section{Methods}\label{sec:methods}
+
+\subsection{Model}\label{sec:model}
+Llama-3.1-8B-Instruct: it is the main model of \citet{yang2026shared}, and the only model with released Head-JLens matrices.
+
+\subsection{Tasks}\label{sec:tasks}
+\paragraph{Simple tasks.} The 14 tasks used by both \citet{yang2026shared} and \citet{davidson2025different}, with the datasets of \citet{todd2024function}: antonym, synonym, singular--plural, present--past, country--capital, country--currency, landmark--country, park--country, product--company, next-item, prev-item, English--French, English--German, English--Spanish.
+Rule-based prompts: the five instruction templates per task of \citet[App.~A.3.1]{yang2026shared}.
+Example-based prompts: 1, 5, 10, 20 and 30 shots \citep[App.~A.3]{yang2026shared}.
+
+\paragraph{Complex tasks.} The five tasks of \citet{fu2026rules} at their easy level: Set Game, Tapatan, Operator Function, Noun Class Agreement, Lexical Category Inference. Data from their public release: 300 test items per task, drawn with their sampler and seed (all 600 for Lexical Category Inference), the same items under every prompt.
+Rule-based prompts: their rules-only prompts \citep[App.~F]{fu2026rules} and further wordings (Sec.~\ref{sec:trmethods}).
+Example-based and combined prompts: their minimum-coverage demonstration sets \citep[Sec.~2.5]{fu2026rules}.
+
+\paragraph{Why these tasks.} Lexical task heads and their term lists were defined on the simple tasks \citep{yang2026shared}, so the method applies unchanged and our results can be compared with theirs. \citet[Sec.~4]{yang2026shared} restrict their study to tasks with simple lexical descriptions. The complex tasks are novel, need several inference steps, and are given in rule, example and combined forms that specify the same task on the same test items, so the task is held fixed while the way it is communicated varies \citep[Sec.~1--2]{fu2026rules}.
+
+\paragraph{Answer format.} As in the source studies: the templates of \citet{yang2026shared} for the simple tasks, and the answer formats of \citet[App.~F]{fu2026rules} for the complex tasks, under the chat template. Decoding is greedy, as in \citet[App.~A]{fu2026rules} (temperature 0; their released code defaults to 0.1), so that the prompt whose heads are read and the scored answer always match. The five complex tasks are generated alike (Sec.~\ref{sec:reasoning}): the model may explain or reason before it answers, as \citeauthor{fu2026rules}'s instruction-tuned models often do. Lexical task heads are read at the last prompt token, before any generated text, for every task.
+
+\subsection{Task-representation methods}\label{sec:trmethods}
+\paragraph{Lexical task heads} \citep[Sec.~2.2.2]{yang2026shared}.
+Each attention head's output at the last prompt token is decoded with the two readouts of Sec.~\ref{sec:framework}: Logit-head, the per-head logit lens used by \citet{yang2026shared} \citep{nostalgebraist2020logitlens}, and J-head (Head-JLens), which applies the head's columns $J_{l,h}$ of the per-layer Jacobian map fitted on WikiText-103 \citep[Sec.~2]{merlo2026headjlens}. Fitted matrices for Llama-3.1-8B-Instruct are released with \citet[Sec.~S4]{merlo2026headjlens}.
+Under each readout, lexical task heads are identified with Definition~\ref{def:lth}.
+For the simple tasks, $P^{+}_{t,s}$ is taken as in the code of \citet{yang2026shared}: the first 100 prompts in $P^{+}$ under one wording, the 5-shot prompts for the example style and the instruction template with the highest accuracy for the rule style. The complex tasks follow the same rule: the first 100 such prompts under the most accurate rule wording, under the example-based prompts and under the combined prompts.
+Term lists: \citet[App.~A.2.1]{yang2026shared} for the simple tasks; for the complex tasks, see below.
+
+\paragraph{Simple tasks as in the source code.} The simple tasks are run as in the code of \citet{yang2026shared}, with three departures. First, padding: their code passes prompts to the model in batches of 20, padded on the left, without an attention mask, so that the model attends to the padding; we pass the mask and the matching positions, so that each prompt is computed as if run alone. Second, the J-head readout. Third, the precision of the forward pass: bfloat16, in which the Head-JLens matrices were fitted.
+
+\paragraph{What we add to the complex tasks.}\label{sec:adapt} \citet{fu2026rules} provide the data, one rules-only prompt per task and difficulty level, and the example-based and combined prompts. To apply lexical task heads to them we add three things.
+\begin{enumerate}
+\item \emph{Rule wordings}: six per original rule prompt (App.~\ref{app:orig}), each stating exactly the same rules. They are generated with GPT-5.5 through the Azure OpenAI API from a paraphrase prompt that keeps placeholders, output labels and the answer-format instruction verbatim (App.~\ref{app:genprompts}), and each is checked by us against the original; App.~\ref{app:wordings} lists them. \citet{yang2026shared} use five instruction templates per simple task; the complex tasks have six rule wordings besides the original, and their rule-style $P^{+}$ is taken from the most accurate of the seven.
+\item \emph{Term lists} of task-descriptive words, of the kind in \citet[App.~A.2.1]{yang2026shared}: single words that describe the task rather than its answers, with case and number variants. They are generated with GPT-5.5 through the Azure OpenAI API from the rule prompt (App.~\ref{app:genprompts}), as \citet[App.~O]{yang2026shared} generated term lists with LLMs, and checked by us. Each word is expanded to token ids as in \citet{yang2026shared}: as written, with a leading space, in upper, capitalised and lower case, and after a \texttt{.}, \texttt{\_} or \texttt{-}, keeping every variant that is a single token of the model's tokenizer. There is one list per original rule prompt (App.~\ref{app:orig}): Tapatan's levels share one prompt and change only board size, piece count and line length, whereas the other tasks add rules or, for Operator Function, change the function \citep[Table~1, App.~F]{fu2026rules}. Lists are task-specific, not item-specific: for Lexical Category Inference, whose category definitions change from item to item, the list contains only words that describe the task itself. App.~\ref{app:terms} lists them.
+\item \emph{Prompts without task information} for the causal check (Sec.~\ref{sec:causal}): the input block of the rules-only prompt alone (the lines that introduce the input and the answer, such as \texttt{Sentence: \{sentence\}} and \texttt{Answer:}), without rules or examples, the counterpart of the zero-shot prompts of \citet[Sec.~2.3.2]{yang2026shared}.
+\end{enumerate}
+
+\paragraph{Generation and scoring of the complex tasks.}\label{sec:reasoning} All five complex tasks are run in one way: chat template, greedy decoding, and a reply that ends at the end-of-sequence token or at 1,024 new tokens. \citeauthor{fu2026rules} give instruction-tuned models longer limits (6,000 new tokens for Operator Function, App.~A). In an earlier run with that limit on Set Game, Operator Function and Tapatan (ten prompt variants, 300 items), 4 of 9,000 replies reached a correct answer after token 1,024, and 690 of the 804 longer replies ran to 6,000 tokens without one. The strict score is the evaluation of \citet{fu2026rules} on the whole reply: for Set Game and Operator Function, after whitespace is collapsed, the first \texttt{\textbackslash boxed\{\}}, read as three cards of the form \texttt{(animal | biome | \ldots)} or as an integer; for Noun Class Agreement, the first line that is only Yes or No (after an optional \texttt{Answer:}), else a line that begins \texttt{Answer:} or \texttt{Final answer:} followed by Yes or No, else the first Yes or No anywhere in the reply; for Lexical Category Inference, the reply's first word, which must be Yes or No. Their code has no scorer for Tapatan (it stores the reply only), and their paper describes none; its prompt asks for the label alone. We read the first of its three labels (\texttt{A win}, \texttt{B win}, \texttt{continue}) anywhere in the reply, as in our first run of E0. A reply without an extractable answer is wrong. Where items share a prompt (Tapatan's sample repeats 46 boards, Noun Class Agreement's 52 sentences), the prompt is answered once and its reply scored for each of them.
+
+\paragraph{Why these readouts.} Lexical task heads locate a task representation and give its content in words \citep{yang2026shared}. Logit-head reproduces their readout. J-head reads each head through the layers that follow it: in Llama-3.1-8B-Instruct it ranks unstated intermediate words higher than Logit-head at most layers on five of six evaluation sets, and its readouts are better guides for edits \citep[Secs.~3--4]{merlo2026headjlens}. A lexical task head's decoded task word is likewise not the answer, and \citet[Sec.~4]{yang2026shared} note that their logit-lens criterion may miss task representations that do not project cleanly to tokens.
+
+\subsection{Causal check}\label{sec:causal}
+The causal check of \citet[Sec.~2.3.2, App.~G]{yang2026shared} tests whether a head set carries the task: the heads' mean output on task prompts is written into prompts that do not state the task, and we measure whether the model then performs it.
+\begin{enumerate}
+\item \emph{Patched prompts}: prompts without task information, the zero-shot prompts of \citet{yang2026shared} for the simple tasks and the input blocks of Sec.~\ref{sec:adapt} for the complex tasks, for items that the model answers correctly when the task is given. Their unpatched accuracy is the baseline.
+\item \emph{Mean output}: for each head in the set, the mean of $c_{l,h}$ over the first 100 prompts of a wording answered correctly, leaving out the patched items. As in the code of \citet{yang2026shared}, each wording of a style (each instruction template, each number of shots, each rule wording) gives its own mean and its own patch.
+\item \emph{Patch}: at the last position of each patched prompt, the output of every head in the set is replaced by its mean output times a scaling factor $\alpha$: for the simple tasks $\alpha\in\{-10,-6,-4,-2,0,1,2,\dots,10\}$, the values of \citet{yang2026shared}; for the complex tasks, whose replies run to 1,024 tokens, their even values and 1, $\alpha\in\{-10,-6,-4,-2,0,1,2,4,6,8,10\}$. The model answers from the patched prompt, generated as the saved outputs of Sec.~\ref{sec:evaluation}, and the answer is scored by the flexible score. For the simple tasks this replaces the first generated token, which the code of \citet{yang2026shared} reads; the first-token score is kept beside it.
+\item \emph{Control}: the same patch at the same heads, with the mean output of a different task. A head set carries the task if its own mean raises accuracy and the control mean does not; a gain under both points to the answer format rather than the task.
+\end{enumerate}
+Three head sets are patched for each task and style: $H^{\mathrm{L}}_{t,s}$, $H^{\mathrm{J}}_{t,s}$, and the heads found only by J-head, $H^{\mathrm{J}}_{t,s}\setminus H^{\mathrm{L}}_{t,s}$. We report the accuracy at each $\alpha$ averaged over the wordings of the mean's style.
+For every task the patch is applied at the last prompt position only, as in \citet{yang2026shared}; the reply is then generated without it, and its answer is scored.
+Which items are patched and which means and control tasks are used are given for each task family in E1 of the companion document and in E2 (Sec.~\ref{sec:e2}).
+
+\subsection{Answer evaluation}\label{sec:evaluation}
+We score every reply in more than one way because of what \citet{hua2025flaw} show about scoring and prompt wording. They evaluate seven LLMs, Llama-3.1-8B-Instruct among them, on six benchmarks under twelve prompt templates each. Each reply is scored twice: once with the benchmark's usual rule (log-likelihood over the answer options, or extraction and matching of the answer string), and once by an LLM judge that sees the question, the reference answer and the reply. Under the rules, accuracy varies much more across templates than under the judge (Gemma-2 on ARC-Challenge: standard deviation 0.28 against 0.005). The ranking of the models also changes from template to template (mean Spearman correlation between templates 0.30 against 0.92). The rules mark answers wrong that are correct but phrased or formatted differently. Much of the measured sensitivity to prompt wording therefore comes from the scoring, not from the model. A rule built to accept equivalent answers (symbolic equivalence on MATH) varies as little as the judge. The judge's verdicts agree with those of three human annotators (Cohen's $\kappa$ 0.92 over all benchmarks, lowest 0.67 on NarrativeQA) and with those of a second judge model. This matters here because E0 compares prompt styles and wordings by accuracy, and a difference between wordings may only be a difference in how the answers are written. Both source evaluations we use are rigid matchers. For the simple tasks, \citet{yang2026shared} compare only the first generated token with the first token of the single reference answer. A capitalized German noun (\emph{Gemeinde} for the reference \emph{gemeinde}), an answer in quotes, or another valid synonym is therefore wrong, and a first token that only begins the reference (\emph{Niger} for \emph{Nigeria}) is right. For a numeric reference the first token is the leading space alone (the tokenizer splits \texttt{" 2"} into \texttt{" "} and \texttt{"2"}), so any number counts as correct: in E0 all 29 numeric items of next-item and of prev-item are scored correct under every instruction template. For the complex tasks, the parser of \citet{fu2026rules} reads only the first \texttt{\textbackslash boxed\{\}}, so a correct answer written outside the box is wrong, and the short output limits of their base-model runs (2 to 50 tokens) cut longer answers off. In a first check on the stored E0 replies, the accuracy of Operator Function across its rule wordings (0.01 to 0.99) becomes 1.00 under every wording when an unboxed reply is scored by its last integer, and on the translation and next-item tasks most of the spread across instruction templates goes once case, quotes and leading articles are ignored. We therefore evaluate every E0 prompt in two ways, from one saved output, and also with a flexible score that ignores how the answer is written.
+\begin{enumerate}
+\item \emph{Saved output.} Every reply is generated once, with greedy decoding, and saved with its prompt, input, reference answer, generated token ids and text, number of tokens, and why generation stopped, so that every score and analysis below can be recomputed without running the model again. Each group of tasks has one generation scheme.
+\begin{itemize}
+\item \emph{Simple tasks}: raw text, no chat template, in batches of 20 as in \citet{yang2026shared}, with the padding masked. A reply ends at the first of: the delimiter \texttt{;} of the example prompts, a newline once the reply has begun, the end-of-sequence token, or 32 new tokens, twice the longest reference answer (15 tokens).
+\item \emph{Complex tasks}: under the chat template, the same for all five tasks. A reply ends at the end-of-sequence token or at 1,024 new tokens (Sec.~\ref{sec:reasoning}).
+\end{itemize}
+Under greedy decoding the first tokens of a reply do not depend on how long generation runs, so the reply cut to a shorter limit is the reply that limit would give. Cut to the limits of \citet[App.~A]{fu2026rules}, it also shows which answers are given straight away.
+\item \emph{Strict score}: the source evaluation, unchanged, on the full reply: for the simple tasks, the first generated token against the first token of the reference \citep{yang2026shared}; for the complex tasks, the scoring of Sec.~\ref{sec:reasoning}. Computed on the replies cut to the E0 limits, it must reproduce the E0 accuracies; differences can only come from batch numerics and are reported.
+\item \emph{Flexible score} (simple tasks): the reply, up to where it stops, begins with the whole reference answer, as words. Case, accents, punctuation and one leading article or \emph{to} are ignored. A hyphen or apostrophe inside a word joins it (\emph{non-corresponding} matches \emph{noncorresponding}), a possessive \emph{'s} is dropped, and any other punctuation separates words (\emph{petit(e)} matches \emph{petit}); a part of the reference in parentheses is optional (\emph{Euro} matches \emph{Euro (EUR)}). It removes the formatting errors of the first-token score (case, quotes, articles) and its false positives (\emph{Niger} for \emph{Nigeria}). Another spelling of a name (\emph{Luxembourg} for \emph{Luxembourg City}) and another valid answer remain wrong; these are left to the judge.
+\item \emph{Flexible score} (complex tasks): the answer the strict score looks for, in any notation. It is rewritten in the format of \citet{fu2026rules} and scored by the strict score, so the checks of the answer (for Set Game, that the cards are on the board and form a set) stay theirs. Operator Function: the number in the first \texttt{\textbackslash boxed\{\}}, ignoring other text in the box, or, if the reply has no box, the number on its last line. Set Game: the first box that holds three readable cards; the brackets around a card may be missing or unmatched. Noun Class Agreement and Lexical Category Inference: the reader \citet{fu2026rules} use for Noun Class Agreement (a line that is only Yes or No, else a line beginning ``Answer: Yes''), without its last resort, the first yes or no anywhere in the reply, which in replies without task information reads words such as ``(no category)''; a closing ``the answer is Yes'' is also read. Tapatan: as the strict score; its replies write the labels exactly, and paraphrases (``A wins'') also occur inside the reasoning, before the final label. Where a reply has more than one box or label, the first is read, as by the strict score: a later one is often a second attempt or, under example prompts, the label of a new board the model makes up.
+\item \emph{Judged score}: an LLM judge (GPT-5.5) receives a neutral description of the task (not the prompt wording being evaluated), the item's input, the reference answer and the full reply, but not the strict score. It returns whether the reply's final answer is correct, the answer it extracted, and, where it disagrees with the strict score, the reasons (below). The judge evaluates the final answer, not the reasoning, accepts a different answer when the task admits one (another synonym, antonym or translation, another valid set on the board), and counts two conflicting final answers as wrong. Every reply is judged, including those the strict score accepts. Where a rule can check the extracted answer, the judge's verdict is compared with it: integer comparison for Operator Function, the set check of \citet{fu2026rules} on the board for Set Game, and the label for Tapatan, Noun Class Agreement and Lexical Category Inference.
+\item \emph{Straight away}: for the simple tasks this is now measured instead of assumed: the reply begins with the answer the judge extracted, after leading whitespace, rather than with a quote, an article or another preamble.
+\end{enumerate}
+\paragraph{Reasons for disagreement.} Each reply that the strict score marks wrong and the judge right gets one or more reasons from three groups; its primary reason is the first that applies, in the order below. Reasons that a rule can detect (a missing box, case, punctuation) are assigned by rule; the judge assigns the others.
+\begin{enumerate}
+\item \emph{Where the answer is}: the strict score reads a part of the reply that does not hold the final answer.
+\begin{itemize}
+\item \emph{No box}: the answer is not in a \texttt{\textbackslash boxed\{\}} (Set Game, Operator Function).
+\item \emph{Leading text}: text before the answer (\emph{The answer is}, an article, the input repeated) where the score reads the first token or word (simple tasks, Lexical Category Inference).
+\item \emph{Earlier answer}: the score read an earlier answer, which the model then revised or restated correctly.
+\end{itemize}
+\item \emph{How the answer is written}: the score finds the answer but does not accept its form.
+\begin{itemize}
+\item \emph{Case}: the answer differs from the reference only in capitalization.
+\item \emph{Extra characters}: quotes, a final period, Markdown or \LaTeX{} around the answer, or extra text inside the box (\texttt{\textbackslash boxed\{x = 268\}}).
+\item \emph{Tokenization}: the same word, whose first token differs from the first token of the reference.
+\item \emph{Surface variant}: the same answer written differently: diacritics, number format or spelled-out numbers, inflection, abbreviation, another card notation, a paraphrased label (\emph{Player A wins}).
+\end{itemize}
+\item \emph{Which answer is right}: a \emph{valid alternative}, a different answer that is also correct, which a single reference cannot accept; or a \emph{reference error}, a reference that appears wrong, checked by hand.
+\item \emph{Other}.
+\end{enumerate}
+Replies that the strict score marks right and the judge wrong get reasons from the same groups: a \emph{first-token false positive} (a first token that only begins the reference, as \emph{Niger} for \emph{Nigeria}) is a matter of how the answer is written, and \emph{parser luck} (a label mentioned in passing before a different final answer) of where it is. Answers beyond the source limit are no disagreement, since both scores read the full reply; they are counted by comparing the strict score on the reply cut to the source limit with that on the full reply.
+\paragraph{What changes.} Head identification, $P^{+}_{t,s}$ and the causal checks use the flexible score, so the selection of the identification wordings, the head sets, the means, the patched items and the scoring of the patched replies are redone together. The judged score is not used for them: it also accepts other valid answers, which the reference of the patched items does not contain. Under the flexible score the most accurate instruction template changes on antonym (template~3 to~2), country--capital (1 to~3) and English--German (3 to~1), and the most accurate rule wording on Lexical Category Inference (wording~2 to~6) and Operator Function (wording~5 to the original prompt: all seven score 1.00, and the first is taken).
+
+\paragraph{Second check.} The code of \citet{yang2026shared} releases one script for this check (\texttt{causal\_fix\_incorrect.py}), and it differs from the procedure described in their App.~G.1, which we follow above, in the patched prompts. Instead of prompts without task information, it patches prompts that give the task and are answered wrongly: the 1-shot prompts of the items answered wrongly with one shot. These prompts show the answer format, and their unpatched accuracy is 0 by construction. Head sets, means, $\alpha$ and scoring are as above, and the script has no control. We run it as a second check and report both. On a task with two labels, a patch that only moves the model's answers towards one label already raises accuracy on these items, to the share of that label among them; we compare the gains with this share.
+
+\paragraph{A control for the second check.} For the complex tasks we add the control mean of the first check to the second. A prompt answered wrongly once can be answered correctly when anything in its forward pass changes. On Set Game and Tapatan the model reasons for hundreds of tokens before it answers, and a change at the last prompt token sends that reasoning down another path, which sometimes ends in the right answer. On the two-label tasks, any patch that moves the answers towards one label turns the items whose reference is that label into correct ones. Neither gain needs the task. In a first run of the second check without a control, setting the heads to zero ($\alpha=0$) fixed 21 to 23 of the 100 wrongly answered Set Game items and 13 to 17 of Tapatan's, and on Noun Class Agreement and Lexical Category Inference the largest gains came where a patch gave one label to every item. A head set therefore counts as carrying the task in the second check only where its own mean raises accuracy more than the control mean does at the same heads, comparing the highest accuracy of each over $\alpha$, as in the first check. The simple tasks keep the check without a control, as in the released script: their open answers cannot be reached by a shift towards one label, and their replies are a few tokens long.
+
+\subsection{Measures}\label{sec:measures}
+For each task $t$, style $s$ and readout $R$:
+\begin{itemize}
+\item \emph{Accuracy} of each prompt, with the evaluation of the source paper: that of \citet{yang2026shared} for the simple tasks and that of \citet{fu2026rules} for the complex tasks. In E0 also the judged accuracy and the flexible accuracy (Sec.~\ref{sec:evaluation}).
+\item \emph{Head count} $|H^{R}_{t,s}|$ and the distribution of the heads over layers.
+\item \emph{Overlap} between two head sets $A$ and $B$: $|A\cap B|/|A|$ and $|A\cap B|/|B|$. Compared pairs: $H^{\mathrm{L}}_{t,s}$ and $H^{\mathrm{J}}_{t,s}$ (RQ2); $H^{R}_{t,\text{rule}}$ and $H^{R}_{t,\text{example}}$ (RQ3).
+\item \emph{Causal effect}: the highest accuracy over $\alpha$ minus the unpatched accuracy, for the head set and for the control.
+\item \emph{Copy share}: the share of prompts on which a head's matched terms ($T^{R}_{k,l,h}(p)\cap V_t$) occur in the prompt text, averaged over the heads of $H^{R}_{t,s}$. It separates heads that may copy task words from the prompt from heads that do not.
+\end{itemize}
+
+\section{Experiments}\label{sec:experiments}
+Every experiment is run once, with greedy decoding, on Llama-3.1-8B-Instruct. Each one is described below by the conditions it crosses and the steps it runs; the methods of Sec.~\ref{sec:methods} are referred to where they are defined.
+
+\subsection{E0: Behavioural baseline}\label{sec:e0}
+\paragraph{Question.} On which tasks and prompt styles does the model perform above chance, and does it answer straight away?
+
+\paragraph{Conditions.} The five tasks at the easy level, each on the same 300 items (600 for Lexical Category Inference), under ten prompts: the original rules prompt and its six wordings (rule style), the example-based prompt, the combined prompt, and the input block alone (no task information, Sec.~\ref{sec:adapt}).
+
+\paragraph{Procedure.}
+\begin{enumerate}
+\item Generate the model's answer to every prompt and score it with the evaluation of the source paper, as in Sec.~\ref{sec:reasoning}.
+\item Record whether the answer is the first generated text (answered straight away).
+\item Compare each accuracy with chance: the share of the most frequent label for the tasks with a fixed label set, 0 for open answers.
+\item Evaluate every prompt again from its saved output (Sec.~\ref{sec:evaluation}): the strict score, the flexible score, the judged score, and the reasons for each disagreement.
+\end{enumerate}
+
+\paragraph{Output.} Accuracy per task and prompt (Table~\ref{tab:e0-complex}); for every task and prompt, the strict and judged accuracy, the share answered straight away, the four counts of agreement and disagreement between the two scores, and the disagreements by reason; for every task, the standard deviation of accuracy across the prompts of a style under each score \citep{hua2025flaw}, the Spearman correlation between the two scores' rankings of these prompts, and whether the most accurate rule wording changes; for each task and style, the prompts $P^{+}_{t,s}$ used by E2 and, for the rule style, the most accurate wording from which they are taken; the items answered correctly and wrongly, which select the patched items of the causal checks.
+
+\subsection{E2: Complex tasks}\label{sec:e2}
+\paragraph{Question.} RQ1 and H\ref{h:complex}, RQ2 and H\ref{h:readout}, and RQ3: are lexical task heads found and causally effective for complex tasks, under which readout, and are they shared between rule-based and example-based prompts?
+
+\paragraph{Conditions.} 5 tasks $\times$ 3 styles (rule, example, combined) $\times$ 2 readouts, with the same three head sets per pair of task and style as in E1 of the companion document. All head sets are read at the last prompt token.
+
+\paragraph{Procedure.}
+\begin{enumerate}
+\item \emph{Identification prompts}: for each style, the first 100 prompts in $P^{+}_{t,s}$ (Sec.~\ref{sec:framework}): under the most accurate of the seven rule wordings, under the example-based prompt and under the combined prompt. Where fewer prompts qualify, all of them are used.
+\item \emph{Head sets}: Definition~\ref{def:lth} with the term list of the task (Sec.~\ref{sec:adapt}).
+\item \emph{Measures}: as in E1 of the companion document, with the overlap of the rule-style and example-style sets for RQ3.
+\item \emph{First causal check}, rule-style head sets only. Patched items: the first 100 items in $P^{+}$ under the original rules prompt. Patched prompts: their prompts without task information (the input blocks of Sec.~\ref{sec:adapt}). Means: one per rule wording, seven in all, each over the first 100 prompts of that wording in $P^{+}$, leaving out the patched items. Control: the mean of a task with the same answer format under its original rules prompt (Noun Class Agreement and Lexical Category Inference with each other, Set Game and Operator Function with each other, Tapatan with Set Game). Scaling: the 11 values of $\alpha$ of Sec.~\ref{sec:causal}.
+\item \emph{Second causal check}, rule-style head sets only. Patched items: the first 100 items answered wrongly under the original rules prompt. Patched prompts: their original rules prompts, whose unpatched accuracy is 0 by construction. Operator Function has no second check: under the flexible score every item is answered correctly under its original rules prompt. Means, control mean and $\alpha$ as in the first check (Sec.~\ref{sec:causal}, ``A control for the second check''). On the two-label tasks, the accuracy of answering every patched item with one label, the share of that label among the patched items, is the reference that a shift towards one answer reaches without any task information.
+\item \emph{Scoring}: the reply generated from each patched prompt, as the saved outputs of the complex tasks, scored by the flexible score. Accuracy at each $\alpha$ is averaged over the seven means; the causal effect is computed as in E1 of the companion document.
+\end{enumerate}
+
+\paragraph{Output.} Head sets and measures (Table~\ref{tab:heads-complex}, Figures~\ref{fig:layers-complex} and~\ref{fig:copy-complex}); causal effects (Tables~\ref{tab:effects-complex} and~\ref{tab:effects-complex-wrong}); accuracy against $\alpha$ (Figure~\ref{fig:patch-complex}).
+
+\section{Results}\label{sec:results}
+Tables~\ref{tab:e0-complex}--\ref{tab:effects-complex-wrong} and Figures~\ref{fig:layers-complex}--\ref{fig:patch-complex} are generated from the result files by \texttt{scripts/results\_tex.py}. E0 accuracies are the strict scores of the saved outputs (Sec.~\ref{sec:evaluation}), under the generation and scoring of Sec.~\ref{sec:reasoning}. Head sets and causal checks use the flexible score (Sec.~\ref{sec:evaluation}, ``What changes''): $P^{+}$, the means and the patched items are chosen by it, and causal-check accuracies are the flexible scores of the replies generated from the patched prompts, over the patched items.
+
+\subsection{E0: Behavioural baseline}\label{sec:res-e0}
+\paragraph{Complex tasks} (Table~\ref{tab:e0-complex}). Noun Class Agreement and Lexical Category Inference are answered straight away and above chance under all seven rule wordings and under examples. On combined prompts the model often explains before answering: it answers straight away on 64\% (Noun Class Agreement) and 16\% (Lexical Category Inference) of them, against at least 97\% under every rule and example prompt. The parser of Noun Class Agreement still finds the answer after an explanation, so its combined accuracy is close to that of its rule prompts; that of Lexical Category Inference reads only the first word, so its combined accuracy falls far below chance. Without task information the model never answers straight away, and almost no reply is scored correct.
+
+Set Game, Operator Function and Tapatan are not answered straight away under any prompt (one Tapatan reply of 2,100 under the rule wordings): the model reasons first, and Table~\ref{tab:e0-complex} scores the answer it reaches. Set Game and Operator Function are solved under rules and combined prompts, and from examples alone on one item of 300 each; with examples the model often analyses the demonstrations until the 1,024-token limit (147 Set Game and 58 Operator Function replies). Operator Function varies most across wordings: every wrong answer under its rule wordings is a reply without a \texttt{\textbackslash boxed\{\}} answer, which the scoring counts as wrong, and under wording~2 only 3 of 300 replies have one. Tapatan stays close to chance under all seven rule wordings and falls below it with examples and combined prompts, so its $P^{+}$ sets likely include items answered correctly by chance. Set Game is solved on 97 of 300 items without task information: its input block still asks which three cards on the board form a set.
+
+Under the flexible score (Table~\ref{tab:e0-complex-flexible}), Operator Function is solved on every item under all seven rule wordings and the combined prompt, so its spread across wordings came entirely from the box; from examples alone it is now solved on 34 of 300 items, answered without the box the examples show. Set Game gains 1 to 6 points per rule wording, all from boxes with a missing or unmatched bracket, and 51 items without task information, where the cards are often written without brackets. The combined prompts of Lexical Category Inference rise from 0.11 to 0.76, above every rule wording: the model explains first and gives its answer at the end, which the first-word scoring misses; two rule wordings gain 10 of 600 items in the same way. Noun Class Agreement is unchanged, except that its prompts without task information lose their 3 correct replies, read by the last resort the flexible reader drops. Tapatan is unchanged by construction. The most accurate rule wording, from which $P^{+}$ is taken, changes on two tasks under this score: on Operator Function all wordings tie at 1.00, and on Lexical Category Inference wording~6 passes wording~2 by 2 of 600 items. Head identification and the causal checks use the flexible score.
+
+\begin{table}[tbp]
+\centering\footnotesize\setlength{\tabcolsep}{3.5pt}
+\input{tables/e0_complex}
+\caption{E0, complex tasks at the easy level: strict accuracy per prompt, on the whole reply up to 1,024 tokens (Sec.~\ref{sec:reasoning}). Rule: the original rules prompt (orig.) and the six added wordings (w1--6: mean, and range). No task info: the prompt without task information. Chance: share of the most frequent label for the tasks with a fixed label set, 0 for open answers.}
+\label{tab:e0-complex}
+\end{table}
+
+\begin{table}[tbp]
+\centering\footnotesize\setlength{\tabcolsep}{3.5pt}
+\input{tables/e0_complex_flexible}
+\caption{E0, complex tasks: flexible accuracy per prompt (Sec.~\ref{sec:evaluation}), on the same saved replies and with the same layout as Table~\ref{tab:e0-complex}.}
+\label{tab:e0-complex-flexible}
+\end{table}
+
+\subsection{E2: Complex tasks}\label{sec:res-e2}
+\paragraph{Head sets} (Table~\ref{tab:heads-complex}). Both readouts find lexical task heads for every complex task and style. The sets are larger than for the simple tasks, against H\ref{h:complex}, but the head counts of the two families are not comparable. The complex term lists expand to 114 to 340 token ids and the simple ones to 2 to 22, and a longer list makes a match among a head's ten top tokens more likely for any head. Small $P^{+}$ sets add to this: the example-style $P^{+}$ of Set Game is one prompt, so every head that matches on it is a lexical task head (9 and 13 heads), and for the example style of Operator Function (34 prompts) and of Tapatan (88) and Tapatan's combined style (47), 4 to 9 matching prompts suffice. As on the simple tasks, J-head finds more heads than Logit-head on every pair, and three fifths of its added heads lie in layers 10 to 19, while four fifths of the Logit-head heads lie in layer 20 or later. Its set covers 44\% to 91\% of the Logit-head set, never all of it. Of each example-style set, 48\% to 94\% is also in the rule-style set, at least half on 9 of the 10 pairs of task and readout (RQ3); the exception is Operator Function under J-head, and the example-style sets of Set Game rest on one prompt. Copy shares lie between about half and nine tenths under rule and combined prompts and are lower under example prompts: zero on Set Game and Operator Function, and above the near-zero values of the simple tasks' example prompts on the other three tasks (Figure~\ref{fig:copy-complex}).
+
+\paragraph{Causal check} (Tables~\ref{tab:effects-complex} and~\ref{tab:effects-complex-wrong}, Figure~\ref{fig:patch-complex}). In the first check, the prompts without task information get no answer on Noun Class Agreement, Lexical Category Inference, Operator Function and Tapatan: the model describes the input (a sentence in a coded language, items to classify, a board it takes for Sudoku or tic-tac-toe) or, on Operator Function, asks for the function. No patch changes this. Averaged over the seven means, accuracy stays at zero on the first three tasks, where some Operator Function replies box a number that is not the answer, and reaches at most two items on Tapatan, with task and control means alike; under any single mean and $\alpha$ it never exceeds three items. On Set Game, 58 of the 100 patched items are solved without task information, since the input block still asks which cards on the board form a set. Averaged over the seven means, the patches raise this by at most five items, and the control mean by as much or more. The first check shows no causal effect of the rule-style head sets on any complex task.
+
+In the second check, every head set raises accuracy on the four tasks with wrongly answered items; Operator Function has none, since under the flexible score it answers every item correctly under its original rules prompt. The control mean (Sec.~\ref{sec:causal}, ``A control for the second check'') raises accuracy as much. Its highest accuracy at the same heads is within two items of the task mean's on Set Game, as high or higher on Lexical Category Inference and Tapatan, and higher on Noun Class Agreement except at the Logit-head set. At $\alpha=0$ both means set the heads to zero and give the same accuracy, which already fixes 21 to 23 of the 100 Set Game items and 13 to 17 of Tapatan's. On the two-label tasks, the largest gains under either mean come where a patch moves the answers towards one label or to the other one. With the task means, the Logit-head set of Noun Class Agreement answers ``Yes'' to every item at $\alpha=10$ (0.58, the share of ``Yes'' among them), the only gain above the control there; on Lexical Category Inference every set answers ``No'' to all items at $\alpha=4$ (0.28) and ``Yes'' to most at $\alpha=8$ (0.65 to 0.71, against 0.72 for answering ``Yes'' to all). The control mean at the J-head set of Noun Class Agreement reaches 0.80 at $\alpha=-10$, above that line, because it turns 80 of the 100 answers into the other label, which on these wrongly answered items is the right one. On Set Game, at $\alpha$ of 8 and 10 the Logit-head and J-head sets solve 47 to 55 items with the task means and 32 to 42 with the control mean, but the control mean reaches the task means' level at $\alpha$ of $-6$ or $-10$. With the task means at $\alpha=10$, the model writes a set almost at once (Logit-head set: median reply 97 characters, against 868 at $\alpha=1$). The second check shows no gain of a task mean that the control mean does not match.
+
+\paragraph{Hypotheses.} For RQ1, the method finds lexical task heads for every complex task under both readouts, but neither check shows a task-specific effect for them: the first check changes nothing on four tasks and nothing beyond the control on Set Game, and the gains of the second check are matched by the control mean, which needs no task information either. This agrees with the causal part of H\ref{h:complex}; its head-count part cannot be tested with term lists of such different lengths. H\ref{h:readout} fails on both conditions: the J-head set misses part of the Logit-head set on every pair, and the heads found only by J-head have no task-specific effect.
+
+\begin{table}[tbp]
+\centering\footnotesize\setlength{\tabcolsep}{3.5pt}
+\input{tables/heads_complex}
+\caption{E2: lexical task heads per task and style. $|P^{+}|$: identification prompts, the first (at most 100) answered correctly under the most accurate rule wording (rule; wording~6 for Noun Class Agreement and Lexical Category Inference, wording~5 for Set Game, the original prompt for Operator Function, whose seven wordings tie, wording~1 for Tapatan), under the example-based and under the combined prompts. L: Logit-head set; J: J-head set; L$\cap$J: heads in both sets. Rule $\cap$ ex.: heads in both the rule-style and the example-style set of a readout.}
+\label{tab:heads-complex}
+\end{table}
+
+\begin{table}[tbp]
+\centering\footnotesize
+\input{tables/effects_complex}
+\caption{E2 causal check: causal effect, the highest accuracy over $\alpha$ minus the unpatched accuracy (baseline); accuracy is the flexible score of the reply generated from each patched prompt. Task mean: the head set's mean output over the task's own prompts; L: Logit-head set; J: J-head set; J only: heads in the J-head set and not in the Logit-head set. The rule-style head sets, patched with the means of the seven rule wordings into the prompts without task information; accuracy is averaged over the seven means before the maximum is taken. Control mean: the control task's mean under its original rules prompt. 100 patched items per task, the 11 values of $\alpha$ of Sec.~\ref{sec:causal}.}
+\label{tab:effects-complex}
+\end{table}
+
+\begin{table}[tbp]
+\centering\footnotesize
+\input{tables/effects_complex_wrong}
+\caption{E2, second causal check, as Table~\ref{tab:effects-complex}, with the original rules prompts of the first 100 items answered wrongly under them patched; Operator Function answers every item correctly under its original rules prompt and has none. Unpatched accuracy is 0 by construction. Control mean as in Table~\ref{tab:effects-complex} (Sec.~\ref{sec:causal}, ``A control for the second check''). Answering every patched item with its more frequent label scores 0.58 on Noun Class Agreement and 0.72 on Lexical Category Inference (``Yes'' for both).}
+\label{tab:effects-complex-wrong}
+\end{table}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{figures/patching_complex.pdf}
+\caption{E2 causal checks: accuracy on the patched items against $\alpha$. Solid: the head set's mean over the task's prompts; dotted: the control mean at the same heads; dashed: unpatched accuracy. The rule-style head sets, with accuracy averaged over the means of the seven rule wordings. Left: the prompts without task information patched (first check); right: the original rules prompts answered wrongly (second check). 100 patched items per task; Operator Function has no second check. Constant answer: the accuracy of answering every patched item with its more frequent label.}
+\label{fig:patch-complex}
+\end{figure}
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=0.55\textwidth]{figures/layers_complex.pdf}
+\caption{Lexical task heads per layer under each readout, summed over the head sets of all complex tasks and styles, at the last prompt token.}
+\label{fig:layers-complex}
+\end{figure}
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\textwidth]{figures/copy_share_complex.pdf}
+\caption{Copy share of each complex-task head set (Sec.~\ref{sec:measures}): the share of prompts on which a head's matched terms occur in the prompt text, averaged over the set, at the last prompt token; missing points are empty sets.}
+\label{fig:copy-complex}
+\end{figure}
+
+\section{Plan}\label{sec:plan}
+\paragraph{Steps.}
+\begin{enumerate}
+\item Build the additions of Sec.~\ref{sec:adapt}: rule wordings (each checked to state the same rules as the original prompt), term lists, prompts without task information.
+\item Run E0 and select tasks. Evaluate its saved outputs with the strict and the judged score (Sec.~\ref{sec:evaluation}).
+\item Run E2.
+\end{enumerate}
+Reused code and data: the lexical-task-head code of \citet{yang2026shared}; the Head-JLens code and matrices of \citet{merlo2026headjlens}; the data and generation code of \citet{fu2026rules}; the task datasets of \citet{todd2024function}.
+
+\paragraph{Limitations.} One model, and one difficulty level of each complex task. The term lists are generated by an LLM and checked by hand, and the identified heads depend on them. Rule-based prompts contain task words, so a head may decode them by copying from the prompt; the copy share measures this but does not decide it. Under J-head, some sites rank tokens highly on unrelated prompts as well \citep[Sec.~3.6]{merlo2026headjlens}, so a larger J-head set is not by itself evidence of more task representation; the causal check is needed. $P^{+}$ and the patched items are chosen by the flexible score, which accepts only the reference answer: a prompt answered with another valid answer is counted as wrong. The judged score depends on one LLM judge, which is not checked against hand labels here; \citet{hua2025flaw} find that LLM judges agree with human annotators on other tasks.
+
+\paragraph{Deliverables.} Head sets, measures and causal-check curves for every task, style and readout.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\appendix
+
+\input{appendix-prompts}
+
+\clearpage
+\section*{Decision log}\label{app:decisions}
+\addcontentsline{toc}{section}{Decision log}
+\begin{description}
+\item[2026-10-27] Scope: test the lexical-task-head method of \citet{yang2026shared} on complex tasks and compare the per-head logit lens with Head-JLens. New title.
+\item[2026-10-27] Tasks: the 14 simple tasks shared by \citet{yang2026shared} and \citet{davidson2025different}; the five tasks of \citet{fu2026rules}.
+\item[2026-10-27] No main condition: rule-based and example-based prompts are treated alike (replacing the earlier choice of rules as main and examples as secondary).
+\item[2026-10-27] Method: lexical task heads, with Logit-head and J-head readouts. Function vectors, function-specific heads and the hidden-state difference between prompts are not used for now.
+\item[2026-10-27] At least six rule wordings per complex task and difficulty level.
+\item[2026-10-27] Term lists are task-specific, not item-specific; one per task, or per difficulty level where the rules change.
+\item[2026-10-27] Answer format as in the source studies.
+\item[2026-10-27] Model: Llama-3.1-8B-Instruct, the main model of \citet{yang2026shared} and the only one with released Head-JLens matrices.
+\item[2026-10-27] Rule wordings and term lists for the complex tasks are generated with GPT-5.5 through ChatGPT and checked by hand.
+\item[2026-10-27] Accuracy is computed with each source paper's evaluation.
+\item[2026-10-27] Prompts on which the model does not answer straight away are left out; other ways of handling them are considered after E0.
+\item[2026-10-27] After an early E0 finding (no direct answers on Set Game and Operator Function), these tasks are run in reasoning mode (Sec.~\ref{sec:reasoning}).
+\item[2026-10-27] Tapatan is run in reasoning mode as well: in E0 none of its 300 items is answered straight away, under any prompt.
+\item[2026-10-27] Complex tasks: the easy level of each task only.
+\item[2026-10-27] Rule wordings and term lists are generated with GPT-5.5 through the Azure OpenAI API, replacing ChatGPT; six wordings per original rule prompt. Both were checked by hand and approved.
+\item[2026-10-27] Complex tasks are decoded greedily, and use 300 test items per task drawn with the sampler and seed of \citet{fu2026rules} (all 600 for Lexical Category Inference), so that the causal check can leave the patched items out of the mean.
+\item[2026-10-27] Reasoning mode: 100 items per task, style and wording; the causal check patches 10 items with $\alpha\in\{0,1,4,10\}$.
+\item[2026-10-28] Complex tasks follow the simple-task rules: rule-style heads from the most accurate rule wording (replacing the pooling over the seven wordings), and in the causal check one mean and one patch per rule wording; the control mean is the control task's mean under its original rules prompt. The causal check of the complex tasks patches the rule-style head sets only. The second check is adapted to them (original rules prompts answered wrongly, no control). Reasoning mode uses 300 items, as the other complex tasks (replacing 100); the first 100 are the earlier sample, whose replies are reused. E2 was rerun.
+\item[2026-10-29] Reasoning mode: each distinct prompt is answered once, and its reply scored for every item that shares it (Tapatan's 300 items repeat 46 boards, and a repeated prompt could get a different greedy reply in another batch).
+\item[2026-10-29] Answer evaluation (Sec.~\ref{sec:evaluation}), after \citet{hua2025flaw}: every E0 reply is generated once with longer limits and saved; each is scored with the source evaluation and with a GPT-5.5 judge, and every disagreement is given a reason. The judge sees every reply, not only those the strict score rejects. Head identification and the causal checks keep the strict score until this evaluation is done.
+\item[2026-10-29] One generation scheme per group of tasks (Sec.~\ref{sec:evaluation}). Simple tasks: a reply ends at \texttt{;}, at a newline once the reply has begun (a leading newline no longer ends it), at the end of sequence, or at 32 new tokens. Complex tasks: a reply ends at the end of sequence or at 1,024 new tokens, for all five tasks; this replaces the limit of 6,000 in reasoning mode and the stop once the scored answer is complete. The saved outputs are generated again under this scheme. Head identification and the causal checks in reasoning mode were run with the earlier limit of 6,000 tokens and the stop at the answer.
+\item[2026-10-29] Complex tasks: no distinction between direct and reasoning mode. All five are generated to the end of sequence or 1,024 tokens and scored on the full reply, by the evaluation of \citet{fu2026rules} (strict; Tapatan, which has no scorer in their code, by its first line) and by the judge.
+\item[2026-10-30] Tapatan's strict score reads the first label anywhere in the reply, as in the first run of E0, replacing the first line: the model reasons before its label, so the first line is the label in 1 of 3,000 replies.
+\item[2026-10-29] Heads are read at the last prompt token only; the pre-answer position is dropped, with its results. Which prompts form $P^{+}$ for the complex tasks is decided later. Causal checks: the patch is applied at the last prompt position only, for every task, and every task uses the same 15 values of $\alpha$.
+\item[2026-10-30] Causal checks of the complex tasks: $\alpha\in\{-10,-6,-4,-2,0,1,2,4,6,8,10\}$, the even values of \citet{yang2026shared} and 1, to bound the cost of 1,024-token replies; the simple tasks keep all 15.
+\item[2026-10-30] Complex tasks: a flexible score next to the strict one (Sec.~\ref{sec:evaluation}), the answer the strict score looks for in any notation, scored by the strict score; Tapatan's is its strict score. It is reported for E0; head identification and the causal checks keep the strict score. Under the flexible score, Operator Function's rule wordings would all tie at 1.00, and its second causal check would have no items.
+\item[2026-10-30] No hand-labelled validation of the judge; its use rests on the human check of \citet{hua2025flaw}.
+\item[2026-10-30] Head identification and the causal checks use the flexible score, replacing the first-token score (simple tasks) and the strict score (complex tasks): $P^{+}$ is the prompts answered correctly under it, with no condition that the answer comes first, for both families; the identification wordings, the head sets, the means, the patched items and the controls are chosen by it. Readings and means are taken from the prompts of the saved outputs. In the causal checks the reply is generated as the saved outputs and scored by the flexible score; for the simple tasks this replaces the first token, which is kept as a second score. Both complex-task checks patch 100 items on every task, replacing 10 on Set Game, Operator Function and Tapatan; Operator Function has no second check, as no item is answered wrongly under its original rules prompt. E1 and E2 are rerun.
+\item[2026-10-31] The second causal check of the complex tasks gets the control mean of the first check (the control task's mean under its original rules prompt, at the same heads and $\alpha$). Without it, zero-ablation already fixed part of the failures of Set Game and Tapatan, and on the two-label tasks the gains came with one label for every item. The simple tasks' second check stays without a control, as in the released script of \citet{yang2026shared}.
+\item[2026-11-03] The project is split into two documents: \texttt{proposal-simple}, the identification method on the simple tasks (E0 for the simple tasks, E1, E1b), and \texttt{proposal-complex}, the complex tasks (E0 for the complex tasks, E2). Work continues on the simple tasks for now. The readout hypothesis is stated once per document, with its criteria unchanged.
+\end{description}
+
+\end{document}
