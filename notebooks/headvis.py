@@ -111,8 +111,10 @@ def _(fu, headvis, mo, simple):
     SETS = headvis.head_sets()
     set_choice = mo.ui.dropdown(options=list(SETS), value=next(iter(SETS)), searchable=True, label="Set")
     target_text = mo.ui.text(value="", placeholder="e.g.  cold", label="Rank a token")
-    return (METRICS, SETS, chat, complex_task, complex_wording, count, custom, first, lowest, metric, set_choice,
-            simple_task, simple_wording, source, target_text)
+    decoded_where = mo.ui.radio(options=["at the last token", "at every position"], value="at the last token",
+                                inline=True)
+    return (METRICS, SETS, chat, complex_task, complex_wording, count, custom, decoded_where, first, lowest, metric,
+            set_choice, simple_task, simple_wording, source, target_text)
 
 
 @app.cell(hide_code=True)
@@ -189,6 +191,25 @@ def _(all_scores, get_head, headvis, lm, mo, np, prompts):
 
 
 @app.cell(hide_code=True)
+def _(detail, head, headvis, lm, mo):
+    with mo.status.spinner("Decoding the head at every position"):
+        decodes = [headvis.decode(lm, s.ids, head) for s in detail]
+    return (decodes,)
+
+
+@app.cell(hide_code=True)
+def _(decoded_where, decodes, headvis, lm, mo):
+    top_decoded = headvis.top_decoded(decodes, lm.tokenizer, last_only=decoded_where.value == "at the last token")
+    decoded = mo.vstack([
+        mo.hstack([mo.md("**Top decoded tokens** · % of prompts (positions) with it in the head's top 10"), decoded_where], justify="start", gap=2, align="center"),
+        mo.hstack([mo.vstack([mo.md("Logit-head"), mo.Html(headvis.decoded_chips_html(top_decoded["logithead"]))]),
+                   mo.vstack([mo.md("J-head"), mo.Html(headvis.decoded_chips_html(top_decoded["jhead"]))])],
+                  widths="equal", gap=2, align="start"),
+    ], gap=0.25)
+    return decoded, top_decoded
+
+
+@app.cell(hide_code=True)
 def _(METRICS, head_scores, mo, np):
     def _tile(label, key):
         v = head_scores[key]
@@ -220,14 +241,14 @@ def _(alt, distances, mo, pd, query_max):
 
 
 @app.cell(hide_code=True)
-def _(detail, head, headvis, mo, order):
+def _(decodes, detail, head, headvis, lm, mo, order):
     chips = mo.vstack([
         mo.md("**Top query tokens**"),
         mo.Html(headvis.chips_html(headvis.top_tokens(detail, head, side="query", n=10, unique=True), "query")),
         mo.md("**Top key tokens**"),
         mo.Html(headvis.chips_html(headvis.top_tokens(detail, head, side="key", n=10, unique=True), "key")),
     ], gap=0.25)
-    viewer = headvis.viewer_html(detail, head, order)
+    viewer = headvis.viewer_html(detail, head, order, decodes=decodes, tokenizer=lm.tokenizer)
     return chips, viewer
 
 
@@ -251,9 +272,9 @@ def _(detail, head, headvis, lm, mo, order, pd, target_text):
 
 
 @app.cell(hide_code=True)
-def _(chat, chips, complex_task, complex_wording, count, custom, detail, finder, first, head, head_scores, headvis,
-      head_ui, hist_dist, hist_max, layer_ui, mo, prompts, readout_note, readout_table, simple_task, simple_wording,
-      source, target_text, tiles, viewer):
+def _(chat, chips, complex_task, complex_wording, count, custom, decoded, decodes, detail, finder, first, head,
+      head_scores, headvis, head_ui, hist_dist, hist_max, layer_ui, lm, mo, prompts, readout_note, readout_table,
+      simple_task, simple_wording, source, target_text, tiles, top_decoded, viewer):
     if source.value == "custom text":
         _prompt_row = mo.vstack([mo.hstack([source, chat], justify="start", gap=2, align="center"), custom])
     elif source.value == "simple task":
@@ -265,9 +286,12 @@ def _(chat, chips, complex_task, complex_wording, count, custom, detail, finder,
     _lengths = [len(ids) for _, ids in prompts]
     _header = (f"<h1>HeadVis: {_site}</h1>"
                + head_scores.drop(["layer", "head"]).to_frame().T.round(3).to_html(index=False)
+               + "".join(f"<h2>Top decoded tokens, {name}</h2>" + top_decoded[r].round(3).to_html(index=False)
+                         for r, name in (("logithead", "Logit-head"), ("jhead", "J-head")))
                + "<h2>Last-token readouts</h2>" + readout_table.to_html(index=False) + "<h2>Prompts</h2>")
-    _download = mo.download(data=headvis.viewer_html(detail, head, order=list(range(len(detail))), header=_header)
-                            .encode(), filename=f"headvis_{_site}.html", label="Save view")
+    _download = mo.download(data=headvis.viewer_html(detail, head, order=list(range(len(detail))), header=_header,
+                                                     decodes=decodes, tokenizer=lm.tokenizer).encode(),
+                            filename=f"headvis_{_site}.html", label="Save view")
     _defs = "\n".join(f"- **{k}**: {v}." for k, v in headvis.SCORES.items())
 
     _sidebar = mo.vstack([mo.hstack([layer_ui, head_ui], justify="start", gap=1),
@@ -278,7 +302,8 @@ def _(chat, chips, complex_task, complex_wording, count, custom, detail, finder,
                   justify="start", gap=2, align="center"),
         tiles,
         mo.hstack([mo.vstack([hist_max, hist_dist], gap=0.5), chips], justify="start", gap=2, widths=[1, 1.6]),
-        mo.md("**Top sequences by max attention**"),
+        decoded,
+        mo.md("**Top sequences by max attention** · hovering a token also shows what the head writes there"),
         mo.iframe(viewer, height="480px"),
         mo.hstack([mo.md("**What it writes at the last token** (Logit-head and J-head, top 5)"), target_text,
                    mo.md(readout_note)], justify="start", gap=2, align="center"),

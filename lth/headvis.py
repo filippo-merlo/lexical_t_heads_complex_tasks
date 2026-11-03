@@ -194,6 +194,48 @@ def readouts(lm, ids: list[int], position: int, heads: list[tuple[int, int]], *,
     return pd.DataFrame(rows)
 
 
+DECODE_CHUNK = 512  # positions unembedded at once
+
+
+@torch.no_grad()
+def decode(lm, ids: list[int], head: tuple[int, int], *, k: int = 10) -> dict[str, np.ndarray]:
+    """Logit-head and J-head top-``k`` token ids of ``head`` at every position, ``[T, k]`` each.
+
+    From the normal pass (:meth:`LM.states`), with the arithmetic of
+    ``all_heads_transported`` restricted to one head: the head's columns of ``W_O`` (or of
+    ``J^z``) times its slice of ``z``, in float32, through ``model.unembed``.
+    """
+    from src.heads import COMPUTE_DTYPE
+
+    layer, h = head
+    cols = lm.spec.head_slice(h)
+    z = torch.stack([s[layer] for s in lm.states(ids, list(range(len(ids))))])[:, cols].to(COMPUTE_DTYPE)
+    out = {}
+    for readout in READOUTS:
+        matrix = (lm.w_o[layer] if readout == "logithead" else lm.jz[layer]).to(COMPUTE_DTYPE)[:, cols]
+        out[readout] = np.concatenate([
+            lm.model.unembed(z[i:i + DECODE_CHUNK] @ matrix.T).float().topk(k, dim=-1).indices.cpu().numpy()
+            for i in range(0, len(ids), DECODE_CHUNK)])
+    return out
+
+
+def top_decoded(decodes: list[dict[str, np.ndarray]], tokenizer, *, last_only: bool = True,
+                n: int = 15) -> dict[str, pd.DataFrame]:
+    """Per readout, the tokens most often in the head's top-``k``, over prompts (at the last
+    token) or over every position but BOS. ``share``: of the prompts (positions) counted."""
+    out = {}
+    for readout in READOUTS:
+        tops = [d[readout][-1:] if last_only else d[readout][1:] for d in decodes]
+        ranks = pd.DataFrame([(int(t), r) for top in tops for row in top for r, t in enumerate(row)],
+                             columns=["id", "rank"])
+        frame = (ranks.groupby("id").agg(count=("rank", "size"), mean_rank=("rank", "mean")).reset_index()
+                 .sort_values(["count", "mean_rank"], ascending=[False, True]).head(n))
+        frame.insert(0, "token", [tokenizer.decode([i]) for i in frame["id"]])
+        frame["share"] = frame["count"] / sum(len(top) for top in tops)
+        out[readout] = frame.drop(columns="id").reset_index(drop=True)
+    return out
+
+
 def top_tokens(scans: list[Scan], head: tuple[int, int], *, side: str, n: int = 15,
                unique: bool = False) -> pd.DataFrame:
     """The (query or key) tokens with the largest non-BOS attention for ``head``, over ``scans``.
@@ -235,10 +277,23 @@ def chips_html(frame: pd.DataFrame, side: str) -> str:
     return '<div style="display:flex;flex-wrap:wrap;gap:2px">' + ("".join(chips) or "<i>none</i>") + "</div>"
 
 
+def decoded_chips_html(frame: pd.DataFrame) -> str:
+    """Tokens from :func:`top_decoded` as chips shaded by their share; hover for count and rank."""
+    import html
+
+    chips = [f'<span title="in the top {r["count"]} times ({r["share"]:.0%}); mean rank {r["mean_rank"]:.1f}" '
+             f'style="display:inline-block;margin:2px;padding:1px 6px;border-radius:4px;'
+             f'background:rgba(42,120,214,{min(r["share"], 1):.3f});font-family:ui-monospace,monospace;'
+             f'font-size:12px;white-space:pre">{html.escape(repr(r["token"])[1:-1])}'
+             f' <b>{r["share"]:.0%}</b></span>' for r in frame.to_dict("records")]
+    return '<div style="display:flex;flex-wrap:wrap;gap:2px">' + ("".join(chips) or "<i>none</i>") + "</div>"
+
+
 VIEWER_THRESHOLD = 0.002  # attention below this is left out of the page (BOS is always kept)
 
 
-def viewer_html(scans: list[Scan], head: tuple[int, int], order: list[int], *, header: str = "") -> str:
+def viewer_html(scans: list[Scan], head: tuple[int, int], order: list[int], *, header: str = "",
+                decodes: list[dict[str, np.ndarray]] | None = None, tokenizer=None) -> str:
     """A standalone page: the prompts in ``order``, hover a token to see its attention.
 
     Needs ``scan(..., [head], patterns=True)``. Each row starts at the prompt's strongest
@@ -254,7 +309,11 @@ def viewer_html(scans: list[Scan], head: tuple[int, int], order: list[int], *, h
         q = int(value[1:].argmax()) + 1
         rows = [[[j, round(float(a[i, j]), 4)] for j in range(i + 1) if j == 0 or a[i, j] >= VIEWER_THRESHOLD]
                 for i in range(len(s.ids))]
-        data.append({"p": p, "tokens": s.tokens, "rows": rows, "q": q, "k": int(key[q]), "max": float(value[q])})
+        entry = {"p": p, "tokens": s.tokens, "rows": rows, "q": q, "k": int(key[q]), "max": float(value[q])}
+        if decodes is not None:
+            entry["dec"] = [[" | ".join(repr(tokenizer.decode([int(x)])) for x in decodes[p][r][i, :5])
+                             for r in READOUTS] for i in range(len(s.ids))]
+        data.append(entry)
     payload = json.dumps(data).replace("</", "<\\/")
     return _VIEWER.replace("__DATA__", payload).replace("__HEADER__", header).replace("__TITLE__", head_label(*head))
 
@@ -308,6 +367,8 @@ function paint(d, el, t, m) {
   el.querySelector(".status").textContent = (m === "q"
     ? `query ${JSON.stringify(show(d.tokens[t]))} @${t} → ` : `key ${JSON.stringify(show(d.tokens[t]))} @${t} ← `)
     + bos + (best || "nothing above threshold");
+  if (d.dec) el.querySelector(".dec").textContent =
+    `writes at @${t}:  Logit-head ${d.dec[t][0]}   ·   J-head ${d.dec[t][1]}`;
 }
 function render() {
   const full = document.getElementById("full").checked, box = document.getElementById("rows");
@@ -318,7 +379,7 @@ function render() {
     const el = document.createElement("div"); el.className = "row";
     el.innerHTML = `<div class="meta"><b>#${rank + 1}</b> · prompt ${d.p} · ${n} tokens · strongest link
       ${d.max.toFixed(3)}: ${JSON.stringify(show(d.tokens[d.q]))} @${d.q} → ${JSON.stringify(show(d.tokens[d.k]))} @${d.k}</div>
-      <div class="toks"></div><div class="status"></div>`;
+      <div class="toks"></div><div class="status"></div><div class="status dec"></div>`;
     const toks = el.querySelector(".toks");
     if (lo > 0) toks.append("… ");
     for (let i = lo; i < hi; i++) {
