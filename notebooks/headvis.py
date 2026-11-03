@@ -1,10 +1,12 @@
 """HeadVis on our prompts: what chosen attention heads attend to and write, Neuronpedia-style.
 
-    LTH_GPU=0 uv run marimo run  notebooks/headvis.py --headless --port 2719   # app view
-    LTH_GPU=0 uv run marimo edit notebooks/headvis.py --headless --port 2719   # with the code
+    uv run marimo run  notebooks/headvis.py --headless --port 2719   # app view
+    uv run marimo edit notebooks/headvis.py --headless --port 2719   # with the code
 
 From a laptop: ``ssh -N -L 2719:localhost:2719 <node>``, then open http://localhost:2719.
-``LTH_GPU`` is the nvidia-smi index of a free GPU (the model needs about 20 GB).
+Or open it in VS Code's marimo extension, with this repository's ``.venv`` as the kernel.
+Pick the GPU in the notebook (the model needs about 20 GB); with ``LTH_GPU`` (an
+nvidia-smi index) set, the model loads on that GPU at once.
 The computation lives in ``lth/headvis.py``; this file is widgets, tables and charts.
 """
 
@@ -30,7 +32,7 @@ def _():
         sys.path.insert(0, str(ROOT))
 
     _ = alt.data_transformers.disable_max_rows()
-    return alt, mo, np, os, pd, re
+    return alt, mo, np, os, pd, re, sys
 
 
 @app.cell(hide_code=True)
@@ -54,14 +56,34 @@ def _(mo):
 
 @app.cell
 def _(mo, os):
+    import subprocess
+
+    _rows = subprocess.run(["nvidia-smi", "--query-gpu=index,name,memory.used,memory.total",
+                            "--format=csv,noheader,nounits"], capture_output=True, text=True, check=True).stdout
+    _gpus = [[x.strip() for x in row.split(",")] for row in _rows.strip().splitlines()]
+    _labels = {i: f"{i}: {name}, {int(used) / 1024:.0f} of {int(total) / 1024:.0f} GB in use"
+               for i, name, used, total in _gpus}
+    _default = os.environ.get("LTH_GPU", min(_gpus, key=lambda g: int(g[2]))[0])
+    gpu_choice = mo.ui.dropdown(options={v: k for k, v in _labels.items()}, value=_labels[_default],
+                                label="GPU (nvidia-smi index)")
+    load = mo.ui.switch(value="LTH_GPU" in os.environ, label="Load the model (about a minute, 20 GB)")
+    mo.hstack([gpu_choice, load], justify="start", gap=2, align="center")
+    return gpu_choice, load
+
+
+@app.cell
+def _(gpu_choice, load, mo, os, sys):
+    mo.stop(not load.value, mo.md("*Pick a free GPU and switch on **Load the model**.*"))
     # The GPU pin must come before torch is imported, so the torch-touching modules are
-    # imported here, after it.
+    # imported here, after it. Once torch is in, the kernel stays on that GPU.
     from lth import gpu
 
-    mo.stop("LTH_GPU" not in os.environ,
-            mo.md("**Set `LTH_GPU`** to a free GPU's nvidia-smi index and restart, e.g. "
-                  "`LTH_GPU=0 uv run marimo run notebooks/headvis.py`."))
-    gpu.pin(int(os.environ["LTH_GPU"]))
+    if "torch" in sys.modules:
+        _on = os.environ.get("CUDA_VISIBLE_DEVICES", "unknown")
+        mo.stop(_on != gpu_choice.value,
+                mo.md(f"**This kernel already uses GPU {_on}.** Pick it again, or restart the kernel to change GPU."))
+    else:
+        gpu.pin(int(gpu_choice.value))
 
     from lth import fu, headvis, simple
     from lth.model import LM
