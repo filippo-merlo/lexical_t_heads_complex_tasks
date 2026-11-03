@@ -155,25 +155,47 @@ def _(get_head, lm, mo, set_head):
 
 
 @app.cell(hide_code=True)
-def _(SETS, all_scores, headvis, lowest, metric, mo, pd, set_choice, set_head):
+def _(METRICS, SETS, all_scores, headvis, lowest, metric, mo, pd, set_choice, set_head):
+    # Short column names, so every score fits the column; hovering a header gives the full name.
+    SHORT = {"induction (random)": "ind rand", "induction": "ind", "prev": "prev", "entropy": "entropy",
+             "self": "self", "bos": "BOS", "distance": "dist", "max": "max"}
+    _tips = {SHORT[key]: label for label, key in METRICS.items()}
+    _tips["stands out on"] = "the score on which this head ranks highest among all heads, on these prompts"
+
     def _pick(frame):
         if len(frame):
-            set_head(headvis.parse_heads(str(frame["site"].iloc[0]))[0])
+            set_head(headvis.parse_heads(str(frame["head"].iloc[0]))[0])
 
-    def _table(frame, **kw):
-        return mo.ui.table(frame, selection="single", on_change=_pick, show_download=False, show_search=False,
-                           show_column_summaries=False, show_data_types=False, **kw)
+    # The score each head is most extreme on (highest among all heads on these prompts).
+    _pct = all_scores[list(SHORT)].rank(ascending=False, pct=True)
+    _best = _pct.idxmin(axis=1)
+    _stands = {all_scores.at[i, "site"]: f"{SHORT[c]} {all_scores.at[i, c]:.2f} · top "
+               + (f"{_pct.at[i, c]:.1%}" if _pct.at[i, c] < 0.01 else f"{_pct.at[i, c]:.0%}")
+               for i, c in _best.items()}
 
-    _col = metric.value
-    _ranked = (all_scores.sort_values(_col, ascending=lowest.value).head(8)[["site", _col]]
-               .round(3).reset_index(drop=True))
+    def _view(frame, every):
+        if every:
+            cols = ["site", metric.value, *[c for c in SHORT if c != metric.value]]
+            return frame[cols].rename(columns={"site": "head", **SHORT}).round(2).reset_index(drop=True)
+        out = frame[["site", metric.value]].rename(columns={"site": "head", **SHORT}).round(2).reset_index(drop=True)
+        out["stands out on"] = out["head"].map(_stands)
+        return out
+
+    def _table(frame, every=False, **kw):
+        view = _view(frame, every)
+        return mo.ui.table(view, selection="single", on_change=_pick, show_download=False,
+                           show_search=False, show_column_summaries=False, show_data_types=False,
+                           freeze_columns_left=["head"],
+                           header_tooltip={k: v for k, v in _tips.items() if k in view.columns}, **kw)
+
+    _ranked = all_scores.sort_values(metric.value, ascending=lowest.value).head(8)
     _keys = pd.DataFrame(SETS[set_choice.value], columns=["layer", "head"])
-    _in_set = _keys.merge(all_scores, on=["layer", "head"])[["site", _col]].round(3)
+    _in_set = _keys.merge(all_scores, on=["layer", "head"])
     finder = mo.ui.tabs({
         "By score": mo.vstack([mo.hstack([metric, lowest], justify="start", align="center"),
                                _table(_ranked, pagination=False)]),
         "Identified sets": mo.vstack([set_choice, _table(_in_set, page_size=12)]),
-        "All heads": _table(all_scores.drop(columns=["layer", "head"]).round(3), page_size=12),
+        "All heads": _table(all_scores, every=True, page_size=12),
     })
     return (finder,)
 
@@ -295,7 +317,8 @@ def _(chat, chips, complex_task, complex_wording, count, custom, decoded, decode
     _defs = "\n".join(f"- **{k}**: {v}." for k, v in headvis.SCORES.items())
 
     _sidebar = mo.vstack([mo.hstack([layer_ui, head_ui], justify="start", gap=1),
-                          mo.md("**Find a head** · tick a row to select it"), finder], gap=0.75)
+                          mo.md("**Find a head** · tick a row to select it"),
+                          finder], gap=0.75).style({"min-width": "0", "overflow-x": "auto"})
     _main = mo.vstack([
         mo.hstack([mo.md(f"## {_site}"),
                    mo.md(f"{len(prompts)} prompt(s), {min(_lengths)}–{max(_lengths)} tokens"), _download],
@@ -316,7 +339,7 @@ def _(chat, chips, complex_task, complex_wording, count, custom, decoded, decode
             + "\n- **induction (random)**: as *induction*, on BOS + 50 distinct random tokens repeated once "
             "(Neuronpedia's score; prompt-independent).")}),
     ], gap=0.75)
-    mo.vstack([_prompt_row, mo.hstack([_sidebar, _main], widths=[1.3, 3], gap=2, align="start")])
+    mo.vstack([_prompt_row, mo.hstack([_sidebar, _main], widths=[1.6, 3], gap=2, align="start")])
     return
 
 
