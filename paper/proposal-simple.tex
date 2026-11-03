@@ -162,7 +162,7 @@ Replies that the strict score marks right and the judge wrong get reasons from t
 \subsection{Measures}\label{sec:measures}
 For each task $t$, style $s$ and readout $R$:
 \begin{itemize}
-\item \emph{Accuracy} of each prompt, with the evaluation of \citet{yang2026shared}; in E0 also the judged accuracy and the flexible accuracy (Sec.~\ref{sec:evaluation}).
+\item \emph{Accuracy} of each prompt, with the flexible score (Sec.~\ref{sec:evaluation}); in E0 also with the strict score, the evaluation of \citet{yang2026shared}, and the judged score.
 \item \emph{Head count} $|H^{R}_{t,s}|$ and the distribution of the heads over layers.
 \item \emph{Overlap} between two head sets $A$ and $B$: $|A\cap B|/|A|$ and $|A\cap B|/|B|$. Compared pairs: $H^{\mathrm{L}}_{t,s}$ and $H^{\mathrm{J}}_{t,s}$ (RQ1); $H^{R}_{t,\text{rule}}$ and $H^{R}_{t,\text{example}}$.
 \item \emph{Causal effect}: the highest accuracy over $\alpha$ minus the unpatched accuracy, for the head set and for the control.
