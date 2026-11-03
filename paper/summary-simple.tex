@@ -49,11 +49,11 @@
 Question & Does the lexical-task-head method of Yang et al.\ (2026) reproduce on our setup, does Head-JLens (J-head) find heads the per-head logit lens (Logit-head) misses, and which heads should be kept when a task is asked for in several wordings? \\
 Model & Llama-3.1-8B-Instruct (bf16; only model with released Head-JLens matrices). \\
 Readouts & Logit-head: head write $c_{l,h}$ decoded by the unembedding. J-head: head output $z_{l,h}$ mapped through the fitted Jacobian $J_{l,h}$, then decoded. \\
-Simple tasks & 14 Todd et al.\ tasks (antonym, capitals, translation, \dots). Rule style: 5 instruction templates; example style: 1/5/10/20/30 shots; zero-shot prompt. Raw text, no chat template. \\
+Simple tasks & 14 Todd et al.\ tasks (antonym, capitals, translation, \dots). Rule style: the first 5 of Yang's 6 instruction templates (A--E, incl.\ the cloze form); example style: 1/5/10/20/30 shots; zero-shot prompt. Raw text, no chat template. \\
 Head criterion & Head is a lexical task head on a prompt if $\geq 1$ of its top-10 tokens is in the task's term list; for the style if this holds on $\geq 10\%$ of $P^+$ (first 100 correct prompts of the most accurate wording). \\
 Term lists & Yang et al.'s (2--22 token ids). \\
 Causal check 1 & Yang App.~G.1: patch the mean head output ($\times\alpha$) at the last token of prompts \emph{without} task info; control = mean of another task at the same heads. \\
-Causal check 2 & Yang's released script: patch prompts that \emph{give} the task but were answered wrongly (baseline 0). \\
+Causal check 2 & Yang Sec.~2.4.1/App.~H.1.3 in their released script's setting (1-shot): patch prompts that \emph{give} the task but were answered wrongly (baseline 0). \\
 Head sets patched & $H^L$, $H^J$, and J-only $H^J\setminus H^L$. \\
 \bottomrule
 \end{tabularx}
@@ -86,14 +86,14 @@ Simple tasks & 14 tasks $\times$ 11 prompts, every item. & All tasks well above 
 Scoring audit & Every reply saved; strict (first token) vs flexible vs GPT-5.5 judge; disagreement reasons. & Translation spread mostly quotes/capitals; first-token score marks any number correct. & \yes \\
 \midrule
 \multicolumn{4}{@{}l}{\textbf{E1 --- simple tasks} (14 tasks $\times$ rule/example $\times$ 2 readouts)} \\
-Head sets & 100 prompts per style; most accurate template / 5-shot. & Logit-head finds heads on every task. J-head finds more on 23/28 pairs; its extra heads sit in layers 10--19 (Logit-head mostly $\geq$20). J-head contains all of Logit-head only on 4/28. Example heads mostly inside rule heads. & \yes \\
+Head sets & 100 prompts per style; most accurate template / 5-shot. & Logit-head finds heads on every task. J-head finds more on 23/28 pairs; its extra heads sit in layers 10--19 (Logit-head mostly $\geq$20). J-head contains all of Logit-head only on 4/28. Example heads mostly inside rule heads (70\% shared by Yang's ratio; they report 73\%). Counts within 1 head of Yang's Figs.~79/88 in their code's setting; below their Figs.~28/20. & \yes \\
 Check 1 (zero-shot) & Means per wording, 15 $\alpha$ values, control mean. & Logit-head: gain $\geq$10 items on capitals, landmark, park, product (+ currency, next-item, plural with examples). Nothing on antonym, synonym, present--past, prev-item, translations. Best around $\alpha=4$. Control mostly low (not on park--country, next-item). & \mixed \\
 Check 1, J-head & same & J-head $\geq$ Logit-head on most tasks; J-only heads have effects of their own. & \yes \\
 Cross-style means & Rule heads $\times$ example means and vice versa. & Same tasks gain, often as much or more. & \yes \\
 Check 2 (1-shot wrong) & Yang's released script, no control. & Gains on all 14 tasks; reproduces Yang's Figs.~57/62 task order. J-head far stronger on next/prev-item with examples. & \yes \\
 \midrule
 \multicolumn{4}{@{}l}{\textbf{E1b --- heads from several templates} (rule style, simple tasks)} \\
-$k=5$ (all templates) & Heads passing under all 5 templates; both checks. & Better on fact tasks (capitals, park, product) only; worse elsewhere. Beats E1 on $\leq$4/14 tasks. & \no \\
+$k=5$ (all templates) & Heads passing under all 5 templates; both checks. & Better on fact tasks (capitals, park, product) only; worse elsewhere. Beats E1 on $\leq$5/14 tasks ($\leq$3 by $>$3 items). & \no \\
 $k=1$ (union) & Exploratory. & Helps J-head on present--past (0$\to$16 items), synonym, prev-item, control flat. Hurts Logit-head on fact tasks. & \mixed \\
 $k=3$ & Exploratory. & Mostly the E1 heads; behaves like E1. & -- \\
 $k=1$, shared & J-head union, kept only heads in the union sets of $\geq 2$ tasks (keeps 15--62 of 19--74 heads per task); both checks. & \textbf{Not successful.} Removes most of the union's gains: present--past 16$\to$1 items (check 1), 0.64$\to$0.45 (check 2); synonym 0.21$\to$0.13. Only country--capital rises (0.60$\to$0.69). Shared heads do not carry the task better. & \no \\
@@ -112,9 +112,9 @@ $k=1$ without retrieval heads & $k=1$ sets (L and J) minus every retrieval head 
 
 \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.6cm}Lc@{}}
 \toprule
-H1 replication & Holds with Yang's released setting (check 2); fails with the procedure their paper describes (check 1: no gain on 7 tasks). & \mixed \\
+H1 replication & Fails with the zero-shot patching of Yang App.~G.1 (check 1: no gain on 7 tasks); the G.1 figures reproduce only with check 2 (wrong prompts, Sec.~2.4.1/App.~H.1.3), which gains on all 14. & \mixed \\
 H2 J-head $\supseteq$ Logit-head & Fails: J-head misses part of the Logit-head set on 24/28 pairs. J-only heads are causal in both checks. & \no \\
-H3 all-template heads & Falsified: better on $\leq$4/14 tasks. & \no \\
+H3 all-template heads & Falsified: better on $\leq$5/14 tasks. & \no \\
 \bottomrule
 \end{tabularx}
 
@@ -143,7 +143,7 @@ H3 all-template heads & Falsified: better on $\leq$4/14 tasks. & \no \\
 
 \begin{itemize}
 \item \yes{} \textbf{Scoring matters first.} Flexible scoring removes most of the apparent wording sensitivity; always check it before reading wording effects.
-\item \yes{} \textbf{Released-code setting (check 2)} is what reproduces Yang et al.; the paper's zero-shot check works only on fact-like tasks.
+\item \yes{} \textbf{Check 2 (wrong prompts, released-script setting)} is what reproduces Yang et al.'s figures, including those App.~G.1 attributes to zero-shot patching; the zero-shot check works only on fact-like tasks.
 \item \yes{} \textbf{J-head on simple tasks:} more heads, earlier layers (10--19), and the added heads carry the task causally. It does not contain the Logit-head set.
 \item \mixed{} \textbf{Which heads to keep} depends on the task type: all-template heads for fact tasks, union of templates for morphology-like tasks under J-head.
 \item \mixed{} \textbf{Retrieval heads} (heads that already write the answer token) are few among lexical task heads, but some effects rest on them: landmark--country's on its 10, present--past's union gain on L21H9. Elsewhere removing them changes little or helps (synonym, product--company, prev-item under J-head). Entity-answer tasks may be carried by retrieval more than by task heads.

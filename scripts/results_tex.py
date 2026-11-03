@@ -6,7 +6,8 @@ proposal-simple.tex or proposal-complex.tex, and the figures ``paper/figures/*.p
   (``answer_eval/accuracy.csv``, ``scripts/score_outputs.py``; chance from ``e0_accuracy.csv``);
   ``e0_simple_flexible``, ``e0_complex_flexible``: the same under the flexible score;
 - ``heads_simple``, ``heads_complex``: head counts and overlaps (``measures.csv``,
-  ``overlaps.csv``);
+  ``overlaps.csv``); ``head_counts_yang``: E1's Logit-head counts against those Yang et al.
+  publish and against E1 in the setting of their code (``source_setting/heads.json``);
 - ``effects_simple``, ``effects_simple_cross``, ``effects_complex``: the causal effect, the
   highest accuracy over alpha minus the unpatched accuracy, per head set and mean source
   (``patching_*.csv``). The accuracy at each alpha is first averaged over the source
@@ -81,6 +82,18 @@ SETS = ("logithead", "jhead", "jhead_only")
 #: E1b: heads that pass Definition 1 under at least k of the five instruction templates.
 CONSENSUS_K = (1, 3, 5)
 MODEL_HEADS = 32 * 32  # Llama-3.1-8B-Instruct: 32 layers of 32 heads
+#: Logit-head counts that Yang et al. publish for Llama-3.1-8B-Instruct, read off the bar
+#: labels: Fig. 28 (instruction-based) and Fig. 20 (example-based), and the Instruct bars of
+#: Fig. 79 and the "original" bars of Fig. 88, which name no style.
+YANG_COUNTS = {
+    "fig28": dict(zip(simple.TASKS, (23, 7, 26, 11, 31, 20, 25, 26, 35, 42, 29, 14, 11, 9))),
+    "fig79": dict(zip(simple.TASKS, (17, 2, 18, 9, 27, 16, 21, 22, 28, 35, 25, 11, 9, 7))),
+    "fig20": dict(zip(simple.TASKS, (12, 8, 24, 6, 15, 16, 14, 16, 20, 16, 10, 6, 7, 3))),
+    "fig88": dict(zip(simple.TASKS, (9, 4, 15, 6, 13, 15, 12, 9, 16, 11, 6, 5, 6, 3))),
+}
+#: E1's Logit-head sets in the setting of Yang et al.'s code (attended padding, first-token
+#: score), from the run of c86d907.
+SOURCE_SETTING = RESULTS / "source_setting" / "heads.json"
 # Tasks with a fixed label set, and their label fields (as scripts/e0_table.py).
 LABEL_FIELDS = {"noun_class_agreement": "expected_label", "lexical_category_inference": "expected_answer"}
 
@@ -303,6 +316,27 @@ def table_heads(measures: pd.DataFrame, overlaps: pd.DataFrame) -> None:
               r"\cmidrule(lr){2-5}\cmidrule(lr){6-9}\cmidrule(lr){10-13}\cmidrule(lr){14-15}",
               r"Task & $|P^+|$ & L & J & L$\cap$J & $|P^+|$ & L & J & L$\cap$J & $|P^+|$ & L & J & L$\cap$J & L & J \\"]
     write("heads_complex", tabular("@{}l" + "c" * 14 + "@{}", header, rows))
+
+
+def table_head_counts(heads: dict) -> None:
+    """Logit-head counts of E1 against those Yang et al. publish (YANG_COUNTS), and against
+    E1 in the setting of their code (SOURCE_SETTING)."""
+    source = json.loads(SOURCE_SETTING.read_text())["simple"]
+    rows, sums = [], Counter()
+    for task in simple.TASKS:
+        cells = []
+        for style, figures in (("rule", ("fig28", "fig79")), ("example", ("fig20", "fig88"))):
+            values = [YANG_COUNTS[f][task] for f in figures]
+            values += [len(h[task][style]["logithead"]["heads"]) for h in (source, heads["simple"])]
+            cells += values
+            sums.update({(style, i): v for i, v in enumerate(values)})
+        rows.append(" & ".join([tex_name("simple", task), *map(str, cells)]) + r" \\")
+    rows.append(r"\midrule")
+    rows.append(" & ".join(["Sum", *(str(sums[(s, i)]) for s in ("rule", "example") for i in range(4))]) + r" \\")
+    header = [r" & \multicolumn{4}{c}{Rule} & \multicolumn{4}{c}{Example} \\",
+              r"\cmidrule(lr){2-5}\cmidrule(lr){6-9}",
+              r"Task & Fig.~28 & Fig.~79 & Source & E1 & Fig.~20 & Fig.~88 & Source & E1 \\"]
+    write("head_counts_yang", tabular("@{}lcccccccc@{}", header, rows))
 
 
 def effect_rows(patching, effect, family, task, styles) -> list[str]:
@@ -640,6 +674,7 @@ def main() -> None:
     table_e0_complex(data["e0"])
     table_e0_complex(data["e0"], "flexible", "e0_complex_flexible")
     table_heads(data["measures"], data["overlaps"])
+    table_head_counts(data["heads"])
     table_effects(data["patching"], data["cross"], data["e0"])
     table_consensus(data["patching"])
     FIGURES.mkdir(exist_ok=True)
