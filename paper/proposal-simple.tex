@@ -11,6 +11,7 @@
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{booktabs}
 \usepackage{graphicx}
+\usepackage{float}
 \usepackage{fvextra}
 \DefineVerbatimEnvironment{promptbox}{Verbatim}{breaklines,breakanywhere,fontsize=\footnotesize,frame=single,framesep=2mm}
 \usepackage{xcolor}
@@ -205,14 +206,14 @@ Following \citet{merlo2026headjlens}, on the simple tasks J-head identifies at l
 
 Under the flexible score (Table~\ref{tab:e0-simple-flexible}), most of the spread across instruction templates on the three translation tasks goes away: their weakest templates answer in quotes or with capitalized German nouns. On next-item, prev-item and park--country the spread stays, so there the weak templates are weaker in what they answer, not only in how. German example prompts gain at every number of shots, and antonym and synonym gain on their weakest template; the other tasks change little. On numeric next-item items, which the first-token score accepts whatever the number, three of the five templates lose between 7 and 14 of 29 items.
 
-\begin{table}[tbp]
+\begin{table}[H]
 \centering\footnotesize
 \input{tables/e0_simple}
 \caption{E0, simple tasks: strict accuracy per prompt style. Rule: the five instruction templates of \citet{yang2026shared}, mean and range; example: by number of shots; zero-shot: the prompts without task information. Items: dataset size.}
 \label{tab:e0-simple}
 \end{table}
 
-\begin{table}[tbp]
+\begin{table}[H]
 \centering\footnotesize
 \input{tables/e0_simple_flexible}
 \caption{E0, simple tasks: flexible accuracy per prompt style (Sec.~\ref{sec:evaluation}), on the same saved replies and with the same layout as Table~\ref{tab:e0-simple}.}
@@ -250,63 +251,63 @@ Patched with the means of the other style, the head sets raise accuracy on the s
 
 \paragraph{Hypotheses.} For H\ref{h:rep}, lexical task heads are found for every simple task. With the zero-shot prompts described by \citet[App.~G.1]{yang2026shared}, patching the Logit-head set raises accuracy by at least ten items on seven tasks with means of its own style; there is no such gain on antonym, synonym, present--past, prev-item or the three translation tasks, and on park--country the control mean raises accuracy as well. With the 1-shot prompts of their released script, patching raises accuracy on all fourteen tasks, in the per-task pattern of their Figs.~57 and~62. H\ref{h:rep} is therefore falsified for the procedure their paper describes and holds for the setting of their released code, which reproduces their figures: the gains they report on present--past and the translation tasks need prompts that show the answer format. The verdict is the same as under the first-token score. For H\ref{h:readout}, the first condition fails, since the J-head set misses part of the Logit-head set on 24 of 28 pairs, and the second holds in both checks: heads found only by J-head have causal effects of their own. H\ref{h:readout} is therefore falsified by its first condition.
 
-\begin{table}[tbp]
+\begin{table}[H]
 \centering\footnotesize
 \input{tables/heads_simple}
 \caption{E1: lexical task heads per task and style under Logit-head (L) and J-head (J). L$\cap$J: heads in both sets. Rule $\cap$ example: heads in both the rule-style and the example-style set of a readout. Identification prompts: 100 per task and style, the first answered correctly under the most accurate instruction template (rule) and under 5-shot prompts (example).}
 \label{tab:heads-simple}
 \end{table}
 
-\begin{table}[tbp]
+\begin{table}[H]
 \centering\footnotesize
 \input{tables/effects_simple}
 \caption{E1 causal check: causal effect, the highest accuracy over $\alpha\in[-10,10]$ minus the unpatched accuracy (baseline), on the 100 patched items of each task; accuracy is the flexible score of the reply generated from each patched prompt. The head set of each style is patched with means of the same style, and accuracy is averaged over the style's five source wordings before the maximum is taken. Task mean: the head set's mean output over the task's own prompts; control mean: over the control task's prompts (Sec.~\ref{sec:e1}). L: Logit-head set; J: J-head set; J only: heads in the J-head set and not in the Logit-head set. --: empty set.}
 \label{tab:effects-simple}
 \end{table}
 
-\begin{table}[tbp]
+\begin{table}[H]
 \centering\footnotesize
 \input{tables/effects_simple_cross}
 \caption{E1 causal check across styles, as Table~\ref{tab:effects-simple}, with the head set of each style (Heads) patched with the means of the other style: rule-style heads with the means of the five shot counts, example-style heads with the means of the five instruction templates.}
 \label{tab:effects-simple-cross}
 \end{table}
 
-\begin{table}[tbp]
+\begin{table}[H]
 \centering\footnotesize
 \input{tables/effects_simple_wrong}
 \caption{E1, second causal check, as Table~\ref{tab:effects-simple}, with the 1-shot prompts of the first 100 items answered wrongly with one shot patched; fewer items are wrong on singular--plural (26), country--capital (27), park--country (45), present--past (61) and country--currency (65). Unpatched accuracy is 0 by construction. No control mean.}
 \label{tab:effects-simple-wrong}
 \end{table}
 
-\begin{table}[tbp]
+\begin{table}[H]
 \centering\footnotesize
 \input{tables/effects_simple_wrong_cross}
 \caption{E1, second causal check across styles, as Table~\ref{tab:effects-simple-cross}.}
 \label{tab:effects-simple-wrong-cross}
 \end{table}
 
-\begin{figure}[tbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.55\textwidth]{figures/layers_simple.pdf}
 \caption{Lexical task heads per layer under each readout, summed over the head sets of all simple tasks and styles, at the last prompt token.}
 \label{fig:layers-simple}
 \end{figure}
 
-\begin{figure}[tbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.7\textwidth]{figures/copy_share_simple.pdf}
 \caption{Copy share of each simple-task head set (Sec.~\ref{sec:measures}): the share of prompts on which a head's matched terms occur in the prompt text, averaged over the set.}
 \label{fig:copy-simple}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/patching_simple.pdf}
 \caption{E1 causal check: accuracy on the 100 patched items of each task against $\alpha$, with each style's head set patched with means of the same style, averaged over the style's five source wordings. Solid: the head set's mean over the task's prompts; dotted: the control mean at the same heads; dashed: unpatched accuracy.}
 \label{fig:patch-simple}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/patching_simple_wrong.pdf}
 \caption{E1, second causal check, as Figure~\ref{fig:patch-simple}, with the wrongly answered 1-shot prompts patched. No control mean.}
@@ -343,28 +344,28 @@ On the simple tasks, rule-style lexical task heads that meet Definition~\ref{def
 
 \paragraph{Hypothesis.} H\ref{h:consensus} is falsified: under each readout and in each check, the consensus sets raise accuracy more than the E1 sets on at most 4 of the 14 tasks.
 
-\begin{table}[tbp]
+\begin{table}[H]
 \centering\footnotesize\setlength{\tabcolsep}{3pt}
 \input{tables/heads_consensus}
 \caption{E1b: rule-style head sets under Logit-head (L) and J-head (J): from the most accurate instruction template (E1, Table~\ref{tab:heads-simple}), and the heads that meet Definition~\ref{def:lth} under at least $k$ of the five templates. Each cell: number of heads and, in brackets, its share of the model's 1,024 heads in \%. Distinct: heads in the set of at least one task. The set for $k=1$ contains the E1 set and the set for $k=5$ is contained in it; of the heads in the sets for $k=3$, summed over tasks, 198 of 227 (L) and 300 of 343 (J) are in the E1 sets.}
 \label{tab:heads-consensus}
 \end{table}
 
-\begin{table}[tbp]
+\begin{table}[H]
 \centering\footnotesize
 \input{tables/effects_consensus}
 \caption{E1b, first causal check: causal effect of the rule-style head sets of Table~\ref{tab:heads-consensus} with rule-style means, as in Table~\ref{tab:effects-simple}; 100 patched items per task. --: empty set.}
 \label{tab:effects-consensus}
 \end{table}
 
-\begin{table}[tbp]
+\begin{table}[H]
 \centering\footnotesize
 \input{tables/effects_consensus_control}
 \caption{E1b, first causal check: causal effect of the control mean at the head sets of Table~\ref{tab:heads-consensus}, as the control columns of Table~\ref{tab:effects-simple}.}
 \label{tab:effects-consensus-control}
 \end{table}
 
-\begin{table}[tbp]
+\begin{table}[H]
 \centering\footnotesize
 \input{tables/effects_consensus_wrong}
 \caption{E1b, second causal check: causal effect of the head sets of Table~\ref{tab:heads-consensus} with rule-style means, as in Table~\ref{tab:effects-simple-wrong}. Items: the wrongly answered 1-shot prompts patched; the baseline is 0.}
