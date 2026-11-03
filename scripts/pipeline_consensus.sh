@@ -6,15 +6,18 @@
 #   setsid nohup scripts/pipeline_consensus.sh > logs/consensus/pipeline.log 2>&1 < /dev/null &
 # LTH_RESULTS=results/consensus_k3 runs it on another set of identify_consensus.py, with its
 # logs in logs/consensus_k3. LTH_SETS="logithead jhead" patches only those head sets.
+# LTH_GPUS="0 2" picks the GPUs; LTH_PATCH_ARGS is passed on to patch.py (equal-size sets of
+# scripts/rank_heads.py: LTH_RESULTS=results/sized LTH_PATCH_ARGS="--set-list --same-style").
 # One job queue on GPUs 0, 2, 3, 5 (model loads 90 s apart), then the shares merged into
 # results/consensus/patching_<family>.csv and its answers. Writes logs/consensus/pipeline.done.
 set -uo pipefail
 cd "$(dirname "$0")/.."
 PY=.venv/bin/python
-GPUS=(0 2 3 5)
+GPUS=(${LTH_GPUS:-0 2 3 5})
 export LTH_RESULTS=${LTH_RESULTS:-results/consensus}
 LOGS=logs/$(basename "$LTH_RESULTS")
 SETS=${LTH_SETS:-logithead jhead jhead_only}
+EXTRA=${LTH_PATCH_ARGS:-}
 mkdir -p $LOGS
 
 say() { echo "[$(date '+%F %T')] $*"; }
@@ -28,7 +31,7 @@ worker() {  # gpu queue
     while job=$(next_job "$2") && [ -n "$job" ]; do
         flock $LOGS/load.lock sleep 90
         read -r family share tasks <<< "$job"
-        $PY scripts/patch.py --gpu "$1" --family "$family" --tasks $tasks --part "$share" --sets $SETS \
+        $PY scripts/patch.py --gpu "$1" --family "$family" --tasks $tasks --part "$share" --sets $SETS $EXTRA \
             > "$LOGS/patch_$family.part-$share.log" 2>&1
         say "GPU $1: $family $share exit $?"
     done

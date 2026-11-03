@@ -465,6 +465,27 @@ The three requirements thus trade off against each other. Heads that every templ
 \label{fig:patch-noretrieval}
 \end{figure}
 
+% =====================================================================
+\section{Head sets of equal size}\label{sec:sized}
+\subsection{Design}
+\paragraph{Question.} The head sets compared so far differ in size: the J-head sets are larger than the Logit-head sets on 23 of the 28 pairs of task and style (Sec.~\ref{sec:res-e1}), and the union of the five templates' sets has 1.6 to 1.8 times as many heads as the E1 set (Sec.~\ref{sec:res-k13}). A larger set changes more of the forward pass, so part of a difference in causal effect may come from the number of heads rather than from which heads are chosen. Do the differences between readouts and between template rules remain when every set has the same number of heads? The question was asked after the results of the earlier sections; it has no hypothesis, and we report it as exploratory.
+
+\paragraph{Conditions.} 14 tasks $\times$ 2 readouts $\times$ 3 sizes, $N\in\{5,10,20\}$, $\times$ 4 selection rules: the rule of E1 (the most accurate instruction template for the rule style, 5 shots for the example style; both styles), and for the rule style the rules of E1b (at least $k$ of the five templates, $k\in\{1,3,5\}$).
+
+\paragraph{Procedure.}
+\begin{enumerate}
+\item \emph{Ranking}: under each rule and readout, every head of the model is ranked by the quantity that Definition~\ref{def:lth} thresholds: its match rate on E1's identification prompts (E1), or the $k$-th highest of its match rates under the five templates (E1b). Ties are broken by the mean number of term tokens among the head's ten top tokens on the same prompts, then by layer and head. Recomputed from these rates, the threshold sets are those of E1 and E1b.
+\item \emph{Head sets}: the first $N$ heads. Only heads that match on at least one prompt are ranked; where fewer than $N$ do, the set of size $N$ is not formed. This leaves out 37 of the 420 sets, all of size 10 or 20 except the J-head consensus set of present--past for $N=5$, most of them Logit-head sets of the translation tasks or consensus sets.
+\item \emph{Measures}: how many of the $N$ heads meet the rule's threshold, and how many the Logit-head and J-head sets of the same rule and size share.
+\item \emph{Causal checks}: both checks of E1, unchanged (patched items, control mean, $\alpha$, scoring), each set patched with the means of its own style only.
+\item \emph{Comparison}: the causal effect at equal size, in each check: J-head against Logit-head for each task, style, rule and $N$; each E1b rule against E1 for each task, readout and $N$. A difference seen between the threshold sets holds at equal size on a task if the same rule or readout has the larger effect at every $N$ for which both sets are formed.
+\end{enumerate}
+
+\paragraph{Output.} Head sets and measures (\texttt{results/sized}); causal effects at each size; accuracy against $\alpha$.
+
+\subsection{Results}\label{sec:res-sized}
+\ph{S7}{Results}{Run on GPUs 0 and 2 (\texttt{scripts/rank_heads.py}, \texttt{scripts/pipeline\_consensus.sh} with \texttt{LTH\_RESULTS=results/sized}).}
+
 \section{Plan}\label{sec:plan}
 \paragraph{Steps.}
 \begin{enumerate}
