@@ -194,11 +194,13 @@ def readouts(lm, ids: list[int], position: int, heads: list[tuple[int, int]], *,
     return pd.DataFrame(rows)
 
 
-def top_tokens(scans: list[Scan], head: tuple[int, int], *, side: str, n: int = 15) -> pd.DataFrame:
+def top_tokens(scans: list[Scan], head: tuple[int, int], *, side: str, n: int = 15,
+               unique: bool = False) -> pd.DataFrame:
     """The (query or key) tokens with the largest non-BOS attention for ``head``, over ``scans``.
 
     ``side="key"``: tokens most attended to; ``side="query"``: tokens that attend most. Each
-    row gives the other end of that strongest link.
+    row gives the other end of that strongest link. With ``unique``, a token string appears
+    once, at its largest value.
     """
     rows = []
     for p, s in enumerate(scans):
@@ -212,24 +214,132 @@ def top_tokens(scans: list[Scan], head: tuple[int, int], *, side: str, n: int = 
                          "query" if side == "key" else "key": s.tokens[int(other[pos])],
                          "other position": int(other[pos])})
     frame = pd.DataFrame(rows)
-    return frame.nlargest(n, "attention").reset_index(drop=True) if len(frame) else frame
+    if not len(frame):
+        return frame
+    frame = frame.sort_values("attention", ascending=False)
+    if unique:
+        frame = frame.drop_duplicates(side)
+    return frame.head(n).reset_index(drop=True)
 
 
-def token_html(tokens: list[str], weights: np.ndarray, *, marked: int | None = None) -> str:
-    """The prompt as text, each token shaded by ``weights`` (scaled to their max, BOS left out).
-
-    Hovering a token shows its position and weight; ``marked`` (the query) is outlined.
-    """
+def chips_html(frame: pd.DataFrame, side: str) -> str:
+    """Tokens from :func:`top_tokens` as shaded chips; hovering one shows the other end."""
     import html
 
-    top = np.nanmax(weights[1:]) if len(weights) > 1 and np.nanmax(weights[1:]) > 0 else 1.0
-    spans = []
-    for pos, (text, w) in enumerate(zip(tokens, weights)):
-        shade = 0.0 if pos == 0 or np.isnan(w) else float(w) / top
-        shown = html.escape(text).replace("\n", "⏎<br>") or "∅"
-        outline = "outline:2px solid #eb6834;" if pos == marked else ""
-        spans.append(f'<span title="{pos}: {html.escape(repr(text))}  {0 if np.isnan(w) else w:.3f}" '
-                     f'style="background:rgba(42,120,214,{shade:.3f});{outline}border-radius:2px;'
-                     f'white-space:pre-wrap">{shown}</span>')
-    return ('<div style="font-family:ui-monospace,monospace;font-size:13px;line-height:1.9;'
-            'max-height:420px;overflow:auto">' + "".join(spans) + "</div>")
+    other = "query" if side == "key" else "key"
+    chips = [f'<span title="prompt {r["prompt"]}, @{r["position"]}; {other} {html.escape(repr(r[other]))}'
+             f' @{r["other position"]}" style="display:inline-block;margin:2px;padding:1px 6px;border-radius:4px;'
+             f'background:rgba(42,120,214,{min(r["attention"], 1):.3f});font-family:ui-monospace,monospace;'
+             f'font-size:12px;white-space:pre">{html.escape(repr(r[side])[1:-1])}'
+             f' <b>{r["attention"]:.2f}</b></span>' for r in frame.to_dict("records")]
+    return '<div style="display:flex;flex-wrap:wrap;gap:2px">' + ("".join(chips) or "<i>none</i>") + "</div>"
+
+
+VIEWER_THRESHOLD = 0.002  # attention below this is left out of the page (BOS is always kept)
+
+
+def viewer_html(scans: list[Scan], head: tuple[int, int], order: list[int], *, header: str = "") -> str:
+    """A standalone page: the prompts in ``order``, hover a token to see its attention.
+
+    Needs ``scan(..., [head], patterns=True)``. Each row starts at the prompt's strongest
+    query -> non-BOS key link (shown by default); hovering a token shows what it attends to
+    (or what attends to it), clicking pins it. Shades are relative to the largest non-BOS
+    value shown, so BOS is reported in numbers only.
+    """
+    data = []
+    for p in order:
+        s = scans[p]
+        a = s.patterns[head]
+        value, key = s.query_max[head]
+        q = int(value[1:].argmax()) + 1
+        rows = [[[j, round(float(a[i, j]), 4)] for j in range(i + 1) if j == 0 or a[i, j] >= VIEWER_THRESHOLD]
+                for i in range(len(s.ids))]
+        data.append({"p": p, "tokens": s.tokens, "rows": rows, "q": q, "k": int(key[q]), "max": float(value[q])})
+    payload = json.dumps(data).replace("</", "<\\/")
+    return _VIEWER.replace("__DATA__", payload).replace("__HEADER__", header).replace("__TITLE__", head_label(*head))
+
+
+_VIEWER = r"""<!doctype html><html><head><meta charset="utf-8"><title>HeadVis __TITLE__</title>
+<style>
+:root{--bg:#fcfcfb;--ink:#1f1f1e;--muted:#6b6a65;--line:#e1e0d9;--q:#eb6834}
+@media (prefers-color-scheme:dark){:root{--bg:#1f1f1e;--ink:#e8e8e3;--muted:#a8a7a2;--line:#383835}}
+body{margin:0;padding:8px 10px;background:var(--bg);color:var(--ink);font:13px system-ui,sans-serif}
+.bar{display:flex;flex-wrap:wrap;gap:14px;align-items:center;position:sticky;top:0;background:var(--bg);
+     padding:4px 0 8px;border-bottom:1px solid var(--line);z-index:1}
+.hint{color:var(--muted)}
+.row{padding:6px 0;border-bottom:1px solid var(--line)}
+.meta{color:var(--muted);font-size:12px;margin-bottom:2px}
+.toks{font-family:ui-monospace,monospace;font-size:13px;line-height:1.75;max-height:260px;overflow:auto}
+.t{white-space:pre-wrap;border-radius:2px;cursor:pointer;padding:0 1px}
+.t.on{outline:2px solid var(--q)}
+.status{font-family:ui-monospace,monospace;font-size:12px;color:var(--muted);min-height:1.3em}
+table{border-collapse:collapse;font-size:12px}td,th{border:1px solid var(--line);padding:2px 6px;text-align:left}
+</style></head><body>
+__HEADER__
+<div class="bar">
+  <span>Hover a token to see</span>
+  <label><input type="radio" name="mode" value="q" checked> what it attends to</label>
+  <label><input type="radio" name="mode" value="k"> what attends to it</label>
+  <label><input type="checkbox" id="full"> whole prompts</label>
+  <span class="hint">click pins a token; shade = share of the largest non-BOS value</span>
+</div>
+<div id="rows"></div>
+<script>
+const D = __DATA__;
+const show = t => t.replace(/\n/g, "⏎");
+D.forEach(d => {
+  d.out = d.rows.map(r => new Map(r));
+  d.in = d.tokens.map(() => new Map());
+  d.rows.forEach((r, i) => r.forEach(([j, v]) => d.in[j].set(i, v)));
+});
+function mode() { return document.querySelector('input[name=mode]:checked').value; }
+function paint(d, el, t, m) {
+  const vals = m === "q" ? d.out[t] : d.in[t];
+  let top = 0; vals.forEach((v, j) => { if (j !== 0 && v > top) top = v; });
+  el.querySelectorAll(".t").forEach(s => {
+    const j = +s.dataset.i, v = vals.get(j) || 0;
+    s.style.background = j === 0 || !top ? "" : `rgba(42,120,214,${(v / top).toFixed(3)})`;
+    s.classList.toggle("on", j === t);
+    s.title = `@${j} ${JSON.stringify(d.tokens[j])}  ${v.toFixed(3)}`;
+  });
+  const best = [...vals].filter(([j]) => j !== 0).sort((a, b) => b[1] - a[1]).slice(0, 5)
+    .map(([j, v]) => `${JSON.stringify(show(d.tokens[j]))} @${j} ${v.toFixed(3)}`).join(" · ");
+  const bos = m === "q" ? `BOS ${(vals.get(0) || 0).toFixed(3)} · ` : "";
+  el.querySelector(".status").textContent = (m === "q"
+    ? `query ${JSON.stringify(show(d.tokens[t]))} @${t} → ` : `key ${JSON.stringify(show(d.tokens[t]))} @${t} ← `)
+    + bos + (best || "nothing above threshold");
+}
+function render() {
+  const full = document.getElementById("full").checked, box = document.getElementById("rows");
+  box.innerHTML = "";
+  D.forEach((d, rank) => {
+    const n = d.tokens.length;
+    const lo = full ? 0 : Math.max(1, Math.min(d.k, d.q) - 12), hi = full ? n : Math.min(n, d.q + 6);
+    const el = document.createElement("div"); el.className = "row";
+    el.innerHTML = `<div class="meta"><b>#${rank + 1}</b> · prompt ${d.p} · ${n} tokens · strongest link
+      ${d.max.toFixed(3)}: ${JSON.stringify(show(d.tokens[d.q]))} @${d.q} → ${JSON.stringify(show(d.tokens[d.k]))} @${d.k}</div>
+      <div class="toks"></div><div class="status"></div>`;
+    const toks = el.querySelector(".toks");
+    if (lo > 0) toks.append("… ");
+    for (let i = lo; i < hi; i++) {
+      const s = document.createElement("span"); s.className = "t"; s.dataset.i = i;
+      s.textContent = full ? d.tokens[i] : show(d.tokens[i]);
+      if (full && d.tokens[i].includes("\n")) s.textContent = show(d.tokens[i]) + "\n";
+      toks.append(s);
+    }
+    if (hi < n) toks.append(" …");
+    let pinned = null;
+    const rest = () => pinned === null ? paint(d, el, d.q, "q") : paint(d, el, pinned, mode());
+    toks.addEventListener("mouseover", e => { if (e.target.dataset.i) paint(d, el, +e.target.dataset.i, mode()); });
+    toks.addEventListener("mouseleave", rest);
+    toks.addEventListener("click", e => {
+      if (!e.target.dataset.i) return;
+      const i = +e.target.dataset.i; pinned = pinned === i ? null : i; rest();
+    });
+    box.append(el); rest();
+  });
+}
+document.getElementById("full").addEventListener("change", render);
+document.querySelectorAll("input[name=mode]").forEach(r => r.addEventListener("change", render));
+render();
+</script></body></html>"""
