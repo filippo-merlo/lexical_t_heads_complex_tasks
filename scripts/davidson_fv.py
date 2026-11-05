@@ -30,7 +30,8 @@ Davidson et al.'s intervention; the other alphas are our check's grid). Control:
 heads' mean outputs under our check 1's control mean (the control task's 1-shot prompts at
 its items correct under inst1).
 
-Writes ``results/davidson_fv/``: ``uninformative.json`` (every corrupted instruction),
+``--n-heads`` changes the number of heads (20 is theirs); ``--cie-from`` reuses another
+run's CIE, which does not depend on it. Writes ``results/davidson_fv/`` (or ``--out``): ``uninformative.json`` (every corrupted instruction),
 ``cie.npz`` (CIE per task and kind, ``[n_layers, n_heads]``), ``heads.json`` (the 20 heads),
 ``fv.npz`` (task and control FVs), ``patching_simple.csv`` and
 ``answers/patching_simple.jsonl.gz`` (same columns as ``patch.py``'s).
@@ -66,7 +67,6 @@ WIKI_LINES = 20_000  # WikiText-103 lines sampled for candidate prefixes
 WIKI_POOL = 100  # N: candidates of about the instruction's length
 OTHER_POOL = 20  # candidates of about the instruction's length among other tasks' instructions
 SEED = 0
-OUT = RESULTS / "davidson_fv"
 
 
 def instruction(task: str, wording: str) -> str:
@@ -288,6 +288,11 @@ def generate_fv(lm, prompts, fv, alphas, max_new_tokens, max_rows, stop):
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--gpu", type=int, required=True)
+    parser.add_argument("--n-heads", type=int, default=N_HEADS, help="heads in the FV (default: theirs, 20)")
+    parser.add_argument("--out", default="davidson_fv", help="output folder under results/")
+    parser.add_argument("--cie-from", default=None,
+                        help="folder under results/ whose cie.npz to reuse (the items are the same); "
+                             "the uninformative instructions and the CIE are then not recomputed")
     args = parser.parse_args()
     gpu.pin(args.gpu)
 
@@ -304,10 +309,12 @@ def main() -> None:
     def records(task, wording):
         return load(readings_dir("simple", task), wording)["records"]
 
-    OUT.mkdir(parents=True, exist_ok=True)
+    out = RESULTS / args.out
+    out.mkdir(parents=True, exist_ok=True)
     rng = random.Random(SEED)
     lm = LM.load()
-    wiki = wiki_prefixes(lm, rng)
+    reuse = RESULTS / args.cie_from if args.cie_from else None
+    wiki = None if reuse else wiki_prefixes(lm, rng)
 
     # Items: the patched ones (check 1), then per instruction the mean and CIE items.
     plan, means, corrupt = {}, {}, {}
@@ -322,16 +329,21 @@ def main() -> None:
             parts.append(simple_mean(lm, ids, per[wording]["mean"]))
         plan[task] = dict(fixed=fixed, items=per)
         means[task] = sum(parts) / len(parts)  # equal sizes: the mean over all 100 prompts
-        corrupt[task] = uninformative(lm, task, rng, wiki)
-        print(f"{task}: mean and uninformative instructions ready", flush=True)
-    (OUT / "uninformative.json").write_text(json.dumps(
-        {task: {w: {**u, **{k: [lm.tokenizer.decode(c) for c in u[k]] for k in KINDS}}
-                for w, u in corrupt[task].items()} for task in TASKS}, indent=1, ensure_ascii=False))
-    (OUT / "items.json").write_text(json.dumps(plan, indent=1))
+        if not reuse:
+            corrupt[task] = uninformative(lm, task, rng, wiki)
+        print(f"{task}: mean ready", flush=True)
+    (out / "items.json").write_text(json.dumps(plan, indent=1))
 
-    # CIE per task and kind; heads = top N_HEADS of the mean over kinds and tasks.
-    scores = {}
-    for task in TASKS:
+    # CIE per task and kind; heads = top n_heads of the mean over kinds and tasks.
+    if reuse:
+        assert json.loads((reuse / "items.json").read_text()) == json.loads(json.dumps(plan))
+        scores = dict(np.load(reuse / "cie.npz"))
+    else:
+        (out / "uninformative.json").write_text(json.dumps(
+            {task: {w: {**u, **{k: [lm.tokenizer.decode(c) for c in u[k]] for k in KINDS}}
+                    for w, u in corrupt[task].items()} for task in TASKS}, indent=1, ensure_ascii=False))
+        scores = {}
+    for task in TASKS if not reuse else ():
         data = simple.dataset(task)
         for kind in KINDS:
             rows, targets = [], []
@@ -342,12 +354,13 @@ def main() -> None:
                     targets.append(lm.first_token(" " + data[item]["output"]))
             scores[f"{task}/{kind}"] = cie(lm, rows, targets, means[task]).numpy()
             print(f"{task} {kind}: CIE done", flush=True)
-    np.savez(OUT / "cie.npz", **scores)
+    if not reuse:
+        np.savez(out / "cie.npz", **scores)
     total = np.mean([scores[f"{t}/{k}"] for t in TASKS for k in KINDS], axis=0)
-    order = np.argsort(-total, axis=None)[:N_HEADS]
+    order = np.argsort(-total, axis=None)[:args.n_heads]
     heads = [tuple(int(x) for x in np.unravel_index(i, total.shape)) for i in order]
-    (OUT / "heads.json").write_text(json.dumps(
-        dict(layer=LAYER, tasks=TASKS, heads=[[l, h, float(total[l, h])] for l, h in heads]), indent=1))
+    (out / "heads.json").write_text(json.dumps(
+        dict(layer=LAYER, tasks=TASKS, cie_from=args.cie_from, heads=[[l, h, float(total[l, h])] for l, h in heads]), indent=1))
 
     # Check 1 with the FV.
     rows_out, log, fvs = [], [], {}
@@ -395,13 +408,13 @@ def main() -> None:
                                      n_mean=n_mean, alpha=alpha, accuracy=hits / len(fixed),
                                      first_token=tokens / len(fixed)))
         print(f"{task}: check 1 done", flush=True)
-    np.savez(OUT / "fv.npz", **fvs)
-    with (OUT / "patching_simple.csv").open("w", newline="") as f:
+    np.savez(out / "fv.npz", **fvs)
+    with (out / "patching_simple.csv").open("w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=list(rows_out[0]))
         writer.writeheader()
         writer.writerows(rows_out)
-    (OUT / "answers").mkdir(exist_ok=True)
-    with gzip.open(OUT / "answers" / "patching_simple.jsonl.gz", "wt") as f:
+    (out / "answers").mkdir(exist_ok=True)
+    with gzip.open(out / "answers" / "patching_simple.jsonl.gz", "wt") as f:
         f.writelines(json.dumps(line, ensure_ascii=False) + "\n" for line in log)
 
 
