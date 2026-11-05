@@ -10,6 +10,8 @@
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{fvextra}
@@ -99,7 +101,7 @@ Llama-3.1-8B-Instruct: it is the main model of \citet{yang2026shared}, and the o
 
 \subsection{Tasks}\label{sec:tasks}
 The 14 tasks used by both \citet{yang2026shared} and \citet{davidson2025different}, with the datasets of \citet{todd2024function}: antonym, synonym, singular--plural, present--past, country--capital, country--currency, landmark--country, park--country, product--company, next-item, prev-item, English--French, English--German, English--Spanish.
-Rule-based prompts: the first five of the six instruction templates per task listed in \citet[App.~A.3.1]{yang2026shared}, that is the cloze form (``The antonym of \{x\} is'') and four question--answer forms; their code and figures use only these five (templates A--E), not the sixth.
+Rule-based prompts: the first five of the six instruction templates per task listed in \citet[App.~A.3.1]{yang2026shared}, that is the cloze form (``The antonym of \{x\} is'') and four question--answer forms; their code and figures use only these five (templates A--E, App.~\ref{app:templates-simple}), not the sixth.
 Example-based prompts: 1, 5, 10, 20 and 30 shots \citep[App.~A.3]{yang2026shared}.
 
 \paragraph{Why these tasks.} Lexical task heads and their term lists were defined on these tasks \citep{yang2026shared}, so the method applies unchanged and our results can be compared with theirs.
@@ -110,7 +112,7 @@ Example-based prompts: 1, 5, 10, 20 and 30 shots \citep[App.~A.3]{yang2026shared
 \paragraph{Lexical task heads} \citep[Sec.~2.2.2]{yang2026shared}.
 Each attention head's output at the last prompt token is decoded with the two readouts of Sec.~\ref{sec:framework}: Logit-head, the per-head logit lens used by \citet{yang2026shared} \citep{nostalgebraist2020logitlens}, and J-head (Head-JLens), which applies the head's columns $J_{l,h}$ of the per-layer Jacobian map fitted on WikiText-103 \citep[Sec.~2]{merlo2026headjlens}. Fitted matrices for Llama-3.1-8B-Instruct are released with \citet[Sec.~S4]{merlo2026headjlens}.
 Under each readout, lexical task heads are identified with Definition~\ref{def:lth}.
-$P^{+}_{t,s}$ is taken as in the code of \citet{yang2026shared}: the first 100 prompts in $P^{+}$ under one wording, the 5-shot prompts for the example style and the instruction template with the highest accuracy for the rule style. Term lists: \citet[App.~A.2.1]{yang2026shared}.
+$P^{+}_{t,s}$ is taken as in the code of \citet{yang2026shared}: the first 100 prompts in $P^{+}$ under one wording, the 5-shot prompts for the example style and the instruction template with the highest accuracy for the rule style. Term lists: \citet[App.~A.2.1]{yang2026shared} (App.~\ref{app:terms-simple}).
 
 \paragraph{Simple tasks as in the source code.} The simple tasks are run as in the code of \citet{yang2026shared}, with three departures. First, padding: their code passes prompts to the model in batches of 20, padded on the left, without an attention mask, so that the model attends to the padding; we pass the mask and the matching positions, so that each prompt is computed as if run alone. Second, the J-head readout. Third, the precision of the forward pass: bfloat16, in which the Head-JLens matrices were fitted.
 
@@ -677,6 +679,9 @@ The causal effects of the equal-size sets of Sec.~\ref{sec:sized}, as the highes
 \caption{Equal-size sets, rule style, second causal check, as Table~\ref{tab:sized-rules}. The baseline is 0.}
 \label{tab:sized-rules-wrong}
 \end{table}
+
+\clearpage
+\input{appendix-simple}
 
 \clearpage
 \section*{Decision log}\label{app:decisions}
