@@ -1,0 +1,36 @@
+{
+ "simple": {
+  "present-past": {
+   "rule": {
+    "jhead": {
+     "rule": "hand-picked: L15H1",
+     "heads": [
+      [
+       15,
+       1,
+       null
+      ]
+     ]
+    },
+    "logithead": {
+     "heads": []
+    }
+   },
+   "example": {
+    "jhead": {
+     "rule": "hand-picked: L15H1",
+     "heads": [
+      [
+       15,
+       1,
+       null
+      ]
+     ]
+    },
+    "logithead": {
+     "heads": []
+    }
+   }
+  }
+ }
+}
