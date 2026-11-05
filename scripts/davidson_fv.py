@@ -290,10 +290,17 @@ def main() -> None:
     parser.add_argument("--gpu", type=int, required=True)
     parser.add_argument("--n-heads", type=int, default=N_HEADS, help="heads in the FV (default: theirs, 20)")
     parser.add_argument("--out", default="davidson_fv", help="output folder under results/")
-    parser.add_argument("--cie-from", default=None,
-                        help="folder under results/ whose cie.npz to reuse (the items are the same); "
-                             "the uninformative instructions and the CIE are then not recomputed")
+    parser.add_argument("--cie-from", nargs="+", default=None,
+                        help="folders under results/ whose cie.npz to reuse, merged (the items must be the "
+                             "same); the uninformative instructions and the CIE are then not recomputed")
+    parser.add_argument("--tasks", nargs="+", default=list(TASKS),
+                        help="simple tasks (default: the four of the first run; 'all' for all 14); the "
+                             "heads are chosen over these")
+    parser.add_argument("--cie-only", action="store_true", help="stop once cie.npz is written")
+    parser.add_argument("--check-tasks", nargs="+", default=None,
+                        help="tasks to run check 1 on (default: --tasks); the heads are still chosen over --tasks")
     args = parser.parse_args()
+    tasks = list(simple.TASKS) if args.tasks == ["all"] else args.tasks
     gpu.pin(args.gpu)
 
     import numpy as np
@@ -313,22 +320,26 @@ def main() -> None:
     out.mkdir(parents=True, exist_ok=True)
     rng = random.Random(SEED)
     lm = LM.load()
-    reuse = RESULTS / args.cie_from if args.cie_from else None
+    reuse = [RESULTS / d for d in args.cie_from] if args.cie_from else None
     wiki = None if reuse else wiki_prefixes(lm, rng)
 
     # Items: the patched ones (check 1), then per instruction the mean and CIE items.
     plan, means, corrupt = {}, {}, {}
-    for task in TASKS:
+    for task in tasks:
         fixed = simple.correct_items(records(task, simple.FIXING))[: simple.CAP]
         per = {}
         parts = []
         for wording in INSTRUCTIONS:
             free = [i for i in simple.correct_items(records(task, wording)) if i not in set(fixed)]
-            per[wording] = dict(mean=free[:N_MEAN], cie=free[N_MEAN:N_MEAN + N_CIE])
+            if len(free) >= N_MEAN + N_CIE:
+                per[wording] = dict(mean=free[:N_MEAN], cie=free[N_MEAN:N_MEAN + N_CIE])
+            else:  # too few correct prompts (next_item): CIE first, the rest for the mean
+                per[wording] = dict(mean=free[:-N_CIE], cie=free[-N_CIE:])
+                print(f"{task} {wording}: only {len(free)} correct prompts", flush=True)
             ids = simple.token_ids(lm.tokenizer, simple.prompts(task, wording)[0])
-            parts.append(simple_mean(lm, ids, per[wording]["mean"]))
+            parts.append((simple_mean(lm, ids, per[wording]["mean"]), len(per[wording]["mean"])))
         plan[task] = dict(fixed=fixed, items=per)
-        means[task] = sum(parts) / len(parts)  # equal sizes: the mean over all 100 prompts
+        means[task] = sum(m * n for m, n in parts) / sum(n for _, n in parts)  # over all mean prompts
         if not reuse:
             corrupt[task] = uninformative(lm, task, rng, wiki)
         print(f"{task}: mean ready", flush=True)
@@ -336,14 +347,17 @@ def main() -> None:
 
     # CIE per task and kind; heads = top n_heads of the mean over kinds and tasks.
     if reuse:
-        assert json.loads((reuse / "items.json").read_text()) == json.loads(json.dumps(plan))
-        scores = dict(np.load(reuse / "cie.npz"))
+        done = {}
+        for d in reuse:
+            done.update(json.loads((d / "items.json").read_text()))
+        assert all(done[task] == json.loads(json.dumps(plan[task])) for task in tasks)
+        scores = {k: v for d in reuse for k, v in np.load(d / "cie.npz").items()}
     else:
         (out / "uninformative.json").write_text(json.dumps(
             {task: {w: {**u, **{k: [lm.tokenizer.decode(c) for c in u[k]] for k in KINDS}}
-                    for w, u in corrupt[task].items()} for task in TASKS}, indent=1, ensure_ascii=False))
+                    for w, u in corrupt[task].items()} for task in tasks}, indent=1, ensure_ascii=False))
         scores = {}
-    for task in TASKS if not reuse else ():
+    for task in tasks if not reuse else ():
         data = simple.dataset(task)
         for kind in KINDS:
             rows, targets = [], []
@@ -356,11 +370,13 @@ def main() -> None:
             print(f"{task} {kind}: CIE done", flush=True)
     if not reuse:
         np.savez(out / "cie.npz", **scores)
-    total = np.mean([scores[f"{t}/{k}"] for t in TASKS for k in KINDS], axis=0)
+    if args.cie_only:
+        return
+    total = np.mean([scores[f"{t}/{k}"] for t in tasks for k in KINDS], axis=0)
     order = np.argsort(-total, axis=None)[:args.n_heads]
     heads = [tuple(int(x) for x in np.unravel_index(i, total.shape)) for i in order]
     (out / "heads.json").write_text(json.dumps(
-        dict(layer=LAYER, tasks=TASKS, cie_from=args.cie_from, heads=[[l, h, float(total[l, h])] for l, h in heads]), indent=1))
+        dict(layer=LAYER, tasks=tasks, cie_from=args.cie_from, heads=[[l, h, float(total[l, h])] for l, h in heads]), indent=1))
 
     # Check 1 with the FV.
     rows_out, log, fvs = [], [], {}
@@ -368,7 +384,7 @@ def main() -> None:
     def stop(text):
         return simple_answer(text) != text
 
-    for task in TASKS:
+    for task in args.check_tasks or tasks:
         fixed = plan[task]["fixed"]
         prompts, answers = simple.prompts(task, simple.ZERO)
         corrupt_ids = simple.token_ids(lm.tokenizer, prompts)
