@@ -502,7 +502,7 @@ def figure_copy_share(measures: pd.DataFrame, family: str) -> None:
     plt.close(fig)
 
 
-def curve_panel(ax, patching, family, task, style, reference=None, sets=SETS) -> bool:
+def curve_panel(ax, patching, family, task, style, reference=None, sets=SETS, colours=SET_COLOUR) -> bool:
     """Accuracy against alpha for one condition; False if it has no patched rows."""
     rows = patching[(patching.family == family) & (patching.task == task) & (patching["style"] == style)]
     if rows.empty:
@@ -515,15 +515,16 @@ def curve_panel(ax, patching, family, task, style, reference=None, sets=SETS) ->
         for source in ("task", "control"):
             r = rows[(rows.heads == s) & (rows.source == source)].sort_values("alpha")
             if len(r):
-                ax.plot(r.alpha, r.accuracy, color=SET_COLOUR[s], lw=1.3 if source == "task" else 0.9,
+                ax.plot(r.alpha, r.accuracy, color=colours[s], lw=1.3 if source == "task" else 0.9,
                         ls="-" if source == "task" else CONTROL_STYLE, marker="o" if len(r) < 6 else None,
                         ms=2.5, zorder=3 if source == "task" else 2)
     return True
 
 
-def curve_legend(fig, constant: bool = False, control: bool = True, sets=SETS) -> None:
-    handles = [plt.Line2D([], [], color=SET_COLOUR[s]) for s in sets]
-    labels = [f"{SET_LABEL[s]}, task mean" for s in sets]
+def curve_legend(fig, constant: bool = False, control: bool = True, sets=SETS, colours=SET_COLOUR,
+                 names=SET_LABEL) -> None:
+    handles = [plt.Line2D([], [], color=colours[s]) for s in sets]
+    labels = [f"{names[s]}, task mean" for s in sets]
     if control:
         handles.append(plt.Line2D([], [], color=INK_2, ls=CONTROL_STYLE, lw=0.9))
         labels.append("control mean (same colours)")

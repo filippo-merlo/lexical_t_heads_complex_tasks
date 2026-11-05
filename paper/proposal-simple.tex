@@ -495,15 +495,15 @@ The three requirements thus trade off against each other. Heads that every templ
 \subsection{Results}\label{sec:res-sized}
 \paragraph{Head sets.} Where a threshold set has at least $N$ heads, the set of size $N$ is its $N$ highest-ranked heads; where it has fewer, the set adds the highest-ranked heads below the threshold. Below-threshold heads are therefore rare at size 5 and more frequent at size 20, more so under Logit-head, whose threshold sets are smaller. At each size, the Logit-head and J-head sets of the same rule share about three in five of their heads.
 
-\paragraph{Readouts} (Tables~\ref{tab:sized-summary}--\ref{tab:sized-readouts-control}, Figure~\ref{fig:sized-readouts}). J-head's advantage over Logit-head does not come from its larger sets. Taking the differences between the threshold sets of at least 0.05 (a descriptive cut, not part of the pre-stated comparison), J-head had the larger effect on most of them, in both styles and both checks, and on about two thirds of these it is larger at every size as well; on none is Logit-head. The few tasks on which Logit-head's threshold set had the larger effect do not keep it: on country--capital (rule style, first check) and present--past (rule style, second check) J-head is larger at every size. On country--capital, J-head's threshold set has more than one and a half times as many heads as Logit-head's, and its effect falls with the number of heads; on landmark--country and park--country (example style, first check) the order changes with the size.
+\paragraph{Readouts} (Table~\ref{tab:sized-summary}, Figures~\ref{fig:sized-readouts}--\ref{fig:sized-curves-n20-wrong}; effects in Tables~\ref{tab:sized-readouts}--\ref{tab:sized-readouts-control}, App.~\ref{app:sized}). J-head's advantage over Logit-head does not come from its larger sets. Taking the differences between the threshold sets of at least 0.05 (a descriptive cut, not part of the pre-stated comparison), J-head had the larger effect on most of them, in both styles and both checks, and on about two thirds of these it is larger at every size as well; on none is Logit-head. The few tasks on which Logit-head's threshold set had the larger effect do not keep it: on country--capital (rule style, first check) and present--past (rule style, second check) J-head is larger at every size. On country--capital, J-head's threshold set has more than one and a half times as many heads as Logit-head's, and its effect falls with the number of heads; on landmark--country and park--country (example style, first check) the order changes with the size.
 
-\paragraph{Template rules} (Tables~\ref{tab:sized-summary}, \ref{tab:sized-rules} and~\ref{tab:sized-rules-wrong}, Figures~\ref{fig:sized-rules-logithead} and~\ref{fig:sized-rules-jhead}). Most differences between E1 and the rules of E1b change direction with the size, so they come from how many heads a rule selects, or from single heads, rather than from the rule. The few that hold at equal size are mostly about the consensus heads. In the second check, the consensus heads ($k=5$) have smaller effects than the E1 heads of the same number on several tasks, under J-head (antonym, singular--plural, next-item, English--German) and on singular--plural under Logit-head; few consensus sets of size 20 are formed, so this rests mostly on sizes 5 and 10. In the first check, the consensus heads have the larger effect on park--country under both readouts, a task on which the control mean also has large effects (below). The union's gain on present--past under J-head (Sec.~\ref{sec:res-k13}) holds as well, but at equal size it appears only at size 20 (below).
+\paragraph{Template rules} (Table~\ref{tab:sized-summary}, Figures~\ref{fig:sized-rules-logithead}--\ref{fig:sized-rule-curves-jhead-n20}; effects in Tables~\ref{tab:sized-rules} and~\ref{tab:sized-rules-wrong}, App.~\ref{app:sized}). Most differences between E1 and the rules of E1b change direction with the size, so they come from how many heads a rule selects, or from single heads, rather than from the rule. The few that hold at equal size are mostly about the consensus heads. In the second check, the consensus heads ($k=5$) have smaller effects than the E1 heads of the same number on several tasks, under J-head (antonym, singular--plural, next-item, English--German) and on singular--plural under Logit-head; few consensus sets of size 20 are formed, so this rests mostly on sizes 5 and 10. In the first check, the consensus heads have the larger effect on park--country under both readouts, a task on which the control mean also has large effects (below). The union's gain on present--past under J-head (Sec.~\ref{sec:res-k13}) holds as well, but at equal size it appears only at size 20 (below).
 
 \paragraph{Size.} The effect does not grow steadily with the number of heads. On country--capital in the rule style, the five highest-ranked heads give the largest effect under both readouts; on next-item and prev-item in the second check, and on singular--plural in the example style, the sets of size 20 give the largest. Some single sizes stand out against both neighbours, such as the Logit-head example set of antonym at size 20 in the first check, which is the only antonym set with a large effect.
 
 \paragraph{One head on present--past.} Under J-head with example-style heads, the first check has no effect at the threshold set, which has four heads, and a large one at sizes 5 and 10, with no effect of the control mean. The fifth head added, L15H1, matches on 7\% of the identification prompts, below the threshold. It is also in the J-head union set of size 20 for the rule style, the only rule-style set with an effect on present--past in the first check, and in no other set of the task. The patched replies begin with the past tense of the given verb and differ from item to item. That L15H1 carries the effect is so far a comparison across sets; patching it alone, and the sets without it, would test it.
 
-\paragraph{Control mean} (Table~\ref{tab:sized-readouts-control}). On park--country the control mean has large effects at most sizes, in some sets as large as those of the task mean. The patched model answers with a title that begins with the country's name, such as ``Albania's Hidden Gem'', which the flexible score accepts. The control mean also comes close to or exceeds the task mean at the J-head example sets of singular--plural (size 5) and next-item (size 20). Effects on these tasks are not specific to the task.
+\paragraph{Control mean} (dotted curves in Figures~\ref{fig:sized-curves-n5}, \ref{fig:sized-curves-n10} and~\ref{fig:sized-curves-n20}). On park--country the control mean has large effects at most sizes, in some sets as large as those of the task mean. The patched model answers with a title that begins with the country's name, such as ``Albania's Hidden Gem'', which the flexible score accepts. The control mean also comes close to or exceeds the task mean at the J-head example sets of singular--plural (size 5) and next-item (size 20). Effects on these tasks are not specific to the task.
 
 Thus, at equal size, the difference between the readouts largely remains, while the differences between template rules mostly do not.
 
@@ -513,6 +513,135 @@ Thus, at equal size, the difference between the readouts largely remains, while 
 \caption{Equal-size sets: for each pair and check, the number of tasks on which the first or the second had the larger effect between the threshold sets, and of these, on how many the same one is larger at every size for which both sets are formed (holds) and on how many the other one is (reverses). Cells: tasks / holds / reverses. Effects of the threshold sets over the nine values of $\alpha$ of the procedure; ties and tasks without both threshold sets are counted on neither side. Every difference is counted, however small.}
 \label{tab:sized-summary}
 \end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/sized_readouts.pdf}
+\caption{Equal-size sets, E1 rule: causal effect against the number of heads (log scale), per task, in the first and the second check. Filled markers: sets of size 5, 10 and 20; hollow markers: the threshold set, at its own size. Solid: rule style; dashed: example style.}
+\label{fig:sized-readouts}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/sized_curves_n5.pdf}
+\caption{Equal-size sets of the 5 highest-ranked heads under the rule of E1, first causal check: accuracy on the patched items against $\alpha$, with each style's set patched with means of the same style, averaged over the style's five source wordings, as Figure~\ref{fig:patch-simple}. Nine values of $\alpha$: $-10$, $-4$, and 2 to 10 (none between $-4$ and 2). Solid: the task mean; dotted: the control mean at the same heads; dashed: unpatched accuracy. Empty panel: fewer than 5 heads match on any prompt.}
+\label{fig:sized-curves-n5}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/sized_curves_n5_wrong.pdf}
+\caption{Equal-size sets of 5 heads, E1 rule, second causal check, as Figure~\ref{fig:sized-curves-n5}, with the wrongly answered 1-shot prompts patched. No control mean.}
+\label{fig:sized-curves-n5-wrong}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/sized_curves_n10.pdf}
+\caption{Equal-size sets of 10 heads, E1 rule, first causal check, as Figure~\ref{fig:sized-curves-n5}.}
+\label{fig:sized-curves-n10}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/sized_curves_n10_wrong.pdf}
+\caption{Equal-size sets of 10 heads, E1 rule, second causal check, as Figure~\ref{fig:sized-curves-n5-wrong}.}
+\label{fig:sized-curves-n10-wrong}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/sized_curves_n20.pdf}
+\caption{Equal-size sets of 20 heads, E1 rule, first causal check, as Figure~\ref{fig:sized-curves-n5}.}
+\label{fig:sized-curves-n20}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/sized_curves_n20_wrong.pdf}
+\caption{Equal-size sets of 20 heads, E1 rule, second causal check, as Figure~\ref{fig:sized-curves-n5-wrong}.}
+\label{fig:sized-curves-n20-wrong}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/sized_rules_logithead.pdf}
+\caption{Equal-size sets, rule style, Logit-head: causal effect against the number of heads under the rule of E1 and the rules of E1b, as Figure~\ref{fig:sized-readouts}.}
+\label{fig:sized-rules-logithead}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/sized_rules_jhead.pdf}
+\caption{Equal-size sets, rule style, J-head, as Figure~\ref{fig:sized-rules-logithead}.}
+\label{fig:sized-rules-jhead}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/sized_rule_curves_logithead_n5.pdf}
+\caption{Equal-size sets of the 5 highest-ranked Logit-head heads, rule style, under the rule of E1 and the rules of E1b (at least $k$ of the five instruction templates): accuracy against $\alpha$ with rule-style means, averaged over the five templates, in the first check (with the control mean, dotted) and the second, as Figure~\ref{fig:patch-consensus}, at the nine values of $\alpha$ of Figure~\ref{fig:sized-curves-n5}. A missing curve: fewer than 5 heads match under that rule.}
+\label{fig:sized-rule-curves-logithead-n5}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/sized_rule_curves_logithead_n10.pdf}
+\caption{Equal-size sets of 10 Logit-head heads, rule style, E1 and E1b rules, as Figure~\ref{fig:sized-rule-curves-logithead-n5}.}
+\label{fig:sized-rule-curves-logithead-n10}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/sized_rule_curves_logithead_n20.pdf}
+\caption{Equal-size sets of 20 Logit-head heads, rule style, E1 and E1b rules, as Figure~\ref{fig:sized-rule-curves-logithead-n5}.}
+\label{fig:sized-rule-curves-logithead-n20}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/sized_rule_curves_jhead_n5.pdf}
+\caption{Equal-size sets of 5 J-head heads, rule style, E1 and E1b rules, as Figure~\ref{fig:sized-rule-curves-logithead-n5}.}
+\label{fig:sized-rule-curves-jhead-n5}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/sized_rule_curves_jhead_n10.pdf}
+\caption{Equal-size sets of 10 J-head heads, rule style, E1 and E1b rules, as Figure~\ref{fig:sized-rule-curves-logithead-n5}.}
+\label{fig:sized-rule-curves-jhead-n10}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/sized_rule_curves_jhead_n20.pdf}
+\caption{Equal-size sets of 20 J-head heads, rule style, E1 and E1b rules, as Figure~\ref{fig:sized-rule-curves-logithead-n5}.}
+\label{fig:sized-rule-curves-jhead-n20}
+\end{figure}
+
+\section{Plan}\label{sec:plan}
+\paragraph{Steps.}
+\begin{enumerate}
+\item Run E0 and save every reply. Score the saved outputs with the strict and the flexible score (done) and with the judged score (to run) (Sec.~\ref{sec:evaluation}).
+\item Run E1 under the flexible score, with both causal checks.
+\item Run E1b on the rule-style heads ($k=5$, H\ref{h:consensus}), and its exploratory sets for $k=1$ and~3.
+\item Run the follow-ups of the union sets (Secs.~\ref{sec:shared}--\ref{sec:noretrieval}) and write them up.
+\item Run the equal-size sets (Sec.~\ref{sec:sized}) and write up their results (done).
+\end{enumerate}
+Reused code and data: the lexical-task-head code of \citet{yang2026shared}; the Head-JLens code and matrices of \citet{merlo2026headjlens}; the task datasets of \citet{todd2024function}.
+
+\paragraph{Limitations.} One model. Rule-based prompts contain task words, so a head may decode them by copying from the prompt; the copy share measures this but does not decide it. Under J-head, some sites rank tokens highly on unrelated prompts as well \citep[Sec.~3.6]{merlo2026headjlens}, so a larger J-head set is not by itself evidence of more task representation; the causal check is needed. $P^{+}$ and the patched items are chosen by the flexible score, which accepts only the reference answer: a prompt answered with another valid answer is counted as wrong. The judged score depends on one LLM judge, which is not checked against hand labels here; \citet{hua2025flaw} find that LLM judges agree with human annotators on other tasks.
+
+
+\paragraph{Deliverables.} Head sets, measures and causal-check curves for every task, style and readout.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\clearpage
+\appendix
+\section{Effects of the equal-size sets}\label{app:sized}
+The causal effects of the equal-size sets of Sec.~\ref{sec:sized}, as the highest accuracy over the nine values of $\alpha$ minus the unpatched accuracy.
 
 \begin{table}[H]
 \centering\footnotesize
@@ -535,13 +664,6 @@ Thus, at equal size, the difference between the readouts largely remains, while 
 \label{tab:sized-readouts-control}
 \end{table}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{figures/sized_readouts.pdf}
-\caption{Equal-size sets, E1 rule: causal effect against the number of heads (log scale), per task, in the first and the second check. Filled markers: sets of size 5, 10 and 20; hollow markers: the threshold set, at its own size. Solid: rule style; dashed: example style.}
-\label{fig:sized-readouts}
-\end{figure}
-
 \begin{table}[H]
 \centering\footnotesize\setlength{\tabcolsep}{4.5pt}
 \input{tables/sized_rules}
@@ -555,39 +677,6 @@ Thus, at equal size, the difference between the readouts largely remains, while 
 \caption{Equal-size sets, rule style, second causal check, as Table~\ref{tab:sized-rules}. The baseline is 0.}
 \label{tab:sized-rules-wrong}
 \end{table}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{figures/sized_rules_logithead.pdf}
-\caption{Equal-size sets, rule style, Logit-head: causal effect against the number of heads under the rule of E1 and the rules of E1b, as Figure~\ref{fig:sized-readouts}.}
-\label{fig:sized-rules-logithead}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{figures/sized_rules_jhead.pdf}
-\caption{Equal-size sets, rule style, J-head, as Figure~\ref{fig:sized-rules-logithead}.}
-\label{fig:sized-rules-jhead}
-\end{figure}
-
-\section{Plan}\label{sec:plan}
-\paragraph{Steps.}
-\begin{enumerate}
-\item Run E0 and save every reply. Score the saved outputs with the strict and the flexible score (done) and with the judged score (to run) (Sec.~\ref{sec:evaluation}).
-\item Run E1 under the flexible score, with both causal checks.
-\item Run E1b on the rule-style heads ($k=5$, H\ref{h:consensus}), and its exploratory sets for $k=1$ and~3.
-\item Run the follow-ups of the union sets (Secs.~\ref{sec:shared}--\ref{sec:noretrieval}) and write them up.
-\item Run the equal-size sets (Sec.~\ref{sec:sized}) and write up their results (done).
-\end{enumerate}
-Reused code and data: the lexical-task-head code of \citet{yang2026shared}; the Head-JLens code and matrices of \citet{merlo2026headjlens}; the task datasets of \citet{todd2024function}.
-
-\paragraph{Limitations.} One model. Rule-based prompts contain task words, so a head may decode them by copying from the prompt; the copy share measures this but does not decide it. Under J-head, some sites rank tokens highly on unrelated prompts as well \citep[Sec.~3.6]{merlo2026headjlens}, so a larger J-head set is not by itself evidence of more task representation; the causal check is needed. $P^{+}$ and the patched items are chosen by the flexible score, which accepts only the reference answer: a prompt answered with another valid answer is counted as wrong. The judged score depends on one LLM judge, which is not checked against hand labels here; \citet{hua2025flaw} find that LLM judges agree with human annotators on other tasks.
-
-
-\paragraph{Deliverables.} Head sets, measures and causal-check curves for every task, style and readout.
-
-\bibliographystyle{plainnat}
-\bibliography{references}
 
 \clearpage
 \section*{Decision log}\label{app:decisions}

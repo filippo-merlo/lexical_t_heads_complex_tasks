@@ -18,7 +18,10 @@ Writes ``paper/tables/``:
   sets, and whether the same one has it at every N where both equal-size sets are formed.
 And ``paper/figures/sized_readouts.pdf``, ``sized_rules_logithead.pdf``,
 ``sized_rules_jhead.pdf``: effect against set size, with the threshold sets drawn at their own
-sizes; ``results/sized/comparison.csv``: the comparison per pair, check and task.
+sizes; accuracy against alpha as the E1 figures, per N: ``sized_curves_n{N}`` and
+``sized_curves_n{N}_wrong`` (Logit-head and J-head, E1's rule, both styles; first and second
+check) and ``sized_rule_curves_{readout}_n{N}`` (E1 and E1b rules, rule style, both checks);
+``results/sized/comparison.csv``: the comparison per pair, check and task.
 
     .venv/bin/python scripts/sized_tex.py
 """
@@ -33,8 +36,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import results_tex as rt  # noqa: E402  (sets the figure style)
-from results_tex import (BLUE, GREEN, GREY, INK, INK_2, MAGENTA, ORANGE, YELLOW, num, plot_name,  # noqa: E402
-                         style_axes, tabular, tex_name, wording_curves)
+from results_tex import (BLUE, GREEN, GREY, INK, INK_2, MAGENTA, ORANGE, YELLOW, curve_legend,  # noqa: E402
+                         curve_panel, empty_panel, num, plot_name, style_axes, tabular, tex_name,
+                         wording_curves)
 
 import matplotlib.pyplot as plt  # noqa: E402
 import pandas as pd  # noqa: E402
@@ -215,6 +219,55 @@ def figure(sized: dict, threshold: dict, sizes: dict, name: str, series: list) -
     plt.close(fig)
 
 
+def select(c: pd.DataFrame, n: int, by: str, **fixed) -> pd.DataFrame:
+    """The curves of the sets of size ``n`` matching ``fixed`` (readout or rule), with ``heads``
+    renamed to the varying part (``by``), and the baselines."""
+    rows = c[c.n == n]
+    for key, value in fixed.items():
+        rows = rows[rows[key] == value]
+    return pd.concat([c[c.source == "none"], rows.assign(heads=rows[by])], ignore_index=True)
+
+
+def grid(name: str, panels, sets, colours, names, control: bool) -> None:
+    """Accuracy against alpha on a 7 x 4 grid as the E1 figures; ``panels``: per task, two
+    ``(curves, family, style, title)``."""
+    fig, axes = plt.subplots(7, 4, figsize=(6.3, 8.4), sharex=True, sharey=True)
+    for i, task in enumerate(simple.TASKS):
+        for j, (c, family, style, title) in enumerate(panels(task)):
+            ax = axes[i // 2, 2 * (i % 2) + j]
+            if not curve_panel(ax, c, family, task, style, sets=sets, colours=colours):
+                empty_panel(ax, "no set of this size")
+            ax.set_title(f"{plot_name('simple', task)}, {title}", loc="left", fontsize=7)
+            ax.set_ylim(-0.03, 1.03)
+            style_axes(ax)
+    for ax in axes[-1]:
+        ax.set_xlabel(r"$\alpha$")
+        ax.set_xticks([-10, -5, 0, 5, 10])
+    for ax in axes[:, 0]:
+        ax.set_ylabel("accuracy")
+    curve_legend(fig, control=control, sets=sets, colours=colours, names=names)
+    fig.tight_layout(rect=(0, 0, 1, 0.96))
+    fig.savefig(rt.FIGURES / f"{name}.pdf")
+    plt.close(fig)
+
+
+def figures_curves() -> None:
+    c = curves(SIZED)
+    parts = c.heads.str.split("|", expand=True)
+    c = c.assign(readout=parts[0], rule=parts[1], n=pd.to_numeric(parts[2]))
+    names = {r: RULE_LABEL[r].replace("$", "") for r in RULES}
+    for n in SIZES:
+        e1 = select(c, n, "readout", rule="e1")
+        for family, suffix in (("simple", ""), ("simple-wrong", "_wrong")):
+            grid(f"sized_curves_n{n}{suffix}", lambda task: [(e1, family, s, s) for s in ("rule", "example")],
+                 READOUTS, READOUT_COLOUR, rt.SET_LABEL, control=family == "simple")
+        for readout in READOUTS:
+            rules = select(c, n, "rule", readout=readout)
+            grid(f"sized_rule_curves_{readout}_n{n}",
+                 lambda task: [(rules, family, "rule", check.split()[0]) for family, check in CHECKS],
+                 RULES, RULE_COLOUR, names, control=True)
+
+
 def main() -> None:
     sized, threshold, measures = load()
     table_readouts(sized)
@@ -227,6 +280,7 @@ def main() -> None:
     for readout in READOUTS:
         figure(sized, threshold, sizes, f"sized_rules_{readout}",
                [("rule", readout, rule, RULE_COLOUR[rule], False, RULE_LABEL[rule].replace("$", "")) for rule in RULES])
+    figures_curves()
     print(f"wrote sized tables to {rt.TABLES}, figures to {rt.FIGURES}, {SIZED}/comparison.csv")
 
 
