@@ -1,0 +1,85 @@
+task,heads,best,alpha,control,cell
+antonym,E1_jhead,0.022,8.0,0.0,0.02
+antonym,E1_logithead,0.032,8.0,0.0,0.03
+antonym,common_jhead,0.10600000000000001,4.0,0.0,0.11@4 (0.00)
+antonym,common_logithead,0.01,4.0,0.02,0.01
+antonym,specific_jhead,0.10600000000000001,2.0,0.0,0.11@2 (0.00)
+antonym,specific_logithead,0.086,2.0,0.0,0.09@2 (0.00)
+country-capital,E1_jhead,0.592,2.0,0.0,0.59@2 (0.00)
+country-capital,E1_logithead,0.682,2.0,0.01,0.68@2 (0.01)
+country-capital,common_jhead,0.014000000000000002,1.0,0.02,0.01
+country-capital,common_logithead,0.014000000000000002,1.0,0.0,0.01
+country-capital,specific_jhead,0.27,1.0,0.0,0.27@1 (0.00)
+country-capital,specific_logithead,0.34199999999999997,2.0,0.0,0.34@2 (0.00)
+country-currency,E1_jhead,0.124,2.0,0.0,0.12@2 (0.00)
+country-currency,E1_logithead,0.062,4.0,0.0,0.06@4 (0.00)
+country-currency,common_jhead,0.002,8.0,0.0,0.00
+country-currency,common_logithead,0.002,4.0,0.0,0.00
+country-currency,specific_jhead,0.196,2.0,0.0,0.20@2 (0.00)
+country-currency,specific_logithead,0.10400000000000001,4.0,0.0,0.10@4 (0.00)
+english-french,E1_jhead,0.012,8.0,0.0,0.01
+english-french,E1_logithead,0.0,1.0,0.0,0.00
+english-french,common_jhead,0.04,4.0,0.07,0.04
+english-french,common_logithead,0.016,4.0,0.04,0.02
+english-french,specific_jhead,0.092,2.0,0.01,0.09@2 (0.01)
+english-french,specific_logithead,0.004,8.0,0.02,0.00
+english-german,E1_jhead,0.006,4.0,0.0,0.01
+english-german,E1_logithead,0.0,1.0,0.0,0.00
+english-german,common_jhead,0.002,2.0,0.01,0.00
+english-german,common_logithead,0.0,1.0,0.0,0.00
+english-german,specific_jhead,0.057999999999999996,4.0,0.0,0.06@4 (0.00)
+english-german,specific_logithead,0.0,1.0,0.0,0.00
+english-spanish,E1_jhead,0.014000000000000002,8.0,0.0,0.01
+english-spanish,E1_logithead,0.0,1.0,0.0,0.00
+english-spanish,common_jhead,0.01,4.0,0.02,0.01
+english-spanish,common_logithead,0.002,4.0,0.0,0.00
+english-spanish,specific_jhead,0.018,2.0,0.0,0.02
+english-spanish,specific_logithead,0.012,4.0,0.0,0.01
+landmark-country,E1_jhead,0.694,2.0,0.0,0.69@2 (0.00)
+landmark-country,E1_logithead,0.754,4.0,0.0,0.75@4 (0.00)
+landmark-country,common_jhead,0.174,8.0,0.0,0.17@8 (0.00)
+landmark-country,common_logithead,0.012,4.0,0.0,0.01
+landmark-country,specific_jhead,0.026000000000000002,2.0,0.0,0.03
+landmark-country,specific_logithead,0.062,2.0,0.0,0.06@2 (0.00)
+next_item,E1_jhead,0.16599999999999998,4.0,0.12,0.17@4 (0.12)
+next_item,E1_logithead,0.002,8.0,0.0,0.00
+next_item,common_jhead,0.16,4.0,0.39,0.16@4 (0.39)
+next_item,common_logithead,0.006,8.0,0.21,0.01
+next_item,specific_jhead,0.054000000000000006,4.0,0.01,0.05@4 (0.01)
+next_item,specific_logithead,0.0,1.0,0.0,0.00
+park-country,E1_jhead,0.43999999999999995,4.0,0.18,0.44@4 (0.18)
+park-country,E1_logithead,0.394,4.0,0.24,0.39@4 (0.24)
+park-country,common_jhead,0.002,4.0,0.02,0.00
+park-country,common_logithead,0.032,8.0,0.52,0.03
+park-country,specific_jhead,0.15,1.0,0.06,0.15@1 (0.06)
+park-country,specific_logithead,0.45199999999999996,2.0,0.1,0.45@2 (0.10)
+present-past,E1_jhead,0.0,1.0,0.0,0.00
+present-past,E1_logithead,0.0,1.0,0.0,0.00
+present-past,common_jhead,0.012,8.0,0.01,0.01
+present-past,common_logithead,0.0,1.0,0.0,0.00
+present-past,specific_jhead,0.014000000000000002,1.0,0.0,0.01
+present-past,specific_logithead,0.002,1.0,0.0,0.00
+prev_item,E1_jhead,0.02,2.0,0.0,0.02
+prev_item,E1_logithead,0.026000000000000002,4.0,0.0,0.03
+prev_item,common_jhead,0.122,4.0,0.05,0.12@4 (0.05)
+prev_item,common_logithead,0.002,8.0,0.0,0.00
+prev_item,specific_jhead,0.004,2.0,0.0,0.00
+prev_item,specific_logithead,0.01,4.0,0.0,0.01
+product-company,E1_jhead,0.45600000000000007,4.0,0.08,0.46@4 (0.08)
+product-company,E1_logithead,0.354,4.0,0.09,0.35@4 (0.09)
+product-company,common_jhead,0.066,1.0,0.09,0.07@1 (0.09)
+product-company,common_logithead,0.28,8.0,0.17,0.28@8 (0.17)
+product-company,specific_jhead,0.088,2.0,0.01,0.09@2 (0.01)
+product-company,specific_logithead,0.10800000000000001,2.0,0.01,0.11@2 (0.01)
+singular-plural,E1_jhead,0.006,4.0,0.0,0.01
+singular-plural,E1_logithead,0.022,8.0,0.0,0.02
+singular-plural,common_jhead,0.094,4.0,0.05,0.09@4 (0.05)
+singular-plural,common_logithead,0.02,4.0,0.05,0.02
+singular-plural,specific_jhead,0.282,2.0,0.01,0.28@2 (0.01)
+singular-plural,specific_logithead,0.002,4.0,0.0,0.00
+synonym,E1_jhead,0.146,2.0,0.05,0.15@2 (0.05)
+synonym,E1_logithead,0.027999999999999997,1.0,0.02,0.03
+synonym,common_jhead,0.134,2.0,0.1,0.13@2 (0.10)
+synonym,common_logithead,0.038,1.0,0.04,0.04
+synonym,specific_jhead,0.092,1.0,0.03,0.09@1 (0.03)
+synonym,specific_logithead,0.088,2.0,0.04,0.09@2 (0.04)

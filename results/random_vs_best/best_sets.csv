@@ -1,0 +1,15 @@
+,best,acc,alpha,control,n,layers,overlap
+landmark-country,union_alllist_bestid,0.956,2.0,0.04,98,3-31,0.0
+park-country,union_alllist_allid,0.762,2.0,0.17,137,1-31,0.0
+country-capital,union_alllist_allid,0.734,1.0,0.0,132,1-31,0.0
+singular-plural,union_alllist_allid,0.64,2.0,0.12,122,0-31,0.0
+synonym,common_jhead_15/all,0.618,2.0,0.3,138,1-31,0.0
+antonym,common_jhead_20/all,0.5900000000000001,2.0,0.0,152,0-31,0.0
+product-company,union_bestlist_allid,0.5640000000000001,2.0,0.08,126,2-31,0.0
+english-spanish,union_bestlist_allid,0.446,4.0,0.03,99,0-31,0.0
+next_item,union_alllist_allid,0.43,2.0,0.12,137,3-31,0.0
+english-german,union_alllist_allid,0.318,4.0,0.01,95,0-31,0.0
+country-currency,union_bestlist_allid,0.292,2.0,0.0,123,1-31,0.0
+english-french,union_bestlist_allid,0.2739999999999999,4.0,0.05,103,0-31,0.0
+prev_item,yang_jhead/all,0.186,4.0,0.0,45,12-31,0.0
+present-past,union_bestlist_allid,0.036,2.0,0.0,85,0-31,0.0

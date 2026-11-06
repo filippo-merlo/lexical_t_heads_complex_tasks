@@ -1,0 +1,787 @@
+{
+ "best": {
+  "antonym": {
+   "specific": [
+    "opposite",
+    "opposing",
+    "definition",
+    "word",
+    "ant"
+   ],
+   "common": [
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ],
+   "union": [
+    "opposite",
+    "opposing",
+    "definition",
+    "word",
+    "ant",
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ]
+  },
+  "synonym": {
+   "specific": [
+    "synonyms",
+    "definition",
+    "what",
+    "synonym",
+    "syn"
+   ],
+   "common": [
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ],
+   "union": [
+    "synonyms",
+    "definition",
+    "what",
+    "synonym",
+    "syn",
+    "which",
+    "colour",
+    "their",
+    "http"
+   ]
+  },
+  "singular-plural": {
+   "specific": [
+    "because",
+    "multiple",
+    "plural",
+    "single",
+    "noun"
+   ],
+   "common": [
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ],
+   "union": [
+    "because",
+    "multiple",
+    "plural",
+    "single",
+    "noun",
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ]
+  },
+  "present-past": {
+   "specific": [
+    "verb",
+    "grammar",
+    "verbs",
+    "what",
+    "how"
+   ],
+   "common": [
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ],
+   "union": [
+    "verb",
+    "grammar",
+    "verbs",
+    "what",
+    "how",
+    "which",
+    "colour",
+    "their",
+    "http"
+   ]
+  },
+  "country-capital": {
+   "specific": [
+    "city",
+    "cities",
+    "country",
+    "countries",
+    "answer"
+   ],
+   "common": [
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ],
+   "union": [
+    "city",
+    "cities",
+    "country",
+    "countries",
+    "answer",
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ]
+  },
+  "country-currency": {
+   "specific": [
+    "currency",
+    "currencies",
+    "monetary",
+    "dollar",
+    "money"
+   ],
+   "common": [
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ],
+   "union": [
+    "currency",
+    "currencies",
+    "monetary",
+    "dollar",
+    "money",
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ]
+  },
+  "landmark-country": {
+   "specific": [
+    "country",
+    "which",
+    "germany",
+    "france",
+    "canada"
+   ],
+   "common": [
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ],
+   "union": [
+    "country",
+    "which",
+    "germany",
+    "france",
+    "canada",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ]
+  },
+  "park-country": {
+   "specific": [
+    "location",
+    "country",
+    "located",
+    "australia",
+    "locations"
+   ],
+   "common": [
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ],
+   "union": [
+    "location",
+    "country",
+    "located",
+    "australia",
+    "locations",
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ]
+  },
+  "product-company": {
+   "specific": [
+    "company",
+    "ownership",
+    "companies",
+    "owned",
+    "product"
+   ],
+   "common": [
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ],
+   "union": [
+    "company",
+    "ownership",
+    "companies",
+    "owned",
+    "product",
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ]
+  },
+  "next_item": {
+   "specific": [
+    "next",
+    "after",
+    "items",
+    "item",
+    "pretty"
+   ],
+   "common": [
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ],
+   "union": [
+    "next",
+    "after",
+    "items",
+    "item",
+    "pretty",
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ]
+  },
+  "prev_item": {
+   "specific": [
+    "previous",
+    "preceding",
+    "alphabet",
+    "sequence",
+    "prior"
+   ],
+   "common": [
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ],
+   "union": [
+    "previous",
+    "preceding",
+    "alphabet",
+    "sequence",
+    "prior",
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ]
+  },
+  "english-french": {
+   "specific": [
+    "french",
+    "english",
+    "france",
+    "paris",
+    "japanese"
+   ],
+   "common": [
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ],
+   "union": [
+    "french",
+    "english",
+    "france",
+    "paris",
+    "japanese",
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ]
+  },
+  "english-german": {
+   "specific": [
+    "german",
+    "germany",
+    "germans",
+    "czech",
+    "berlin"
+   ],
+   "common": [
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ],
+   "union": [
+    "german",
+    "germany",
+    "germans",
+    "czech",
+    "berlin",
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ]
+  },
+  "english-spanish": {
+   "specific": [
+    "spanish",
+    "mexican",
+    "hispanic",
+    "mexico",
+    "english"
+   ],
+   "common": [
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ],
+   "union": [
+    "spanish",
+    "mexican",
+    "hispanic",
+    "mexico",
+    "english",
+    "which",
+    "what",
+    "colour",
+    "their",
+    "http"
+   ]
+  }
+ },
+ "all": {
+  "antonym": {
+   "specific": [
+    "opposite",
+    "opposing",
+    "word",
+    "reverse",
+    "words"
+   ],
+   "common": [
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ],
+   "union": [
+    "opposite",
+    "opposing",
+    "word",
+    "reverse",
+    "words",
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ]
+  },
+  "synonym": {
+   "specific": [
+    "synonyms",
+    "synonym",
+    "definition",
+    "syn",
+    "word"
+   ],
+   "common": [
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ],
+   "union": [
+    "synonyms",
+    "synonym",
+    "definition",
+    "syn",
+    "word",
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ]
+  },
+  "singular-plural": {
+   "specific": [
+    "single",
+    "noun",
+    "plural",
+    "multiple",
+    "because"
+   ],
+   "common": [
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ],
+   "union": [
+    "single",
+    "noun",
+    "plural",
+    "multiple",
+    "because",
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ]
+  },
+  "present-past": {
+   "specific": [
+    "verb",
+    "grammar",
+    "verbs",
+    "took",
+    "past"
+   ],
+   "common": [
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ],
+   "union": [
+    "verb",
+    "grammar",
+    "verbs",
+    "took",
+    "past",
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ]
+  },
+  "country-capital": {
+   "specific": [
+    "city",
+    "cities",
+    "town",
+    "country",
+    "countries"
+   ],
+   "common": [
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ],
+   "union": [
+    "city",
+    "cities",
+    "town",
+    "country",
+    "countries",
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ]
+  },
+  "country-currency": {
+   "specific": [
+    "currency",
+    "currencies",
+    "monetary",
+    "money",
+    "dollar"
+   ],
+   "common": [
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ],
+   "union": [
+    "currency",
+    "currencies",
+    "monetary",
+    "money",
+    "dollar",
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ]
+  },
+  "landmark-country": {
+   "specific": [
+    "country",
+    "countries",
+    "canada",
+    "location",
+    "england"
+   ],
+   "common": [
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ],
+   "union": [
+    "country",
+    "countries",
+    "canada",
+    "location",
+    "england",
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ]
+  },
+  "park-country": {
+   "specific": [
+    "country",
+    "park",
+    "countries",
+    "australia",
+    "location"
+   ],
+   "common": [
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ],
+   "union": [
+    "country",
+    "park",
+    "countries",
+    "australia",
+    "location",
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ]
+  },
+  "product-company": {
+   "specific": [
+    "company",
+    "companies",
+    "manufacturer",
+    "product",
+    "manufacturers"
+   ],
+   "common": [
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ],
+   "union": [
+    "company",
+    "companies",
+    "manufacturer",
+    "product",
+    "manufacturers",
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ]
+  },
+  "next_item": {
+   "specific": [
+    "next",
+    "sequence",
+    "items",
+    "item",
+    "after"
+   ],
+   "common": [
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ],
+   "union": [
+    "next",
+    "sequence",
+    "items",
+    "item",
+    "after",
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ]
+  },
+  "prev_item": {
+   "specific": [
+    "previous",
+    "preceding",
+    "item",
+    "prior",
+    "items"
+   ],
+   "common": [
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ],
+   "union": [
+    "previous",
+    "preceding",
+    "item",
+    "prior",
+    "items",
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ]
+  },
+  "english-french": {
+   "specific": [
+    "french",
+    "france",
+    "paris",
+    "english",
+    "translation"
+   ],
+   "common": [
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ],
+   "union": [
+    "french",
+    "france",
+    "paris",
+    "english",
+    "translation",
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ]
+  },
+  "english-german": {
+   "specific": [
+    "german",
+    "germans",
+    "germany",
+    "english",
+    "berlin"
+   ],
+   "common": [
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ],
+   "union": [
+    "german",
+    "germans",
+    "germany",
+    "english",
+    "berlin",
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ]
+  },
+  "english-spanish": {
+   "specific": [
+    "spanish",
+    "mexican",
+    "hispanic",
+    "english",
+    "translation"
+   ],
+   "common": [
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ],
+   "union": [
+    "spanish",
+    "mexican",
+    "hispanic",
+    "english",
+    "translation",
+    "what",
+    "which",
+    "maybe",
+    "https",
+    "etc"
+   ]
+  }
+ }
+}

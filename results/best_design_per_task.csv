@@ -1,0 +1,463 @@
+design,task,alpha,acc,n,control
+"E1: Yang list, best wording",antonym,8.0,0.022,21,0.0
+"E1: Yang list, best wording",country-capital,2.0,0.592,35,0.0
+"E1: Yang list, best wording",country-currency,2.0,0.124,33,0.0
+"E1: Yang list, best wording",english-french,8.0,0.012,22,0.0
+"E1: Yang list, best wording",english-german,4.0,0.006,19,0.0
+"E1: Yang list, best wording",english-spanish,8.0,0.014000000000000002,14,0.0
+"E1: Yang list, best wording",landmark-country,2.0,0.694,27,0.0
+"E1: Yang list, best wording",next_item,4.0,0.16599999999999998,47,0.12
+"E1: Yang list, best wording",park-country,4.0,0.43999999999999995,24,0.18
+"E1: Yang list, best wording",present-past,1.0,0.0,7,0.0
+"E1: Yang list, best wording",prev_item,2.0,0.02,35,0.0
+"E1: Yang list, best wording",product-company,4.0,0.45600000000000007,40,0.08
+"E1: Yang list, best wording",singular-plural,4.0,0.006,24,0.0
+"E1: Yang list, best wording",synonym,2.0,0.146,22,0.05
+"E1b k=1: Yang list, any template",antonym,8.0,0.014000000000000002,36,0.0
+"E1b k=1: Yang list, any template",country-capital,2.0,0.602,62,0.0
+"E1b k=1: Yang list, any template",country-currency,2.0,0.10600000000000001,48,0.0
+"E1b k=1: Yang list, any template",english-french,2.0,0.05,40,0.01
+"E1b k=1: Yang list, any template",english-german,4.0,0.02,34,0.0
+"E1b k=1: Yang list, any template",english-spanish,2.0,0.01,24,0.0
+"E1b k=1: Yang list, any template",landmark-country,2.0,0.754,64,0.0
+"E1b k=1: Yang list, any template",next_item,4.0,0.21800000000000003,60,0.08
+"E1b k=1: Yang list, any template",park-country,2.0,0.42200000000000004,50,0.16
+"E1b k=1: Yang list, any template",present-past,8.0,0.12400000000000003,19,0.0
+"E1b k=1: Yang list, any template",prev_item,4.0,0.19,71,0.0
+"E1b k=1: Yang list, any template",product-company,2.0,0.458,74,0.08
+"E1b k=1: Yang list, any template",singular-plural,2.0,0.01,41,0.0
+"E1b k=1: Yang list, any template",synonym,2.0,0.244,49,0.04
+"E1b k=3: Yang list, 3 of 5 templates",antonym,8.0,0.024,22,0.0
+"E1b k=3: Yang list, 3 of 5 templates",country-capital,2.0,0.634,36,0.0
+"E1b k=3: Yang list, 3 of 5 templates",country-currency,2.0,0.122,31,0.0
+"E1b k=3: Yang list, 3 of 5 templates",english-french,8.0,0.002,18,0.0
+"E1b k=3: Yang list, 3 of 5 templates",english-german,1.0,0.0,17,0.0
+"E1b k=3: Yang list, 3 of 5 templates",english-spanish,4.0,0.01,16,0.0
+"E1b k=3: Yang list, 3 of 5 templates",landmark-country,2.0,0.678,29,0.02
+"E1b k=3: Yang list, 3 of 5 templates",next_item,4.0,0.146,28,0.0
+"E1b k=3: Yang list, 3 of 5 templates",park-country,2.0,0.41200000000000003,25,0.28
+"E1b k=3: Yang list, 3 of 5 templates",present-past,1.0,0.0,7,0.0
+"E1b k=3: Yang list, 3 of 5 templates",prev_item,4.0,0.094,33,0.0
+"E1b k=3: Yang list, 3 of 5 templates",product-company,4.0,0.41200000000000003,37,0.07
+"E1b k=3: Yang list, 3 of 5 templates",singular-plural,2.0,0.008,23,0.0
+"E1b k=3: Yang list, 3 of 5 templates",synonym,2.0,0.14200000000000002,21,0.05
+"E1b k=5: Yang list, all 5 templates",antonym,8.0,0.012,13,0.0
+"E1b k=5: Yang list, all 5 templates",country-capital,2.0,0.75,25,0.01
+"E1b k=5: Yang list, all 5 templates",country-currency,2.0,0.122,23,0.0
+"E1b k=5: Yang list, all 5 templates",english-french,1.0,0.0,13,0.0
+"E1b k=5: Yang list, all 5 templates",english-german,1.0,0.0,14,0.0
+"E1b k=5: Yang list, all 5 templates",english-spanish,8.0,0.01,8,0.0
+"E1b k=5: Yang list, all 5 templates",landmark-country,4.0,0.916,15,0.0
+"E1b k=5: Yang list, all 5 templates",next_item,8.0,0.01,13,0.0
+"E1b k=5: Yang list, all 5 templates",park-country,4.0,0.696,12,0.22
+"E1b k=5: Yang list, all 5 templates",present-past,1.0,0.0,3,0.0
+"E1b k=5: Yang list, all 5 templates",prev_item,4.0,0.062,20,0.0
+"E1b k=5: Yang list, all 5 templates",product-company,4.0,0.462,25,0.09
+"E1b k=5: Yang list, all 5 templates",singular-plural,8.0,0.004,8,0.0
+"E1b k=5: Yang list, all 5 templates",synonym,2.0,0.1,7,0.06
+"RECIPE: combined 5+5, words+heads pooled",antonym,2.0,0.542,116,0.0
+"RECIPE: combined 5+5, words+heads pooled",country-capital,1.0,0.734,132,0.0
+"RECIPE: combined 5+5, words+heads pooled",country-currency,2.0,0.29000000000000004,114,0.0
+"RECIPE: combined 5+5, words+heads pooled",english-french,2.0,0.246,117,0.05
+"RECIPE: combined 5+5, words+heads pooled",english-german,4.0,0.318,95,0.01
+"RECIPE: combined 5+5, words+heads pooled",english-spanish,2.0,0.296,113,0.01
+"RECIPE: combined 5+5, words+heads pooled",landmark-country,2.0,0.9219999999999999,129,0.05
+"RECIPE: combined 5+5, words+heads pooled",next_item,2.0,0.43,137,0.12
+"RECIPE: combined 5+5, words+heads pooled",park-country,2.0,0.762,137,0.17
+"RECIPE: combined 5+5, words+heads pooled",present-past,8.0,0.034,102,0.01
+"RECIPE: combined 5+5, words+heads pooled",prev_item,4.0,0.178,112,0.01
+"RECIPE: combined 5+5, words+heads pooled",product-company,2.0,0.518,118,0.08
+"RECIPE: combined 5+5, words+heads pooled",singular-plural,2.0,0.64,122,0.12
+"RECIPE: combined 5+5, words+heads pooled",synonym,2.0,0.42200000000000004,117,0.26
+"Yang list, heads on 5 templates pooled",antonym,8.0,0.01,25,0.0
+"Yang list, heads on 5 templates pooled",country-capital,2.0,0.6599999999999999,53,0.0
+"Yang list, heads on 5 templates pooled",country-currency,2.0,0.138,39,0.0
+"Yang list, heads on 5 templates pooled",english-french,4.0,0.072,26,0.01
+"Yang list, heads on 5 templates pooled",english-german,4.0,0.006,21,0.0
+"Yang list, heads on 5 templates pooled",english-spanish,2.0,0.002,16,0.0
+"Yang list, heads on 5 templates pooled",landmark-country,2.0,0.6759999999999999,40,0.01
+"Yang list, heads on 5 templates pooled",next_item,4.0,0.122,47,0.0
+"Yang list, heads on 5 templates pooled",park-country,2.0,0.40800000000000003,35,0.21
+"Yang list, heads on 5 templates pooled",present-past,4.0,0.006,16,0.0
+"Yang list, heads on 5 templates pooled",prev_item,4.0,0.186,45,0.0
+"Yang list, heads on 5 templates pooled",product-company,4.0,0.52,50,0.05
+"Yang list, heads on 5 templates pooled",singular-plural,2.0,0.006,32,0.0
+"Yang list, heads on 5 templates pooled",synonym,2.0,0.196,27,0.04
+"combined 5+5, words on best wording, heads pooled",antonym,2.0,0.314,127,0.0
+"combined 5+5, words on best wording, heads pooled",country-capital,1.0,0.696,146,0.0
+"combined 5+5, words on best wording, heads pooled",country-currency,2.0,0.292,123,0.0
+"combined 5+5, words on best wording, heads pooled",english-french,4.0,0.27399999999999997,103,0.05
+"combined 5+5, words on best wording, heads pooled",english-german,2.0,0.018,80,0.01
+"combined 5+5, words on best wording, heads pooled",english-spanish,4.0,0.446,99,0.03
+"combined 5+5, words on best wording, heads pooled",landmark-country,1.0,0.0,125,0.0
+"combined 5+5, words on best wording, heads pooled",next_item,4.0,0.23600000000000004,134,0.31
+"combined 5+5, words on best wording, heads pooled",park-country,2.0,0.362,133,0.06
+"combined 5+5, words on best wording, heads pooled",present-past,2.0,0.036,85,0.0
+"combined 5+5, words on best wording, heads pooled",prev_item,4.0,0.11600000000000002,113,0.0
+"combined 5+5, words on best wording, heads pooled",product-company,2.0,0.5640000000000001,126,0.08
+"combined 5+5, words on best wording, heads pooled",singular-plural,2.0,0.472,128,0.14
+"combined 5+5, words on best wording, heads pooled",synonym,2.0,0.466,98,0.17
+"combined 5+5, words pooled, heads on best wording",antonym,2.0,0.19,80,0.0
+"combined 5+5, words pooled, heads on best wording",country-capital,1.0,0.588,90,0.0
+"combined 5+5, words pooled, heads on best wording",country-currency,2.0,0.182,75,0.0
+"combined 5+5, words pooled, heads on best wording",english-french,4.0,0.196,85,0.04
+"combined 5+5, words pooled, heads on best wording",english-german,4.0,0.08399999999999999,73,0.01
+"combined 5+5, words pooled, heads on best wording",english-spanish,2.0,0.026000000000000002,70,0.02
+"combined 5+5, words pooled, heads on best wording",landmark-country,2.0,0.9560000000000001,98,0.04
+"combined 5+5, words pooled, heads on best wording",next_item,2.0,0.164,135,0.08
+"combined 5+5, words pooled, heads on best wording",park-country,2.0,0.5980000000000001,91,0.16
+"combined 5+5, words pooled, heads on best wording",present-past,2.0,0.004,73,0.0
+"combined 5+5, words pooled, heads on best wording",prev_item,4.0,0.072,80,0.0
+"combined 5+5, words pooled, heads on best wording",product-company,4.0,0.41600000000000004,104,0.06
+"combined 5+5, words pooled, heads on best wording",singular-plural,2.0,0.472,88,0.06
+"combined 5+5, words pooled, heads on best wording",synonym,2.0,0.22599999999999998,90,0.18
+"combined 5+5, words+heads on best wording",antonym,2.0,0.066,94,0.0
+"combined 5+5, words+heads on best wording",country-capital,2.0,0.5980000000000001,101,0.0
+"combined 5+5, words+heads on best wording",country-currency,2.0,0.20600000000000002,83,0.0
+"combined 5+5, words+heads on best wording",english-french,4.0,0.076,81,0.05
+"combined 5+5, words+heads on best wording",english-german,4.0,0.012,67,0.01
+"combined 5+5, words+heads on best wording",english-spanish,4.0,0.026000000000000002,65,0.02
+"combined 5+5, words+heads on best wording",landmark-country,4.0,0.004,100,0.0
+"combined 5+5, words+heads on best wording",next_item,8.0,0.092,131,0.26
+"combined 5+5, words+heads on best wording",park-country,2.0,0.20600000000000002,98,0.1
+"combined 5+5, words+heads on best wording",present-past,4.0,0.004,64,0.0
+"combined 5+5, words+heads on best wording",prev_item,2.0,0.032,97,0.0
+"combined 5+5, words+heads on best wording",product-company,4.0,0.38,107,0.01
+"combined 5+5, words+heads on best wording",singular-plural,2.0,0.502,94,0.11
+"combined 5+5, words+heads on best wording",synonym,2.0,0.324,75,0.18
+"common 10 words, heads on best wording",antonym,4.0,0.006,71,0.0
+"common 10 words, heads on best wording",country-capital,1.0,0.012,70,0.02
+"common 10 words, heads on best wording",country-currency,8.0,0.004,64,0.0
+"common 10 words, heads on best wording",english-french,8.0,0.05,77,0.07
+"common 10 words, heads on best wording",english-german,1.0,0.0,74,0.0
+"common 10 words, heads on best wording",english-spanish,8.0,0.006,69,0.07
+"common 10 words, heads on best wording",landmark-country,4.0,0.138,96,0.18
+"common 10 words, heads on best wording",next_item,4.0,0.08600000000000001,102,0.26
+"common 10 words, heads on best wording",park-country,4.0,0.02,74,0.04
+"common 10 words, heads on best wording",present-past,1.0,0.0,70,0.0
+"common 10 words, heads on best wording",prev_item,8.0,0.008,81,0.01
+"common 10 words, heads on best wording",product-company,1.0,0.064,93,0.13
+"common 10 words, heads on best wording",singular-plural,8.0,0.022000000000000002,67,0.04
+"common 10 words, heads on best wording",synonym,4.0,0.248,85,0.16
+"common 10 words, heads pooled",antonym,4.0,0.28,109,0.0
+"common 10 words, heads pooled",country-capital,1.0,0.008,110,0.03
+"common 10 words, heads pooled",country-currency,8.0,0.006,109,0.0
+"common 10 words, heads pooled",english-french,4.0,0.05800000000000001,102,0.06
+"common 10 words, heads pooled",english-german,4.0,0.006,96,0.01
+"common 10 words, heads pooled",english-spanish,2.0,0.01,104,0.2
+"common 10 words, heads pooled",landmark-country,4.0,0.126,120,0.02
+"common 10 words, heads pooled",next_item,4.0,0.23199999999999998,109,0.46
+"common 10 words, heads pooled",park-country,4.0,0.11600000000000002,116,0.0
+"common 10 words, heads pooled",present-past,8.0,0.006,102,0.01
+"common 10 words, heads pooled",prev_item,8.0,0.006,103,0.01
+"common 10 words, heads pooled",product-company,1.0,0.098,109,0.14
+"common 10 words, heads pooled",singular-plural,4.0,0.068,103,0.27
+"common 10 words, heads pooled",synonym,2.0,0.58,121,0.29
+"common 15 words, heads on best wording",antonym,8.0,0.038,87,0.01
+"common 15 words, heads on best wording",country-capital,1.0,0.016,83,0.02
+"common 15 words, heads on best wording",country-currency,8.0,0.01,85,0.0
+"common 15 words, heads on best wording",english-french,8.0,0.04,103,0.08
+"common 15 words, heads on best wording",english-german,1.0,0.0,97,0.0
+"common 15 words, heads on best wording",english-spanish,4.0,0.004,97,0.02
+"common 15 words, heads on best wording",landmark-country,4.0,0.196,111,0.15
+"common 15 words, heads on best wording",next_item,4.0,0.057999999999999996,122,0.1
+"common 15 words, heads on best wording",park-country,4.0,0.008,93,0.02
+"common 15 words, heads on best wording",present-past,8.0,0.004,86,0.01
+"common 15 words, heads on best wording",prev_item,4.0,0.01,100,0.03
+"common 15 words, heads on best wording",product-company,1.0,0.05,115,0.07
+"common 15 words, heads on best wording",singular-plural,4.0,0.01,83,0.15
+"common 15 words, heads on best wording",synonym,2.0,0.162,107,0.16
+"common 15 words, heads pooled",antonym,2.0,0.39,129,0.0
+"common 15 words, heads pooled",country-capital,1.0,0.008,129,0.02
+"common 15 words, heads pooled",country-currency,4.0,0.004,133,0.0
+"common 15 words, heads pooled",english-french,4.0,0.066,128,0.05
+"common 15 words, heads pooled",english-german,8.0,0.002,122,0.0
+"common 15 words, heads pooled",english-spanish,2.0,0.008,130,0.14
+"common 15 words, heads pooled",landmark-country,4.0,0.044,139,0.0
+"common 15 words, heads pooled",next_item,4.0,0.27199999999999996,125,0.64
+"common 15 words, heads pooled",park-country,4.0,0.06799999999999999,137,0.0
+"common 15 words, heads pooled",present-past,4.0,0.014000000000000002,124,0.01
+"common 15 words, heads pooled",prev_item,4.0,0.092,125,0.07
+"common 15 words, heads pooled",product-company,1.0,0.052000000000000005,139,0.11
+"common 15 words, heads pooled",singular-plural,4.0,0.06,122,0.14
+"common 15 words, heads pooled",synonym,2.0,0.618,138,0.3
+"common 20 words, heads on best wording",antonym,4.0,0.10600000000000001,110,0.0
+"common 20 words, heads on best wording",country-capital,1.0,0.014000000000000002,101,0.02
+"common 20 words, heads on best wording",country-currency,8.0,0.002,102,0.0
+"common 20 words, heads on best wording",english-french,4.0,0.04,125,0.07
+"common 20 words, heads on best wording",english-german,2.0,0.002,119,0.01
+"common 20 words, heads on best wording",english-spanish,4.0,0.01,115,0.02
+"common 20 words, heads on best wording",landmark-country,8.0,0.174,127,0.0
+"common 20 words, heads on best wording",next_item,4.0,0.16,146,0.39
+"common 20 words, heads on best wording",park-country,4.0,0.002,110,0.02
+"common 20 words, heads on best wording",present-past,8.0,0.012,98,0.01
+"common 20 words, heads on best wording",prev_item,4.0,0.122,120,0.05
+"common 20 words, heads on best wording",product-company,1.0,0.066,139,0.09
+"common 20 words, heads on best wording",singular-plural,4.0,0.094,108,0.05
+"common 20 words, heads on best wording",synonym,2.0,0.134,120,0.1
+"common 20 words, heads pooled",antonym,2.0,0.5900000000000001,152,0.0
+"common 20 words, heads pooled",country-capital,2.0,0.01,148,0.01
+"common 20 words, heads pooled",country-currency,4.0,0.002,150,0.0
+"common 20 words, heads pooled",english-french,4.0,0.04,149,0.06
+"common 20 words, heads pooled",english-german,1.0,0.0,145,0.0
+"common 20 words, heads pooled",english-spanish,4.0,0.024,153,0.07
+"common 20 words, heads pooled",landmark-country,4.0,0.13,154,0.0
+"common 20 words, heads pooled",next_item,4.0,0.278,151,0.51
+"common 20 words, heads pooled",park-country,2.0,0.04,151,0.0
+"common 20 words, heads pooled",present-past,8.0,0.02,138,0.0
+"common 20 words, heads pooled",prev_item,4.0,0.066,151,0.07
+"common 20 words, heads pooled",product-company,1.0,0.078,161,0.13
+"common 20 words, heads pooled",singular-plural,4.0,0.1,142,0.09
+"common 20 words, heads pooled",synonym,2.0,0.32199999999999995,158,0.21
+"common 5 words, heads on best wording",antonym,8.0,0.018,41,0.0
+"common 5 words, heads on best wording",country-capital,8.0,0.006,47,0.0
+"common 5 words, heads on best wording",country-currency,8.0,0.004,38,0.0
+"common 5 words, heads on best wording",english-french,8.0,0.044,49,0.09
+"common 5 words, heads on best wording",english-german,1.0,0.0,43,0.0
+"common 5 words, heads on best wording",english-spanish,8.0,0.008,40,0.07
+"common 5 words, heads on best wording",landmark-country,8.0,0.162,63,0.12
+"common 5 words, heads on best wording",next_item,4.0,0.124,76,0.15
+"common 5 words, heads on best wording",park-country,8.0,0.15,47,0.12
+"common 5 words, heads on best wording",present-past,8.0,0.002,44,0.0
+"common 5 words, heads on best wording",prev_item,8.0,0.002,45,0.0
+"common 5 words, heads on best wording",product-company,4.0,0.156,63,0.14
+"common 5 words, heads on best wording",singular-plural,8.0,0.022,43,0.04
+"common 5 words, heads on best wording",synonym,4.0,0.22199999999999998,58,0.14
+"common 5 words, heads pooled",antonym,4.0,0.49399999999999994,70,0.0
+"common 5 words, heads pooled",country-capital,4.0,0.166,72,0.02
+"common 5 words, heads pooled",country-currency,4.0,0.008,71,0.0
+"common 5 words, heads pooled",english-french,8.0,0.066,67,0.12
+"common 5 words, heads pooled",english-german,1.0,0.0,63,0.0
+"common 5 words, heads pooled",english-spanish,4.0,0.06799999999999999,70,0.1
+"common 5 words, heads pooled",landmark-country,4.0,0.06000000000000001,78,0.25
+"common 5 words, heads pooled",next_item,4.0,0.23200000000000004,70,0.38
+"common 5 words, heads pooled",park-country,4.0,0.662,79,0.3
+"common 5 words, heads pooled",present-past,8.0,0.006,70,0.01
+"common 5 words, heads pooled",prev_item,8.0,0.004,61,0.01
+"common 5 words, heads pooled",product-company,2.0,0.142,71,0.18
+"common 5 words, heads pooled",singular-plural,8.0,0.028000000000000004,63,0.03
+"common 5 words, heads pooled",synonym,2.0,0.39,76,0.21
+"group contrast 5 + WikiText 5, pooled",antonym,2.0,0.7,99,0.01
+"group contrast 5 + WikiText 5, pooled",country-capital,1.0,0.708,105,0.0
+"group contrast 5 + WikiText 5, pooled",country-currency,2.0,0.24,104,0.0
+"group contrast 5 + WikiText 5, pooled",english-french,4.0,0.332,78,0.05
+"group contrast 5 + WikiText 5, pooled",english-german,4.0,0.26,73,0.01
+"group contrast 5 + WikiText 5, pooled",english-spanish,4.0,0.346,74,0.02
+"group contrast 5 + WikiText 5, pooled",landmark-country,8.0,0.008,100,0.0
+"group contrast 5 + WikiText 5, pooled",next_item,4.0,0.366,99,0.26
+"group contrast 5 + WikiText 5, pooled",park-country,2.0,0.08,96,0.2
+"group contrast 5 + WikiText 5, pooled",present-past,2.0,0.018,86,0.0
+"group contrast 5 + WikiText 5, pooled",prev_item,4.0,0.11000000000000001,93,0.0
+"group contrast 5 + WikiText 5, pooled",product-company,2.0,0.49799999999999994,98,0.07
+"group contrast 5 + WikiText 5, pooled",singular-plural,2.0,0.368,102,0.13
+"group contrast 5 + WikiText 5, pooled",synonym,2.0,0.41400000000000003,87,0.12
+"neutral cut: combined 10+10, pooled",antonym,2.0,0.288,127,0.01
+"neutral cut: combined 10+10, pooled",country-capital,1.0,0.426,146,0.0
+"neutral cut: combined 10+10, pooled",country-currency,2.0,0.376,133,0.0
+"neutral cut: combined 10+10, pooled",english-french,2.0,0.394,125,0.06
+"neutral cut: combined 10+10, pooled",english-german,2.0,0.4880000000000001,122,0.01
+"neutral cut: combined 10+10, pooled",english-spanish,2.0,0.40599999999999997,127,0.01
+"neutral cut: combined 10+10, pooled",landmark-country,2.0,0.08199999999999999,138,0.0
+"neutral cut: combined 10+10, pooled",next_item,2.0,0.022,153,0.01
+"neutral cut: combined 10+10, pooled",park-country,2.0,0.744,149,0.04
+"neutral cut: combined 10+10, pooled",present-past,1.0,0.14200000000000002,112,0.0
+"neutral cut: combined 10+10, pooled",prev_item,2.0,0.046,142,0.0
+"neutral cut: combined 10+10, pooled",product-company,1.0,0.284,133,0.03
+"neutral cut: combined 10+10, pooled",singular-plural,1.0,0.716,140,0.02
+"neutral cut: combined 10+10, pooled",synonym,1.0,0.22800000000000004,116,0.07
+"neutral cut: combined 5+5, pooled",antonym,2.0,0.162,81,0.0
+"neutral cut: combined 5+5, pooled",country-capital,1.0,0.73,99,0.0
+"neutral cut: combined 5+5, pooled",country-currency,2.0,0.38,77,0.0
+"neutral cut: combined 5+5, pooled",english-french,2.0,0.398,88,0.05
+"neutral cut: combined 5+5, pooled",english-german,2.0,0.3,67,0.01
+"neutral cut: combined 5+5, pooled",english-spanish,2.0,0.16999999999999998,77,0.01
+"neutral cut: combined 5+5, pooled",landmark-country,2.0,0.968,95,0.01
+"neutral cut: combined 5+5, pooled",next_item,2.0,0.04,108,0.0
+"neutral cut: combined 5+5, pooled",park-country,2.0,0.6839999999999999,93,0.11
+"neutral cut: combined 5+5, pooled",present-past,2.0,0.016,70,0.0
+"neutral cut: combined 5+5, pooled",prev_item,2.0,0.076,93,0.0
+"neutral cut: combined 5+5, pooled",product-company,2.0,0.6599999999999999,90,0.07
+"neutral cut: combined 5+5, pooled",singular-plural,1.0,0.568,90,0.03
+"neutral cut: combined 5+5, pooled",synonym,2.0,0.122,71,0.09
+"specific 10 words, heads on best wording",antonym,2.0,0.146,63,0.0
+"specific 10 words, heads on best wording",country-capital,1.0,0.148,62,0.0
+"specific 10 words, heads on best wording",country-currency,2.0,0.23199999999999998,59,0.0
+"specific 10 words, heads on best wording",english-french,2.0,0.048,49,0.01
+"specific 10 words, heads on best wording",english-german,4.0,0.09,46,0.0
+"specific 10 words, heads on best wording",english-spanish,2.0,0.008,43,0.0
+"specific 10 words, heads on best wording",landmark-country,2.0,0.01,69,0.0
+"specific 10 words, heads on best wording",next_item,2.0,0.07,75,0.0
+"specific 10 words, heads on best wording",park-country,2.0,0.41,80,0.06
+"specific 10 words, heads on best wording",present-past,2.0,0.014000000000000002,39,0.0
+"specific 10 words, heads on best wording",prev_item,4.0,0.048,61,0.0
+"specific 10 words, heads on best wording",product-company,2.0,0.12200000000000003,70,0.01
+"specific 10 words, heads on best wording",singular-plural,2.0,0.522,62,0.01
+"specific 10 words, heads on best wording",synonym,1.0,0.08,54,0.03
+"specific 10 words, heads pooled",antonym,2.0,0.352,80,0.0
+"specific 10 words, heads pooled",country-capital,1.0,0.19,83,0.0
+"specific 10 words, heads pooled",country-currency,2.0,0.16,71,0.0
+"specific 10 words, heads pooled",english-french,2.0,0.054000000000000006,62,0.01
+"specific 10 words, heads pooled",english-german,4.0,0.25,58,0.01
+"specific 10 words, heads pooled",english-spanish,2.0,0.08,61,0.0
+"specific 10 words, heads pooled",landmark-country,2.0,0.004,82,0.0
+"specific 10 words, heads pooled",next_item,2.0,0.084,91,0.0
+"specific 10 words, heads pooled",park-country,1.0,0.33399999999999996,98,0.11
+"specific 10 words, heads pooled",present-past,2.0,0.004,49,0.0
+"specific 10 words, heads pooled",prev_item,2.0,0.05,85,0.0
+"specific 10 words, heads pooled",product-company,2.0,0.136,71,0.01
+"specific 10 words, heads pooled",singular-plural,2.0,0.496,85,0.02
+"specific 10 words, heads pooled",synonym,2.0,0.11000000000000001,76,0.01
+"specific 15 words, heads on best wording",antonym,2.0,0.126,69,0.0
+"specific 15 words, heads on best wording",country-capital,1.0,0.142,69,0.0
+"specific 15 words, heads on best wording",country-currency,2.0,0.186,62,0.0
+"specific 15 words, heads on best wording",english-french,2.0,0.09,57,0.01
+"specific 15 words, heads on best wording",english-german,4.0,0.046,56,0.0
+"specific 15 words, heads on best wording",english-spanish,2.0,0.006,47,0.0
+"specific 15 words, heads on best wording",landmark-country,2.0,0.024,94,0.0
+"specific 15 words, heads on best wording",next_item,4.0,0.054000000000000006,92,0.08
+"specific 15 words, heads on best wording",park-country,2.0,0.324,85,0.06
+"specific 15 words, heads on best wording",present-past,2.0,0.014000000000000002,55,0.0
+"specific 15 words, heads on best wording",prev_item,4.0,0.048,92,0.0
+"specific 15 words, heads on best wording",product-company,2.0,0.072,77,0.01
+"specific 15 words, heads on best wording",singular-plural,2.0,0.4600000000000001,74,0.01
+"specific 15 words, heads on best wording",synonym,1.0,0.088,68,0.03
+"specific 15 words, heads pooled",antonym,2.0,0.306,89,0.0
+"specific 15 words, heads pooled",country-capital,1.0,0.21399999999999997,90,0.0
+"specific 15 words, heads pooled",country-currency,2.0,0.144,77,0.0
+"specific 15 words, heads pooled",english-french,2.0,0.052000000000000005,75,0.01
+"specific 15 words, heads pooled",english-german,2.0,0.11399999999999999,69,0.0
+"specific 15 words, heads pooled",english-spanish,2.0,0.1,66,0.0
+"specific 15 words, heads pooled",landmark-country,2.0,0.004,112,0.0
+"specific 15 words, heads pooled",next_item,4.0,0.032,104,0.09
+"specific 15 words, heads pooled",park-country,1.0,0.33199999999999996,105,0.12
+"specific 15 words, heads pooled",present-past,1.0,0.004,65,0.0
+"specific 15 words, heads pooled",prev_item,2.0,0.038,124,0.0
+"specific 15 words, heads pooled",product-company,2.0,0.086,80,0.01
+"specific 15 words, heads pooled",singular-plural,1.0,0.5740000000000001,104,0.01
+"specific 15 words, heads pooled",synonym,1.0,0.162,94,0.04
+"specific 20 words, heads on best wording",antonym,2.0,0.10600000000000001,73,0.0
+"specific 20 words, heads on best wording",country-capital,1.0,0.27,85,0.0
+"specific 20 words, heads on best wording",country-currency,2.0,0.196,64,0.0
+"specific 20 words, heads on best wording",english-french,2.0,0.092,60,0.01
+"specific 20 words, heads on best wording",english-german,4.0,0.057999999999999996,60,0.0
+"specific 20 words, heads on best wording",english-spanish,2.0,0.018,55,0.0
+"specific 20 words, heads on best wording",landmark-country,2.0,0.026000000000000002,106,0.0
+"specific 20 words, heads on best wording",next_item,4.0,0.054000000000000006,98,0.01
+"specific 20 words, heads on best wording",park-country,1.0,0.15,91,0.06
+"specific 20 words, heads on best wording",present-past,1.0,0.014000000000000002,65,0.0
+"specific 20 words, heads on best wording",prev_item,2.0,0.004,101,0.0
+"specific 20 words, heads on best wording",product-company,2.0,0.088,78,0.01
+"specific 20 words, heads on best wording",singular-plural,2.0,0.282,86,0.01
+"specific 20 words, heads on best wording",synonym,1.0,0.092,86,0.03
+"specific 20 words, heads pooled",antonym,2.0,0.23200000000000004,93,0.0
+"specific 20 words, heads pooled",country-capital,1.0,0.368,111,0.0
+"specific 20 words, heads pooled",country-currency,2.0,0.146,80,0.0
+"specific 20 words, heads pooled",english-french,2.0,0.052000000000000005,78,0.01
+"specific 20 words, heads pooled",english-german,2.0,0.12,72,0.0
+"specific 20 words, heads pooled",english-spanish,2.0,0.132,75,0.0
+"specific 20 words, heads pooled",landmark-country,2.0,0.008,126,0.0
+"specific 20 words, heads pooled",next_item,4.0,0.028000000000000004,115,0.0
+"specific 20 words, heads pooled",park-country,1.0,0.196,112,0.02
+"specific 20 words, heads pooled",present-past,1.0,0.008,76,0.0
+"specific 20 words, heads pooled",prev_item,1.0,0.0,131,0.0
+"specific 20 words, heads pooled",product-company,2.0,0.088,81,0.01
+"specific 20 words, heads pooled",singular-plural,1.0,0.49399999999999994,114,0.01
+"specific 20 words, heads pooled",synonym,2.0,0.192,115,0.04
+"specific 5 words, heads on best wording",antonym,2.0,0.03,38,0.0
+"specific 5 words, heads on best wording",country-capital,2.0,0.7140000000000001,43,0.0
+"specific 5 words, heads on best wording",country-currency,2.0,0.16,37,0.0
+"specific 5 words, heads on best wording",english-french,4.0,0.06,37,0.01
+"specific 5 words, heads on best wording",english-german,4.0,0.018,29,0.0
+"specific 5 words, heads on best wording",english-spanish,4.0,0.01,29,0.0
+"specific 5 words, heads on best wording",landmark-country,2.0,0.76,37,0.0
+"specific 5 words, heads on best wording",next_item,2.0,0.048,61,0.0
+"specific 5 words, heads on best wording",park-country,2.0,0.354,45,0.13
+"specific 5 words, heads on best wording",present-past,2.0,0.008,30,0.0
+"specific 5 words, heads on best wording",prev_item,2.0,0.038,37,0.0
+"specific 5 words, heads on best wording",product-company,4.0,0.354,39,0.05
+"specific 5 words, heads on best wording",singular-plural,2.0,0.42400000000000004,48,0.03
+"specific 5 words, heads on best wording",synonym,1.0,0.088,33,0.04
+"specific 5 words, heads pooled",antonym,2.0,0.024,47,0.0
+"specific 5 words, heads pooled",country-capital,2.0,0.6859999999999999,60,0.0
+"specific 5 words, heads pooled",country-currency,2.0,0.16599999999999998,43,0.0
+"specific 5 words, heads pooled",english-french,4.0,0.096,51,0.02
+"specific 5 words, heads pooled",english-german,4.0,0.22600000000000003,32,0.01
+"specific 5 words, heads pooled",english-spanish,4.0,0.072,43,0.0
+"specific 5 words, heads pooled",landmark-country,2.0,0.6799999999999999,54,0.01
+"specific 5 words, heads pooled",next_item,2.0,0.05800000000000001,69,0.0
+"specific 5 words, heads pooled",park-country,2.0,0.372,61,0.15
+"specific 5 words, heads pooled",present-past,2.0,0.01,35,0.0
+"specific 5 words, heads pooled",prev_item,4.0,0.062,54,0.0
+"specific 5 words, heads pooled",product-company,2.0,0.446,48,0.05
+"specific 5 words, heads pooled",singular-plural,2.0,0.458,65,0.05
+"specific 5 words, heads pooled",synonym,1.0,0.1,43,0.04
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10",antonym,2.0,0.046,33,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10",country-capital,2.0,0.702,36,0.01
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10",country-currency,2.0,0.178,41,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10",english-french,1.0,0.0,31,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10",english-german,1.0,0.0,34,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10",english-spanish,2.0,0.006,32,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10",landmark-country,2.0,0.10200000000000001,40,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10",next_item,8.0,0.032,26,0.11
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10",park-country,2.0,0.47800000000000004,35,0.19
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10",present-past,1.0,0.0,22,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10",prev_item,4.0,0.030000000000000006,30,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10",product-company,4.0,0.438,40,0.07
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10",singular-plural,4.0,0.008,24,0.01
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10",synonym,2.0,0.098,22,0.07
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10 top 20",antonym,2.0,0.08600000000000001,20,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10 top 20",country-capital,2.0,0.784,20,0.01
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10 top 20",country-currency,2.0,0.18,20,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10 top 20",english-french,1.0,0.0,20,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10 top 20",english-german,1.0,0.0,20,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10 top 20",english-spanish,8.0,0.008,20,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10 top 20",landmark-country,4.0,0.5820000000000001,20,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10 top 20",next_item,1.0,0.0,20,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10 top 20",park-country,4.0,0.332,20,0.31
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10 top 20",present-past,1.0,0.0,20,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10 top 20",prev_item,8.0,0.076,20,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10 top 20",product-company,4.0,0.5599999999999999,20,0.07
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10 top 20",singular-plural,4.0,0.026000000000000002,20,0.01
+"strict k=5 (top-5 tokens, ρ .15): combined 10+10 top 20",synonym,2.0,0.09,20,0.06
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5",antonym,8.0,0.006,23,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5",country-capital,2.0,0.78,28,0.01
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5",country-currency,2.0,0.136,28,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5",english-french,1.0,0.0,21,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5",english-german,1.0,0.0,20,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5",english-spanish,4.0,0.01,19,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5",landmark-country,4.0,0.8220000000000001,27,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5",next_item,8.0,0.008,20,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5",park-country,4.0,0.504,22,0.53
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5",present-past,1.0,0.0,15,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5",prev_item,4.0,0.05,24,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5",product-company,4.0,0.442,31,0.08
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5",singular-plural,8.0,0.002,13,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5",synonym,2.0,0.086,18,0.06
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5 top 20",antonym,8.0,0.006,20,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5 top 20",country-capital,2.0,0.782,20,0.01
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5 top 20",country-currency,2.0,0.144,20,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5 top 20",english-french,1.0,0.0,20,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5 top 20",english-german,1.0,0.0,20,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5 top 20",english-spanish,4.0,0.01,19,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5 top 20",landmark-country,4.0,0.67,20,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5 top 20",next_item,8.0,0.008,20,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5 top 20",park-country,4.0,0.45600000000000007,20,0.43
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5 top 20",present-past,1.0,0.0,15,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5 top 20",prev_item,4.0,0.072,20,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5 top 20",product-company,4.0,0.454,20,0.1
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5 top 20",singular-plural,8.0,0.002,13,0.0
+"strict k=5 (top-5 tokens, ρ .15): combined 5+5 top 20",synonym,2.0,0.086,18,0.06
+"task top 10 minus WikiText words, pooled",antonym,2.0,0.22400000000000003,91,0.0
+"task top 10 minus WikiText words, pooled",country-capital,1.0,0.662,88,0.0
+"task top 10 minus WikiText words, pooled",country-currency,1.0,0.16999999999999998,81,0.0
+"task top 10 minus WikiText words, pooled",english-french,4.0,0.026000000000000002,63,0.03
+"task top 10 minus WikiText words, pooled",english-german,2.0,0.092,62,0.0
+"task top 10 minus WikiText words, pooled",english-spanish,2.0,0.08,61,0.0
+"task top 10 minus WikiText words, pooled",landmark-country,2.0,0.004,82,0.0
+"task top 10 minus WikiText words, pooled",next_item,4.0,0.028000000000000004,102,0.12
+"task top 10 minus WikiText words, pooled",park-country,2.0,0.21799999999999997,90,0.04
+"task top 10 minus WikiText words, pooled",present-past,2.0,0.142,62,0.0
+"task top 10 minus WikiText words, pooled",prev_item,2.0,0.028000000000000004,91,0.0
+"task top 10 minus WikiText words, pooled",product-company,2.0,0.584,80,0.08
+"task top 10 minus WikiText words, pooled",singular-plural,1.0,0.5279999999999999,86,0.04
+"task top 10 minus WikiText words, pooled",synonym,2.0,0.136,80,0.02

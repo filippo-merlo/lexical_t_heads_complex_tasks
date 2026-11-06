@@ -1,0 +1,15 @@
+task,heads,layers,mean_layer,in_recipe,in_E1
+antonym,91,0-31,17.5,62/116,19/21
+synonym,80,1-31,18.1,53/117,16/22
+singular-plural,86,6-31,17.7,60/122,18/24
+present-past,62,6-31,18.0,29/102,0/7
+country-capital,88,3-31,17.9,62/132,30/35
+country-currency,81,6-31,18.4,44/114,30/33
+landmark-country,82,6-31,19.8,54/129,25/27
+park-country,90,6-31,20.5,65/137,23/24
+product-company,80,4-31,19.6,50/118,32/40
+next_item,102,3-31,20.2,71/137,37/47
+prev_item,91,10-31,20.8,57/112,30/35
+english-french,63,6-31,17.6,51/117,18/22
+english-german,62,6-31,17.9,32/95,18/19
+english-spanish,61,6-31,17.8,44/113,13/14

@@ -19,6 +19,7 @@ dependencies = [
     "marimo==0.23.16",
     "altair==6.3.0",
     "vl-convert-python==1.9.0.post1",
+    "wordfreq==3.1.1",
 ]
 
 [tool.uv]

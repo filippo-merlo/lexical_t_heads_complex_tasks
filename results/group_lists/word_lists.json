@@ -1,0 +1,328 @@
+{
+ "general": [
+  "which",
+  "mph",
+  "http",
+  "his",
+  "what"
+ ],
+ "groups": {
+  "word relations": [
+   "antonym",
+   "synonym"
+  ],
+  "morphology": [
+   "singular-plural",
+   "present-past"
+  ],
+  "facts": [
+   "country-capital",
+   "country-currency",
+   "landmark-country",
+   "park-country",
+   "product-company"
+  ],
+  "sequences": [
+   "next_item",
+   "prev_item"
+  ],
+  "translations": [
+   "english-french",
+   "english-german",
+   "english-spanish"
+  ]
+ },
+ "antonym": {
+  "specific": [
+   "opposite",
+   "opposing",
+   "reverse",
+   "ant",
+   "instead"
+  ],
+  "list": [
+   "opposite",
+   "opposing",
+   "reverse",
+   "ant",
+   "instead",
+   "which",
+   "mph",
+   "http",
+   "his",
+   "what"
+  ]
+ },
+ "synonym": {
+  "specific": [
+   "syn",
+   "synthesis",
+   "synth",
+   "synonyms",
+   "similar"
+  ],
+  "list": [
+   "syn",
+   "synthesis",
+   "synth",
+   "synonyms",
+   "similar",
+   "which",
+   "mph",
+   "http",
+   "his",
+   "what"
+  ]
+ },
+ "singular-plural": {
+  "specific": [
+   "single",
+   "multiple",
+   "plural",
+   "because",
+   "naming"
+  ],
+  "list": [
+   "single",
+   "multiple",
+   "plural",
+   "because",
+   "naming",
+   "which",
+   "mph",
+   "http",
+   "his",
+   "what"
+  ]
+ },
+ "present-past": {
+  "specific": [
+   "verb",
+   "verbs",
+   "took",
+   "grammar",
+   "past"
+  ],
+  "list": [
+   "verb",
+   "verbs",
+   "took",
+   "grammar",
+   "past",
+   "which",
+   "mph",
+   "http",
+   "his",
+   "what"
+  ]
+ },
+ "country-capital": {
+  "specific": [
+   "city",
+   "cities",
+   "capital",
+   "downtown",
+   "capitals"
+  ],
+  "list": [
+   "city",
+   "cities",
+   "capital",
+   "downtown",
+   "capitals",
+   "which",
+   "mph",
+   "http",
+   "his",
+   "what"
+  ]
+ },
+ "country-currency": {
+  "specific": [
+   "currency",
+   "currencies",
+   "monetary",
+   "money",
+   "dollar"
+  ],
+  "list": [
+   "currency",
+   "currencies",
+   "monetary",
+   "money",
+   "dollar",
+   "which",
+   "mph",
+   "http",
+   "his",
+   "what"
+  ]
+ },
+ "landmark-country": {
+  "specific": [
+   "local",
+   "germany",
+   "land",
+   "locals",
+   "usa"
+  ],
+  "list": [
+   "local",
+   "germany",
+   "land",
+   "locals",
+   "usa",
+   "which",
+   "mph",
+   "http",
+   "his",
+   "what"
+  ]
+ },
+ "park-country": {
+  "specific": [
+   "park",
+   "parks",
+   "wildlife",
+   "national",
+   "unesco"
+  ],
+  "list": [
+   "park",
+   "parks",
+   "wildlife",
+   "national",
+   "unesco",
+   "which",
+   "mph",
+   "http",
+   "his",
+   "what"
+  ]
+ },
+ "product-company": {
+  "specific": [
+   "company",
+   "companies",
+   "manufacturer",
+   "product",
+   "manufacturers"
+  ],
+  "list": [
+   "company",
+   "companies",
+   "manufacturer",
+   "product",
+   "manufacturers",
+   "which",
+   "mph",
+   "http",
+   "his",
+   "what"
+  ]
+ },
+ "next_item": {
+  "specific": [
+   "next",
+   "after",
+   "friday",
+   "monday",
+   "which"
+  ],
+  "list": [
+   "next",
+   "after",
+   "friday",
+   "monday",
+   "which",
+   "mph",
+   "http",
+   "his",
+   "what"
+  ]
+ },
+ "prev_item": {
+  "specific": [
+   "previous",
+   "prior",
+   "preceding",
+   "return",
+   "previously"
+  ],
+  "list": [
+   "previous",
+   "prior",
+   "preceding",
+   "return",
+   "previously",
+   "which",
+   "mph",
+   "http",
+   "his",
+   "what"
+  ]
+ },
+ "english-french": {
+  "specific": [
+   "french",
+   "france",
+   "paris",
+   "quebec",
+   "franc"
+  ],
+  "list": [
+   "french",
+   "france",
+   "paris",
+   "quebec",
+   "franc",
+   "which",
+   "mph",
+   "http",
+   "his",
+   "what"
+  ]
+ },
+ "english-german": {
+  "specific": [
+   "german",
+   "germany",
+   "germans",
+   "berlin",
+   "von"
+  ],
+  "list": [
+   "german",
+   "germany",
+   "germans",
+   "berlin",
+   "von",
+   "which",
+   "mph",
+   "http",
+   "his",
+   "what"
+  ]
+ },
+ "english-spanish": {
+  "specific": [
+   "spanish",
+   "mexican",
+   "hispanic",
+   "spain",
+   "mexico"
+  ],
+  "list": [
+   "spanish",
+   "mexican",
+   "hispanic",
+   "spain",
+   "mexico",
+   "which",
+   "mph",
+   "http",
+   "his",
+   "what"
+  ]
+ }
+}
