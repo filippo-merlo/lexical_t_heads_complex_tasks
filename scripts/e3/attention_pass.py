@@ -15,8 +15,13 @@ gpu.pin(int(sys.argv[1])); OUT = Path(sys.argv[2]); OUT.mkdir(parents=True, exis
 from lth.model import LM
 from lth.headvis import _eager
 lm = LM.load(); tok = lm.tokenizer; L = lm.spec.n_layers
-spec = json.load(open("results/word_lists_allid/word_lists.json"))["specific"]
-words_of = {t: sorted({w.lower() for w in simple_term_lists()[t] if re.fullmatch(r"[A-Za-z]+", w)} | set(spec[t]["jhead"][:10])) for t in simple.TASKS}
+# Optional third argument: an E4 fold's word_lists.json (scripts/heldout_sets.py), whose specific
+# top 10 replace those of word_lists_allid; the readings are those of LTH_READINGS (a half).
+if len(sys.argv) > 3:
+    spec = {t: v["specific"][:10] for t, v in json.load(open(sys.argv[3]))["tasks"].items()}
+else:
+    spec = {t: v["jhead"][:10] for t, v in json.load(open("results/word_lists_allid/word_lists.json"))["specific"].items()}
+words_of = {t: sorted({w.lower() for w in simple_term_lists()[t] if re.fullmatch(r"[A-Za-z]+", w)} | set(spec[t])) for t in simple.TASKS}
 rows = {}
 def hook(layer):
     def fn(module, args, output):

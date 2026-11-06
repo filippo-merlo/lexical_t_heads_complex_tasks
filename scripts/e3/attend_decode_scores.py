@@ -8,10 +8,13 @@ from lth import READOUTS, simple
 from lth.evaluation import tokenizer as get_tok
 from lth.store import load, readings_dir
 from lth.terms import expand_to_token_ids
-tok = get_tok(); R = READOUTS.index("jhead"); info = json.load(open("data/readings/attention_rule/info.json"))
+# Optional second argument: the attention folder (default data/readings/attention_rule); the
+# readings are those of LTH_READINGS.
+ATT = sys.argv[2] if len(sys.argv) > 2 else "data/readings/attention_rule"
+tok = get_tok(); R = READOUTS.index("jhead"); info = json.load(open(f"{ATT}/info.json"))
 rows = []
 for t in simple.TASKS:
-    att = np.load(f"data/readings/attention_rule/{t}.npy").astype(np.float32)  # prompts, heads, 4
+    att = np.load(f"{ATT}/{t}.npy").astype(np.float32)  # prompts, heads, 4
     top = np.concatenate([load(readings_dir("simple", t), w)["top"][:, R] for w in simple.WORDINGS["rule"]])
     assert len(top) == len(att), t
     ids = np.array(sorted(set(expand_to_token_ids(tok, info[t]["words"]))))

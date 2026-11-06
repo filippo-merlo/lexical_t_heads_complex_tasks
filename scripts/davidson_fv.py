@@ -299,8 +299,18 @@ def main() -> None:
     parser.add_argument("--cie-only", action="store_true", help="stop once cie.npz is written")
     parser.add_argument("--check-tasks", nargs="+", default=None,
                         help="tasks to run check 1 on (default: --tasks); the heads are still chosen over --tasks")
+    parser.add_argument("--half", choices=("A", "B"), default=None,
+                        help="E4 fold (results/heldout/split.json): means, CIE and control items from this "
+                             "half, check-1 items from the other")
     args = parser.parse_args()
     tasks = list(simple.TASKS) if args.tasks == ["all"] else args.tasks
+    halves = json.loads((RESULTS / "heldout" / "split.json").read_text()) if args.half else None
+
+    def chosen(task, items):  # the items of the choosing half, in order
+        return items if halves is None else [i for i in items if i in set(halves[task][args.half])]
+
+    def tested(task, items):  # the items of the testing half, in order
+        return items if halves is None else [i for i in items if i not in set(halves[task][args.half])]
     gpu.pin(args.gpu)
 
     import numpy as np
@@ -326,11 +336,11 @@ def main() -> None:
     # Items: the patched ones (check 1), then per instruction the mean and CIE items.
     plan, means, corrupt = {}, {}, {}
     for task in tasks:
-        fixed = simple.correct_items(records(task, simple.FIXING))[: simple.CAP]
+        fixed = tested(task, simple.correct_items(records(task, simple.FIXING)))[: simple.CAP]
         per = {}
         parts = []
         for wording in INSTRUCTIONS:
-            free = [i for i in simple.correct_items(records(task, wording)) if i not in set(fixed)]
+            free = [i for i in chosen(task, simple.correct_items(records(task, wording))) if i not in set(fixed)]
             if len(free) >= N_MEAN + N_CIE:
                 per[wording] = dict(mean=free[:N_MEAN], cie=free[N_MEAN:N_MEAN + N_CIE])
             else:  # too few correct prompts (next_item): CIE first, the rest for the mean
@@ -397,7 +407,7 @@ def main() -> None:
                      item=str(i), expected=answers[i], predicted=unpatched[i]["answer"],
                      correct=unpatched[i]["correct"], first_token=unpatched[i]["first_token"]) for i in fixed]
         control = simple.CONTROL[task]
-        items = simple.correct_items(records(control, simple.CONTROL_ITEMS["rule"]))
+        items = chosen(control, simple.correct_items(records(control, simple.CONTROL_ITEMS["rule"])))
         ids = simple.token_ids(lm.tokenizer, simple.prompts(control, simple.CONTROL_PROMPTS)[0])
         sources = [("task", "+".join(INSTRUCTIONS), means[task], len(INSTRUCTIONS) * N_MEAN),
                    ("control", simple.CONTROL_PROMPTS, simple_mean(lm, ids, items), len(items))]

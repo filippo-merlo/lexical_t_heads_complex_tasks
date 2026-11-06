@@ -1,0 +1,15 @@
+task,e1,cc,ccclean,e1_wording,n_prompts,cc_words
+antonym,21,122,86,inst2,500,opposite opposing word words ant what which maybe https etc
+synonym,23,120,71,inst4,500,synonyms synonym definition syn word what which maybe https etc
+singular-plural,25,116,87,inst1,493,single noun plural multiple because what which maybe https etc
+present-past,7,101,71,inst2,500,verb grammar verbs took past what which maybe https etc
+country-capital,35,128,96,inst3,467,city cities town country countries what which maybe https etc
+country-currency,32,116,78,inst0,369,currency currencies monetary money dollar what which maybe https etc
+landmark-country,26,130,93,inst1,500,country countries location england canada what which maybe https etc
+park-country,27,139,99,inst4,500,country park countries located england what which maybe https etc
+product-company,40,131,99,inst4,500,company companies manufacturer product microsoft what which maybe https etc
+next_item,50,143,114,inst0,247,next monday items item sequence what which maybe https etc
+prev_item,33,109,91,inst1,303,previous preceding prior item items what which maybe https etc
+english-french,21,118,91,inst3,500,french france paris english translation what which maybe https etc
+english-german,19,97,70,inst1,500,german germans germany berlin english what which maybe https etc
+english-spanish,13,114,80,inst2,500,spanish mexican hispanic english translation what which maybe https etc
