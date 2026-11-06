@@ -194,6 +194,64 @@ def readouts(lm, ids: list[int], position: int, heads: list[tuple[int, int]], *,
     return pd.DataFrame(rows)
 
 
+def word_tokens(tokenizer, word: str, *, variants: bool = True) -> tuple[list[int], str]:
+    """The token ids that stand for ``word``, and a note when it is not one token.
+
+    With ``variants``, every single-token form among the word as typed, lower-case and
+    capitalised, each with and without a leading space (``"cold"``, ``" cold"``,
+    ``" Cold"``, ...). Without, the word exactly as typed. When no form is one token, the
+    first token of the word as typed.
+    """
+    w = word.strip()
+    forms = (dict.fromkeys(f for base in (w, w.lower(), w.capitalize()) for f in (" " + base, base))
+             if variants else [word])
+    ids = []
+    for form in forms:
+        enc = tokenizer(form, add_special_tokens=False).input_ids
+        if len(enc) == 1 and enc[0] not in ids:
+            ids.append(enc[0])
+    if ids:
+        return ids, ""
+    enc = tokenizer(word, add_special_tokens=False).input_ids
+    return enc[:1], f"{word!r} is {len(enc)} tokens, so only its first, {tokenizer.decode(enc[:1])!r}, is ranked."
+
+
+@torch.no_grad()
+def word_ranks(lm, ids: list[int], targets: list[int], *, last_only: bool = True) -> pd.DataFrame:
+    """Every head's rank (0 = top) of ``targets`` under the Logit-head and J-head readouts.
+
+    At the last token, or at every position but BOS. With several targets (the variants of
+    :func:`word_tokens`), the best rank among them. The arithmetic is :func:`readouts`'s,
+    all layers' heads unembedded in one call per position and readout.
+    """
+    from src.readout import all_heads_transported
+
+    positions = [len(ids) - 1] if last_only else list(range(1, len(ids)))
+    n_layers, n_heads = lm.spec.n_layers, lm.spec.n_heads
+    ranks = {r: [] for r in READOUTS}
+    for z in lm.states(ids, positions):
+        for readout in READOUTS:
+            vectors = torch.cat([all_heads_transported(lm.jz[l], z[l], lm.spec, arm=readout, w_o=lm.w_o[l])
+                                 for l in range(n_layers)])
+            logits = lm.model.unembed(vectors).float()  # [n_layers * n_heads, vocab]
+            best = torch.stack([(logits > logits[:, [t]]).sum(-1) for t in targets]).amin(0)
+            ranks[readout].append(best.cpu().numpy())
+    n = len(positions)
+    return pd.DataFrame({"position": np.repeat(positions, n_layers * n_heads),
+                         "layer": np.tile(np.repeat(np.arange(n_layers), n_heads), n),
+                         "head": np.tile(np.arange(n_heads), n_layers * n),
+                         **{r: np.concatenate(ranks[r]) for r in READOUTS}})
+
+
+def word_heads(ranks: pd.DataFrame, k: int) -> pd.DataFrame:
+    """Per head, from :func:`word_ranks` rows: the share of rows with the word in the top
+    ``k`` (``<readout> share``) and the median rank (``<readout> median``), per readout."""
+    keys = [ranks["layer"], ranks["head"]]
+    share = ranks[list(READOUTS)].lt(k).groupby(keys).mean().add_suffix(" share")
+    median = ranks[list(READOUTS)].groupby(keys).median().add_suffix(" median")
+    return share.join(median).reset_index()
+
+
 DECODE_CHUNK = 512  # positions unembedded at once
 
 

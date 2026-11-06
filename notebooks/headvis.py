@@ -12,7 +12,7 @@ The computation lives in ``lth/headvis.py``; this file is widgets and layout.
 
 import marimo
 
-__generated_with = "0.23.16"
+__generated_with = "0.25.2"
 app = marimo.App(width="full", app_title="HeadVis")
 
 
@@ -84,7 +84,9 @@ def _(LM, headvis, mo):
 @app.cell(hide_code=True)
 def _(mo):
     get_head, set_head = mo.state((25, 7))
-    return get_head, set_head
+    # The finder tab in view, so rebuilding the finder (a new word, a new score) keeps it.
+    get_tab, set_tab = mo.state("By score")
+    return get_head, get_tab, set_head, set_tab
 
 
 @app.cell(hide_code=True)
@@ -113,13 +115,56 @@ def _(fu, headvis, mo, simple):
     target_text = mo.ui.text(value="", placeholder="e.g.  cold", label="Rank a token")
     decoded_where = mo.ui.radio(options=["at the last token", "at every position"], value="at the last token",
                                 inline=True)
-    return (METRICS, SETS, chat, complex_task, complex_wording, count, custom, decoded_where, first, lowest, metric,
-            set_choice, simple_task, simple_wording, source, target_text)
+    word = mo.ui.text(value="", placeholder="e.g.  cold", label="Word")
+    word_variants = mo.ui.checkbox(value=True, label="case and leading-space variants")
+    word_k = mo.ui.number(start=1, stop=1000, value=10, label="in the top")
+    word_where = mo.ui.radio(options=["at the last token", "at every position"], value="at the last token",
+                             inline=True)
+    word_sort = mo.ui.radio(options={"J-head": "jhead", "Logit-head": "logithead"}, value="J-head", inline=True,
+                            label="sort by")
+    return (
+        METRICS,
+        SETS,
+        chat,
+        complex_task,
+        complex_wording,
+        count,
+        custom,
+        decoded_where,
+        first,
+        lowest,
+        metric,
+        set_choice,
+        simple_task,
+        simple_wording,
+        source,
+        target_text,
+        word,
+        word_k,
+        word_sort,
+        word_variants,
+        word_where,
+    )
 
 
 @app.cell(hide_code=True)
-def _(chat, complex_task, complex_wording, count, custom, first, lm, load_outputs, mo, outputs_path, re, simple,
-      simple_task, simple_wording, source):
+def _(
+    chat,
+    complex_task,
+    complex_wording,
+    count,
+    custom,
+    first,
+    lm,
+    load_outputs,
+    mo,
+    outputs_path,
+    re,
+    simple,
+    simple_task,
+    simple_wording,
+    source,
+):
     def _prompts():
         if source.value == "custom text":
             texts = [t for t in re.split(r"\n\s*---\s*\n", custom.value) if t.strip()]
@@ -146,6 +191,19 @@ def _(headvis, induction, lm, mo, pd, prompts):
 
 
 @app.cell(hide_code=True)
+def _(headvis, lm, mo, pd, prompts, word, word_variants, word_where):
+    # Every head's rank of the word on these prompts; None until a word is typed.
+    word_ranks, word_ids, word_note = None, [], ""
+    if word.value.strip():
+        word_ids, word_note = headvis.word_tokens(lm.tokenizer, word.value, variants=word_variants.value)
+        with mo.status.spinner(f"Ranking {word.value.strip()!r} in every head's readout"):
+            word_ranks = pd.concat([headvis.word_ranks(lm, ids, word_ids,
+                                                       last_only=word_where.value == "at the last token")
+                                    for _, ids in prompts], ignore_index=True)
+    return word_ids, word_note, word_ranks
+
+
+@app.cell(hide_code=True)
 def _(get_head, lm, mo, set_head):
     layer_ui = mo.ui.dropdown(options=[str(i) for i in range(lm.spec.n_layers)], value=str(get_head()[0]),
                               label="Layer", on_change=lambda v: set_head((int(v), get_head()[1])))
@@ -155,7 +213,29 @@ def _(get_head, lm, mo, set_head):
 
 
 @app.cell(hide_code=True)
-def _(METRICS, SETS, all_scores, headvis, lowest, metric, mo, pd, set_choice, set_head):
+def _(
+    METRICS,
+    SETS,
+    all_scores,
+    get_tab,
+    headvis,
+    lowest,
+    metric,
+    mo,
+    lm,
+    pd,
+    set_choice,
+    set_head,
+    set_tab,
+    word,
+    word_ids,
+    word_k,
+    word_note,
+    word_ranks,
+    word_sort,
+    word_variants,
+    word_where,
+):
     # Short column names, so every score fits the column; hovering a header gives the full name.
     SHORT = {"induction (random)": "ind rand", "induction": "ind", "prev": "prev", "entropy": "entropy",
              "self": "self", "bos": "BOS", "distance": "dist", "max": "max"}
@@ -188,15 +268,53 @@ def _(METRICS, SETS, all_scores, headvis, lowest, metric, mo, pd, set_choice, se
                            freeze_columns_left=["head"],
                            header_tooltip={k: v for k, v in _tips.items() if k in view.columns}, **kw)
 
+    def _word_tab():
+        controls = mo.vstack([mo.hstack([word, word_variants], justify="start", align="center", gap=1),
+                              mo.hstack([word_k, word_where], justify="start", align="center", gap=1),
+                              word_sort], gap=0.25)
+        if word_ranks is None:
+            return mo.vstack([controls, mo.md("*Type a word: every head is ranked by how often the word is in "
+                                              "its top decoded tokens on these prompts.*")])
+        k, by = int(word_k.value), word_sort.value
+        unit = "prompts" if word_where.value == "at the last token" else "positions"
+        n = len(word_ranks) // (lm.spec.n_layers * lm.spec.n_heads)
+        names = {"jhead": "J", "logithead": "Logit"}
+        frame = headvis.word_heads(word_ranks, k).sort_values([f"{by} share", f"{by} median"],
+                                                              ascending=[False, True])
+        hits = {r: int((frame[f"{r} share"] > 0).sum()) for r in names}
+        shown = frame[(frame["jhead share"] > 0) | (frame["logithead share"] > 0)]
+        empty = not len(shown)
+        if empty:
+            shown = frame.head(12)
+        order = [by, *[r for r in names if r != by]]
+        view = pd.DataFrame({"head": [headvis.head_label(l, h) for l, h in zip(shown["layer"], shown["head"])]})
+        tips = {}
+        for r in order:
+            view[f"{names[r]} %"] = (100 * shown[f"{r} share"]).round().astype(int).to_numpy()
+            tips[f"{names[r]} %"] = f"% of the {n} {unit} with the word in the head's {names[r]}-head top {k}"
+        for r in order:
+            view[f"{names[r]} median"] = shown[f"{r} median"].astype(int).to_numpy()
+            tips[f"{names[r]} median"] = f"median {names[r]}-head rank of the word (0 = top) over the {unit}"
+        forms = " | ".join(repr(lm.tokenizer.decode([t])) for t in word_ids)
+        note = (f"Ranking {forms}" + (" (best of them)" if len(word_ids) > 1 else "") + f" over {n} {unit}. "
+                + (word_note + " " if word_note else "")
+                + f"In the top {k} at least once: {hits['jhead']} heads under J-head, {hits['logithead']} under "
+                + "Logit-head." + (" None, so the 12 closest by median rank:" if empty else ""))
+        table = mo.ui.table(view, selection="single", on_change=_pick, show_download=False, show_search=False,
+                            show_column_summaries=False, show_data_types=False, freeze_columns_left=["head"],
+                            page_size=12, header_tooltip=tips)
+        return mo.vstack([controls, mo.md(note), table], gap=0.5)
+
     _ranked = all_scores.sort_values(metric.value, ascending=lowest.value).head(8)
     _keys = pd.DataFrame(SETS[set_choice.value], columns=["layer", "head"])
     _in_set = _keys.merge(all_scores, on=["layer", "head"])
     finder = mo.ui.tabs({
         "By score": mo.vstack([mo.hstack([metric, lowest], justify="start", align="center"),
                                _table(_ranked, pagination=False)]),
+        "By word": _word_tab(),
         "Identified sets": mo.vstack([set_choice, _table(_in_set, page_size=12)]),
         "All heads": _table(all_scores, every=True, page_size=12),
-    })
+    }, value=get_tab(), on_change=set_tab)
     return (finder,)
 
 
@@ -246,7 +364,7 @@ def _(METRICS, head_scores, mo, np):
 
 
 @app.cell(hide_code=True)
-def _(alt, distances, mo, pd, query_max):
+def _(alt, distances, pd, query_max):
     def _hist(values, field, title, step, extent=None):
         b = alt.Bin(step=step, extent=extent) if extent else alt.Bin(step=step)
         return alt.Chart(pd.DataFrame({field: values})).mark_bar(
@@ -294,9 +412,38 @@ def _(detail, head, headvis, lm, mo, order, pd, target_text):
 
 
 @app.cell(hide_code=True)
-def _(chat, chips, complex_task, complex_wording, count, custom, decoded, decodes, detail, finder, first, head,
-      head_scores, headvis, head_ui, hist_dist, hist_max, layer_ui, lm, mo, prompts, readout_note, readout_table,
-      simple_task, simple_wording, source, target_text, tiles, top_decoded, viewer):
+def _(
+    chat,
+    chips,
+    complex_task,
+    complex_wording,
+    count,
+    custom,
+    decoded,
+    decodes,
+    detail,
+    finder,
+    first,
+    head,
+    head_scores,
+    head_ui,
+    headvis,
+    hist_dist,
+    hist_max,
+    layer_ui,
+    lm,
+    mo,
+    prompts,
+    readout_note,
+    readout_table,
+    simple_task,
+    simple_wording,
+    source,
+    target_text,
+    tiles,
+    top_decoded,
+    viewer,
+):
     if source.value == "custom text":
         _prompt_row = mo.vstack([mo.hstack([source, chat], justify="start", gap=2, align="center"), custom])
     elif source.value == "simple task":
@@ -337,7 +484,10 @@ def _(chat, chips, complex_task, complex_wording, count, custom, decoded, decode
             "Means over the prompts. Scores skip the first query (BOS can attend only to itself); *max* scores "
             "and the token view skip the BOS key, where most heads put most of their attention.\n\n" + _defs
             + "\n- **induction (random)**: as *induction*, on BOS + 50 distinct random tokens repeated once "
-            "(Neuronpedia's score; prompt-independent).")}),
+            "(Neuronpedia's score; prompt-independent).\n- **By word**: every head's rank of the word (0 = top) "
+            "under the Logit-head and J-head readouts, at the last token of each prompt or at every position "
+            "but BOS; *%* is the share of prompts (positions) with the word in the top *k*, *median* its median "
+            "rank. With variants, the best rank among the word's single-token forms.")}),
     ], gap=0.75)
     mo.vstack([_prompt_row, mo.hstack([_sidebar, _main], widths=[1.6, 3], gap=2, align="start")])
     return
