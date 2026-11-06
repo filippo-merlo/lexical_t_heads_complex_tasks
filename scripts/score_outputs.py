@@ -1,15 +1,11 @@
-"""Answer evaluation (proposal Sec. 5.5): strict and judged scores of the saved E0 outputs (no GPU).
+"""Answer evaluation (proposal Sec. 5.5): strict and flexible scores of the saved E0 outputs (no GPU).
 
 For every task and wording in ``data/outputs`` (``scripts/run_outputs.py``):
 - strict scores (``lth.evaluation``), checked against the E0 records in ``data/runs``, and
   the flexible score (simple tasks: the whole reference at the reply's start; complex tasks:
-  the answer the strict score reads, in any notation);
-- the judge's verdict (``lth.judge``; ``--no-judge`` skips it), the rule check of the
-  answer it extracted where a rule exists, whether the reply begins with that answer;
-- the reasons for each disagreement between the study's strict score and the judge.
-Per item: ``data/outputs/{family}/{task}/{wording}.scored.jsonl.gz``. Tables in
-``results/answer_eval/``: ``accuracy.csv`` (one row per task and wording), ``reasons.csv``
-(disagreements by reason), ``spread.csv`` (spread across the wordings of a style).
+  the answer the strict score reads, in any notation).
+Per item: ``data/outputs/{family}/{task}/{wording}.scored.jsonl.gz``. Table:
+``results/answer_eval/accuracy.csv`` (one row per task and wording).
 
     .venv/bin/python scripts/score_outputs.py --family simple --tasks antonym
 """
@@ -19,17 +15,13 @@ from __future__ import annotations
 import argparse
 import csv
 import json
-import re
 import sys
-from collections import Counter
 from pathlib import Path
-
-import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from lth import DATA, RESULTS, evaluation, fu, judge, simple  # noqa: E402
-from lth.store import OUTPUTS, load_outputs, outputs_path, save_outputs  # noqa: E402
+from lth import DATA, RESULTS, evaluation, fu, simple  # noqa: E402
+from lth.store import load_outputs, outputs_path, save_outputs  # noqa: E402
 
 RUNS = DATA / "runs"
 OUT = RESULTS / "answer_eval"
@@ -44,32 +36,6 @@ def style_of(family: str, wording: str) -> str:
 def e0_records(family: str, key: str, wording: str) -> dict[str, bool]:
     path = RUNS / family / key.replace("/", "__") / f"{wording}.json"
     return {r["item"]: bool(r["correct"]) for r in json.loads(path.read_text())} if path.exists() else {}
-
-
-def rule_check(task: str, row: dict, answer: str) -> bool | None:
-    """The judge's extracted answer checked by rule, where the task has one."""
-    if not answer:
-        return None
-    ref = str(row["reference"]).strip().lower()
-    text = evaluation.bare(answer).lower()
-    if task == "operator_func":
-        numbers = re.findall(r"-?\d+", answer.replace(",", ""))
-        return int(numbers[-1]) == int(ref) if numbers else None
-    if task in ("noun_class_agreement", "lexical_category_inference"):
-        return text == ref
-    if task == "tapatan":
-        return ref in text
-    if task == "set_game":
-        import importlib
-
-        set_game = importlib.import_module("tasks.set_game")
-        source = row["source"]
-        predicted = set_game.extract_outcome("\\boxed{" + answer + "}", source["difficulty"])
-        if predicted in ("unknown", "Not boxed"):
-            return None
-        return bool(set_game.check_outcome_validity(predicted, source["difficulty"], source["problem"],
-                                                    source["expected_result"])[0])
-    return None
 
 
 def units(family: str, tasks, levels, variant_names):
@@ -87,45 +53,26 @@ def units(family: str, tasks, levels, variant_names):
                 yield key, fu.TASK_LEVELS[key].task, name, mode, rules
 
 
-def score_unit(family, key, task, wording, mode, rules, cache, use_judge):
+def score_unit(family, key, wording, mode, rules):
     rows = load_outputs(outputs_path(family, key, wording))
     if family == "simple":
         strict = {r["item"]: {**evaluation.strict_simple(r), "flexible": evaluation.flexible_simple(r)}
                   for r in rows}
-        questions = {r["item"]: evaluation.question_simple(task, r) for r in rows}
     else:
         strict = evaluation.strict_complex(key, wording, mode, rules, rows)
         for item, scores in evaluation.flexible_complex(key, wording, mode, rules, rows).items():
             strict[item].update(scores)
-        original = load_outputs(outputs_path(family, key, "orig"))
-        questions = {r["item"]: r["prompt"] for r in original}
     e0 = e0_records(family, key, wording)
     e0_reasoning = e0_records("reasoning", key, wording) if family == "complex" else {}
-    verdicts = {}
-    if use_judge:
-        cases = [{"item": r["item"], "question": questions[r["item"]], "reference": str(r["reference"]).strip(),
-                  "reply": evaluation.reply_for_judge(family, r)} for r in rows]
-        by_key = judge.judge(cases, cache)
-        verdicts = {c["item"]: by_key[c["key"]] for c in cases}
     scored = []
     for r in rows:
         item, s = r["item"], strict[r["item"]]
-        out = {"item": item, **s, "study_strict": evaluation.primary_strict(task, s) if family == "complex"
-               else s["strict"]}
+        # the study's strict score for a complex task: the whole reply, for every task
+        out = {"item": item, **s, "study_strict": s["strict_full"] if family == "complex" else s["strict"]}
         if item in e0:
             out["e0_strict"] = e0[item]
         if item in e0_reasoning:
             out["e0_reasoning"] = e0_reasoning[item]
-        if item in verdicts:
-            v = verdicts[item]
-            answer = v["answer"] or ""
-            out.update({"judged": v["verdict"] == "correct",
-                        **{f"judge_{k}": v[k] for k in ("verdict", "answer", "relation", "several_answers",
-                                                        "reference_suspect", "note")},
-                        "straight_judged": evaluation.straight(family, r, answer),
-                        "rule_check": rule_check(task, r, answer),
-                        "reasons": evaluation.reasons(family, task, r, s, v)})
-            out["reason_group"] = evaluation.GROUP[out["reasons"][0]] if out["reasons"] else None
         scored.append(out)
     save_outputs(outputs_path(family, key, wording).with_name(f"{wording}.scored.jsonl.gz"), scored)
     return scored
@@ -142,40 +89,7 @@ def summary(family, key, wording, scored):
     row["e0_mismatch"] = sum(x["e0_strict"] != x["strict"] for x in e0)
     e0r = [x for x in scored if "e0_reasoning" in x]
     row["e0_reasoning_mismatch"] = sum(x["e0_reasoning"] != x["strict_full"] for x in e0r) if e0r else ""
-    if "judged" in scored[0]:
-        row["judged"] = mean("judged")
-        row["straight_judged"] = mean("straight_judged")
-        for a in (True, False):
-            for b in (True, False):
-                row[f"strict_{'right' if a else 'wrong'}_judge_{'right' if b else 'wrong'}"] = sum(
-                    x["study_strict"] == a and x["judged"] == b for x in scored)
-        checked = [x for x in scored if x["rule_check"] is not None]
-        row["rule_checked"] = len(checked)
-        row["rule_disagrees"] = sum(x["rule_check"] != x["judged"] for x in checked)
-        row["no_answer"] = sum(x["judge_verdict"] == "no_answer" for x in scored)
-        for group in evaluation.GROUPS:  # disagreements by the group of their primary reason
-            row[f"reason_{group}"] = sum(x["reason_group"] == group for x in scored)
     return row
-
-
-def spread(rows):
-    """sd across the wordings of a style under each score, Spearman between the scores' rankings."""
-    out = []
-    groups = {}
-    for r in rows:
-        if r["style"] in ("rule", "example") and "judged" in r:
-            groups.setdefault((r["family"], r["task"], r["style"]), []).append(r)
-    for (family, task, style), rs in groups.items():
-        strict = np.array([r["study_strict"] for r in rs])
-        judged = np.array([r["judged"] for r in rs])
-        rank = lambda a: np.argsort(np.argsort(-a, kind="stable"), kind="stable")  # noqa: E731
-        rho = float(np.corrcoef(rank(strict), rank(judged))[0, 1]) if len(rs) > 2 else float("nan")
-        out.append({"family": family, "task": task, "style": style, "wordings": len(rs),
-                    "sd_strict": strict.std(), "sd_judged": judged.std(),
-                    "range_strict": strict.max() - strict.min(), "range_judged": judged.max() - judged.min(),
-                    "spearman": rho, "best_strict": rs[int(strict.argmax())]["wording"],
-                    "best_judged": rs[int(judged.argmax())]["wording"]})
-    return out
 
 
 def write(name, rows):
@@ -196,31 +110,19 @@ def main() -> None:
     parser.add_argument("--tasks", nargs="+", default=list(simple.TASKS))
     parser.add_argument("--levels", nargs="+", default=list(fu.STUDY_LEVELS))
     parser.add_argument("--variants", nargs="+", default=None)
-    parser.add_argument("--no-judge", action="store_true")
     args = parser.parse_args()
 
-    cache = {} if args.no_judge else judge.load_cache()
-    rows, reason_rows = [], []
+    rows = []
     for family in ("simple", "complex") if args.family == "all" else (args.family,):
-        for key, task, wording, mode, rules in units(family, args.tasks, args.levels, args.variants):
+        for key, _task, wording, mode, rules in units(family, args.tasks, args.levels, args.variants):
             if not outputs_path(family, key, wording).exists():
                 continue
-            scored = score_unit(family, key, task, wording, mode, rules, cache, not args.no_judge)
+            scored = score_unit(family, key, wording, mode, rules)
             row = summary(family, key, wording, scored)
             rows.append(row)
             print(" ".join(f"{k}={v:.3f}" if isinstance(v, float) else f"{k}={v}" for k, v in row.items()),
                   flush=True)
-            primary, anywhere = Counter(), Counter()
-            for x in scored:
-                if x.get("reasons"):
-                    direction = "strict_wrong_judge_right" if x["judged"] else "strict_right_judge_wrong"
-                    primary[direction, x["reasons"][0]] += 1
-                    anywhere.update((direction, r) for r in x["reasons"])
-            reason_rows += [{"family": family, "task": key, "wording": wording, "direction": d, "reason": r,
-                             "primary": primary[d, r], "any": anywhere[d, r]} for d, r in sorted(anywhere)]
     write("accuracy.csv", rows)
-    write("reasons.csv", reason_rows)
-    write("spread.csv", spread(rows))
 
 
 if __name__ == "__main__":

@@ -83,7 +83,7 @@ Head sets patched & $H^L$, $H^J$, and J-only $H^J\setminus H^L$. \\
 \endhead
 \multicolumn{4}{@{}l}{\textbf{E0 --- behavioural baseline}} \\
 Complex tasks & 5 tasks $\times$ 10 prompts, 300 items. & NCA, LCI answered straight away, above chance. Set Game, Op.\ Function, Tapatan always reason first. Set Game and Op.\ Function solved from rules, hardly from examples alone. Tapatan near chance everywhere. Set Game solved on 97/300 even without task info. & \mixed \\
-Scoring audit & Every reply saved; strict (Fu et al.'s parser) vs flexible vs GPT-5.5 judge; disagreement reasons. & Op.\ Function 0.01--0.99 across wordings $\to$ 1.00 everywhere (missing \texttt{\textbackslash boxed}). & \yes \\
+Scoring audit & Every reply saved; strict (Fu et al.'s parser) vs flexible. & Op.\ Function 0.01--0.99 across wordings $\to$ 1.00 everywhere (missing \texttt{\textbackslash boxed}). & \yes \\
 \midrule
 \multicolumn{4}{@{}l}{\textbf{E2 --- complex tasks} (5 tasks $\times$ rule/example/combined $\times$ 2 readouts)} \\
 Head sets & 100 prompts per style (fewer where few correct). & Heads found for every task and style, but counts not comparable with E1 (term lists 10$\times$ longer; Set Game example $P^+$ = 1 prompt). J-head again larger, layers 10--19; covers 44--91\% of Logit-head. Rule/example overlap 48--94\%. & \mixed \\
@@ -138,6 +138,6 @@ H2 J-head $\supseteq$ Logit-head & Fails: J-head misses part of the Logit-head s
 \item \textbf{Controls are essential} on long-reasoning and Yes/No tasks: without them, check 2 looked positive.
 \end{itemize}
 
-\textbf{Not pursued:} function vectors, function-specific heads, hidden-state differences (scope, 10-27); fp32 Head-JLens fit ($\approx$136 GPU-h, declined); hand-labelled validation of the judge.
+\textbf{Not pursued:} function vectors, function-specific heads, hidden-state differences (scope, 10-27); fp32 Head-JLens fit ($\approx$136 GPU-h, declined).
 
 \end{document}
