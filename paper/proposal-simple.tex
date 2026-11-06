@@ -54,7 +54,7 @@
 
 \begin{abstract}
 \phantomsection\label{sec:abstract}
-Lexical task heads are attention heads whose output, decoded into the vocabulary, names the task the prompt asks for \citep{yang2026shared}. They were identified with the per-head logit lens on simple single-step tasks, such as mapping a country to its capital. We work on how they are identified, on 14 of these tasks in Llama-3.1-8B-Instruct: whether the method of \citet{yang2026shared} reproduces, whether Head-JLens \citep{merlo2026headjlens}, which decodes each head's output after mapping it through a Jacobian of the remaining layers averaged over many texts, finds lexical task heads that the logit lens misses, and which heads to keep when a task is asked for in several wordings. Heads are identified under both readouts with rule-based and example-based prompts and tested by activation patching. A companion document applies the method to complex, rule-defined tasks.
+Lexical task heads are attention heads whose output, decoded into the vocabulary, names the task the prompt asks for \citep{yang2026shared}. They were identified with the per-head logit lens on simple single-step tasks, such as mapping a country to its capital. We work on how they are identified, on 14 of these tasks in Llama-3.1-8B-Instruct: whether the method of \citet{yang2026shared} reproduces, whether Head-JLens \citep{merlo2026headjlens}, which decodes each head's output after mapping it through a Jacobian of the remaining layers averaged over many texts, finds lexical task heads that the logit lens misses, and which heads to keep when a task is asked for in several wordings. We also select heads from the words that all heads decode on the task's prompts, in place of a hand-written term list. Heads are identified under both readouts with rule-based and example-based prompts and tested by activation patching. A companion document applies the method to complex, rule-defined tasks.
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
@@ -621,6 +621,50 @@ Thus, at equal size, the difference between the readouts largely remains, while 
 \label{fig:sized-rule-curves-jhead-n20}
 \end{figure}
 
+% =====================================================================
+\section{Head sets from decoded words}\label{sec:words}
+\subsection{Design}
+\paragraph{Question.} The term lists of \citet{yang2026shared} are written by hand, and a head is selected if it decodes one of their words. The words the heads decode on a task's prompts may name the task differently: as the type of the answer (\emph{city} for country--capital), or with words that heads decode on every task. Do head sets chosen from the words the heads actually decode carry the task better than the E1 sets? And can a few heads be found that carry it alone? The question was asked after the results of the earlier sections; it has no hypothesis, and we report it as exploratory. Only J-head is used, and only the rule style.
+
+\paragraph{Shared settings.} The J-head readings of E1: each head's ten top tokens at the last prompt token, on $P^{+}$ of each of the five instruction templates (at most 100 correct prompts each), pooled. Each head set is patched with the first causal check of E1, with the rule-style means of the five templates, averaged over them, and the control mean of E1, at four values of $\alpha$: 1, 2, 4 and 8, to shorten the runs. We report the highest accuracy over the four, and the E1 J-head rule-style sets over the same four. The second check is not run.
+
+\paragraph{Words decoded.} Each top token is decoded, stripped of whitespace and lowercased, and kept as a word if it is alphabetic, has at least three letters, is not in a short list of function words, and is a common English word (Zipf frequency at least 3 in \texttt{wordfreq}). A word's \emph{share} on a task is the fraction of pairs of prompt and head, over all 1{,}024 heads and the pooled prompts, whose ten top tokens contain it. \emph{Task words}: the words with the largest share on the task minus their mean share on the other 13 tasks. \emph{Common words}: the words with the largest minimum share over the 14 tasks.
+
+\paragraph{CC-pooled.} The list of a task is its 5 top task words and the 5 top common words, turned into token ids as Yang's lists are (Definition~\ref{def:lth}: case variants, leading space). Heads are selected with Definition~\ref{def:lth} ($k=10$, $\rho=0.1$) on the five templates' prompts pooled, about 500 per task, rather than on the most accurate template.
+
+\paragraph{CC-pooled-clean.} Following \citet{davidson2025different}, who contrast task prompts with unrelated text, every head is also read on 1{,}000 passages of WikiText-103, cut to the token lengths of the rule prompts. The 50 words with the largest share there are removed before the task and common words are chosen; heads are then selected as for CC-pooled. Lists of 5 + 5 and 10 + 10 words.
+
+\paragraph{Attend and decode.} At the last prompt token, head L16H25 attends to the words \emph{capital} and \emph{country} of the instruction and decodes \emph{city}. To find heads with this pattern, the task words of a task are the alphabetic words of Yang's term list and its 10 top task words. A head's \emph{attention} is its share of the last token's attention on the tokens of these words in the prompt, outside the input $x$, averaged over the pooled prompts (eager attention, each prompt run alone). Its \emph{decode rate} is the share of the same prompts whose ten top J-head tokens contain a token of these words. Heads are ranked by the product of the two, and the first $N\in\{1,2,3,5,10,20\}$ are patched.
+
+\paragraph{Random sets.} For the sets of 5 and 10 heads, two random sets with the same number of heads in each layer, drawn outside the set.
+
+\begin{sloppypar}\paragraph{Output.} \texttt{results/word\_lists\_union} (CC-pooled), \texttt{results/neutral\_union} (CC-pooled-clean), \texttt{results/attend\_decode}; WikiText readings in \texttt{data/readings/neutral}, attention masses in \texttt{data/readings/attention\_rule}. Other designs tried along the way (word lists from one template, other list lengths, strict consensus, other contrasts, ranking by match rate) are listed in \texttt{summary-simple}.\end{sloppypar}
+
+\subsection{Results}\label{sec:res-words}
+\paragraph{CC-pooled} (Table~\ref{tab:words}). The CC-pooled set has a larger effect than the E1 set on every task, and it carries several tasks on which the E1 set has none: antonym, singular--plural, next-item and the three translation tasks. Present--past stays near the baseline under every set of this section but one (below). Each part of the design matters: lists of task words alone or common words alone, and heads selected on the most accurate template only, give smaller effects (\texttt{summary-simple}). The sets have 95 to 137 heads. Random sets of the same size, with the same heads per layer, have almost no effect on most tasks, but single draws have large effects on antonym and landmark--country, and every draw has some on product--company. The control mean has effects on synonym, and smaller ones on park--country, singular--plural and next-item (Table~\ref{tab:words-control}), so on these tasks part of the effect is not specific to the task.
+
+\paragraph{CC-pooled-clean.} The common words of CC-pooled (\emph{what}, \emph{which}, \emph{maybe}, \emph{https}, \emph{etc}) are among the words heads decode on unrelated text. Removing them helps most fact tasks, the translation tasks and the morphology tasks (with 10 + 10 words it is the only set with some effect on present--past), and hurts antonym, synonym, next-item and prev-item, which are carried by heads that decode such generic words.
+
+\paragraph{Attend and decode.} For tasks whose instruction names the type of the answer, a few heads carry the task. L16H25 ranks first on all five fact tasks; alone it has the largest effect of all sets on country--capital, five heads carry landmark--country, and twenty carry product--company and singular--plural as much as or more than CC-pooled, with no effect of the control mean. On park--country the control mean has an effect almost as large. Translations, next-item, prev-item and present--past are not carried by up to twenty such heads, although the translation tasks have heads with this pattern. The heads with the pattern lie mostly in layers 13 to 17. At equal size, the sets ranked this way have larger effects on average than the CC-pooled heads ranked by match rate, and random sets have almost none, with single draws on singular--plural and product--company the exceptions.
+
+\paragraph{Caveats.} The word lists, list sizes and designs were chosen after seeing the first check on the same items, the effect is the best over four values of $\alpha$, each set is run once, and the second check and held-out items have not been run.
+
+Thus, lists built from the words the heads decode select head sets that carry more tasks than Yang's term lists, and for tasks whose instruction names the answer type, heads that attend to that name and decode the type of the answer carry the task with one to twenty heads.
+
+\begin{table}[H]
+\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\input{tables/wordlists_jhead}
+\caption{Head sets from decoded words, J-head, rule style, first causal check: highest accuracy over $\alpha\in\{1,2,4,8\}$, rule-style means averaged over the five templates. E1: E1's J-head rule-style set over the same $\alpha$. A+D $N$: the $N$ heads ranked first by attention to task words times decode rate. Random 5: mean of the two layer-matched random sets of A+D 5. Bold: the largest of the six head sets.}
+\label{tab:words}
+\end{table}
+
+\begin{table}[H]
+\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\input{tables/wordlists_jhead_control}
+\caption{As Table~\ref{tab:words}, with the control mean, at the $\alpha$ of the highest task-mean accuracy.}
+\label{tab:words-control}
+\end{table}
+
 \section{Plan}\label{sec:plan}
 \paragraph{Steps.}
 \begin{enumerate}
@@ -629,6 +673,7 @@ Thus, at equal size, the difference between the readouts largely remains, while 
 \item Run E1b on the rule-style heads ($k=5$, H\ref{h:consensus}), and its exploratory sets for $k=1$ and~3.
 \item Run the follow-ups of the union sets (Secs.~\ref{sec:shared}--\ref{sec:noretrieval}) and write them up.
 \item Run the equal-size sets (Sec.~\ref{sec:sized}) and write up their results (done).
+\item Head sets from decoded words (Sec.~\ref{sec:words}): first check done; to run: held-out items and the second check.
 \end{enumerate}
 Reused code and data: the lexical-task-head code of \citet{yang2026shared}; the Head-JLens code and matrices of \citet{merlo2026headjlens}; the task datasets of \citet{todd2024function}.
 
@@ -709,6 +754,9 @@ The causal effects of the equal-size sets of Sec.~\ref{sec:sized}, as the highes
 \item[2026-11-03] The project is split into two documents: \texttt{proposal-simple}, the identification method on the simple tasks (E0 for the simple tasks, E1, E1b), and \texttt{proposal-complex}, the complex tasks (E0 for the complex tasks, E2). Work continues on the simple tasks for now. The readout hypothesis is stated once per document, with its criteria unchanged.
 \item[2026-11-03] \texttt{proposal-simple} is reorganised: the replication of \citet{yang2026shared} under both readouts first, then one section per change tried, each with its design followed by its results.
 \item[2026-11-03] Head sets of equal size (Sec.~\ref{sec:sized}): the $N\in\{5,10,20\}$ highest-ranked heads under each readout and rule, only among heads that match on at least one prompt; patched with own-style means at nine values of $\alpha$ ($-10$, $-4$, 2, 3, 4, 5, 6, 8, 10) to shorten the run, with the threshold sets compared over the same nine; identical sets are patched once.
+\item[2026-11-05] Head sets from decoded words (Sec.~\ref{sec:words}), exploratory: J-head only, rule style, first check only, at $\alpha\in\{1,2,4,8\}$, with the E1 J-head sets compared over the same four values. Word lists from the words all heads decode on $P^{+}$; heads selected on the five templates' prompts pooled.
+\item[2026-11-05] Words that heads decode on 1{,}000 WikiText-103 passages are removed from the lists in one variant (CC-pooled-clean), after \citet{davidson2025different}; the 50 most frequent are removed.
+\item[2026-11-06] Small head sets ranked by attention to the task words times decode rate (Sec.~\ref{sec:words}), after the pattern of head L16H25.
 \end{description}
 
 \end{document}
