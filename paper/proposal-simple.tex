@@ -627,7 +627,7 @@ Thus, at equal size, the difference between the readouts largely remains, while 
 
 \paragraph{Attend and decode.} For tasks whose instruction names the type of the answer, a few heads carry the task. L16H25 ranks first on all five fact tasks; alone it has the largest effect of all sets on country--capital, five heads carry landmark--country, and twenty carry product--company and singular--plural as much as or more than CC-pooled, with no effect of the control mean. On park--country the control mean has an effect almost as large. Translations, next-item, prev-item and present--past are not carried by up to twenty such heads, although the translation tasks have heads with this pattern. The heads with the pattern lie mostly in layers 13 to 17. At equal size, the sets ranked this way have larger effects on average than the CC-pooled heads ranked by match rate, and random sets have almost none, with single draws on singular--plural and product--company the exceptions.
 
-\paragraph{Caveats.} The word lists, list sizes and designs were chosen after seeing the first check on the same items, the effect is the best over four values of $\alpha$, each set is run once, and the second check and held-out items have not been run.
+\paragraph{Caveats.} The word lists, list sizes and designs were chosen after seeing the first check on the same items, the effect is the best over four values of $\alpha$, each set is run once, and the second check and held-out items have not been run here; both are run in E4 (Sec.~\ref{sec:e4}).
 
 Thus, lists built from the words the heads decode select head sets that carry more tasks than Yang's term lists, and for tasks whose instruction names the answer type, heads that attend to that name and decode the type of the answer carry the task with one to twenty heads.
 
@@ -645,6 +645,357 @@ Thus, lists built from the words the heads decode select head sets that carry mo
 \label{tab:words-control}
 \end{table}
 
+% =====================================================================
+\section{E4: Held-out test of head sets from decoded words}
+\label{sec:e4}
+
+\subsection{Design}
+
+\paragraph{Question.} In Sec.~\ref{sec:words} the head sets chosen from the words heads decode
+(CC-pooled) carry every task better than the E1 J-head sets, and carry tasks the E1 sets do
+not (antonym, singular--plural, next-item, the three translations). That result is exploratory:
+the words, the list sizes and the designs were chosen after seeing the first check on the same
+items, each effect is the best of four values of $\alpha$, each set was run once, the second check
+was not run, and the sets (95 to 137 heads) are larger than the E1 sets and than the function
+vector of \citet{davidson2025different}. E4 asks three questions with the design of Sec.~\ref{sec:words} frozen:
+(i) does CC-pooled still beat the E1 set on items not used to build it; (ii) is its effect larger
+than that of random heads of the same number and layers; (iii) at the same number of heads, do
+heads chosen by what they decode carry the task as well as heads chosen by their causal effect
+\citep{davidson2025different}? A second part, E4b (Sec.~\ref{sec:e4b}), adds new wordings of
+each task's instruction and asks two more: (iv) do words and heads chosen on more wordings
+carry the task better; (v) do heads chosen on some wordings carry the task when it is asked in
+wordings never used to choose them? The hypotheses are stated before the run (below).
+
+\paragraph{Frozen choices.} Everything that Sec.~\ref{sec:words} chose after seeing results is fixed here
+and not changed after E4 is run: J-head readout; rule style; word filter (alphabetic, at least
+three letters, not a function word, Zipf frequency at least 3); task words by share on the task
+minus the mean share on the other 13 tasks; common words by the largest minimum share over
+the 14 tasks; 5 task words and 5 common words; heads by Definition~\ref{def:lth} with $k = 10$,
+$\rho = 0.10$, on the five templates' prompts pooled; for CC-pooled-clean the 50 words with the
+largest share on the 1{,}000 WikiText-103 passages removed first; for attend and decode the
+score of Sec.~\ref{sec:words}. No other list, list size, threshold or contrast is run in E4.
+
+\paragraph{Item split.} The items of each task are shuffled with a fixed seed (0) and cut into
+two halves, $A$ and $B$, of equal size (one more in $A$ when odd). Each half is used once to
+choose and once to test (two folds): in fold~1 everything is chosen on $A$ and tested on $B$;
+in fold~2 the reverse. ``Chosen'' covers every quantity that depends on the items: the
+identification prompts $P^+$ of each template (the first 100 correct prompts of that half),
+the word shares, the word lists, the head sets, the rankings of the top-$N$ sets, the
+function-vector scores, the task means and the control means (the control task's own half
+with the same name). ``Tested'' covers only the patched items. The WikiText readings do not
+depend on the items and are shared by both folds. On tasks with fewer than 200 items a half
+gives fewer than 100 identification prompts or patched items; the number used is reported for
+every task, fold and check.
+
+\paragraph{Head sets.} For each task and fold, all J-head:
+\begin{enumerate}
+  \item \textbf{E1}: Definition~\ref{def:lth} with Yang et al.'s term list on the most accurate template
+    of the choosing half (the E1 rule, recomputed on that half).
+  \item \textbf{CC}: CC-pooled at its own size $N_t$ (the heads passing Definition~\ref{def:lth}).
+  \item \textbf{CC-20, CC-40}: the first 20 and 40 heads of the model ranked by their pooled
+    match rate under the CC list (ties as in Sec.~\ref{sec:sized}); a head need not pass the threshold.
+  \item \textbf{FV-$N$}, $N \in \{20, 40, N_t\}$: the first $N$ heads ranked by the
+    function-vector score of \citet{davidson2025different} on task $t$ (the gain in the answer's
+    probability when the head is set to its mean on prompts whose instruction is replaced, as
+    run for \texttt{summary-simple}), computed on the choosing half only.
+  \item \textbf{Random-$N$}, $N \in \{20, 40, N_t\}$: five draws per size, each with the same
+    number of heads in every layer as the CC set of that size, drawn outside it (seeds 0--4).
+  \item Secondary, not in the hypotheses: \textbf{CC-clean} (5\,+\,5 words, pooled), and
+    \textbf{A+D-20, A+D-40} (attend and decode); \textbf{FV-univ-20, FV-univ-40}, the heads
+    ranked by the mean of the function-vector score over the 14 tasks (Davidson et al.'s own
+    choice of heads).
+\end{enumerate}
+The FV ranking uses a causal criterion on prompts without the instruction, close to the first
+check itself; the comparison is therefore tilted towards the FV heads, not against them.
+
+\paragraph{Causal checks.} Both checks of E1 (Sec.~\ref{sec:e1}), on the testing half, with the
+rule-style means of the five templates of the choosing half and the control mean of E1's
+control task, at ten values of $\alpha$: the nine of Sec.~\ref{sec:sized} ($-10, -4, 2, 3, 4, 5, 6, 8, 10$),
+which give within 0.05 of the fifteen on the E1 and E1b sets, and $\alpha = 1$, added because
+the CC sets of Sec.~\ref{sec:words} had their best effect at $\alpha \le 2$ on 11 of the 14 tasks. Check~1: the first 100 items of
+the testing half answered correctly with one shot, patched in their zero-shot prompts. Check~2:
+the first 100 answered wrongly with one shot, patched in their 1-shot prompts; unlike E1, the
+control mean is run in check~2 as well. Random sets are patched with the task means only.
+Scoring: the flexible score; the first-token score and the reply kinds of Sec.~\ref{sec:replies} are kept beside
+it. As a reference, not a matched comparison, Davidson et al.'s own intervention (the 30-head
+function vector of \texttt{summary-simple}, the sum of its heads' means added after layer 11 at the last
+token, $\alpha = 1$) is run on the
+same items.
+
+\paragraph{Choice of $\alpha$.} Two effects are reported for every set, check and task. The
+\emph{best-$\alpha$ effect}, as in the earlier sections: the highest accuracy over the ten
+values, averaged over the five means, minus the unpatched accuracy. The \emph{cross-fitted
+effect}, the primary measure: for fold~1, the accuracy at the $\alpha$ that gave the highest
+accuracy for the same task and the same kind of set (same rule, same $N$) in fold~2, and the
+reverse; the
+choice of $\alpha$ is therefore never made on the items it is scored on. Random sets are scored
+at the $\alpha$ chosen for the CC set of their size. Effects are averaged over the two folds.
+The \emph{specific effect} is the task-mean accuracy minus the control-mean accuracy at the
+same $\alpha$.
+
+\paragraph{Statistics.} Two sets of the same task are patched on the same items, so they are
+compared item by item. Each difference between two sets (on one task, or averaged over the 14
+tasks) gets a 95\% interval from a paired bootstrap over the patched items within each task
+(10{,}000 resamples, both folds resampled separately). The cross-fitted $\alpha$ is held fixed
+in the resamples. A task counts for a set in the
+per-task counts below only if the set's control effect is less than half of its effect on that
+task.
+
+\paragraph{Hypotheses.} All on the cross-fitted effect in check~1; the same comparisons in
+check~2 are reported as secondary.
+\begin{description}
+  \item[H4 (lexicon).] CC has a larger effect than E1. Supported if the mean difference over
+    the 14 tasks has a 95\% interval above 0 and CC is above E1 on at least 10 of the 14 tasks.
+    Falsified if the interval contains 0 or CC is above E1 on 7 tasks or fewer.
+  \item[H5 (not chance).] CC has a larger effect than random heads of its size and layers.
+    Supported if its mean over the 14 tasks is above that of every random draw and, on at
+    least 10 tasks, above the largest of the five draws. Falsified if its mean falls within the
+    range of the five draws' means.
+  \item[H6 (decoding against causal choice).] At each size $N \in \{20, 40, N_t\}$, CC-$N$
+    is not worse than FV-$N$: the lower end of the 95\% interval of the mean difference
+    (CC-$N$ minus FV-$N$) is above $-0.05$. In addition, CC-$N$ is above FV-$N$ on at least
+    4 of the 5 tasks on which the E1 sets do nothing and the CC set did most in Sec.~\ref{sec:words}:
+    antonym, next-item, English--French, English--German, English--Spanish. Decided
+    separately for each $N$; falsified at a size if either part fails.
+\end{description}
+Expected from the earlier results, and stated so that the outcome can be compared with it:
+H4 and H5 hold; H6 holds at $N_t$ and may fail at 20 and 40, where CC sets ranked by match
+rate gave 0.21 and 0.25 (\texttt{summary-simple}, E3) and the 30-head FV of \texttt{summary-simple} has a larger mean.
+
+\paragraph{What each outcome would mean.}
+\begin{itemize}
+  \item H4 and H5 hold, H6 holds at every $N$: choosing heads by what they decode is as
+    good as choosing them by their causal effect, and better on the tasks named in H6. This
+    is the strongest outcome, and the one that would make Sec.~\ref{sec:words} a main result.
+  \item H4 and H5 hold, H6 only at $N_t$: decoded words find the right heads, but spread
+    over more of them than a causal ranking needs; the claim becomes one about which heads,
+    not how few.
+  \item H4 holds, H5 fails: the CC sets work by their size and layers, not by which heads
+    they hold; Sec.~\ref{sec:words}'s gain over E1 is a size effect.
+  \item H4 fails: Sec.~\ref{sec:words}'s gain came from choosing the design on the test items.
+\end{itemize}
+
+\subsection{Results}\label{sec:res-e4}
+\paragraph{What is reported.} Accuracies only: at the cross-fitted $\alpha$, averaged over the two folds (Tables~\ref{tab:e4-check1}--\ref{tab:e4-secondary}), and against $\alpha$ (Figure~\ref{fig:e4-curves-nt}; 20 and 40 heads in Figures~\ref{fig:e4-curves-20} and~\ref{fig:e4-curves-40}). The paired bootstrap intervals and the decisions on H4--H6 described above are not computed, a choice made after the design was written. The secondary sets were run in fold~1 only and are given at their best $\alpha$ there, so they are not compared one to one with the main sets. The E1 sets have 7 to 50 heads, the CC sets 97 to 154.
+
+\paragraph{CC against E1} (Table~\ref{tab:e4-check1}). On held-out items the CC set has a larger effect than the E1 set on every task except product--company, with a mean close to that of Sec.~\ref{sec:words}. It carries antonym, singular--plural and the three translation tasks, on which the E1 set has almost none; on next-item its lead over E1 is small. Present--past stays near the baseline.
+
+\paragraph{Random heads.} At the cross-fitted $\alpha$, random sets with the CC set's number of heads in each layer have almost no effect, except on product--company. At larger $\alpha$ single draws have effects on landmark--country and product--company (Figure~\ref{fig:e4-curves-nt}), as in Sec.~\ref{sec:words}.
+
+\paragraph{Decoded words against causal choice} (Tables~\ref{tab:e4-check1} and~\ref{tab:e4-sizes}). With as many heads as the CC set, the heads ranked by the function-vector score (FV-$N_t$) have larger effects than CC on most tasks, and they carry present--past, which no decoded-word set does. CC is above FV-$N_t$ on prev-item and the three translation tasks. At 20 and 40 heads, FV is above or equal to CC on most tasks, and neither carries the translation tasks. FV sets have their best effect at smaller $\alpha$ (mostly 1 or 2) than CC sets (mostly 2 or 3). The 30-head function vector of \citet{davidson2025different}, run as a reference, has a mean between those of E1 and CC.
+
+\paragraph{Control mean.} The control mean has small effects for most sets and tasks; larger ones on park--country for E1, on synonym, park--country and next-item for CC, and on synonym and product--company for FV-$N_t$.
+
+\paragraph{Second check} (Tables~\ref{tab:e4-check2} and~\ref{tab:e4-sizes-check2}). With one example in the prompt the sets differ much less: E1, CC and FV-$N_t$ have similar effects on most tasks, random sets have larger effects than in the first check, and on next-item and prev-item the control mean has effects as large as the task mean's or larger. On singular--plural, country--capital and park--country fewer than 25 items per fold are patched.
+
+\paragraph{Secondary sets} (Table~\ref{tab:e4-secondary}). In the first check, CC-clean is close to CC or above it on the fact tasks (much above on product--company) and on English--French and English--German, and below it on antonym, synonym, next-item, prev-item and English--Spanish. The attend-and-decode sets of 20 and 40 heads carry product--company, country--capital, landmark--country and singular--plural, and little else. The FV-univ sets, the heads of \citet{davidson2025different} ranked over all 14 tasks, have the largest mean of all sets in the first check, at their best $\alpha$ in one fold.
+
+Thus, on items not used to choose them, the decoded-word sets keep their lead over the E1 sets and over random heads, but heads ranked by their causal effect carry most tasks better at every size; the decoded-word sets are ahead only on the translation tasks and prev-item, and only at their own size.
+
+\begin{table}[H]
+\centering\footnotesize\setlength{\tabcolsep}{3pt}\resizebox{\textwidth}{!}{\input{tables/heldout_check1_nt}}
+\caption{E4, first check, held-out items: accuracy at the cross-fitted $\alpha$, mean of the two folds, rule-style means of the choosing half averaged over the five templates. Items: patched items in fold~1 / fold~2. E1, CC: the sets chosen on the choosing half. FV-$N_t$: as many heads as the CC set, ranked by the function-vector score. Random-$N_t$: mean of the five draws with the CC set's heads per layer, at the CC set's $\alpha$. FV-30: the 30-head function vector of \citet{davidson2025different} at $\alpha=1$, a reference. ctrl: the control mean at the set's $\alpha$.}
+\label{tab:e4-check1}
+\end{table}
+
+\begin{table}[H]
+\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\input{tables/heldout_check1_sizes}
+\caption{E4, first check, sets of 20 and 40 heads, as Table~\ref{tab:e4-check1}. CC-$N$: the first $N$ heads by pooled match rate under the CC list; FV-$N$: the first $N$ by the function-vector score; Random-$N$: mean of the five draws with the CC-$N$ set's heads per layer, at its $\alpha$.}
+\label{tab:e4-sizes}
+\end{table}
+
+\begin{table}[H]
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\input{tables/heldout_check2_nt}
+\caption{E4, second check (1-shot prompts answered wrongly), as Table~\ref{tab:e4-check1}. Random-$N_t$ is run only at the cross-fitted $\alpha$; the function vector of \citet{davidson2025different} is not run in this check.}
+\label{tab:e4-check2}
+\end{table}
+
+\begin{table}[H]
+\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\input{tables/heldout_check2_sizes}
+\caption{E4, second check, sets of 20 and 40 heads, as Table~\ref{tab:e4-sizes}.}
+\label{tab:e4-sizes-check2}
+\end{table}
+
+\begin{table}[H]
+\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}c@{}}
+\textbf{First check}\\[2pt]
+\input{tables/heldout_check1_secondary}\\[8pt]
+\textbf{Second check}\\[2pt]
+\input{tables/heldout_check2_secondary}
+\end{tabular}
+\caption{E4, secondary sets, fold~1 only: accuracy at the best $\alpha$ in fold~1 (not cross-fitted). CC-clean: CC-pooled-clean, 5\,+\,5 words. A+D-$N$: the first $N$ heads by attention to task words times decode rate. FV-univ-$N$: the first $N$ heads by the function-vector score averaged over the 14 tasks.}
+\label{tab:e4-secondary}
+\end{table}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{figures/heldout_curves_nt}
+\caption{E4, accuracy against $\alpha$, mean of the two folds, sets of $N_t$ heads: CC, FV-$N_t$ and E1, task means (solid) and control mean (dotted, same colour). Grey band: range of the five random draws (first check); grey points: random draws in the second check, where they are run only at the cross-fitted $\alpha$ (each draw and fold).}
+\label{fig:e4-curves-nt}
+\end{figure}
+
+\subsection{E4b: More wordings, and wordings held out}
+\label{sec:e4b}
+
+\paragraph{Question.} The five templates of \citet{yang2026shared} are few, and E3's word lists and
+heads were chosen on all of them, so nothing has been tested on a wording that was not used
+to choose. Two questions. First, a head may carry the task but decode a list word only under
+some wordings; then more wordings should find more of the heads that carry the task, as
+pooling the five templates did in Sec.~\ref{sec:words} (0.18 to 0.45, with five times the prompts of the
+best template). Second, if a set holds the task's
+representation and not the words of particular instructions, its heads should come up, and its
+patch should work, under wordings never used to choose it, including wordings that do not
+contain the task's name.
+
+\paragraph{New wordings.} For each task, 30 new instruction templates, in six cells of five:
+three forms $\times$ whether the instruction names the task.
+\begin{itemize}
+  \item Forms: \emph{cloze} (``The opposite of \{x\} is''), \emph{question--answer} (an
+    instruction, then \verb|Q: {x}\nA:|, as Yang's templates B--E), and
+    \emph{label} (two labels, one before the input and one after it, \verb|Word: {x}\nOpposite:|).
+  \item Task named: the instruction contains a word of the task's term list of \citet{yang2026shared} or
+    the task's name (antonym, capital, French, \ldots). Not named: it contains none of them
+    and describes the task otherwise (``the word whose meaning is furthest from'', ``the city where
+    the government of \{x\} sits'', ``this word as a person in Lyon would say it''). Presence is
+    checked by script on the lowercased words.
+\end{itemize}
+They are written by an LLM (GPT-5.5, with one fixed prompt per cell that gives the task's
+description and two of Yang's templates as examples, not the items), checked by script for the
+cell's conditions and by hand for correctness and ambiguity (one pass by the author), and the
+first five per cell that pass are kept. A cell that cannot be filled (the not-named translation
+cells may be hard) is reported with the number kept. Yang's five templates are kept as they are.
+
+\paragraph{Behaviour (E0 on the new wordings).} Every new template is run on every item (at
+most 500 per task, the same items for all templates), greedy, saved and scored as E0
+(Sec.~\ref{sec:evaluation}). Reported: accuracy per template, its spread per task under the flexible and the
+first-token score, and the mean accuracy per form and per named / not named. These choose
+$P^+$ below, on the choosing half only.
+
+\paragraph{Wording split.} In each of the six cells, three templates are used to choose
+(seed~0) and two are held out: 18 new templates to choose and 12 held out per task, the held-out
+twelve two per cell. Yang's five templates are always among those used to choose, so that the
+sets of E4 are the condition $m = 5$ below. Held-out wordings are never used to choose words,
+heads, rankings or $\alpha$. The wording split is crossed with the item split: words and heads
+are chosen on the choosing half under the chosen wordings, and every test is on the testing
+half.
+
+\paragraph{Conditions: number of wordings.} $m \in \{1, 5, 11, 23\}$ wordings to choose words
+and heads, nested: $m = 1$, the most accurate of Yang's templates on the choosing half (the
+``best template'' of Sec.~\ref{sec:words}); $m = 5$, Yang's five; $m = 11$, Yang's five and one new template
+from each cell, three draws (seeds 0--2); $m = 23$, Yang's five and all 18 new ones. The number
+of prompts is held fixed so that $m$ changes how varied the prompts are, not how many: each
+condition uses $T_t$ correct prompts in all, where $T_t$ is the number of correct prompts of the
+$m = 1$ template on the choosing half, capped at 500, split evenly over the $m$ templates (the
+first correct prompts of each; a shortfall in one template is reported, not filled from
+another). The $m = 5$ condition is therefore not the CC set of E4, which takes up to 100
+prompts from each of the five templates: the two are the same set only where $T_t = 500$
+(antonym, synonym and the three translations), and on the other tasks the $m = 5$ condition
+has fewer prompts per template (about 15 to 75). The CC set of E4 is reported beside the
+conditions as a reference point (five templates, up to 100 prompts each), not as one of them.
+Secondary, at $m = 23$: 100 prompts per template, to see
+whether more prompts add to more wordings.
+
+\paragraph{Head sets.} For each $m$, the CC rule of E4 unchanged: word shares, task and
+common words, and Definition~\ref{def:lth} on the pooled prompts of the $m$ templates; the other 13
+tasks' shares for the contrast are computed under the same $m$. Secondary: \textbf{E1-pooled},
+Yang's term list with Definition~\ref{def:lth} on the same pooled prompts, at $m = 5$ and $m = 23$, to see
+whether more wordings help the hand-written lists. For the $m = 5$ condition, five random sets
+with the same number of heads in each layer are drawn as in E4 (seeds 0--4), since the set
+differs from E4's.
+
+\paragraph{Tests.}
+\begin{enumerate}
+  \item \textbf{Number of wordings}: both checks of E4 for every set, with the same five means
+    (Yang's templates, choosing half) and the same items, so that only the heads differ;
+    cross-fitted $\alpha$ by condition ($m$). The CC set of E4 is shown beside the four
+    conditions. Measures beside the effect: set size; overlap
+    (Jaccard) between the three $m = 11$ draws and between consecutive $m$; overlap of the
+    word lists.
+  \item \textbf{Reach on held-out wordings}: for the E1 set, CC ($m = 5$) and CC ($m = 23$),
+    the match rate of the set's heads (its own word list, Definition~\ref{def:lth}'s per-prompt test) on the
+    correct prompts of each held-out template on the choosing half, against five random sets
+    with the same number of heads in each layer as the set (drawn as in E4); separately for
+    named and not-named templates, with the copy share (Sec.~\ref{sec:measures}) on each.
+  \item \textbf{Held-out means}: check~1 on the same three sets, patched with the means of the
+    12 held-out templates (each from its correct prompts on the choosing half) instead of
+    Yang's five.
+  \item \textbf{Held-out failures}: a second check on wordings, not shots. Patched prompts:
+    the prompts of each held-out template answered wrongly on the testing half (the first 20
+    per template, at most 240), whose unpatched accuracy is 0. Means: Yang's five, choosing
+    half. Control: the control mean of E4. This asks whether heads and means taken from the
+    chosen wordings repair the wordings on which the model fails, which is the prompt
+    sensitivity of \citet{yang2026shared} in its most direct form.
+\end{enumerate}
+Tests 3 and 4 are run at three values of $\alpha$: the cross-fitted one of the set and 4 and 8.
+
+\paragraph{Hypotheses.} On the cross-fitted effect, mean over the 14 tasks, intervals by the
+paired bootstrap of E4.
+\begin{description}
+  \item[H7 (more wordings).] (a) CC at $m = 5$ has a larger check-1 effect than at $m = 1$
+    (interval above 0): pooling templates helps when the number of prompts is the same.
+    (b) CC at $m = 23$ has a larger effect than at $m = 5$ (interval above 0). Each part decided
+    separately. Expected: (a) holds but with a smaller gain than in Sec.~\ref{sec:words}, where pooling also
+    gave five times the prompts; (b) is smaller and may fail, since the union rule (E1b, $k = 1$)
+    helped only some tasks. Comparing $m = 5$ with the CC set of E4 shows what the extra prompts
+    add at five templates; it is reported, not tested.
+  \item[H8 (held-out wordings).] For CC at $m = 5$ and at $m = 23$, each decided separately:
+    (a) the match rate on held-out templates is above that of every random draw, on the named
+    and on the not-named templates; (b) check~1 with the held-out means is not worse than with
+    Yang's means by more than 0.05 (lower end of the interval); (c) on held-out failures, the
+    task mean's effect is above the control mean's (interval above 0). Falsified for a set if
+    any part fails; parts are reported one by one.
+  \item[H9 (copying).] For CC at $m = 5$, the match rate on not-named held-out templates is
+    at least half of that on named ones. If it is less, the heads mostly decode list words
+    that the instruction contains, and the reach of H8(a) comes from copying.
+\end{description}
+
+\paragraph{What the outcomes would mean.} H7(b) and H8 together decide whether ``more
+wordings'' improves identification or only enlarges the sets: if (b) holds and the $m = 23$ set
+also passes H8 where $m = 5$ fails, the extra wordings found heads that carry the task across
+wordings. If H8 holds but H9 fails, the sets work across wordings that name the task and say
+little about a representation of the task beyond its name. H8(c) is the result that speaks to
+Yang et al.'s main claim: heads and means from some wordings repairing failures of others.
+
+\paragraph{Status.} Only the new wordings exist so far. GPT-5.5 filled all 84 cells (14 tasks $\times$ 6) with five templates each, which passed the script checks, and kept 2 to 5 spares per cell; one call per cell is logged. In the not-named cells the script bans the words that name the answer relation (the term list of \citet{yang2026shared} and the task's name for it); words for the input, such as \emph{country} for country--capital or \emph{landmark}, are allowed. The hand check is pending (\texttt{data/review/e4b\_wordings.md}); E0 on the new wordings, the readings and the patching have not been run.
+
+\paragraph{Cost of E4b.} New-wording E0: 30 templates $\times$ at most 500 items $\times$ 14
+tasks $\le$ 210{,}000 replies. Readings (J-head top tokens of every head at the last token): the
+23 chosen and 12 held-out templates' correct prompts, at most about 245{,}000 forward passes
+without generation. Patching, per task and fold: test~1, 9 new sets (CC at $m = 1$, $m = 5$,
+three at $m = 11$, $m = 23$, $m = 23$ with 100 per template, two E1-pooled) $\times$ 12{,}000
+$\approx$ 108{,}000; tests~3 and 4, 3 sets $\times$ 3 values of $\alpha$ $\times$ (12 means
+$\times$ 100 $+$ 5 means $\times$ 240 $+$ 240 control) $\approx$ 24{,}000; about 132{,}000 per
+task and fold, 3.7 million in all.
+
+\subsection{Cost and output}
+
+\paragraph{Cost of E4.} Per task and fold, with $\le 100$ patched items and five task means:
+12 main and secondary sets $\times$ 2 checks $\times$ (10 values of $\alpha$ $\times$ 5 means
+$+$ 10 $\times$ 1 control) $\times$ 100 $\approx$ 144{,}000 replies; 15 random sets $\times$ 2
+checks $\times$ 10 $\times$ 5 $\times$ 100 $\approx$ 150{,}000; in all about 294{,}000 per task
+and fold, 8.2 million over 14 tasks and two folds, plus the function-vector scores on each
+choosing half. Two cuts keep the hypotheses intact: random sets in check~2 only at the
+cross-fitted $\alpha$ (saves about 67{,}000 per task and fold), and the five secondary sets in
+fold~1 only (about 60{,}000 in fold~2). Replies can stop at 16 new tokens: the flexible score
+reads only the start of the reply, and the longest reference has 15 tokens. E4 and E4b
+together: about 11.9 million patched replies before the cuts, 0.2 million new E0 replies and
+0.25 million reading passes. If only part can be run, E4 comes first: H4--H6 do not depend on
+E4b, while E4b takes its item split, means and control from E4.
+
+\paragraph{Output.} \texttt{results/heldout/fold1/} and \texttt{fold2/}, and for E4b
+\texttt{results/heldout/wordings/}: the new templates with their cells and checks, the
+wording split, the split (item ids per half), the
+word lists and head sets of each fold, the FV scores, accuracies at every $\alpha$ for every set,
+mean and check, the cross-fitted and best-$\alpha$ effects, and the bootstrap intervals. Tables:
+cross-fitted effect per task and set in check~1 and check~2 (as Table~\ref{tab:words}), and the three
+hypothesis comparisons with their intervals; figures: accuracy against $\alpha$ per task for
+E1, CC, FV-$N_t$ and the random draws; for E4b, the effect against $m$ per task, and
+match rate and effect on held-out templates by form and named / not named.
+
 \section{Plan}\label{sec:plan}
 \paragraph{Steps.}
 \begin{enumerate}
@@ -653,7 +1004,8 @@ Thus, lists built from the words the heads decode select head sets that carry mo
 \item Run E1b on the rule-style heads ($k=5$, H\ref{h:consensus}), and its exploratory sets for $k=1$ and~3.
 \item Run the follow-ups of the union sets (Secs.~\ref{sec:shared}--\ref{sec:noretrieval}) and write them up.
 \item Run the equal-size sets (Sec.~\ref{sec:sized}) and write up their results (done).
-\item Head sets from decoded words (Sec.~\ref{sec:words}): first check done; to run: held-out items and the second check.
+\item Head sets from decoded words (Sec.~\ref{sec:words}): first check done; held-out items and the second check in E4 (Sec.~\ref{sec:e4}, done).
+\item E4b (Sec.~\ref{sec:e4b}): new wordings generated; to do: hand check, E0 on the new wordings, readings and patching.
 \end{enumerate}
 Reused code and data: the lexical-task-head code of \citet{yang2026shared}; the Head-JLens code and matrices of \citet{merlo2026headjlens}; the task datasets of \citet{todd2024function}.
 
@@ -706,6 +1058,21 @@ The causal effects of the equal-size sets of Sec.~\ref{sec:sized}, as the highes
 \end{table}
 
 \clearpage
+\section{E4: accuracy curves at 20 and 40 heads}\label{app:e4}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/heldout_curves_20}
+\caption{E4, accuracy against $\alpha$, sets of 20 heads (CC-20, FV-20, Random-20), as Figure~\ref{fig:e4-curves-nt}; E1 as there.}
+\label{fig:e4-curves-20}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/heldout_curves_40}
+\caption{E4, accuracy against $\alpha$, sets of 40 heads, as Figure~\ref{fig:e4-curves-20}.}
+\label{fig:e4-curves-40}
+\end{figure}
+
+\clearpage
 \input{appendix-simple}
 
 \clearpage
@@ -736,6 +1103,9 @@ The causal effects of the equal-size sets of Sec.~\ref{sec:sized}, as the highes
 \item[2026-11-05] Head sets from decoded words (Sec.~\ref{sec:words}), exploratory: J-head only, rule style, first check only, at $\alpha\in\{1,2,4,8\}$, with the E1 J-head sets compared over the same four values. Word lists from the words all heads decode on $P^{+}$; heads selected on the five templates' prompts pooled.
 \item[2026-11-05] Words that heads decode on 1{,}000 WikiText-103 passages are removed from the lists in one variant (CC-pooled-clean), after \citet{davidson2025different}; the 50 most frequent are removed.
 \item[2026-11-06] Small head sets ranked by attention to the task words times decode rate (Sec.~\ref{sec:words}), after the pattern of head L16H25.
+\item[2026-11-06] E4 (Sec.~\ref{sec:e4}): the designs of Sec.~\ref{sec:words} frozen and tested on held-out items (two folds) with both checks; $\alpha=1$ added to the nine values of Sec.~\ref{sec:sized}; $\alpha$ cross-fitted per task and set. E4b: the $m=5$ condition uses the fixed prompt count $T_t$, with the CC set of E4 as a reference point only.
+\item[2026-11-06] E4 is reported as accuracies only (tables and accuracy against $\alpha$); the bootstrap intervals and the decisions on H4--H6 are not computed.
+\item[2026-11-06] E4b wordings: in the not-named cells only words that name the answer relation are banned; words for the input are allowed. Generated by GPT-5.5; hand check by the author before use.
 \end{description}
 
 \end{document}

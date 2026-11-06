@@ -122,6 +122,16 @@ Group contrast & 5 groups (word relations, morphology, facts, sequences, transla
 Match-rate ranking & CC-pooled heads ranked by pooled match rate; top 1, 2, 5, 10, 20, 40; layer-matched random at 10, 20. & Small sets work only on capitals (L16H25 alone 0.88) and landmark (40 heads 0.93). Means: 5 heads 0.19, 20 heads 0.21, 40 heads 0.25. & \mixed \\
 Relation heads & Head's top-10 holds both a term-list token and a token of the prompt's own query. & Rare: $\rho\geq 0.10$ for $\leq 7$ heads per task, none on 10 tasks. Not patched. L16H25 decodes \emph{city}, not the relation. & -- \\
 Attend + decode & L16H25 pattern: at the last token it attends to \emph{capital}, \emph{country} in the instruction and decodes \emph{city}. Score = (share of last-token attention on task words in the instruction, outside the query) $\times$ (share of prompts with a task word in the J-head top 10); task words = Yang's list $\cup$ 10 top task words; eager attention, pooled prompts. Top 1, 2, 3, 5, 10, 20; layer-matched random at 5, 10. & Few heads carry fact tasks and plurals: capitals 0.88 (L16H25 alone), landmark 0.79 (5 heads), product--company 0.72 (20 heads, control 0.09; best of all), singular--plural 0.68 (20). Antonym 0.25 (5). Nothing on translations, next/prev-item, present--past. Park: control nearly as high. L16H25 ranks first on all 5 fact tasks; pattern in layers 13--17. Means: 5 heads 0.21, 20 heads 0.25 (match rate 0.19 / 0.21); random 0.04. & \mixed \\
+\midrule
+\multicolumn{4}{@{}p{\linewidth}@{}}{\textbf{E4 --- held-out test of the E3 sets} (J-head, rule style, E3 designs frozen. Items of each task split in two halves; words, heads, rankings and means chosen on one, patched on the other, both ways. Both checks, control mean in both; 10 $\alpha$ (the 9 of the equal-size sets + $\alpha=1$); $\alpha$ cross-fitted: the best on the other fold. Accuracies only, no intervals. Numbers: means over the 14 tasks, check 1 unless stated.)} \\
+CC vs E1 & CC-pooled (97--154 heads) and the E1 set (7--50), both rechosen on each half. & CC 0.44 vs E1 0.20 (E3: 0.45 vs 0.19). Above E1 on 13/14 (not product--company); still carries antonym, singular--plural, translations; next-item lead small; present--past 0.02. & \yes \\
+Random & 5 layer-matched draws per size, at the CC set's $\alpha$. & 0.02 at every size (product--company 0.15); check 2: 0.11--0.13. & \yes \\
+Decoded vs causal & Same number of heads ranked by Davidson's FV score on the choosing half: FV-20, FV-40, FV-$N_t$. & \textbf{FV better at every size:} $N_t$ 0.59 vs CC 0.44; 20: 0.38 vs 0.22; 40: 0.43 vs 0.26. CC ahead only on prev-item and translations at $N_t$ (German 0.39 vs 0.01). FV carries present--past (0.85). FV best at $\alpha$ 1--2, CC 2--3. Davidson's own 30-head FV ($\alpha=1$): 0.39. & \no \\
+Check 2 & 1-shot prompts answered wrongly. & Sets close: E1 0.31, CC 0.33, FV-$N_t$ 0.39; controls 0.12--0.13, as large as the task mean on next/prev-item; 11--34 items per fold on 5 tasks. & \mixed \\
+Secondary & Fold 1 only, best $\alpha$: CC-clean, attend + decode 20/40, FV-univ 20/40 (FV heads ranked over all 14 tasks, Davidson's choice). & CC-clean 0.39, A+D 0.28 (product--company 0.80), FV-univ-20 0.63, highest of all sets. & -- \\
+\midrule
+\multicolumn{4}{@{}p{\linewidth}@{}}{\textbf{E4b --- more wordings, held-out wordings} (design in \texttt{proposal-simple}, Sec.~16.3)} \\
+New wordings & 30 per task: 3 forms (cloze, Q--A, label) $\times$ task named / not named; GPT-5.5, script checks, hand check; then heads from $m\in\{1,5,11,23\}$ wordings at a fixed prompt count, tested on held-out wordings. & 84 cells $\times$ 5 generated (+ 2--5 spares each). \textbf{Pending:} hand check; nothing run yet. & -- \\
 \bottomrule
 \end{xltabular}
 \normalsize
@@ -134,6 +144,8 @@ Attend + decode & L16H25 pattern: at the last token it attends to \emph{capital}
 H1 replication & Fails with the zero-shot patching of Yang App.~G.1 (check 1: no gain on 7 tasks); the G.1 figures reproduce only with check 2 (wrong prompts, Sec.~2.4.1/App.~H.1.3), which gains on all 14. & \mixed \\
 H2 J-head $\supseteq$ Logit-head & Fails: J-head misses part of the Logit-head set on 24/28 pairs. J-only heads are causal in both checks. & \no \\
 H3 all-template heads & Falsified: better on $\leq$5/14 tasks. & \no \\
+H4--H6 (E4, held-out) & Not decided (accuracies only, no intervals). Pattern: CC above E1 and random; FV above CC at every size except translations and prev-item at $N_t$. & -- \\
+H7--H9 (E4b) & Not run. & -- \\
 \bottomrule
 \end{tabularx}
 
@@ -156,6 +168,9 @@ H3 all-template heads & Falsified: better on $\leq$5/14 tasks. & \no \\
 11-05 & Strict consensus at $\rho=0.05$ & $\rho=0.15$ & Run stopped and restarted (user decision). \\
 11-05 & Common words from task prompts & Words generic text elicits removed first (WikiText) & Helps facts, translations; hurts antonym, synonym, sequences. \\
 11-06 & Small sets by match rate & By attention to task words $\times$ decoding & User's L16H25 observation; larger effects at 5 and 20 heads. \\
+11-06 & E3: chosen and tested on the same items, best of 4 $\alpha$ & E4: held-out halves, 10 $\alpha$ (+ $\alpha=1$), cross-fitted $\alpha$ & E3 designs were chosen on the test items. CC lead over E1 holds (0.45 $\to$ 0.44). \\
+11-06 & E4 bootstrap intervals and H4--H6 verdicts & Accuracy tables and curves only & User decision. \\
+11-06 & E4b not-named: no term-list word or task name & Only words naming the answer relation banned; input words (\emph{country}, \emph{landmark}) allowed & -- \\
 \bottomrule
 \end{tabularx}
 \normalsize
@@ -176,7 +191,9 @@ H3 all-template heads & Falsified: better on $\leq$5/14 tasks. & \no \\
 \item \yes{} \textbf{Words the heads actually decode make better lists} (J-head, check 1): CC-pooled (5 task + 5 common words, words and heads over all 5 templates) is above E1 on all 14 tasks (mean 0.45 vs 0.19) and carries antonym, singular--plural, next-item and the translations, where E1 does nothing. Both word kinds and the pooling are needed.
 \item \mixed{} \textbf{Generic words help some tasks.} Removing the words heads read on any text (WikiText) helps facts, translations and morphology but hurts antonym, synonym and sequences.
 \item \mixed{} \textbf{Few heads suffice for named answer types:} heads that attend to the instruction's task words and decode the answer type carry capitals (1 head), landmark (5), product--company and singular--plural (20). Not translations, sequences, present--past.
-\item \textbf{E3 caveats:} words, list sizes and designs chosen after seeing check 1 on the same items; best of 4 $\alpha$; one run; no check 2, no held-out items yet.
+\item \yes{} \textbf{E3 holds on held-out items} (E4): CC-pooled stays above E1 (0.44 vs 0.20) and random heads (0.02) with $\alpha$ chosen on other items. In check 2 the sets differ little.
+\item \no{} \textbf{Decoded words do not beat causal choice} (E4): at 20, 40 and $N_t$ heads, heads ranked by Davidson's FV score carry most tasks better (present--past too); decoded-word sets are ahead only on translations and prev-item, at their own size.
+\item \textbf{E3 caveats:} words, list sizes and designs chosen after seeing check 1 on the same items; best of 4 $\alpha$; one run. E4 tests them on held-out items; new wordings (E4b) not yet run.
 \item \textbf{Read the replies, not only accuracy:} 19--33\% of patched replies on several tasks contain the answer after a prefix the flexible score rejects, and part of a ``loss'' can be a format change (landmark--country under J-head). \texttt{notebooks/patching\_outputs.py} shows them.
 \end{itemize}
 
