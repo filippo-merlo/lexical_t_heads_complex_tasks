@@ -1,0 +1,230 @@
+{
+ "antonym": {
+  "description": "Given an English word, give a word with the opposite meaning.",
+  "named": [
+   "antonym",
+   "opposite",
+   "reverse",
+   "opposing"
+  ],
+  "forbidden": [
+   "antonym",
+   "opposite",
+   "reverse",
+   "opposing"
+  ]
+ },
+ "synonym": {
+  "description": "Given an English word, give a different word with the same meaning.",
+  "named": [
+   "synonym",
+   "equivalent",
+   "alike",
+   "similar",
+   "analogous",
+   "interchangeable"
+  ],
+  "forbidden": [
+   "synonym",
+   "equivalent",
+   "alike",
+   "similar",
+   "analogous",
+   "interchangeable"
+  ]
+ },
+ "singular-plural": {
+  "description": "Given an English noun in the singular, give its plural form.",
+  "named": [
+   "plural",
+   "multiple",
+   "multiplicity"
+  ],
+  "forbidden": [
+   "plural",
+   "multiple",
+   "multiplicity"
+  ]
+ },
+ "present-past": {
+  "description": "Given an English verb in its base form, give its past tense form.",
+  "named": [
+   "past",
+   "previously",
+   "earlier",
+   "preceding"
+  ],
+  "forbidden": [
+   "past",
+   "tense",
+   "previously",
+   "earlier",
+   "preceding",
+   "historical"
+  ]
+ },
+ "country-capital": {
+  "description": "Given the name of a country, give the name of its capital city.",
+  "named": [
+   "capital",
+   "capitals",
+   "city",
+   "cities"
+  ],
+  "forbidden": [
+   "capital",
+   "capitals",
+   "city",
+   "cities"
+  ]
+ },
+ "country-currency": {
+  "description": "Given the name of a country, give the name of the currency used there.",
+  "named": [
+   "currency",
+   "currencies",
+   "money"
+  ],
+  "forbidden": [
+   "currency",
+   "currencies",
+   "money"
+  ]
+ },
+ "landmark-country": {
+  "description": "Given the name of a landmark, place, building or institution, give the country where it is located.",
+  "named": [
+   "country",
+   "countries",
+   "nation"
+  ],
+  "forbidden": [
+   "country",
+   "countries",
+   "nation"
+  ]
+ },
+ "park-country": {
+  "description": "Given the name of a park or nature reserve, give the country where it is located.",
+  "named": [
+   "country",
+   "countries"
+  ],
+  "forbidden": [
+   "country",
+   "countries",
+   "nation"
+  ]
+ },
+ "product-company": {
+  "description": "Given the name of a product, give the company that makes it.",
+  "named": [
+   "company",
+   "companies",
+   "firm",
+   "firms",
+   "manufacturer",
+   "manufacturers",
+   "corporation",
+   "corporations",
+   "organisation",
+   "organisations",
+   "institution",
+   "institutions",
+   "publisher"
+  ],
+  "forbidden": [
+   "company",
+   "companies",
+   "firm",
+   "firms",
+   "manufacturer",
+   "manufacturers",
+   "corporation",
+   "corporations",
+   "organisation",
+   "organisations",
+   "organization",
+   "organizations",
+   "institution",
+   "institutions",
+   "publisher"
+  ]
+ },
+ "next_item": {
+  "description": "Given an item of a familiar sequence (a number written as a word or in digits, a letter, a Roman numeral, a day of the week or a month), give the item that comes right after it.",
+  "named": [
+   "next",
+   "following",
+   "after"
+  ],
+  "forbidden": [
+   "next",
+   "following",
+   "after"
+  ]
+ },
+ "prev_item": {
+  "description": "Given an item of a familiar sequence (a number written as a word or in digits, a letter, a Roman numeral, a day of the week or a month), give the item that comes right before it.",
+  "named": [
+   "previous",
+   "before",
+   "previously",
+   "last",
+   "earlier"
+  ],
+  "forbidden": [
+   "previous",
+   "before",
+   "previously",
+   "last",
+   "earlier",
+   "prior",
+   "preceding"
+  ]
+ },
+ "english-french": {
+  "description": "Given an English word, give its translation into French.",
+  "named": [
+   "French",
+   "Français"
+  ],
+  "forbidden": [
+   "french",
+   "français",
+   "francais",
+   "france",
+   "translation",
+   "translate"
+  ]
+ },
+ "english-german": {
+  "description": "Given an English word, give its translation into German.",
+  "named": [
+   "German",
+   "Deutsch"
+  ],
+  "forbidden": [
+   "german",
+   "deutsch",
+   "germany",
+   "translation",
+   "translate"
+  ]
+ },
+ "english-spanish": {
+  "description": "Given an English word, give its translation into Spanish.",
+  "named": [
+   "Spanish",
+   "Español"
+  ],
+  "forbidden": [
+   "spanish",
+   "español",
+   "espanol",
+   "spain",
+   "translation",
+   "translate"
+  ]
+ }
+}

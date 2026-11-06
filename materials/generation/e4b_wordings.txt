@@ -1,0 +1,21 @@
+You write instruction templates for a language model. The model reads a template with <<INPUT>> replaced by one item and must then continue with the answer.
+
+Task: <<DESCRIPTION>>
+
+Two existing templates for this task, shown only as examples of what a template is (do not copy them):
+1. <<EXAMPLE1>>
+2. <<EXAMPLE2>>
+
+Write <<N>> new templates for this task, all different from each other and from the examples.
+
+Form: <<FORM>>
+
+Naming: <<NAMING>>
+
+Other requirements:
+- Each template contains the placeholder <<INPUT>> exactly once and no other curly braces.
+- Each template asks for exactly this task and nothing else, so that a reader would give the same answer as for the examples, and the answer is the next thing the model writes.
+- Do not include example items, answers or demonstrations.
+- Write in English.
+
+Return a JSON list of <<N>> strings. Write a line break inside a template as \n.
