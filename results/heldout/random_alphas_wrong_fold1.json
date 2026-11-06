@@ -1,0 +1,660 @@
+{
+ "antonym": {
+  "random20_0": [
+   2.0
+  ],
+  "random20_1": [
+   2.0
+  ],
+  "random20_2": [
+   2.0
+  ],
+  "random20_3": [
+   2.0
+  ],
+  "random20_4": [
+   2.0
+  ],
+  "random40_0": [
+   2.0
+  ],
+  "random40_1": [
+   2.0
+  ],
+  "random40_2": [
+   2.0
+  ],
+  "random40_3": [
+   2.0
+  ],
+  "random40_4": [
+   2.0
+  ],
+  "randomNt_0": [
+   1.0
+  ],
+  "randomNt_1": [
+   1.0
+  ],
+  "randomNt_2": [
+   1.0
+  ],
+  "randomNt_3": [
+   1.0
+  ],
+  "randomNt_4": [
+   1.0
+  ]
+ },
+ "synonym": {
+  "random20_0": [
+   2.0
+  ],
+  "random20_1": [
+   2.0
+  ],
+  "random20_2": [
+   2.0
+  ],
+  "random20_3": [
+   2.0
+  ],
+  "random20_4": [
+   2.0
+  ],
+  "random40_0": [
+   2.0
+  ],
+  "random40_1": [
+   2.0
+  ],
+  "random40_2": [
+   2.0
+  ],
+  "random40_3": [
+   2.0
+  ],
+  "random40_4": [
+   2.0
+  ],
+  "randomNt_0": [
+   1.0
+  ],
+  "randomNt_1": [
+   1.0
+  ],
+  "randomNt_2": [
+   1.0
+  ],
+  "randomNt_3": [
+   1.0
+  ],
+  "randomNt_4": [
+   1.0
+  ]
+ },
+ "singular-plural": {
+  "random20_0": [
+   3.0
+  ],
+  "random20_1": [
+   3.0
+  ],
+  "random20_2": [
+   3.0
+  ],
+  "random20_3": [
+   3.0
+  ],
+  "random20_4": [
+   3.0
+  ],
+  "random40_0": [
+   3.0
+  ],
+  "random40_1": [
+   3.0
+  ],
+  "random40_2": [
+   3.0
+  ],
+  "random40_3": [
+   3.0
+  ],
+  "random40_4": [
+   3.0
+  ],
+  "randomNt_0": [
+   1.0
+  ],
+  "randomNt_1": [
+   1.0
+  ],
+  "randomNt_2": [
+   1.0
+  ],
+  "randomNt_3": [
+   1.0
+  ],
+  "randomNt_4": [
+   1.0
+  ]
+ },
+ "present-past": {
+  "random20_0": [
+   3.0
+  ],
+  "random20_1": [
+   3.0
+  ],
+  "random20_2": [
+   3.0
+  ],
+  "random20_3": [
+   3.0
+  ],
+  "random20_4": [
+   3.0
+  ],
+  "random40_0": [
+   2.0
+  ],
+  "random40_1": [
+   2.0
+  ],
+  "random40_2": [
+   2.0
+  ],
+  "random40_3": [
+   2.0
+  ],
+  "random40_4": [
+   2.0
+  ],
+  "randomNt_0": [
+   2.0
+  ],
+  "randomNt_1": [
+   2.0
+  ],
+  "randomNt_2": [
+   2.0
+  ],
+  "randomNt_3": [
+   2.0
+  ],
+  "randomNt_4": [
+   2.0
+  ]
+ },
+ "country-capital": {
+  "random20_0": [
+   3.0
+  ],
+  "random20_1": [
+   3.0
+  ],
+  "random20_2": [
+   3.0
+  ],
+  "random20_3": [
+   3.0
+  ],
+  "random20_4": [
+   3.0
+  ],
+  "random40_0": [
+   3.0
+  ],
+  "random40_1": [
+   3.0
+  ],
+  "random40_2": [
+   3.0
+  ],
+  "random40_3": [
+   3.0
+  ],
+  "random40_4": [
+   3.0
+  ],
+  "randomNt_0": [
+   1.0
+  ],
+  "randomNt_1": [
+   1.0
+  ],
+  "randomNt_2": [
+   1.0
+  ],
+  "randomNt_3": [
+   1.0
+  ],
+  "randomNt_4": [
+   1.0
+  ]
+ },
+ "country-currency": {
+  "random20_0": [
+   4.0
+  ],
+  "random20_1": [
+   4.0
+  ],
+  "random20_2": [
+   4.0
+  ],
+  "random20_3": [
+   4.0
+  ],
+  "random20_4": [
+   4.0
+  ],
+  "random40_0": [
+   4.0
+  ],
+  "random40_1": [
+   4.0
+  ],
+  "random40_2": [
+   4.0
+  ],
+  "random40_3": [
+   4.0
+  ],
+  "random40_4": [
+   4.0
+  ],
+  "randomNt_0": [
+   2.0
+  ],
+  "randomNt_1": [
+   2.0
+  ],
+  "randomNt_2": [
+   2.0
+  ],
+  "randomNt_3": [
+   2.0
+  ],
+  "randomNt_4": [
+   2.0
+  ]
+ },
+ "landmark-country": {
+  "random20_0": [
+   3.0
+  ],
+  "random20_1": [
+   3.0
+  ],
+  "random20_2": [
+   3.0
+  ],
+  "random20_3": [
+   3.0
+  ],
+  "random20_4": [
+   3.0
+  ],
+  "random40_0": [
+   2.0
+  ],
+  "random40_1": [
+   2.0
+  ],
+  "random40_2": [
+   2.0
+  ],
+  "random40_3": [
+   2.0
+  ],
+  "random40_4": [
+   2.0
+  ],
+  "randomNt_0": [
+   1.0
+  ],
+  "randomNt_1": [
+   1.0
+  ],
+  "randomNt_2": [
+   1.0
+  ],
+  "randomNt_3": [
+   1.0
+  ],
+  "randomNt_4": [
+   1.0
+  ]
+ },
+ "park-country": {
+  "random20_0": [
+   6.0
+  ],
+  "random20_1": [
+   6.0
+  ],
+  "random20_2": [
+   6.0
+  ],
+  "random20_3": [
+   6.0
+  ],
+  "random20_4": [
+   6.0
+  ],
+  "random40_0": [
+   5.0
+  ],
+  "random40_1": [
+   5.0
+  ],
+  "random40_2": [
+   5.0
+  ],
+  "random40_3": [
+   5.0
+  ],
+  "random40_4": [
+   5.0
+  ],
+  "randomNt_0": [
+   2.0
+  ],
+  "randomNt_1": [
+   2.0
+  ],
+  "randomNt_2": [
+   2.0
+  ],
+  "randomNt_3": [
+   2.0
+  ],
+  "randomNt_4": [
+   2.0
+  ]
+ },
+ "product-company": {
+  "random20_0": [
+   3.0
+  ],
+  "random20_1": [
+   3.0
+  ],
+  "random20_2": [
+   3.0
+  ],
+  "random20_3": [
+   3.0
+  ],
+  "random20_4": [
+   3.0
+  ],
+  "random40_0": [
+   4.0
+  ],
+  "random40_1": [
+   4.0
+  ],
+  "random40_2": [
+   4.0
+  ],
+  "random40_3": [
+   4.0
+  ],
+  "random40_4": [
+   4.0
+  ],
+  "randomNt_0": [
+   2.0
+  ],
+  "randomNt_1": [
+   2.0
+  ],
+  "randomNt_2": [
+   2.0
+  ],
+  "randomNt_3": [
+   2.0
+  ],
+  "randomNt_4": [
+   2.0
+  ]
+ },
+ "next_item": {
+  "random20_0": [
+   -4.0
+  ],
+  "random20_1": [
+   -4.0
+  ],
+  "random20_2": [
+   -4.0
+  ],
+  "random20_3": [
+   -4.0
+  ],
+  "random20_4": [
+   -4.0
+  ],
+  "random40_0": [
+   4.0
+  ],
+  "random40_1": [
+   4.0
+  ],
+  "random40_2": [
+   4.0
+  ],
+  "random40_3": [
+   4.0
+  ],
+  "random40_4": [
+   4.0
+  ],
+  "randomNt_0": [
+   2.0
+  ],
+  "randomNt_1": [
+   2.0
+  ],
+  "randomNt_2": [
+   2.0
+  ],
+  "randomNt_3": [
+   2.0
+  ],
+  "randomNt_4": [
+   2.0
+  ]
+ },
+ "prev_item": {
+  "random20_0": [
+   4.0
+  ],
+  "random20_1": [
+   4.0
+  ],
+  "random20_2": [
+   4.0
+  ],
+  "random20_3": [
+   4.0
+  ],
+  "random20_4": [
+   4.0
+  ],
+  "random40_0": [
+   3.0
+  ],
+  "random40_1": [
+   3.0
+  ],
+  "random40_2": [
+   3.0
+  ],
+  "random40_3": [
+   3.0
+  ],
+  "random40_4": [
+   3.0
+  ],
+  "randomNt_0": [
+   2.0
+  ],
+  "randomNt_1": [
+   2.0
+  ],
+  "randomNt_2": [
+   2.0
+  ],
+  "randomNt_3": [
+   2.0
+  ],
+  "randomNt_4": [
+   2.0
+  ]
+ },
+ "english-french": {
+  "random20_0": [
+   2.0
+  ],
+  "random20_1": [
+   2.0
+  ],
+  "random20_2": [
+   2.0
+  ],
+  "random20_3": [
+   2.0
+  ],
+  "random20_4": [
+   2.0
+  ],
+  "random40_0": [
+   2.0
+  ],
+  "random40_1": [
+   2.0
+  ],
+  "random40_2": [
+   2.0
+  ],
+  "random40_3": [
+   2.0
+  ],
+  "random40_4": [
+   2.0
+  ],
+  "randomNt_0": [
+   1.0
+  ],
+  "randomNt_1": [
+   1.0
+  ],
+  "randomNt_2": [
+   1.0
+  ],
+  "randomNt_3": [
+   1.0
+  ],
+  "randomNt_4": [
+   1.0
+  ]
+ },
+ "english-german": {
+  "random20_0": [
+   2.0
+  ],
+  "random20_1": [
+   2.0
+  ],
+  "random20_2": [
+   2.0
+  ],
+  "random20_3": [
+   2.0
+  ],
+  "random20_4": [
+   2.0
+  ],
+  "random40_0": [
+   2.0
+  ],
+  "random40_1": [
+   2.0
+  ],
+  "random40_2": [
+   2.0
+  ],
+  "random40_3": [
+   2.0
+  ],
+  "random40_4": [
+   2.0
+  ],
+  "randomNt_0": [
+   2.0
+  ],
+  "randomNt_1": [
+   2.0
+  ],
+  "randomNt_2": [
+   2.0
+  ],
+  "randomNt_3": [
+   2.0
+  ],
+  "randomNt_4": [
+   2.0
+  ]
+ },
+ "english-spanish": {
+  "random20_0": [
+   5.0
+  ],
+  "random20_1": [
+   5.0
+  ],
+  "random20_2": [
+   5.0
+  ],
+  "random20_3": [
+   5.0
+  ],
+  "random20_4": [
+   5.0
+  ],
+  "random40_0": [
+   4.0
+  ],
+  "random40_1": [
+   4.0
+  ],
+  "random40_2": [
+   4.0
+  ],
+  "random40_3": [
+   4.0
+  ],
+  "random40_4": [
+   4.0
+  ],
+  "randomNt_0": [
+   2.0
+  ],
+  "randomNt_1": [
+   2.0
+  ],
+  "randomNt_2": [
+   2.0
+  ],
+  "randomNt_3": [
+   2.0
+  ],
+  "randomNt_4": [
+   2.0
+  ]
+ }
+}

@@ -1,0 +1,1486 @@
+{
+ "antonym": {
+  "inst1": {
+   "instruction": "Output the antonym of the word in the question.",
+   "length": 11,
+   "logprob": -42.19449624419212,
+   "equiprobable": [
+    ".consume-container-input {\n\n  .input-field {\n      padding",
+    "6725 Wireless Boulevard, Baton Rouge LA 70503",
+    "EYEWIELD (EYE-WILD) / E",
+    "FIJI Main Island\nFiji’s main islands offer",
+    "decimal expansion ending\nA decimal expansion of a non-zero"
+   ],
+   "wikitext": [
+    "The 54th Boat Race took place on 3",
+    "For practical purposes , it is useful to define a common",
+    "Ali Larter as Claire Redfield : Based on the",
+    "In 2008 , officials began to explore the possibility",
+    "His success in the role was cut short by the news"
+   ],
+   "other_task": [
+    "Return the word in the input with the first letter capitalized.",
+    "What is the antonym of the word in French?",
+    "Return the capital city of the country that contains the landmark.",
+    "Return the antonym of the word in French.",
+    "Tell me what the following word means in French."
+   ]
+  },
+  "inst2": {
+   "instruction": "Give me the antonym of the following word.",
+   "length": 10,
+   "logprob": -36.016697093844414,
+   "equiprobable": [
+    "Stock market volatility reduces in 2014, says",
+    "酚酽酸的结构与酯",
+    "Bill to ban media coverage of police shootings advances to",
+    "Forum for the Republic (FR)\nForum für Dem",
+    "Magic Johnson's Toaster\nMagic Johnson is the"
+   ],
+   "wikitext": [
+    "Redevelopment is underway for some of the abandoned",
+    "Before the Binghamton shootings on April 3",
+    "The genomes of marsupials are of great interest",
+    "Cher gained popularity in 1965 as one",
+    "Fluoride may also prevent cavities in"
+   ],
+   "other_task": [
+    "What is the French translation of the following English sentence?",
+    "What is the German translation of the following English sentence?",
+    "Tell me which company makes the following product.",
+    "What is the translation of the word in Spanish?",
+    "Write the word in its past tense form."
+   ]
+  },
+  "inst3": {
+   "instruction": "What word is the opposite of the word in the question?",
+   "length": 12,
+   "logprob": -35.46231622248888,
+   "equiprobable": [
+    "鼻异位的定义是\nA. 骨",
+    "腹突出（Herniation）症状、病",
+    "\"\"\"\nAlexa skill for controlling a Philips HUE lights using",
+    "可主治的病症\n　 1、风",
+    "可儿童的肾上腔静脉"
+   ],
+   "wikitext": [
+    "Hurricane Able was a rare hurricane that formed outside of the",
+    "King Felipe VI of Spain , King Abdullah II of Jordan ,",
+    "During World War II , radar technology was developed to detect aircraft",
+    "Best of Both Worlds Tour was the debut concert tour by American",
+    "Newton built the first practical reflecting telescope and developed a theory of"
+   ],
+   "other_task": [
+    "Given an English word, can you translate it into French?",
+    "What is the French translation of the following English sentence?",
+    "Given an English word, can you translate it into German?",
+    "What is the German translation of the following English sentence?",
+    "Answer the question by capitalizing the first letter of the word."
+   ]
+  },
+  "inst4": {
+   "instruction": "Give an antonym for the following word:",
+   "length": 9,
+   "logprob": -32.4988214969635,
+   "equiprobable": [
+    "Vacuventure - A New Way of Expl",
+    "Benelli Spitz 28ga 2",
+    "Stockbridge Hospital (closed)\nThe Stockbridge",
+    "Brian M’s Blog\nThe Importance of ",
+    "Changes at Vista House\nVISTA HOUSE —"
+   ],
+   "wikitext": [
+    "Since 1991 , the anniversary of the",
+    "US 30 runs along the north side of",
+    "The kingdom of Magadha was formed in",
+    "At the end of 1941 , there",
+    "Zn + 2 H2O →"
+   ],
+   "other_task": [
+    "Translate the following English word to Spanish.",
+    "What is the plural of the following word?",
+    "What is the past tense of the following verb?",
+    "What is the translation of the word in Spanish?",
+    "Which country does this landmark belong to?"
+   ]
+  }
+ },
+ "synonym": {
+  "inst1": {
+   "instruction": "Output the synonym of the question.",
+   "length": 7,
+   "logprob": -40.60553193092346,
+   "equiprobable": [
+    "SES is distinct from other SEC-approved",
+    "background music progression\nA less is",
+    "2443 selected for the ServiceNow",
+    "盛大的Επώνirimatos",
+    "芝士 ==> 1）芝"
+   ],
+   "wikitext": [
+    "In 2007 , Airbus estimated",
+    "\" Lady Bouvier 's Lover",
+    "Yancey was increasingly interested in",
+    "Four motor symptoms are considered cardinal in",
+    "In this episode , Veronica is hired"
+   ],
+   "other_task": [
+    "Task: Singlular to Plural",
+    "Output the plural word from the singular",
+    "Task: English -> Spanish.",
+    "Landmark -> Country -> Capital city.",
+    "Park -> Country -> Capital city."
+   ]
+  },
+  "inst2": {
+   "instruction": "Task: Synonym",
+   "length": 4,
+   "logprob": -29.403648376464844,
+   "equiprobable": [
+    "ELISA Catalog ID",
+    "历史学馆 [",
+    "342.606 J",
+    "좆(sht",
+    "Detail: Child/"
+   ],
+   "wikitext": [
+    "In modern Turkish ,",
+    "When Moses requests the",
+    "The Bella Twins returned",
+    "Prior to making Kill",
+    "Thomas died at noon"
+   ],
+   "other_task": [
+    "Park -> Country",
+    "Country -> Capital",
+    "Find the next item.",
+    "What currency does this country use?",
+    "Which company is the product from?"
+   ]
+  },
+  "inst3": {
+   "instruction": "Word to synonym",
+   "length": 3,
+   "logprob": -27.973421096801758,
+   "equiprobable": [
+    "Megiddown",
+    "帕克斯薩",
+    "哇項",
+    "Stick season outdoor",
+    "Print all SOAP"
+   ],
+   "wikitext": [
+    "PWI ranked",
+    "Jordan – recording",
+    "The collision ,",
+    "<unk>",
+    "NWA Western"
+   ],
+   "other_task": [
+    "Find the next item.",
+    "Country -> Capital",
+    "Park -> Country",
+    "Country -> Currency",
+    "What currency does this country use?"
+   ]
+  },
+  "inst4": {
+   "instruction": "What is the synonym?",
+   "length": 5,
+   "logprob": -29.053602516651154,
+   "equiprobable": [
+    "腹部手割具有",
+    "Yesterday, I roasted A",
+    "Difference between revisions to variants",
+    "正常情况下病入",
+    "Indiana University Bloominton Residents"
+   ],
+   "wikitext": [
+    "By September 25 ,",
+    "A 1960 study",
+    "The government of South Bend",
+    "Plates 65 to",
+    "Although 1994 ended"
+   ],
+   "other_task": [
+    "Country -> Capital",
+    "Find the next item.",
+    "Park -> Country",
+    "Country -> Currency",
+    "What currency does this country use?"
+   ]
+  }
+ },
+ "singular-plural": {
+  "inst1": {
+   "instruction": "What is the plural of the following word?",
+   "length": 9,
+   "logprob": -32.17268854379654,
+   "equiprobable": [
+    "医师执 业资格审 执证",
+    "Why is it is so important?\nThe importance",
+    "Portland, OR Canoe/KAYAK\n",
+    "乙型肾病（Type B）",
+    "乙型肾病（MINCER"
+   ],
+   "wikitext": [
+    "Around the beginning of the twentieth century , it",
+    "Mycena aurantiomarginata is",
+    "At the start of the 2009 –",
+    "Alprazolam may be quantitated",
+    "Mercury does not react with most acids ,"
+   ],
+   "other_task": [
+    "What is the past tense of the following verb?",
+    "What is the currency used by the country?",
+    "Translate the following English word to Spanish.",
+    "Give an antonym for the following word:",
+    "What is the translation of the word in Spanish?"
+   ]
+  },
+  "inst2": {
+   "instruction": "Task: Singlular to Plural",
+   "length": 8,
+   "logprob": -39.44707923568785,
+   "equiprobable": [
+    "яснй ДОФИН",
+    "appeared on Reality T.v . in ",
+    "regions. Refrig. & Air Cond",
+    "Καλέας Παραμώνη\n",
+    "139. Amanda Vanstone to the House"
+   ],
+   "wikitext": [
+    "However , the rest of the expedition achieved",
+    "Thompson predicted that the perpetrator of the",
+    "In December 2011 , Fincher",
+    "Mount Pleasant Road was constructed over the course",
+    "Although the Illuminated Chronicle states that Stephen"
+   ],
+   "other_task": [
+    "Return the country that this landmark is in.",
+    "Output the synonym of the question.",
+    "Tell me which company makes the following product.",
+    "Landmark -> Country -> Capital city.",
+    "Translate the following English word to German."
+   ]
+  },
+  "inst3": {
+   "instruction": "Could you please tell me what is the plural word?",
+   "length": 11,
+   "logprob": -40.63099122047424,
+   "equiprobable": [
+    "为了提高学生对数学概念和方法表征进行",
+    "Establishment and Characterization of Human Orosigual",
+    "Love is in the air... or is someone not available",
+    "William F. Buckley Jr., a conservative commenter for numerous",
+    "Mechanism of the reaction between 2+ of glut"
+   ],
+   "wikitext": [
+    "Algernon Moncrieff 's flat in Half",
+    "Like the first chapter , the third chapter is also set",
+    "BBC Cymru Wales is Wales ' only national radio",
+    "Moran announced on January 15 , 2014",
+    "Child trafficking is a substantial part of the human trafficking crisis"
+   ],
+   "other_task": [
+    "What is the antonym of the word in Spanish?",
+    "Tell me what the following word means in German.",
+    "Return the word in the input with the first letter capitalized.",
+    "Return the capital city of the country that contains the landmark.",
+    "What is the French translation of the following English sentence?"
+   ]
+  },
+  "inst4": {
+   "instruction": "Output the plural word from the singular",
+   "length": 7,
+   "logprob": -38.72675383090973,
+   "equiprobable": [
+    " lối kiến tr ực tiếp cho",
+    ".gradient-text-error {\n\n\tcolor: @",
+    " 그라 의자, 그레이",
+    "1682 old vintage photo of the",
+    " тотальный опаса\nтотальная"
+   ],
+   "wikitext": [
+    "Rutherford served in the Legislative Assembly",
+    "Michigan totaled 574 yards of total",
+    "The Temple of Robotology is a",
+    "Many escapees from captivity can also",
+    "Originally created by receding glaciers ,"
+   ],
+   "other_task": [
+    "Task: English -> Spanish.",
+    "Product -> Company -> CEO.",
+    "Output the synonym of the question.",
+    "What capital city does this country have?",
+    "Translate the following English word to German."
+   ]
+  }
+ },
+ "present-past": {
+  "inst1": {
+   "instruction": "Write the word in its past tense form.",
+   "length": 9,
+   "logprob": -38.47461819648743,
+   "equiprobable": [
+    "Balance your chakra's thus bringing balance and",
+    "Damaging storms expected as transport chaos continues in",
+    "Arnott Air Springs ( Inc. ) -",
+    "Connections and relationships with family played a significant role",
+    "911 operator fired, but influenced by PTSD\n"
+   ],
+   "wikitext": [
+    "Andranik left Armenia in 1919",
+    "The Young Men 's Christian Association built a",
+    "In a 2013 semifinal game against",
+    "The Portuguese encouraged intermarriage with the local",
+    "The motion of the Moon can be measured accurately"
+   ],
+   "other_task": [
+    "Tell me what the following word means in French.",
+    "Tell me which company makes the following product.",
+    "Tell me what the following word means in German.",
+    "Task: Singlular to Plural",
+    "Give me the antonym of the following word."
+   ]
+  },
+  "inst2": {
+   "instruction": "What is the past tense of the following verb?",
+   "length": 10,
+   "logprob": -31.959007550030947,
+   "equiprobable": [
+    "China's Xi establishes new national security authority, consolid",
+    "小儿急中毒的典范表现有",
+    "Michigan State University making strides in sustainability as it aims",
+    "Michigan State University defines a student as international when the",
+    "Digital Marketing Agency Burleigh Heads\nNo.1"
+   ],
+   "wikitext": [
+    "Two versions of the song are present on the album",
+    "On February 27 , 2014 , a",
+    "The impedance of an inductor is purely imaginary and",
+    "While he was waiting for his paper to be published",
+    "Following the announcement of the game on January 4"
+   ],
+   "other_task": [
+    "What is the plural of the following word?",
+    "What is the currency used by the country?",
+    "Give an antonym for the following word:",
+    "What is the previous item in the sequence?",
+    "Give me the antonym of the following word."
+   ]
+  },
+  "inst3": {
+   "instruction": "Give me the past tense of 'Q'",
+   "length": 9,
+   "logprob": -43.75318902730942,
+   "equiprobable": [
+    "Advancing the Intelligent Edge\nAdvani,",
+    "Despite a strong odor that wafts ...\nDespite",
+    "Fisherman’s long-term exposure linkedto increased",
+    "Phoenix Suns at Suns Summer League Game Tape:",
+    "#! python\n'''\n\n    This code pick up"
+   ],
+   "wikitext": [
+    "Beginning in 1905 , successive presidential administrations",
+    "The terms \" Robinson Crusoes \" or \"",
+    "In 1640 the two towns of Portsmouth",
+    "The most frequent modification is expansion of the original",
+    "A new show in London in 1912"
+   ],
+   "other_task": [
+    "Tell me which country has the following landmark.",
+    "Landmark -> Country -> Capital city.",
+    "Return the sport that this athlete is known for.",
+    "Return the antonym of the word in Spanish.",
+    "Return the antonym of the word in German."
+   ]
+  },
+  "inst4": {
+   "instruction": "I wonder what the past tense of this English word is. Can you tell me?",
+   "length": 17,
+   "logprob": -52.39968710206449,
+   "equiprobable": [
+    "Hardboard is made into large sheets from medium-density fiberboard or MDF. Hard",
+    "Blooding of the hosts was performed as above. The blood cultures were incubated in",
+    "帕博洛夫古代动物实验装置的主要组件包括\nA.",
+    "液制药的多肽/小肽药品的制备工",
+    "Girl Rides Horse 'til She Can Be Free\nGirl, 12, R"
+   ],
+   "wikitext": [
+    "The summit and eastern slopes of Nethermost Pike are part of the Helvellyn",
+    "The spores are hyaline ( translucent ) , smooth , and ellipsoid with",
+    "Within the next two or three decades ( 2016 – 2035 ) ,",
+    "Millennium Park is part of the larger Grant Park . The pavilion , which",
+    "In 2010 , Elder Dallin H. Oaks spoke at a Constitution Day"
+   ],
+   "other_task": [
+    "Help me find the capital city of the country that contains the landmark.",
+    "Task Definition: Given a word, provide its antithesis.",
+    "Tell me the capital city of the country that contains the following landmark.",
+    "Instructions: you are given a country and you need to output the currency of that country.",
+    "Instructions: you are given a country and you need to output the capital city of that country."
+   ]
+  }
+ },
+ "country-capital": {
+  "inst1": {
+   "instruction": "What is the capital of the country?",
+   "length": 8,
+   "logprob": -23.42983204871416,
+   "equiprobable": [
+    "Climate Change and Human Rights - The Legal",
+    "Yesterday, I wrote about some common causes",
+    "Indiana University Bloomington - College Of Education",
+    "Portland, OR, USA | 14",
+    "最常见的心脉动（"
+   ],
+   "wikitext": [
+    "Starting in the 1980s ,",
+    "Rick Husband Amarillo International Airport is a",
+    "According to The Wall Street Journal , \"",
+    "The Federal Emergency Management Agency ( FEMA )",
+    "Clarke was born in 1882"
+   ],
+   "other_task": [
+    "Which country is this place located in?",
+    "What is the next item in the sequence?",
+    "Translate the following English sentences to Spanish.",
+    "Return the previous item in the sequence.",
+    "What currency does this country use?"
+   ]
+  },
+  "inst2": {
+   "instruction": "Country -> Capital",
+   "length": 3,
+   "logprob": -29.139795303344727,
+   "equiprobable": [
+    "Booking easiestm",
+    "From Redemption Record",
+    "Interactive True Sym",
+    "Taking cognition change",
+    "Observaton center"
+   ],
+   "wikitext": [
+    "Leaf missed his",
+    "( All songs",
+    "Most amateurs work",
+    "The platform bay",
+    "<unk>"
+   ],
+   "other_task": [
+    "What is the synonym?",
+    "Find the next item.",
+    "Task: Synonym",
+    "Park -> Country",
+    "Country -> Currency"
+   ]
+  },
+  "inst3": {
+   "instruction": "Task: given the country, answer the capital of the country.",
+   "length": 13,
+   "logprob": -58.122640922665596,
+   "equiprobable": [
+    "floor lamp kenmore corded shoji a floor lamp with an",
+    "(&(0*****)OR(occur)+((0****))",
+    "academic integrity Meaning in punjabhistory\nYou are here: home",
+    " تدعيني اَللاحِنانُ\nأَح",
+    "BTCUSD taps the wedge’s steep lower-bound support, a sign"
+   ],
+   "wikitext": [
+    "Valhalla Borgen in Tivoli Gardens in Copenhagen ,",
+    "When the first set of posted routes in New York were assigned in",
+    "<unk> , W. F. ( 2006 )",
+    "Subfossil remains and remnants of the birds that were brought to",
+    "The baptismal font where these baptisms were performed still exists ,"
+   ],
+   "other_task": [
+    "Task definition: given a product, which company makes it?",
+    "Tell me the CEO of the company that produces {input}.",
+    "Tell me the antonym of {input} in Spanish.",
+    "Tell me the antonym of {input} in German.",
+    "Instruction: given the current item, what is the previous one?"
+   ]
+  },
+  "inst4": {
+   "instruction": "What capital city does this country have?",
+   "length": 8,
+   "logprob": -35.41564255952835,
+   "equiprobable": [
+    "尿 plight\nn. 不幸的",
+    "Portland Lives Up (Again!)\nPortland is",
+    "Why Knight Frank Residential\nExpertise and",
+    "Yesterday PS4 news was revealed that the",
+    "Indiana active shooter case: Former student kills"
+   ],
+   "wikitext": [
+    "The 2013 – 14 Michigan",
+    "The volcanic rocks which make up some of",
+    "The cattle egret has undergone one of the",
+    "Following a period serving as a director of",
+    "Gygax dropped out of high school"
+   ],
+   "other_task": [
+    "Translate the following English word to German.",
+    "What sports does this athlete play?",
+    "What is the country of the park?",
+    "What is the previous item in the sequence?",
+    "Tell me which company makes the following product."
+   ]
+  }
+ },
+ "country-currency": {
+  "inst1": {
+   "instruction": "What is the currency used by the country?",
+   "length": 9,
+   "logprob": -32.22083109617233,
+   "equiprobable": [
+    "腹部手麻的注意事項中",
+    "Digital Marketing Agency Solution for Your Business Growth in",
+    "Difference between revisions to revision #3: ",
+    "鼻咽炎（�",
+    "\"\"\"\nThis module corresponds to a single node's"
+   ],
+   "wikitext": [
+    "On September 8 , 1938 ,",
+    "Wind & Wuthering ( 1976",
+    "The U.S. NTSB issued its",
+    "End of Watch was filmed on location in South",
+    "During the medieval period , most of the land"
+   ],
+   "other_task": [
+    "Give an antonym for the following word:",
+    "Which country does this landmark belong to?",
+    "What is the country of the park?",
+    "Translate the following English word to German.",
+    "What capital city does this country have?"
+   ]
+  },
+  "inst2": {
+   "instruction": "Country -> Currency",
+   "length": 3,
+   "logprob": -29.702295303344727,
+   "equiprobable": [
+    "Public Operators Key",
+    "Soap consists two",
+    "Fully believe just",
+    "Results Points Music",
+    "Gainaxis reserves"
+   ],
+   "wikitext": [
+    "Round not applicable",
+    "\" Running Through",
+    "Short , spontaneous",
+    "Brand cabled",
+    "\" Lemme"
+   ],
+   "other_task": [
+    "Park -> Country",
+    "Task: Synonym",
+    "What is the synonym?",
+    "Country -> Capital",
+    "Find the next item."
+   ]
+  },
+  "inst3": {
+   "instruction": "Task: given the country, answer with the currency of the country.",
+   "length": 14,
+   "logprob": -57.00073677301407,
+   "equiprobable": [
+    "156. Monitoring the monitoring system configuration.\n156  Monitoring the monitoring system",
+    "alphamorganics vs. Glyphosate\nI am a long time",
+    "woman with guilt\nNot feeling appreciated, valued and recognized can lead to",
+    "4901 SPRUCE Grove Road Oxford , MS , 38655-",
+    "144 Freq. Humidity mode\nThe Frequency Humidity mode allows"
+   ],
+   "wikitext": [
+    "Although coal , hydrocarbons , iron ore , platinum , copper ,",
+    "Kosher salt , though refined , contains no iodine and has",
+    "\" What You Want \" peaked at number 30 on the Brazilian Billboard",
+    "Cake was formed in 1991 by McCrea , DiFiore",
+    "The Court of Appeal emphasized that the approach taken in that case made no"
+   ],
+   "other_task": [
+    "Help me find the CEO of the company that produces {input}.",
+    "Task: given the country, answer the capital of the country.",
+    "Task Definition: Given a word, provide its antithesis.",
+    "Instruction: given the current item, what is the previous one?",
+    "Help me find the capital city of the country that contains the landmark."
+   ]
+  },
+  "inst4": {
+   "instruction": "What currency does this country use?",
+   "length": 7,
+   "logprob": -30.17971608415246,
+   "equiprobable": [
+    "尿店的名称来源于“",
+    "糖至肚子里，",
+    "Yesterday Tuesday 05/21,",
+    "正常酒店可以容纳的",
+    "Why DIDN't the US Government"
+   ],
+   "wikitext": [
+    "In a June 1987 interview",
+    "The 2014 Scottish Labour Party",
+    "Best of Both Worlds Tour was the",
+    "UBS was implicated in a money",
+    "After a month 's delay ,"
+   ],
+   "other_task": [
+    "Which country does this landmark belong to?",
+    "Return the previous item in the sequence.",
+    "Which company is the product from?",
+    "Translate the following English sentences to Spanish.",
+    "Which nation does the park belong to?"
+   ]
+  }
+ },
+ "landmark-country": {
+  "inst1": {
+   "instruction": "Which country does this landmark belong to?",
+   "length": 8,
+   "logprob": -30.53314415924251,
+   "equiprobable": [
+    "急诊口服两性激素",
+    "Which country does this the image belong in",
+    "Which type is most adapted to the cold",
+    "男性病人的胸、腹部扫",
+    "女儿比男主角高大"
+   ],
+   "wikitext": [
+    "It is evident from the copy of the",
+    "In 2006 , a team of",
+    "Harvard University awarded a Doctor of Laws",
+    "Born and raised in Toowong ,",
+    "James Dean Bradfield and Richey"
+   ],
+   "other_task": [
+    "Which company is the product from?",
+    "Return the previous item in the sequence.",
+    "What is the plural of the following word?",
+    "What is the currency used by the country?",
+    "Give an antonym for the following word:"
+   ]
+  },
+  "inst2": {
+   "instruction": "Return the country that this landmark is in.",
+   "length": 9,
+   "logprob": -39.51429343223572,
+   "equiprobable": [
+    "Let $\\lambda >1\\,$ and consider",
+    "Sound and Signal Conditioning Electronics ... (1)\n",
+    "Unfortunately the photo has an x-ray quality,",
+    "Middlebury Student Union is expanding its services\n",
+    "General Motors President Mary T Barra has announced"
+   ],
+   "wikitext": [
+    "Dean later said he had tried to commit suicide",
+    "His parents are David and Loretta ,",
+    "Language and literacy have far reaching effects as they",
+    "In 1902 , a design competition was",
+    "Award of Distinction for contribution to drama from"
+   ],
+   "other_task": [
+    "Task: Singlular to Plural",
+    "Tell me what the following word means in German.",
+    "Tell me what the following word means in French.",
+    "Repeat the given word with the first letter capitalized.",
+    "Tell me which company makes the following product."
+   ]
+  },
+  "inst3": {
+   "instruction": "Help me find the country that the mentioned landmark is located in.",
+   "length": 13,
+   "logprob": -46.963631719350815,
+   "equiprobable": [
+    "Teen's death sparks conspiracy claims as inconsistencies and contradictions emerge\nThe",
+    "Electronic Arts and Reservoir Games (EEB) have announced a",
+    "Entrepreneurs and filmmakers are team up again to create a new",
+    "Predictors and outcomes with a high “readability” score in",
+    "Ask an expert: Postpartum fashion Q&A\nWe asked"
+   ],
+   "wikitext": [
+    "On April 2 , 2014 , Gaga appeared on the",
+    "Alligators will occasionally prey on large mammals , such as deer ,",
+    "At 05 : 00 on 23 April 1918",
+    "Michigan suffered their first home loss of the season . This was the",
+    "Write amplification ( WA ) is an undesirable phenomenon associated with flash"
+   ],
+   "other_task": [
+    "What is the capital city of the country that contains the landmark?",
+    "Tell me the capital city of the country that contains the following landmark.",
+    "Return the capital city of the country that contains the landmark.",
+    "With the given item, discover the next item in the sequence.",
+    "Return the word in the input with the first letter capitalized."
+   ]
+  },
+  "inst4": {
+   "instruction": "Landmark -> Country.",
+   "length": 5,
+   "logprob": -38.04954719543457,
+   "equiprobable": [
+    "Poison Praized wins",
+    "Simply put,a standard item",
+    "Sept 12124+",
+    "Issue #Hazel “",
+    "月子 cottage 日曜日"
+   ],
+   "wikitext": [
+    "Hillcourt was among",
+    "Inland batik or",
+    "\" Heavy Crown \" was",
+    "\" Dandies on",
+    "The examination system , used"
+   ],
+   "other_task": [
+    "Output the plural word from the singular",
+    "Output the synonym of the question.",
+    "What sports does this athlete play?",
+    "Which company makes the given product?",
+    "Capitalize the input word."
+   ]
+  }
+ },
+ "park-country": {
+  "inst1": {
+   "instruction": "What is the country of the park?",
+   "length": 8,
+   "logprob": -34.773248970508575,
+   "equiprobable": [
+    "\"\"\"\nThis module receives a string specifying an",
+    "医师执 业资格考试许 可",
+    "Spring is here  – however it",
+    "腹部手搓疗术在",
+    "医师执法行为中就其"
+   ],
+   "wikitext": [
+    "Recorded at : Larrabee Recording",
+    "Lockett entered the season as a",
+    "In his first game for the Colonels",
+    "Nemeth has been a fan of",
+    "While the Olympic Games have experienced tremendous growth"
+   ],
+   "other_task": [
+    "What sports does this athlete play?",
+    "Which company makes the given product?",
+    "What is the previous item in the sequence?",
+    "Translate the following English word to Spanish.",
+    "Give an antonym for the following word:"
+   ]
+  },
+  "inst2": {
+   "instruction": "Which nation does the park belong to?",
+   "length": 8,
+   "logprob": -33.312407640740275,
+   "equiprobable": [
+    "骨芡（plantain）是",
+    "男性，本案例并不涉及任何",
+    "Tags | 201, 202 |",
+    "Tags | 201, 202 |",
+    "骨胶质细胞核分裂是"
+   ],
+   "wikitext": [
+    "In November 1940 , the German",
+    "Spanish Texas was one of the interior provinces",
+    "Metroid : Zero Mission is an enhanced",
+    "Enthusiasts claim descent from the",
+    "On the second day of the operation ,"
+   ],
+   "other_task": [
+    "Translate the following English word to Spanish.",
+    "Give an antonym for the following word:",
+    "What is the currency used by the country?",
+    "What is the previous item in the sequence?",
+    "What is the plural of the following word?"
+   ]
+  },
+  "inst3": {
+   "instruction": "Park -> Country",
+   "length": 3,
+   "logprob": -29.31402349472046,
+   "equiprobable": [
+    " ...\"\n\n до не",
+    "科学 SectScience",
+    "Validation offer two",
+    "Write POS documents",
+    "Coin renamed!"
+   ],
+   "wikitext": [
+    "With Conte as",
+    "Such inhabitants ,",
+    "TV Squad writer",
+    "A manga set",
+    "The other tracks"
+   ],
+   "other_task": [
+    "What is the synonym?",
+    "Country -> Capital",
+    "Country -> Currency",
+    "Find the next item.",
+    "What currency does this country use?"
+   ]
+  },
+  "inst4": {
+   "instruction": "Which country is this place located in?",
+   "length": 8,
+   "logprob": -27.36387651413679,
+   "equiprobable": [
+    "Which type of graph makes it easy for",
+    "Which country is LAROUSSE's",
+    "急诊室对分泌�",
+    "女儿的妈\n　　“",
+    "急诊室对事故伤害人"
+   ],
+   "wikitext": [
+    "Linezolid is metabolized in the",
+    "Route 54 begins at an intersection with",
+    "During World War II Norway was invaded by",
+    "The 2012 Daytona 500 was",
+    "By the time the Bill of Rights was"
+   ],
+   "other_task": [
+    "What is the next item in the sequence?",
+    "Return the previous item in the sequence.",
+    "What currency does this country use?",
+    "Which country does this landmark belong to?",
+    "Which company is the product from?"
+   ]
+  }
+ },
+ "product-company": {
+  "inst1": {
+   "instruction": "Which company is the product from?",
+   "length": 7,
+   "logprob": -31.578410863876343,
+   "equiprobable": [
+    "急慢性胀血性",
+    "Home Money, Politics\tTrump’s",
+    "骨诸病求之�",
+    "男性42岁，黄色�",
+    "女，大三学生妹，身"
+   ],
+   "wikitext": [
+    "In addition to his administrative and legal",
+    "The danger is not that this will",
+    "Stossel has won 19",
+    "Dr. Sanjay Gupta guest starred",
+    "The small and isolated nature of the"
+   ],
+   "other_task": [
+    "Which country does this landmark belong to?",
+    "Translate the following English word to Spanish.",
+    "What currency does this country use?",
+    "Which nation does the park belong to?",
+    "Return the previous item in the sequence."
+   ]
+  },
+  "inst2": {
+   "instruction": "Which company makes the given product?",
+   "length": 7,
+   "logprob": -34.27804845571518,
+   "equiprobable": [
+    "急診科的 前景\n",
+    "急慢性胗肿",
+    "Which was your favorite Gary Larson's",
+    "Tags > 201309\n201",
+    "Tags | 201\nPosted on"
+   ],
+   "wikitext": [
+    "Final Fantasy VI : The Interactive CG",
+    "Richard Henry Dana , Jr . ,",
+    "In 1996 , Blizzard Entertainment",
+    "In addition to duetting on \"",
+    "When the county was established , the"
+   ],
+   "other_task": [
+    "Capitalize the input word.",
+    "What is the country of the park?",
+    "What sports does this athlete play?",
+    "Which nation does the park belong to?",
+    "Translate the following English word to German."
+   ]
+  },
+  "inst3": {
+   "instruction": "Task definition: given a product, which company makes it?",
+   "length": 12,
+   "logprob": -58.05380520224571,
+   "equiprobable": [
+    "看来的确困难起码。\n目前的研究表",
+    " thảo là thảo túng nước (vỹ đà)",
+    " mesel [milyonlerin]\nTokiya [T",
+    "edited By: Bernie Sanders on January, the 2023",
+    ".consume container{\nfont-family:BaskerFutura;\ncolor"
+   ],
+   "wikitext": [
+    "In the Mountains of Ignorance , the <unk>",
+    "Among more recent reviews of the Yellow Submarine album , David",
+    "On 24 March , Michael Ryan signed for Wrexham",
+    "NYRR also provides financial support for the USA Distance Project ,",
+    "Governor Stanley opened the Assembly 's special session on August"
+   ],
+   "other_task": [
+    "Help me find the CEO of the company that produces {input}.",
+    "Return the founding year of the university that {input} attended.",
+    "Tell me the antonym of {input} in Spanish.",
+    "Return the CEO of the company that produces {input}.",
+    "Return the founder of the university that {input} attended."
+   ]
+  },
+  "inst4": {
+   "instruction": "Product -> Company owning it",
+   "length": 5,
+   "logprob": -43.08174467086792,
+   "equiprobable": [
+    "Phil Seymour joined Parti Qué",
+    "Transform Nations Impact Filipina",
+    "Practice appraisal basics slot\n",
+    "Reverse Pizza Mursion (",
+    "Planetbreak Project Hurtling"
+   ],
+   "wikitext": [
+    "Dmowski opposed revolutionary",
+    "The <unk> zur",
+    "Meanwhile , Field Hetman",
+    "The revenue cutter Bear arrived",
+    "Single @-@ game"
+   ],
+   "other_task": [
+    "Antonym -> German.",
+    "Antonym -> French.",
+    "Antonym -> Spanish.",
+    "Instruction: Return the past tense.",
+    "Output the synonym of the question."
+   ]
+  }
+ },
+ "next_item": {
+  "inst1": {
+   "instruction": "What is the next item in the sequence?",
+   "length": 9,
+   "logprob": -27.267857879400253,
+   "equiprobable": [
+    "Michigan State University Makes Unprecedented Move to Protect",
+    "可用于治疗副乳的药物中",
+    "Indiana University Bloominton Health and Wellness Center offers",
+    "最常见与麻疹的相关",
+    "# -*- coding utf8 -*-\n\nimport os,"
+   ],
+   "wikitext": [
+    "The song was performed for the first time at",
+    "A team of experts from the International Monetary Fund",
+    "Expedition Everest — Legend of the Forbidden",
+    "Judas Priest formed in 1969 in",
+    "There are two ways to get to Lundy"
+   ],
+   "other_task": [
+    "Which country is this place located in?",
+    "Return the previous item in the sequence.",
+    "Which country does this landmark belong to?",
+    "What is the past tense of the following verb?",
+    "What is the plural of the following word?"
+   ]
+  },
+  "inst2": {
+   "instruction": "Given the current item, what is the next item in the sequence?",
+   "length": 14,
+   "logprob": -39.486704744398594,
+   "equiprobable": [
+    "Spider-Man has waved his hands in a web-slinging motion in",
+    "吗啡缘于二战后的一项研究，研究发现",
+    "Sharing the Loveâ€“The Power of Kindness\nBy: Dr",
+    "泌乳料的药物作用\nA. 增加",
+    "Activists call our attention on the importance to protect the Amazon rain forest"
+   ],
+   "wikitext": [
+    "Maghrebi cuisine includes the cuisines of Algeria , Libya ,",
+    "Douglas D. Scott , Archaeological Perspectives on the Battle of the",
+    "Greg LeMond was a pioneer in the use of carbon fiber bicycle",
+    "Arcade Fire have recorded a version of the 1980 hit single",
+    "Carre 's Grammar School was founded in 1604 by a"
+   ],
+   "other_task": [
+    "Answer the question by capitalizing the first letter of the word.",
+    "What is the capital city of the country that contains the landmark?",
+    "Return the capital city of the country where {input} is located.",
+    "Help me find the country that the mentioned landmark is located in.",
+    "What is the capital city of the country where {input} is located?"
+   ]
+  },
+  "inst3": {
+   "instruction": "Find the next item.",
+   "length": 5,
+   "logprob": -28.836750388145447,
+   "equiprobable": [
+    "OPINIÓN, Editor",
+    "College of Europe offers double",
+    "Donald Trump held another cabinet",
+    "Reviews for Skin Essentials Ltd",
+    "Christmas is Just 67"
+   ],
+   "wikitext": [
+    "The Act has been described",
+    "The tenor recitative",
+    "Rhenium improves the",
+    "Voyage begins as",
+    "55 Cancri c ("
+   ],
+   "other_task": [
+    "Country -> Capital",
+    "What is the synonym?",
+    "Task: Synonym",
+    "Park -> Country",
+    "Country -> Currency"
+   ]
+  },
+  "inst4": {
+   "instruction": "Return the item that is sequentially next of the given input",
+   "length": 11,
+   "logprob": -50.141716957092285,
+   "equiprobable": [
+    "Weather History on June 1963 to June 200",
+    "Tailgate Tavern & Grange Hall Cider Mill (",
+    "Highest Number and Quality of Dancing Schools of the Year Awards",
+    "Support our COVID-19 or other Special Projects\nTo",
+    "Bubble Gum Elixir\nPhilip Glass. 1984"
+   ],
+   "wikitext": [
+    "In the 1960s employment in the park began",
+    "The first botanical collection of this species may well have been",
+    "Following permission for takeoff from controllers , the flight crew",
+    "Resisting Enemy Interrogation was lauded by the",
+    "Computer and Video Games commented on the game 's graphics"
+   ],
+   "other_task": [
+    "Return the occupation of the celebrity in lower case.",
+    "Give me the same word, but first letter capitalized.",
+    "Help me find the antonym of the word in German.",
+    "Help me find the antonym of the word in French.",
+    "Return the antonym of the word in German."
+   ]
+  }
+ },
+ "prev_item": {
+  "inst1": {
+   "instruction": "Given a number, letter, or month, return the previous item in the sequence.",
+   "length": 17,
+   "logprob": -57.48790103197098,
+   "equiprobable": [
+    "Pokémon Masters EX Orlando 2027\nA Pokémon-style battle tournament where you can",
+    "Forum Index  MainFrame Forum  Info  MainFrame Philosophy\nMainFrame Philosophy\nMainFrame",
+    "Shooters, hunters ^{1} F. F. Deuel, Jr., and",
+    "Meeting of 24 Seaforth Highland Volunteers\nLocation: Carluke, Lanark",
+    "Computers for Kids Shenandoah Springs, Colorado\nHello Shenandoah Springs!"
+   ],
+   "wikitext": [
+    "In the United Kingdom , \" 4 Minutes \" debuted on the UK Singles Chart at",
+    "Kuznetsova debuted in her first International Tennis Federation ( ITF ) tournament",
+    "Walter Benjamin alludes to the Mechanical Turk in the first thesis of his Theses",
+    "Since its release in November 1968 , \" Piggies \" has received mixed",
+    "After performing at the 2005 South by Southwest festival , The Sword was signed by"
+   ],
+   "other_task": [
+    "Help me find the CEO of the company that produces {input}.",
+    "Return the founding year of the university that {input} attended.",
+    "Task: given the country, answer with the currency of the country.",
+    "Task: given the country, answer the capital of the country.",
+    "Instructions: you are given a country and you need to output the capital city of that country."
+   ]
+  },
+  "inst2": {
+   "instruction": "Return the previous item in the sequence.",
+   "length": 8,
+   "logprob": -29.334639728069305,
+   "equiprobable": [
+    "Marvel has sold to Disney, and the",
+    "《药政》杂志社\n",
+    "Interaction effects at work: A study on",
+    "Albertsons $50 Gift Card Sweepstakes",
+    "自199年以后，中国的历史"
+   ],
+   "wikitext": [
+    "On September 24 , 2010",
+    "On January 22 , 2010",
+    "Louis Pasteur was unable to find a",
+    "Gregory was also one of the first",
+    "Command & Conquer : Sole Survivor ("
+   ],
+   "other_task": [
+    "What currency does this country use?",
+    "Which country does this landmark belong to?",
+    "Translate the following English sentences to Spanish.",
+    "What is the next item in the sequence?",
+    "Which country is this place located in?"
+   ]
+  },
+  "inst3": {
+   "instruction": "Instruction: given the current item, what is the previous one?",
+   "length": 13,
+   "logprob": -59.604761213064194,
+   "equiprobable": [
+    "怀旧京都的童幻想旅程\n这张图片",
+    "GRAZÓPOLÍZIS LIVRES COM O OBJ",
+    "Berry's Polytopalia Polymita\nBerry (1879",
+    "More and cheaper flights this route\nNorwegian Air International to start",
+    "SUBARISHARE in Pakistan: New initiative to empower marginalized women"
+   ],
+   "wikitext": [
+    "\" Greensleeves \" ( traditional ) , performed by Vanessa Carlton",
+    "Camet , therefore , won the bronze medal in the team foil",
+    "The Joe Biden presidential campaign , 2008 began when Biden ,",
+    "Alarmed , the American ambassador to Brazil sent a cablegram to",
+    "The Sikhs as a political entity , distinct from other Indian traditions"
+   ],
+   "other_task": [
+    "Tell me the antonym of {input} in German.",
+    "Return the founder of the university that {input} attended.",
+    "Task: given the country, answer with the currency of the country.",
+    "Return the founding year of the university that {input} attended.",
+    "What is the founding year of the university that {input} attended?"
+   ]
+  },
+  "inst4": {
+   "instruction": "You are given an item in the squence, what is the previous item?",
+   "length": 16,
+   "logprob": -66.14408968389034,
+   "equiprobable": [
+    "Creative Writing Major\nINNOVATURE-Academics\nThe University of Central",
+    "Bitcoin (CRYPTO:$BCH & Others), is a decentralized form of crypto",
+    "Former President Jacob Zumas health has indicated hospital admission is not ruled\nFormer president",
+    "生长分泵系统的母筐箱是由电气和",
+    "Drawing inspiration for the Acapulcho Floor Plan design from the laid-back coastal"
+   ],
+   "wikitext": [
+    "In early 2010 , the success of Apple Inc . ' s mobile App",
+    "As with the previous album , Room Service , significant portions of the album were produced",
+    "In November 2012 , shortly after entering office , Rivers was appointed to the",
+    "McConnell Island was purchased at the end of World War II by Thomas Gordon Thompson",
+    "Following the episode \" Something Nice Back Home \" , TV Guide 's Trish"
+   ],
+   "other_task": [
+    "What is the occupation of the celebrity? Please provide a one-word answer in lowercase.",
+    "Tell me the founder of the university that {input} attended.",
+    "Help me find the founder of the university that {input} attended.",
+    "Help me find the founding year of the university that {input} attended.",
+    "What is the founder of the university that {input} attended?"
+   ]
+  }
+ },
+ "english-french": {
+  "inst1": {
+   "instruction": "Translate English to French:",
+   "length": 5,
+   "logprob": -25.718286275863647,
+   "equiprobable": [
+    " процитувати\nA",
+    "Prostititution\nThe term",
+    "TI Sells Off Wireless",
+    "器的选择和制作",
+    "اعتداد\nاعت"
+   ],
+   "wikitext": [
+    "By early 1986",
+    "Barrymore 's",
+    "Bretagne was a",
+    "In 1913 ,",
+    "Based on the Russian experience"
+   ],
+   "other_task": [
+    "Word to synonym",
+    "Find the next item.",
+    "What is the synonym?",
+    "Task: Synonym",
+    "Park -> Country"
+   ]
+  },
+  "inst2": {
+   "instruction": "What is the French translation of the following English sentence?",
+   "length": 11,
+   "logprob": -35.80430947244167,
+   "equiprobable": [
+    "Spring is in airm, and along with the bloss",
+    "糖尿病修护细胞的代谢功能是",
+    "\"\"\"\nThis module consist functions to perform image processing tasks,",
+    "蛋白质Ribbon图像处理\n==========================",
+    "Climate Change and Interstate Rivers: A Comparison of the Imp"
+   ],
+   "wikitext": [
+    "As early as the late 1960s and by",
+    "In the early 1970s , under the influence",
+    "South Kensington is a London Underground station in Kensington , west",
+    "Bennett was selected by the New York Giants in",
+    "While he was waiting for his paper to be published ,"
+   ],
+   "other_task": [
+    "Give me the antonym of the following word.",
+    "Given an English word, can you translate it into German?",
+    "What is the translation of the word in Spanish?",
+    "Repeat the given word with the first letter capitalized.",
+    "What is the antonym of the word in Spanish?"
+   ]
+  },
+  "inst3": {
+   "instruction": "Given an English word, can you translate it into French?",
+   "length": 12,
+   "logprob": -35.3876855969429,
+   "equiprobable": [
+    "Fed up as a result, the people of the town of",
+    "Consumption characteristics and the demand for gasoline in the European Union",
+    "Degree: MASc\nFaculty: Mathematics\nField: Applied",
+    "Support the Apple Watch Series\nThe latest Apple Watch, the",
+    "Statements of goals and objectives should be precise, concise and measurable"
+   ],
+   "wikitext": [
+    "A tropical wave emerged off the west coast of Africa on September",
+    "Herodotus gives a detailed description of the Persian fleet",
+    "Uncle Tom 's Cabin ; or , Life Among the",
+    "The proximate cause of the conflict was the death of a",
+    "The Siah Bisheh Pumped Storage Power Plant ("
+   ],
+   "other_task": [
+    "What word is the opposite of the word in the question?",
+    "Given an English word, can you translate it into German?",
+    "What is the German translation of the following English sentence?",
+    "Answer the question by capitalizing the first letter of the word.",
+    "What is the antonym of the word in Spanish?"
+   ]
+  },
+  "inst4": {
+   "instruction": "Write the translation of the following sentence in French.",
+   "length": 10,
+   "logprob": -34.762632220983505,
+   "equiprobable": [
+    "Condenser Proteins in Plant Cells: Their Possible",
+    "Holdings By Country\nHoldings by Region/C",
+    "1981 Call of Duty\n1981: An",
+    "Oklawaha River, FL\nWaterbody",
+    "LED Light Gloves for the Blind and Visually Imp"
+   ],
+   "wikitext": [
+    "Taunton is twinned with Lisieux in",
+    "The largest ethnic group are the Javanese ,",
+    "Nevertheless , the Sui and Tang dynasties",
+    "Premier League : 2011 – 12",
+    "On November 27 , 1989 , the"
+   ],
+   "other_task": [
+    "What is the previous item in the sequence?",
+    "What is the translation of the word in Spanish?",
+    "Give me the antonym of the following word.",
+    "Write the translation of the following sentence in German.",
+    "What is the currency used by the country?"
+   ]
+  }
+ },
+ "english-german": {
+  "inst1": {
+   "instruction": "Translate the following English word to German.",
+   "length": 8,
+   "logprob": -35.595884799957275,
+   "equiprobable": [
+    "만족도에 의한 소규",
+    "(...)\n* [2-3-5",
+    " hải dương\nĐốt cháy toàn phần",
+    "位點的定點突变对",
+    "魅影殺戮之神"
+   ],
+   "wikitext": [
+    "Shortly after giving birth to the younger children",
+    "Judith Fitzgerald of The Philadelphia Inquirer",
+    "Decline in oil production has posed a",
+    "The Zhuangzi interprets the universe",
+    "Recalling the failed rescue attempt during the"
+   ],
+   "other_task": [
+    "What sports does this athlete play?",
+    "What is the country of the park?",
+    "What is the previous item in the sequence?",
+    "Which nation does the park belong to?",
+    "Write the word in its past tense form."
+   ]
+  },
+  "inst2": {
+   "instruction": "What is the German translation of the following English sentence?",
+   "length": 11,
+   "logprob": -36.83357897400856,
+   "equiprobable": [
+    "What is the Glutes?\nThe buttock muscles or",
+    "Spring is here!.  The first day of Spring",
+    "蛋白质守卫蛋白PPIase\n",
+    "蛋白质寒蝉效應的發揮",
+    "Spring is here!: New beginnings and adventures\nSpring,"
+   ],
+   "wikitext": [
+    "In November 1940 , the German Luftwaffe",
+    "The Armed Forces of the Philippines ( AFP ) are responsible",
+    "Commencing on 17 August 1943 , the",
+    "MacArthur 's chief of staff , Major General Richard",
+    "Jairo Mora Sandoval ( March 22"
+   ],
+   "other_task": [
+    "Given an English word, can you translate it into French?",
+    "Tell me what the following word means in French.",
+    "Write the translation of the following sentence in French.",
+    "What is the translation of the word in Spanish?",
+    "What is the antonym of the word in Spanish?"
+   ]
+  },
+  "inst3": {
+   "instruction": "Given an English word, can you translate it into German?",
+   "length": 12,
+   "logprob": -36.54943388700485,
+   "equiprobable": [
+    "Orange County Concert Band\nConcert 1: Sunday,",
+    "ISIS claims they have a nuclear bomb (Video)\nAccording to",
+    "Support for Colorado’s 64th Senate District\nBy:",
+    "Identifying traits of a healthy relationship involves recognizing the elements that",
+    "Statistics for Housing and Community Services\nHome > Statistics Portal >"
+   ],
+   "wikitext": [
+    "Middlesbrough scored two goals in the first seven minutes",
+    "Columbia Generating Station , a commercial nuclear power plant operated by",
+    "The American Red Cross , the Salvation Army , the United Way",
+    "From May 20 to 28 , 1976 ,",
+    "In 1865 , at the close of the Civil War"
+   ],
+   "other_task": [
+    "What is the French translation of the following English sentence?",
+    "Could you please tell me what is the plural word?",
+    "What is the antonym of the word in French?",
+    "What is the antonym of the word in German?",
+    "Help me find the antonym of the word in Spanish."
+   ]
+  },
+  "inst4": {
+   "instruction": "Write the translation of the following sentence in German.",
+   "length": 10,
+   "logprob": -35.96059402823448,
+   "equiprobable": [
+    "Nearly half say they are more stressed than 6",
+    "Dismiss\nAdjusting the parameters in a statistical test",
+    "Blend all solid ingredients together until they are in uniform",
+    "inverse matrix Property\nInverse of Matrix Property 3",
+    "最近的搅拌机型式\n"
+   ],
+   "wikitext": [
+    "The squadron was one of the first American military units",
+    "American electronic dance music dj and producer Skrillex",
+    "Sharma is of Indian heritage and was born in",
+    "WWC World Tag Team Championship ( 2 times",
+    "Maryland head coach Ralph Friedgen made his case"
+   ],
+   "other_task": [
+    "Give me the antonym of the following word.",
+    "What is the French translation of the following English sentence?",
+    "Write the translation of the following sentence in French.",
+    "What is the previous item in the sequence?",
+    "Repeat the given word with the first letter capitalized."
+   ]
+  }
+ },
+ "english-spanish": {
+  "inst1": {
+   "instruction": "Translate the following English sentences to Spanish.",
+   "length": 8,
+   "logprob": -27.869203686714172,
+   "equiprobable": [
+    " dán nhãn chống giả mạo trên",
+    "RGB Lighting for PC Gaming: A Complete",
+    "fraction = input('Fraction to convert?",
+    "标准差是反映随机样",
+    "носителям\nСудя,"
+   ],
+   "wikitext": [
+    "A Handful of Dust is a novel",
+    "1 , 1 , 3 ,",
+    "Saleh was born in 1971",
+    "At the start of the 2009",
+    "Three red panda cubs were born in"
+   ],
+   "other_task": [
+    "Return the previous item in the sequence.",
+    "What currency does this country use?",
+    "Which company is the product from?",
+    "What is the currency used by the country?",
+    "Give an antonym for the following word:"
+   ]
+  },
+  "inst2": {
+   "instruction": "Translate the following English word to Spanish.",
+   "length": 8,
+   "logprob": -32.518298983573914,
+   "equiprobable": [
+    "Ciencias de los Materias\nEl",
+    "AGRICOLA Database Contents\nAgr",
+    "CONFESS YOUR MISHAPES!\n",
+    "留置静脈導管\n",
+    "罗布斯比小子\nRob"
+   ],
+   "wikitext": [
+    "There are a number of structural characteristics common",
+    "Apollo 17 was the third mission (",
+    "Eurosport also broadcast coverage of the",
+    "The first recorded reference in England to the",
+    "She was born in New Jersey and as"
+   ],
+   "other_task": [
+    "Give an antonym for the following word:",
+    "What is the currency used by the country?",
+    "Which company is the product from?",
+    "What is the previous item in the sequence?",
+    "Which country does this landmark belong to?"
+   ]
+  },
+  "inst3": {
+   "instruction": "What is the translation of the word in Spanish?",
+   "length": 10,
+   "logprob": -33.70147381722927,
+   "equiprobable": [
+    "乙型肿瘤病原体是一",
+    "Why is it Optimal to Use Low-Carbon",
+    "Escape the ordinary challenges of everyday life as we journey",
+    "Digital Marketing Agency Nice, France | Full-service marketing",
+    "正常情况下瘦长的脑干是"
+   ],
+   "wikitext": [
+    "Telly Savalas as Ernst Stavro",
+    "Octavius has the distinction of being the last",
+    "Denver has also been known historically as the Queen City",
+    "The Atlantic hurricane season officially began on June 15",
+    "In June 2009 , it was announced that"
+   ],
+   "other_task": [
+    "What is the previous item in the sequence?",
+    "Write the translation of the following sentence in French.",
+    "Give an antonym for the following word:",
+    "What is the plural of the following word?",
+    "What is the past tense of the following verb?"
+   ]
+  },
+  "inst4": {
+   "instruction": "English to Spanish translation:",
+   "length": 5,
+   "logprob": -20.999406456947327,
+   "equiprobable": [
+    "NovaStar Finance, which",
+    "Introduction and Background\nC",
+    "Moderately sized, compact",
+    "Making an offer on the",
+    "Gene Therapy: A Cure"
+   ],
+   "wikitext": [
+    "Parasakthi",
+    "The 2011 census",
+    "In the 9th",
+    "Greenpeace is a non",
+    "In the course of the"
+   ],
+   "other_task": [
+    "Translate English to French:",
+    "Word to synonym",
+    "Find the next item.",
+    "Country -> Capital",
+    "What is the synonym?"
+   ]
+  }
+ }
+}
