@@ -1,0 +1,93 @@
+fold,family,set,alpha,replies,distinct,top_reply,top_share
+1,simple,allJ20,2.0,920,295,1,0.041
+1,simple,allJ20raw,2.0,920,295,1,0.041
+1,simple,allJ30,2.0,920,306,1,0.05
+1,simple,allJ30raw,2.0,920,305,1,0.05
+1,simple,allJ40,2.0,920,314,capital city,0.095
+1,simple,allJ40raw,2.0,920,313,capital city,0.09
+1,simple,allJ60,1.0,920,323,1,0.046
+1,simple,allJ60raw,1.0,920,317,1,0.046
+1,simple,allJ80,1.0,920,329,1,0.038
+1,simple,allJ80raw,1.0,920,326,1,0.037
+1,simple,allL20,3.0,920,276,1,0.051
+1,simple,allL20raw,3.0,920,276,1,0.051
+1,simple,allL30,2.0,920,264,1,0.05
+1,simple,allL30raw,2.0,920,274,1,0.05
+1,simple,allL40,2.0,920,298,1,0.051
+1,simple,allL40raw,2.0,920,291,1,0.051
+1,simple,cc30,3.0,920,342,1,0.039
+1,simple,cc60,2.0,920,356,capital city,0.058
+1,simple,cc80,1.0,920,323,1,0.043
+1,simple,fv20,1.0,920,289,1,0.043
+1,simple,fv30,1.0,920,328,1,0.035
+1,simple,fv60,1.0,920,310,1,0.041
+1,simple,fv80,1.0,920,341,1,0.033
+1,simple-wrong,allJ20,3.0,570,180,canberra,0.009
+1,simple-wrong,allJ20raw,3.0,570,180,canberra,0.009
+1,simple-wrong,allJ30,3.0,570,189,canberra,0.009
+1,simple-wrong,allJ30raw,3.0,570,188,canberra,0.009
+1,simple-wrong,allJ40,2.0,570,171,canberra,0.009
+1,simple-wrong,allJ40raw,2.0,570,171,canberra,0.009
+1,simple-wrong,allJ60,1.0,570,152,tribut,0.014
+1,simple-wrong,allJ60raw,2.0,570,181,schlag,0.012
+1,simple-wrong,allJ80,1.0,570,156,grund,0.014
+1,simple-wrong,allJ80raw,1.0,570,157,grund,0.014
+1,simple-wrong,allL20,4.0,570,149,erhalten,0.016
+1,simple-wrong,allL20raw,4.0,570,149,erhalten,0.016
+1,simple-wrong,allL30,3.0,570,149,erhalten,0.018
+1,simple-wrong,allL30raw,3.0,570,150,erhalten,0.018
+1,simple-wrong,allL40,3.0,570,185,erhalten,0.012
+1,simple-wrong,allL40raw,3.0,570,187,erhalten,0.012
+1,simple-wrong,cc30,3.0,570,198,canberra,0.009
+1,simple-wrong,cc60,2.0,570,200,canberra,0.009
+1,simple-wrong,cc80,2.0,570,217,canberra,0.009
+1,simple-wrong,fv20,1.0,570,174,1,0.012
+1,simple-wrong,fv30,1.0,570,172,brazzaville,0.009
+1,simple-wrong,fv60,1.0,570,164,brazzaville,0.009
+1,simple-wrong,fv80,1.0,570,171,canberra,0.009
+2,simple,allJ20,2.0,930,308,{,0.02
+2,simple,allJ20raw,2.0,930,308,{,0.02
+2,simple,allJ30,2.0,930,324,1,0.035
+2,simple,allJ30raw,2.0,930,321,1,0.035
+2,simple,allJ40,2.0,930,342,capital city,0.1
+2,simple,allJ40raw,2.0,930,344,capital city,0.095
+2,simple,allJ60,1.0,930,318,a country of contrasts,0.019
+2,simple,allJ60raw,1.0,930,317,1,0.017
+2,simple,allJ80,2.0,930,487,capital city,0.097
+2,simple,allJ80raw,2.0,930,474,capital city,0.11
+2,simple,allL20,3.0,930,293,capital city,0.029
+2,simple,allL20raw,3.0,930,293,capital city,0.029
+2,simple,allL30,2.0,930,283,capital city,0.015
+2,simple,allL30raw,2.0,930,280,capital city,0.024
+2,simple,allL40,2.0,930,295,1,0.016
+2,simple,allL40raw,2.0,930,292,capital city,0.026
+2,simple,cc30,2.0,930,334,1,0.024
+2,simple,cc60,2.0,930,409,capital city,0.048
+2,simple,cc80,1.0,930,354,1,0.028
+2,simple,fv20,2.0,930,338,1,0.028
+2,simple,fv30,1.0,930,329,1,0.022
+2,simple,fv60,1.0,930,352,1,0.022
+2,simple,fv80,1.0,930,368,1,0.022
+2,simple-wrong,allJ20,4.0,565,230,german,0.016
+2,simple-wrong,allJ20raw,4.0,565,230,german,0.016
+2,simple-wrong,allJ30,4.0,565,213,deutsch,0.023
+2,simple-wrong,allJ30raw,4.0,565,212,deutsch,0.023
+2,simple-wrong,allJ40,3.0,565,208,drei,0.018
+2,simple-wrong,allJ40raw,3.0,565,209,drei,0.018
+2,simple-wrong,allJ60,2.0,565,182,drei,0.018
+2,simple-wrong,allJ60raw,2.0,565,180,drei,0.018
+2,simple-wrong,allJ80,2.0,565,212,deutsch,0.023
+2,simple-wrong,allJ80raw,2.0,565,212,deutsch,0.023
+2,simple-wrong,allL20,4.0,565,160,german,0.018
+2,simple-wrong,allL20raw,4.0,565,160,german,0.018
+2,simple-wrong,allL30,3.0,565,147,1.1.1.1.1.1.1.1,0.016
+2,simple-wrong,allL30raw,2.0,565,152,1.1.1.1.1.1.1.1,0.016
+2,simple-wrong,allL40,3.0,565,196,1.1.1.1.1.1.1.1,0.014
+2,simple-wrong,allL40raw,2.0,565,169,1.1.1.1.1.1.1.1,0.021
+2,simple-wrong,cc30,4.0,565,202,german,0.018
+2,simple-wrong,cc60,3.0,565,244,ansatz,0.012
+2,simple-wrong,cc80,2.0,565,190,effektiv,0.016
+2,simple-wrong,fv20,2.0,565,174,effektiv,0.011
+2,simple-wrong,fv30,1.0,565,160,effektiv,0.011
+2,simple-wrong,fv60,1.0,565,188,belmopan,0.009
+2,simple-wrong,fv80,1.0,565,203,belmopan,0.009

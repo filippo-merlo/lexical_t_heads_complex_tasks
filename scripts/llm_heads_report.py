@@ -12,10 +12,12 @@ Also: E4's ``fv20``, patched again here, against E4's own rows (must agree), and
 set at its cross-fitted alpha, the share of the patched items given the most frequent reply
 (constant-answer check, ``answers/``).
 
-Writes ``results/llm_heads/accuracy_alpha.csv``, ``accuracy_crossfit.csv``, ``pilot_table.md``,
-``constant_answers.csv`` and the figure ``paper/figures/llm_heads_pilot.pdf`` (and a PNG beside the CSVs).
+Writes, per task, ``results/llm_heads/{accuracy_alpha,accuracy_crossfit,constant_answers}_{task}.csv``,
+``table_{task}.md`` and the figure ``paper/figures/llm_heads_{task}.pdf`` (and a PNG beside the CSVs).
+Tasks after the pilot have the ``all`` condition only; table and figure show the conditions present.
 
     .venv/bin/python scripts/llm_heads_report.py --task english-german
+    .venv/bin/python scripts/llm_heads_report.py --task country-capital
 """
 
 from __future__ import annotations
@@ -118,10 +120,10 @@ def main() -> None:
     refs = ["e1", "cc", "cc20", "cc40", "fvNt", "fv40"] + [f"random{n}_{i}" for n in (20, 40) for i in range(5)]
     c = pd.concat([mine, e4[e4.set.isin(refs)]], ignore_index=True)
     cf = crossfit(c)
-    c.to_csv(OUT / "accuracy_alpha.csv", index=False)
-    cf.to_csv(OUT / "accuracy_crossfit.csv", index=False)
+    c.to_csv(OUT / f"accuracy_alpha_{task}.csv", index=False)
+    cf.to_csv(OUT / f"accuracy_crossfit_{task}.csv", index=False)
     ca = constant_answers(cf[~cf.set.str.startswith("random")])
-    ca.to_csv(OUT / "constant_answers.csv", index=False)
+    ca.to_csv(OUT / f"constant_answers_{task}.csv", index=False)
 
     # table: mean over folds; random draws of an LLM set averaged over the five draws
     s = cf.assign(set=cf.set.str.replace(r"^(random_?\w+?)_\d$", r"\1", regex=True))
@@ -158,7 +160,7 @@ def main() -> None:
                      f"{al('simple-wrong')} |")
     unp = base.groupby("family").accuracy.mean()
     lines.append(f"| unpatched | 0 | {unp.get('simple', float('nan')):.2f} | | {unp.get('simple-wrong', float('nan')):.2f} | | | |")
-    (OUT / "pilot_table.md").write_text("\n".join(lines) + "\n")
+    (OUT / f"table_{task}.md").write_text("\n".join(lines) + "\n")
     print("\n".join(lines))
     print("\nconstant-answer check (task means, cross-fitted alpha): largest share of one reply",
           ca.top_share.max() if len(ca) else "-")
@@ -172,6 +174,9 @@ def figure(task: str, c: pd.DataFrame, cf: pd.DataFrame, base: pd.DataFrame) -> 
     LLM sets (colour = readout, line = condition), CC and FV of the same size (task means); random
     draws of the LLM sets of that size as a grey band (check 1), unpatched dotted."""
     m = c.groupby(["family", "set", "source", "alpha"], as_index=False).accuracy.mean()
+    llm = [(name, label) for name, label in LLM if m.set.str.match(rf"{name}\d").any()]
+    nt = sorted(cf[cf.set == "cc"].n_heads.unique())  # size of the full CC set in each fold
+    nt = f"{nt[0]:.0f}" if len(nt) == 1 else f"{nt[0]:.0f}-{nt[-1]:.0f}"
     fig, axes = plt.subplots(len(SIZES), 2, figsize=(6.3, 1.45 * len(SIZES) + 0.9), sharex=True, sharey=True)
     for j, family in enumerate(hr.CHECKS):
         for i, n in enumerate(SIZES):
@@ -180,14 +185,14 @@ def figure(task: str, c: pd.DataFrame, cf: pd.DataFrame, base: pd.DataFrame) -> 
             if len(r):
                 band = r.groupby("alpha").accuracy.agg(["min", "max"])
                 ax.fill_between(band.index, band["min"], band["max"], color=rt.GREY, alpha=0.3, lw=0, zorder=1)
-            for name, _ in LLM:
+            for name, _ in llm:
                 d = m[(m.family == family) & (m.set == f"{name}{n}") & (m.source == "task")]
                 ax.plot(d.alpha, d.accuracy, color=COLOUR[name[-1]], ls=STYLE[name[:3]], lw=1.2, zorder=3)
             for ref, s_ref in zip(("cc", "fv"), refs_of(n)):
                 d = m[(m.family == family) & (m.set == s_ref) & (m.source == "task")]
                 ax.plot(d.alpha, d.accuracy, color=COLOUR[ref], lw=1.0, zorder=2)
             ax.axhline(base[base.family == family].accuracy.mean(), color=rt.INK_2, lw=0.7, ls=(0, (1, 2)), zorder=2)
-            size = "97-99 (full CC set's size)" if n == "Nt" else n
+            size = f"{nt} (full CC set's size)" if n == "Nt" else n
             ax.set_title(f"{hr.CHECKS[family]}, {size} heads", loc="left", fontsize=7)
             ax.set_ylim(-0.03, 1.03)
             rt.style_axes(ax)
@@ -196,18 +201,18 @@ def figure(task: str, c: pd.DataFrame, cf: pd.DataFrame, base: pd.DataFrame) -> 
         ax.set_xticks([-10, -5, 0, 5, 10])
     for ax in axes[:, 0]:
         ax.set_ylabel("accuracy")
-    handles = [plt.Line2D([], [], color=COLOUR[name[-1]], ls=STYLE[name[:3]], lw=1.2) for name, _ in LLM]
-    labels = [f"LLM, {label}" for _, label in LLM]
+    handles = [plt.Line2D([], [], color=COLOUR[name[-1]], ls=STYLE[name[:3]], lw=1.2) for name, _ in llm]
+    labels = [f"LLM, {label}" for _, label in llm]
     handles += [plt.Line2D([], [], color=COLOUR["cc"]), plt.Line2D([], [], color=COLOUR["fv"]),
                 plt.Rectangle((0, 0), 1, 1, color=rt.GREY, alpha=0.3, lw=0),
                 plt.Line2D([], [], color=rt.INK_2, lw=0.7, ls=(0, (1, 2)))]
-    labels += ["CC, same size (at 97-99: the full CC set)", "FV, same size", "random, LLM sets' layers (range, check 1)", "unpatched"]
+    labels += [f"CC, same size (at {nt}: the full CC set)", "FV, same size", "random, LLM sets' layers (range, check 1)", "unpatched"]
     fig.legend(handles, labels, loc="upper center", ncol=3, fontsize=6)
     fig.tight_layout(rect=(0, 0, 1, 1 - 0.5 / (1.45 * len(SIZES) + 0.9)))
-    fig.savefig(rt.FIGURES / "llm_heads_pilot.pdf")
-    fig.savefig(OUT / "llm_heads_pilot.png", dpi=150)
+    fig.savefig(rt.FIGURES / f"llm_heads_{task}.pdf")
+    fig.savefig(OUT / f"llm_heads_{task}.png", dpi=150)
     plt.close(fig)
-    print(f"wrote {rt.FIGURES / 'llm_heads_pilot.pdf'}", flush=True)
+    print(f"wrote {rt.FIGURES / f'llm_heads_{task}.pdf'}", flush=True)
 
 
 if __name__ == "__main__":

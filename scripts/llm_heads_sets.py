@@ -21,9 +21,12 @@ For each task and fold (fold 1 = scores on half A, fold 2 = half B), readout and
   (CC ranking) and ``fv60``, ``fv80`` (function-vector ranking). E4's ``cc`` and ``fvNt`` are the
   references at N_t.
 
-Writes ``results/llm_heads/fold{1,2}/heads.json`` (the set-list layout of E4), the stability
-and overlap measures ``results/llm_heads/agreement.csv``, and the review file
-``data/review/llm_heads_{task}.md``.
+Tasks after the pilot (country-capital, 2026-11-07) have the ``all`` condition only (user): the
+batched sets and comparisons are skipped where their scores do not exist.
+
+Writes ``results/llm_heads/fold{1,2}/heads.json`` (the set-list layout of E4; the sets of the
+tasks not given are kept), the stability and overlap measures ``results/llm_heads/agreement.csv``
+(rows of the other tasks kept), and the review file ``data/review/llm_heads_{task}.md``.
 
     .venv/bin/python scripts/llm_heads_sets.py --tasks english-german
 """
@@ -236,6 +239,9 @@ def main() -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps({"simple": out}, indent=1))
         print(f"wrote {path}", flush=True)
+    if (OUT / "agreement.csv").exists():  # keep the rows of the tasks not given here
+        with (OUT / "agreement.csv").open(newline="") as f:
+            agreement = [r for r in csv.DictReader(f) if r["task"] not in args.tasks] + agreement
     if agreement:
         with (OUT / "agreement.csv").open("w", newline="") as f:
             w = csv.DictWriter(f, fieldnames=list(agreement[0]))

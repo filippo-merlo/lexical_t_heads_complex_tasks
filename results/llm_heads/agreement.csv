@@ -35,3 +35,9 @@ english-german,2,allJ vs batJ,40,0.86,0.878
 english-german,2,allL vs batL,20,0.818,0.592
 english-german,2,allL vs batL,30,0.714,0.592
 english-german,2,allL vs batL,40,0.778,0.592
+country-capital,1,allJ vs allL,20,0.538,0.52
+country-capital,1,allJ vs allL,30,0.579,0.52
+country-capital,1,allJ vs allL,40,0.509,0.52
+country-capital,2,allJ vs allL,20,0.481,0.65
+country-capital,2,allJ vs allL,30,0.622,0.65
+country-capital,2,allJ vs allL,40,0.538,0.65
