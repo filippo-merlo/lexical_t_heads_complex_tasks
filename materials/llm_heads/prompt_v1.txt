@@ -1,0 +1,51 @@
+You are helping with an interpretability study of a language model with 1,024 attention heads. We want to find the heads that represent a TASK, that is, what the model has been asked to do.
+
+# The task
+
+<<DESCRIPTION>>
+
+The model is asked to do it with instructions like these ({input} stands for the item):
+<<TEMPLATES>>
+
+Examples of items and their correct answers:
+<<EXAMPLES>>
+
+# What was measured
+
+The model was given <<N_PROMPTS>> prompts of this task, made with the instructions above, that it answered correctly. At the last token of each prompt, just before the model writes its answer, we read the output of each head as a list of vocabulary tokens: the 20 tokens that this head's output pushes the model most towards. For each head, the table at the end gives:
+- answer: the share of prompts on which that prompt's own correct answer (its first token) is among the head's 20 tokens;
+- input: the share of prompts on which that prompt's input (its first token) is among the head's 20 tokens;
+- tokens: the 20 tokens that are most often among the head's 20, each with the share of prompts on which it is there (1.00 = every prompt, .05 = one prompt in twenty).
+Tokens are written as JSON strings; a token that begins with a space is shown with the space. Head ids are anonymous and the heads are in random order: neither says anything about where a head is in the model.
+
+# How to score a head
+
+Give every head a score from 0 to 100 for how clearly its tokens, across the prompts, represent the task.
+- A head scores high when its tokens name the task, or the relation between the input and the answer, or the kind of answer without being answers (for example, a word meaning "city" when the answers are cities). A word that names the task counts even when the same word is in the instruction.
+- The more of its tokens do this, and the higher their shares, the higher the score.
+- A head scores 0 when none of its tokens has to do with the task: punctuation, formatting, numbers, function words, code, pieces of words, or unrelated words.
+- Answers and inputs by themselves do not represent the task: a head whose tokens are only answers of this task, or only inputs of its items, scores low.
+
+Do not lower the score of a head because it also shows answers or inputs. Mark them instead, with two flags:
+- answer: true if the head's tokens include answers of this task (for any of its items), otherwise false;
+- input: true if the head's tokens include inputs of its items, otherwise false.
+
+An example, for a task that is not in this study ("give the chemical symbol of an element"):
+- " symbol", " element", " chemical", " abbreviation": high score, answer false, input false;
+- " symbol", " element", " Fe", " Au": high score, answer true;
+- only " Fe", " Au", " Na": low score, answer true;
+- only " iron", " gold", " sodium": low score, input true.
+
+# What to do
+
+<<TABLE_NOTE>> Look at each head in turn, and score every one of them.
+
+# Answer format
+
+Reply with JSON only, with no other text:
+{"scores": [{"id": "<head id>", "score": <0 to 100>, "answer": true or false, "input": true or false}, ...]}
+"scores" has exactly one entry for each head in the table, in the order of the table. For every head with a score of 50 or more, also give "tokens": [<the tokens that support the score>] and "why": "<one short sentence>".
+
+# Heads
+
+<<TABLE>>

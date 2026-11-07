@@ -7,8 +7,11 @@ prompt token, run as ``scripts/build_readings.py`` does (saved prompts, Yang et 
 of 20, padding masked). Written in the ``lth.store`` format to
 ``data/readings/heldout/{half}/simple/{task}/{wording}`` with the wording's full records, so
 that scripts reading ``readings_dir`` work on a half with ``LTH_READINGS=data/readings/heldout/{half}``.
+E5 (paper/proposal-llm-heads.tex) reads the same prompts with each head's top 20 tokens
+(``--k 20``) into another folder (``--out``).
 
     .venv/bin/python scripts/heldout_readings.py --gpu 2
+    .venv/bin/python scripts/heldout_readings.py --gpu 0 --k 20 --out data/readings/heldout_top20 --tasks english-german
 """
 
 from __future__ import annotations
@@ -31,6 +34,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--gpu", type=int, required=True)
     parser.add_argument("--tasks", nargs="+", default=list(simple.TASKS))
+    parser.add_argument("--k", type=int, default=10, help="top tokens kept per head (E4: 10)")
+    parser.add_argument("--out", type=Path, default=OUT, help="readings folder (E4: data/readings/heldout)")
     args = parser.parse_args()
     gpu.pin(args.gpu)
     from lth.model import LM
@@ -42,7 +47,7 @@ def main() -> None:
             records = load(readings_dir("simple", task), wording)["records"]
             prompts = {int(r["item"]): r["prompt"] for r in load_outputs(outputs_path("simple", task, wording))}
             for half in ("A", "B"):
-                directory = OUT / half / "simple" / task
+                directory = args.out / half / "simple" / task
                 if done(directory, wording):
                     continue
                 start = time.time()
@@ -52,7 +57,7 @@ def main() -> None:
                 top = []
                 for b in range(0, len(ids), simple.BATCH):
                     _, z = lm.next_tokens_batch(ids[b:b + simple.BATCH])
-                    top += [lm.top_tokens(row) for row in z]
+                    top += [lm.top_tokens(row, k=args.k) for row in z]
                 save(directory, wording, records, [str(i) for i in id_items], top)
                 print(f"{half} {task} {wording}: P+ {len(id_items)} ({time.time() - start:.0f} s)", flush=True)
 
