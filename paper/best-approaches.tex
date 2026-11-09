@@ -132,11 +132,11 @@ FV-30, same run & Davidson, as published & 30 & 0.33 & -- & same items \\
 \label{tab:compare}
 \end{center}
 
-\textbf{By task type} (held-out, check 1):
+\textbf{By task type} (check 1; per task in App.~\ref{sec:tables}):
 \begin{itemize}
 \item \emph{Fact tasks} (capitals, landmark, park, product): every method works; FV-$N_t$ 0.88--0.94; a single head can be enough (L16H25).
-\item \emph{Translations and prev-item}: only decoded-word sets: CC-pooled 0.38--0.40 vs FV-$N_t$ 0.01--0.25. task24 (same items) also carries translations.
-\item \emph{Present--past}: only the causal ranking (FV-$N_t$ 0.85), or L15H1 with example means. No decoded-word set with rule means.
+\item \emph{Translations and prev-item}: among the held-out sets, only CC-pooled (0.38--0.40 vs FV-$N_t$ 0.01--0.25). FV heads do carry them when ranked over all 14 tasks (FV-univ-20, one fold: 0.32--0.55) or without the generic heads (task24, same items: 0.39--0.70).
+\item \emph{Present--past}: only FV heads ranked by their score (FV-$N_t$ 0.85; FV-univ-20 0.80, one fold), or L15H1 with example means. Not the 30-head FV or task24 ($\leq$0.05), and no decoded-word set with rule means.
 \item \emph{Antonym, synonym, singular--plural, next-item}: FV-$N_t$ first (0.49--0.85), CC-pooled second (0.26--0.69), E1 near 0.
 \end{itemize}
 
@@ -154,12 +154,54 @@ FV-30, same run & Davidson, as published & 30 & 0.33 & -- & same items \\
 \begin{enumerate}
 \item \textbf{J-head is the better readout} for finding task heads: more heads, earlier layers, causal effects that remain at equal size; LLM-scored J-head sets also mostly beat Logit-head ones.
 \item \textbf{The hand-written term list is the bottleneck of Yang's method}, not the criterion: lists built from what heads actually decode double the held-out effect (0.20 $\to$ 0.44).
-\item \textbf{A causal ranking still finds better heads} than any decoding rule (FV-$N_t$ 0.59), except on translations and prev-item, where decoded words win.
+\item \textbf{A causal ranking still finds better heads} than any decoding rule (FV-$N_t$ 0.59). Per-task FV rankings miss translations and prev-item, where CC-pooled wins; FV heads ranked over all 14 tasks do not (FV-univ-20, 0.63, one fold only).
 \item \textbf{Davidson's FV is held back by a few generic heads} that add a large, task-independent direction; without them it works at larger $\alpha$ and also carries translations.
 \item \textbf{Check 2 does not separate the sets} (all sets 0.28--0.39, random sets 0.12, control means up to 0.13): the prompt already gives the task. Check 1 is the informative test.
 \item \textbf{Read the replies.} 19--33\% of patched replies on several tasks contain the answer after a prefix the score rejects; part of a ``loss'' can be a format change.
 \end{enumerate}
 
 \textbf{Open:} task24 held-out (only same-items so far); is the generic FV part harmful through its heads or only its norm; LLM-scored heads on the other 12 tasks; E4b (new wordings, held-out wordings) not run.
+
+% ---------------------------------------------------------------------
+\clearpage
+\appendix
+\section{Per-task results}\label{sec:tables}
+
+Tables~\ref{tab:check1}--\ref{tab:llm} give every task. They are built by \texttt{scripts/best\_approaches\_tables.py} from the existing result files (E4 tables, FV split report, E5 tables); nothing is recomputed. In Tables~\ref{tab:check1}, \ref{tab:check2} and~\ref{tab:fvsplit} the largest value per task is in bold within the held-out main sets (or within all30/task24); the other columns are measured differently and are not compared in bold.
+
+\begin{table}[!htbp]
+\centering\small\setlength{\tabcolsep}{4pt}
+\input{tables/best_check1}
+\caption{Check 1 (zero-shot prompts), every approach, per task. \emph{Held-out}: E4, cross-fitted $\alpha$, mean of the two folds; E1 and CC J-head sets rechosen on the choosing half; FV-30 = Davidson et al.'s 30-head function vector at $\alpha=1$; FV-$N_t$ = as many heads as CC, ranked by the task's own FV score; Random = 5 layer-matched draws of CC's size at CC's $\alpha$. \emph{One fold}: E4 secondary sets, fold~1, best $\alpha$. \emph{Same items}: FV split run (FV-30: the full FV; task24: FV-30 minus its 6 generic heads), best of $\alpha\in\{0,1,2,3,5,8\}$ on the items scored. Control mean: the same heads patched with another task's mean (held-out sets only).}
+\label{tab:check1}
+\end{table}
+
+\begin{table}[!htbp]
+\centering\small
+\input{tables/heldout_check1_sizes}
+\caption{Check 1 at equal size (held-out, cross-fitted $\alpha$). CC-$N$: the first $N$ heads by CC match rate; FV-$N$: the first $N$ by the task's FV score; Random-$N$: layer-matched to CC-$N$.}
+\label{tab:sizes}
+\end{table}
+
+\begin{table}[!htbp]
+\centering\small\setlength{\tabcolsep}{4pt}
+\input{tables/best_check2}
+\caption{Check 2 (1-shot prompts answered wrongly, baseline 0), per task. Items: patched items in fold~1 / fold~2 (few on several tasks). Held-out and one-fold sets as in Table~\ref{tab:check1}. Control means are often as large as the task means (next-item, prev-item, singular--plural).}
+\label{tab:check2}
+\end{table}
+
+\begin{table}[!htbp]
+\centering\small
+\input{tables/best_fvsplit}
+\caption{Davidson et al.'s 30-head FV split (check 1, same items, best $\alpha$ per task over $\{0,1,2,3,5,8\}$). all30: the full FV; task24: without the 6 generic heads; generic6: those 6 alone; drop-6 random: the FV minus 6 random non-generic heads, mean of 3 draws. Last two columns: the $\alpha$ of the best value.}
+\label{tab:fvsplit}
+\end{table}
+
+\begin{table}[!htbp]
+\centering\small
+\input{tables/best_llm}
+\caption{E5, LLM-scored heads (GPT-5.5 scores every head from its top-20 decoded tokens), the two tasks run so far; held-out, cross-fitted $\alpha$, mean of the two folds. LLM-J / LLM-L: top-$N$ heads by score on J-head / Logit-head readings (Logit-head sets run up to 40 heads). CC, FV: E4 sets of the same size (last English--German row: the full CC set and FV-$N_t$). Random: layer-matched to LLM-J. --: not run.}
+\label{tab:llm}
+\end{table}
 
 \end{document}
