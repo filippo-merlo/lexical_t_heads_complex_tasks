@@ -1,0 +1,239 @@
+{
+ "removed": [
+  "which",
+  "mph",
+  "http",
+  "his",
+  "what",
+  "https",
+  "whilst",
+  "pretty",
+  "colour",
+  "they",
+  "their",
+  "even",
+  "maybe",
+  "amongst",
+  "programme",
+  "only",
+  "himself",
+  "she",
+  "really",
+  "again",
+  "her",
+  "then",
+  "also",
+  "herself",
+  "itself",
+  "organisation",
+  "however",
+  "behaviors",
+  "during",
+  "our",
+  "being",
+  "ones",
+  "later",
+  "there",
+  "him",
+  "programmes",
+  "who",
+  "why",
+  "local",
+  "etc",
+  "respectively",
+  "folks",
+  "rather",
+  "instead",
+  "because",
+  "american",
+  "behaviour",
+  "tom",
+  "additionally",
+  "both"
+ ],
+ "fv": {
+  "fv20": {
+   "shared": 4.714285714285714,
+   "chance": 1.6964285714285714,
+   "not_decoding": 14.75,
+   "dropped": 0.5357142857142857,
+   "fv_bos_le05": 0.6910714285714287,
+   "threshold_median": 0.469970703125,
+   "layer_fv": 14.928571428571429,
+   "layer_raw_att": 13.75
+  },
+  "fv40": {
+   "shared": 8.071428571428571,
+   "chance": 3.267857142857143,
+   "not_decoding": 30.428571428571427,
+   "dropped": 1.5,
+   "fv_bos_le05": 0.6321428571428572,
+   "threshold_median": 0.55859375,
+   "layer_fv": 14.625,
+   "layer_raw_att": 13.75
+  }
+ },
+ "profile": {
+  "n_pairs": 574,
+  "fv_pairs": 60,
+  "spearman_minus_rank": {
+   "rate": 0.094,
+   "layer": -0.255,
+   "att_taskword": 0.38,
+   "att_input": 0.353,
+   "att_rest": 0.458,
+   "att_bos": -0.49,
+   "out_cos": -0.171,
+   "instr_change": 0.132,
+   "jhead_same_as_diff": 0.142,
+   "jhead_generic": -0.272
+  }
+ },
+ "marker": {
+  "0.3": {
+   "below": 64,
+   "below_top30": 31,
+   "above": 510,
+   "above_top30": 33
+  },
+  "0.4": {
+   "below": 116,
+   "below_top30": 44,
+   "above": 458,
+   "above_top30": 20
+  },
+  "0.5": {
+   "below": 143,
+   "below_top30": 48,
+   "above": 431,
+   "above_top30": 16
+  }
+ },
+ "cc_only_top30": {
+  "pairs": 17,
+  "of": 242,
+  "heads": {
+   "L13H21": {
+    "tasks": 2,
+    "mean_rank": 31,
+    "best": [
+     "antonym",
+     "5"
+    ]
+   },
+   "L14H31": {
+    "tasks": 3,
+    "mean_rank": 34,
+    "best": [
+     "antonym",
+     "18"
+    ]
+   },
+   "L14H5": {
+    "tasks": 3,
+    "mean_rank": 58,
+    "best": [
+     "prev_item",
+     "4"
+    ]
+   },
+   "L17H3": {
+    "tasks": 2,
+    "mean_rank": 63,
+    "best": [
+     "country-capital",
+     "24"
+    ]
+   },
+   "L13H29": {
+    "tasks": 1,
+    "mean_rank": 66,
+    "best": [
+     "english-spanish",
+     "20"
+    ]
+   },
+   "L11H4": {
+    "tasks": 1,
+    "mean_rank": 74,
+    "best": [
+     "synonym",
+     "12"
+    ]
+   },
+   "L16H18": {
+    "tasks": 3,
+    "mean_rank": 76,
+    "best": [
+     "english-french",
+     "0"
+    ]
+   },
+   "L17H7": {
+    "tasks": 1,
+    "mean_rank": 124,
+    "best": [
+     "present-past",
+     "29"
+    ]
+   },
+   "L21H0": {
+    "tasks": 2,
+    "mean_rank": 161,
+    "best": [
+     "present-past",
+     "9"
+    ]
+   },
+   "L27H20": {
+    "tasks": 1,
+    "mean_rank": 180,
+    "best": [
+     "english-german",
+     "0"
+    ]
+   },
+   "L29H30": {
+    "tasks": 1,
+    "mean_rank": 197,
+    "best": [
+     "landmark-country",
+     "26"
+    ]
+   },
+   "L26H23": {
+    "tasks": 1,
+    "mean_rank": 291,
+    "best": [
+     "present-past",
+     "14"
+    ]
+   },
+   "L22H17": {
+    "tasks": 1,
+    "mean_rank": 318,
+    "best": [
+     "present-past",
+     "4"
+    ]
+   },
+   "L19H25": {
+    "tasks": 1,
+    "mean_rank": 979,
+    "best": [
+     "english-french",
+     "20"
+    ]
+   },
+   "L20H1": {
+    "tasks": 2,
+    "mean_rank": 984,
+    "best": [
+     "landmark-country",
+     "18"
+    ]
+   }
+  }
+ },
+ "fv_tasks_in_top30_median": 5.0
+}
