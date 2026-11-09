@@ -1,0 +1,165 @@
+% =====================================================================
+%  Short comparison of the approaches that gave the best results and
+%  insights so far on the simple tasks: the two source methods (Yang et al.,
+%  Davidson et al.), what we changed in each, and the designs built on them.
+%  Numbers are taken from summary-simple.tex / proposal-simple.tex and the
+%  result files they cite (results/heldout, results/davidson_fv_split,
+%  results/llm_heads).
+% =====================================================================
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1.9cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,tabularx,array}
+\usepackage{enumitem}
+\usepackage{pifont}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,urlcolor=blue!60!black]{hyperref}
+
+\setlist{nosep,leftmargin=*}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.15}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+
+\newcommand{\yes}{\textcolor{green!45!black}{\ding{51}}}
+\newcommand{\no}{\textcolor{red!70!black}{\ding{55}}}
+\newcommand{\mixed}{\textcolor{orange!80!black}{$\sim$}}
+
+\title{Lexical Task Heads on Simple Tasks\\\large The best approaches so far, compared}
+\author{Filippo Merlo}
+\date{9 November 2026}
+
+\begin{document}
+\maketitle
+\vspace{-1.5em}
+
+% ---------------------------------------------------------------------
+\section*{Setting and how to read the numbers}
+
+Llama-3.1-8B-Instruct (bf16), the 14 simple tasks of Todd et al.\ (antonym, capitals, translations, \dots), rule style unless stated. A head set is tested by patching its mean output ($\times\alpha$) at the last prompt token:
+\begin{itemize}
+\item \textbf{Check 1}: zero-shot prompts, which do not say what the task is (unpatched accuracy $\approx 0$). The main test: does the set \emph{bring in} the task?
+\item \textbf{Check 2}: 1-shot prompts the model answered wrongly (baseline 0). The prompt already shows the task, so this check tests repair, not task transfer.
+\end{itemize}
+Readouts: \textbf{Logit-head} (head write decoded by the unembedding, as Yang et al.) and \textbf{J-head} (Head-JLens: head output through its fitted Jacobian, then decoded). Accuracy is the flexible score. Unless stated, a number is the \textbf{mean over the 14 tasks in check~1}.
+
+The numbers come from three protocols, marked in Table~\ref{tab:compare}: \textbf{held-out} (E4: heads, means and $\alpha$ chosen on one half of the items, scored on the other; the fairest), \textbf{same items} (chosen and scored on the same items, best $\alpha$: optimistic), and \textbf{one fold} (held-out items, but best $\alpha$ in fold 1 only). Every run is single, greedy, without intervals.
+
+% ---------------------------------------------------------------------
+\section{Starting point A: lexical task heads (Yang et al., 2026)}
+
+\textbf{Their method.} A head is a lexical task head if, on $\geq$10\% of 100 correctly answered prompts, one of its 10 top decoded tokens (logit lens) is in a hand-written term list for the task (2--22 tokens, e.g.\ \emph{opposite}, \emph{capital}). The set's mean output is then patched into prompts without task information.
+
+\textbf{What we changed.}
+\begin{enumerate}
+\item \emph{Padding masked.} Their code batches prompts padded on the left without an attention mask, so the model attends to the padding. We mask it: each prompt is computed as if run alone.
+\item \emph{J-head} as a second readout, beside their Logit-head.
+\item \emph{Scoring.} Their first-token match marks any number correct and capitalised German nouns wrong; we generate the reply and use a flexible score (whole answer as words, case/accents/articles ignored). Heads, means and patched items are all chosen by it.
+\item \emph{Second check.} The paper's zero-shot figures (App.~G.1) are reproduced only by the setting of their one released script: 1-shot prompts answered wrongly. We report both checks.
+\item bf16 instead of fp32 (the precision the lens was fitted in).
+\end{enumerate}
+
+\textbf{How it worked.}
+\begin{itemize}
+\item \mixed{} \emph{Replication.} Head counts within one head of Yang's code-setting figures. Check 1 works only on fact-like tasks (capitals, landmark, park, product); nothing on antonym, synonym, present--past, prev-item and translations. Check 2 gains on all 14 and matches their figures.
+\item \yes{} \emph{J-head.} Finds more heads (on 23/28 task\,$\times$\,style pairs), the extra ones in layers 10--19; the heads only J-head finds have effects of their own; its lead holds at equal set size (16/25 leads at 5, 10 and 20 heads, none reversed). It does not contain the Logit-head set (H2 falsified).
+\item \no{} \emph{Which templates.} Heads that pass under all 5 templates help only fact tasks; restricting the union to heads shared across tasks removes its gains.
+\item \textbf{Held-out:} the E1 J-head set reaches \textbf{0.20}. It does nothing on antonym, singular--plural, present--past and the three translations ($\leq$0.03).
+\end{itemize}
+
+% ---------------------------------------------------------------------
+\section{Starting point B: instruction function vector (Davidson et al., 2025)}
+
+\textbf{Their method.} Each head's causal score: replace the prompt's instruction by uninformative text (equiprobable tokens, WikiText, other tasks' instructions; matched in length and log-probability), set the head to its mean output, and measure the gain in the answer's probability. The 20 heads with the highest score averaged over tasks form one set; the function vector (FV) is the sum of their mean outputs, added once after layer $|L|/3$ (layer 11) at the last token, $\alpha=1$.
+
+\textbf{What we changed.}
+\begin{enumerate}
+\item \emph{Instructions and scoring.} Our rule templates inst1--4 as the instructions (25 correct prompts each for the mean), flexible score.
+\item \emph{Test.} Our check 1 with its control and an $\alpha$ grid, instead of their evaluation.
+\item \emph{Set size and scope.} 4 tasks first, then heads chosen over all 14 tasks (30 heads); a 5--1{,}024 size sweep.
+\item \emph{Per-task ranking, held out} (E4): the first $N$ heads by each task's own score, computed on the choosing half: FV-20, FV-40, FV-$N_t$ (as many heads as CC-pooled, below).
+\item \emph{Generic heads removed} (FV split): 6 of the 30 heads decode the same tokens on every task (line ends, colons), attend to the answer slot, and give one constant output. FV minus these 6 = \emph{task24}.
+\end{enumerate}
+
+\textbf{How it worked.}
+\begin{itemize}
+\item \yes{} \emph{Their 30-head FV} at $\alpha=1$: \textbf{0.39} on held-out items, twice E1 (0.20); in its first run (same items) $\geq$ our best E1 set on 11/14 tasks. Nothing at $|\alpha|\geq 3$.
+\item \yes{} \emph{Per-task ranking}: FV-$N_t$ \textbf{0.59}, the best held-out set; also best at 20 (0.38) and 40 heads (0.43). It alone carries present--past (0.85). It fails on English--German (0.01) and is below CC-pooled on all three translations and prev-item.
+\item \yes{} \emph{Generic heads removed}: task24 \textbf{0.58} vs the full FV 0.33 on the same items, $\geq$ it on all 14 tasks; translations 0.39--0.70 (FV $\leq$0.10). The 6 generic heads are most of the FV's norm, in one direction shared by all tasks; scaled up alone, they turn replies into \emph{://} or \emph{1.\ 2.\ 3.}; without them the FV works best at $\alpha$ 2--3 instead of 1. Removing 6 random heads does not help.
+\item \mixed{} \emph{Reading the FV heads}: under J-head about 20 of 30 are readable (answer category: L16H25 \emph{cities}, L17H4; domain; relation: L13H22 \emph{opposite, next, earlier}). Only 3--11 per task are in our decoded-word sets. A lens-only estimate of their score finds 7--8 of the 30 (late layers), not the mid-layer word heads.
+\end{itemize}
+
+% ---------------------------------------------------------------------
+\section{What we built on them}
+
+\textbf{CC-pooled: term lists from decoded words} (Yang's criterion, our lists; J-head). Instead of the hand-written list, 5 \emph{task words} (decoded on this task more than on the other 13) + 5 \emph{common words} (decoded on every task: \emph{what, which, maybe, https}), with words and heads counted on the 5 templates pooled. 95--154 heads.
+\yes{} Held-out \textbf{0.44} vs E1 0.20 and layer-matched random sets 0.02; above E1 on 13/14. Carries the tasks E1 cannot (antonym, singular--plural, translations 0.38--0.40). Fails on present--past (0.02). At 20 and 40 heads it falls to 0.22 / 0.26, below FV at the same size. Both word kinds and the pooling are needed; removing WikiText-generic words helps facts and translations but hurts antonym, synonym and sequences.
+
+\textbf{Attend + decode} (Yang's readout, ranking by mechanism). Heads that attend to the instruction's task words and decode a task word, after L16H25 (attends \emph{capital}, \emph{country}; decodes \emph{city}).
+\mixed{} Few heads carry named answer types: capitals 0.88 with L16H25 alone, landmark 0.79 (5 heads), product--company 0.72--0.80 (20 heads). Nothing on translations, sequences, present--past; mean 0.25 at 20 heads (0.28, one fold).
+
+\textbf{LLM-scored heads} (E5; GPT-5.5 reads each head's top-20 decoded tokens and scores it 0--100 for representing the \emph{task}, not the answer or the input). Run on 2 tasks only, held-out.
+\mixed{} Country--capital: J-head 20 heads 0.78, Logit-head 0.70, $\approx$ CC-20 0.77, below FV-20 0.88. English--German: nothing in check 1 below 60 heads, then J-head 0.21--0.26 vs full CC 0.39; Logit-head sets 0 at every size. J-head sets beat Logit-head sets on English--German at every size and on country--capital at 20--30 heads (not at 40: 0.59 vs 0.68).
+
+\textbf{Single heads that carry a task.} L16H25 for capitals (above). L15H1 for present--past: with example-style means it alone gives 0.80 (check 1) and 0.76 (check 2), control 0, while the 4-head threshold set gives 0; J-head reads past participles from it, Logit-head reads nothing.
+
+% ---------------------------------------------------------------------
+\section{Side by side}
+
+\begin{center}\small
+\begin{tabularx}{\textwidth}{@{}lLrrrl@{}}
+\toprule
+Head set & Origin & Heads & Check 1 & Check 2 & Protocol \\
+\midrule
+E1, J-head & Yang + J-head & 7--50 & 0.20 & 0.31 & held-out \\
+CC-pooled & Yang, our lists & 97--154 & 0.44 & 0.33 & held-out \\
+CC-20 / CC-40 & Yang, our lists & 20 / 40 & 0.22 / 0.26 & 0.28 / 0.34 & held-out \\
+FV-30 ($\alpha=1$) & Davidson, as published & 30 & 0.39 & -- & held-out \\
+FV-20 / FV-40 & Davidson, per task & 20 / 40 & 0.38 / 0.43 & 0.33 / 0.39 & held-out \\
+\textbf{FV-$N_t$} & Davidson, per task & 97--154 & \textbf{0.59} & 0.39 & held-out \\
+Random-$N_t$ & control & 97--154 & 0.02 & 0.12 & held-out \\
+FV-univ-20 & Davidson, over 14 tasks & 20 & 0.63 & 0.39 & one fold \\
+Attend + decode-20 & Yang, by mechanism & 20 & 0.28 & 0.35 & one fold \\
+\textbf{task24} & Davidson minus generic & 24 & \textbf{0.58} & -- & same items \\
+FV-30, same run & Davidson, as published & 30 & 0.33 & -- & same items \\
+\bottomrule
+\end{tabularx}
+\captionof{table}{Mean accuracy over the 14 tasks. Held-out: cross-fitted $\alpha$, mean of the two folds. One fold: best $\alpha$ in fold~1. Same items: best $\alpha$ on the items scored (task24 at a fixed $\alpha=3$: 0.54). Rows of different protocols are not directly comparable. --: not run in check 2. LLM-scored sets (2 tasks only) are not in the table.}
+\label{tab:compare}
+\end{center}
+
+\textbf{By task type} (held-out, check 1):
+\begin{itemize}
+\item \emph{Fact tasks} (capitals, landmark, park, product): every method works; FV-$N_t$ 0.88--0.94; a single head can be enough (L16H25).
+\item \emph{Translations and prev-item}: only decoded-word sets: CC-pooled 0.38--0.40 vs FV-$N_t$ 0.01--0.25. task24 (same items) also carries translations.
+\item \emph{Present--past}: only the causal ranking (FV-$N_t$ 0.85), or L15H1 with example means. No decoded-word set with rule means.
+\item \emph{Antonym, synonym, singular--plural, next-item}: FV-$N_t$ first (0.49--0.85), CC-pooled second (0.26--0.69), E1 near 0.
+\end{itemize}
+
+% ---------------------------------------------------------------------
+\section{What did not help}
+\begin{itemize}
+\item \no{} Heads passing under all 5 templates ($k=5$), and strict consensus lists: better on fact tasks only.
+\item \no{} Union restricted to heads shared across tasks: loses the union's gains.
+\item \no{} Heads from what the instruction adds (E6, clean $-$ corrupted readings): 0.18 vs CC 0.44; the heads whose words do not depend on the instruction are needed.
+\item \no{} Word lists without the cross-task contrast (task minus WikiText, 0.21) or with a within-group contrast (0.32).
+\end{itemize}
+
+% ---------------------------------------------------------------------
+\section{Main insights}
+\begin{enumerate}
+\item \textbf{J-head is the better readout} for finding task heads: more heads, earlier layers, causal effects that remain at equal size; LLM-scored J-head sets also mostly beat Logit-head ones.
+\item \textbf{The hand-written term list is the bottleneck of Yang's method}, not the criterion: lists built from what heads actually decode double the held-out effect (0.20 $\to$ 0.44).
+\item \textbf{A causal ranking still finds better heads} than any decoding rule (FV-$N_t$ 0.59), except on translations and prev-item, where decoded words win.
+\item \textbf{Davidson's FV is held back by a few generic heads} that add a large, task-independent direction; without them it works at larger $\alpha$ and also carries translations.
+\item \textbf{Check 2 does not separate the sets} (all sets 0.28--0.39, random sets 0.12, control means up to 0.13): the prompt already gives the task. Check 1 is the informative test.
+\item \textbf{Read the replies.} 19--33\% of patched replies on several tasks contain the answer after a prefix the score rejects; part of a ``loss'' can be a format change.
+\end{enumerate}
+
+\textbf{Open:} task24 held-out (only same-items so far); is the generic FV part harmful through its heads or only its norm; LLM-scored heads on the other 12 tasks; E4b (new wordings, held-out wordings) not run.
+
+\end{document}
