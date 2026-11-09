@@ -1,0 +1,15 @@
+task,n,removed,n_prompts,words
+antonym,95,1,400,opposite opposing ant words word what http https mph tom
+synonym,95,2,400,syn similar synonyms words synthesis what http https mph tom
+singular-plural,107,1,397,single plural multiple individual nouns what http https mph tom
+present-past,77,0,400,past verb retro took verbs what http https mph tom
+country-capital,97,0,374,city cities downtown town capitals what http https mph tom
+country-currency,102,0,288,currency currencies monetary money dollar what http https mph tom
+landmark-country,109,14,400,country countries australia germany canada what http https mph tom
+park-country,118,0,400,country countries park nationality nation what http https mph tom
+product-company,101,1,400,company companies product manufacturers ownership what http https mph tom
+next_item,102,1,171,next sequence items item sequences what http https mph tom
+prev_item,84,1,280,previous preceding prior item items what http https mph tom
+english-french,109,0,400,french france paris english translation what http https mph tom
+english-german,84,0,400,german germans germany berlin english what http https mph tom
+english-spanish,100,0,400,spanish hispanic translation english mexican what http https mph tom

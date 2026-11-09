@@ -1,0 +1,15 @@
+task,n,removed,n_prompts,words
+antonym,111,2,400,opposite opposing ant words word what https http mph colour
+synonym,103,1,400,syn similar synonyms words synthesis what https http mph colour
+singular-plural,122,2,400,single plural multiple individual nouns what https http mph colour
+present-past,91,0,400,past verb retro verbs took what https http mph colour
+country-capital,117,1,394,city cities downtown town capitals what https http mph colour
+country-currency,119,1,270,currency currencies monetary money dollar what https http mph colour
+landmark-country,121,15,400,country countries australia germany canada what https http mph colour
+park-country,138,4,400,country countries park nationality germany what https http mph colour
+product-company,112,1,400,company companies product manufacturers ownership what https http mph colour
+next_item,115,0,152,next sequence items item sequences what https http mph colour
+prev_item,98,1,273,previous preceding prior item previously what https http mph colour
+english-french,121,0,400,french france paris english translation what https http mph colour
+english-german,95,0,400,german germans germany berlin english what https http mph colour
+english-spanish,109,0,400,spanish translation english hispanic mexican what https http mph colour

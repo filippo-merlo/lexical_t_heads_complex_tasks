@@ -1,0 +1,132 @@
+{
+ "fv_max_abs_diff": {
+  "antonym": 0.0,
+  "synonym": 0.0,
+  "singular-plural": 0.0,
+  "present-past": 0.0,
+  "country-capital": 0.0,
+  "country-currency": 0.0,
+  "landmark-country": 0.0,
+  "park-country": 0.0,
+  "product-company": 0.0,
+  "next_item": 0.0,
+  "prev_item": 0.0,
+  "english-french": 0.0,
+  "english-german": 0.0,
+  "english-spanish": 0.0
+ },
+ "norm_finite_difference": {
+  "antonym": {
+   "head": [
+    23,
+    22
+   ],
+   "estimate": -2.7206101417541504,
+   "finite_difference": -2.720937728881836
+  },
+  "synonym": {
+   "head": [
+    27,
+    7
+   ],
+   "estimate": -1.498267412185669,
+   "finite_difference": -1.4986717700958252
+  },
+  "singular-plural": {
+   "head": [
+    24,
+    22
+   ],
+   "estimate": -5.479763507843018,
+   "finite_difference": -5.480604648590088
+  },
+  "present-past": {
+   "head": [
+    23,
+    5
+   ],
+   "estimate": -2.009981155395508,
+   "finite_difference": -2.010167360305786
+  },
+  "country-capital": {
+   "head": [
+    24,
+    1
+   ],
+   "estimate": -0.40345337986946106,
+   "finite_difference": -0.4037702679634094
+  },
+  "country-currency": {
+   "head": [
+    30,
+    20
+   ],
+   "estimate": 0.8246580958366394,
+   "finite_difference": 0.8249667882919312
+  },
+  "landmark-country": {
+   "head": [
+    24,
+    3
+   ],
+   "estimate": -9.303229331970215,
+   "finite_difference": -9.305419921875
+  },
+  "park-country": {
+   "head": [
+    24,
+    3
+   ],
+   "estimate": -2.948943614959717,
+   "finite_difference": -2.9498422145843506
+  },
+  "product-company": {
+   "head": [
+    24,
+    3
+   ],
+   "estimate": -1.3806283473968506,
+   "finite_difference": -1.381066918373108
+  },
+  "next_item": {
+   "head": [
+    21,
+    24
+   ],
+   "estimate": -1.3870640993118286,
+   "finite_difference": -1.3873854875564575
+  },
+  "prev_item": {
+   "head": [
+    30,
+    24
+   ],
+   "estimate": -0.6085054874420166,
+   "finite_difference": -0.6087721586227417
+  },
+  "english-french": {
+   "head": [
+    30,
+    25
+   ],
+   "estimate": -0.29280105233192444,
+   "finite_difference": -0.2927837371826172
+  },
+  "english-german": {
+   "head": [
+    23,
+    7
+   ],
+   "estimate": 1.461815595626831,
+   "finite_difference": 1.4616682529449463
+  },
+  "english-spanish": {
+   "head": [
+    25,
+    12
+   ],
+   "estimate": -1.431236743927002,
+   "finite_difference": -1.4313055276870728
+  }
+ }
+}

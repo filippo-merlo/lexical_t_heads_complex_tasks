@@ -40,6 +40,39 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from lth import DATA, RESULTS, gpu, simple  # noqa: E402
 
 
+def task_mean(lm, task: str, plan: dict):
+    """A task's mean ``z`` over the mean items of ``items.json``, as ``davidson_fv.py``:
+    ``[n_layers, d_source]``, float32."""
+    from davidson_fv import INSTRUCTIONS
+    from patch import simple_mean
+
+    parts = []
+    for wording in INSTRUCTIONS:
+        ids = simple.token_ids(lm.tokenizer, simple.prompts(task, wording)[0])
+        items = plan[task]["items"][wording]["mean"]
+        parts.append((simple_mean(lm, ids, items), len(items)))
+    return sum(m * n for m, n in parts) / sum(n for _, n in parts)
+
+
+def corrupted_rows(lm, task: str, plan: dict, corrupted: dict) -> tuple[list[list[int]], list[dict]]:
+    """The CIE's corrupted prompts (BOS + uninformative instruction re-encoded + query), in its
+    order (kind, instruction, its 5 items), and one record per prompt."""
+    from davidson_fv import INSTRUCTIONS, KINDS, QUERY
+
+    tok, data = lm.tokenizer, simple.dataset(task)
+    rows, meta = [], []
+    for kind in KINDS:
+        for wording in INSTRUCTIONS:
+            for text, item in zip(corrupted[task][wording][kind], plan[task]["items"][wording]["cie"]):
+                c = tok(text, add_special_tokens=False).input_ids
+                query = tok(QUERY.format(input=data[item]["input"]), add_special_tokens=False).input_ids
+                rows.append([tok.bos_token_id] + c + query)
+                meta.append(dict(kind=kind, wording=wording, item=item, instruction=text,
+                                 input=data[item]["input"], expected=data[item]["output"],
+                                 answer_token=lm.first_token(" " + data[item]["output"])))
+    return rows, meta
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--gpu", type=int, required=True)
@@ -53,8 +86,7 @@ def main() -> None:
     import numpy as np
     import torch
 
-    from davidson_fv import INSTRUCTIONS, KINDS, QUERY, function_vector
-    from patch import simple_mean
+    from davidson_fv import KINDS, function_vector
 
     from lth.model import LM
 
@@ -73,30 +105,14 @@ def main() -> None:
     tok = lm.tokenizer
     prompts_log, mean_top, fv_check = {}, {}, {}
     for task in tasks:
-        data = simple.dataset(task)
-        # Mean z over the mean items, as davidson_fv.py.
-        parts = []
-        for wording in INSTRUCTIONS:
-            ids = simple.token_ids(tok, simple.prompts(task, wording)[0])
-            items = plan[task]["items"][wording]["mean"]
-            parts.append((simple_mean(lm, ids, items), len(items)))
-        mean = sum(m * n for m, n in parts) / sum(n for _, n in parts)  # [n_layers, d_source], float32
+        mean = task_mean(lm, task, plan)  # [n_layers, d_source], float32
         fv = function_vector(lm, heads, mean).cpu().numpy()
         saved = fv_saved[f"{task}/task"]
         fv_check[task] = dict(max_abs_diff=float(np.abs(fv - saved).max()), saved_norm=float(np.linalg.norm(saved)),
                               cosine=float(fv @ saved / np.linalg.norm(fv) / np.linalg.norm(saved)))
 
         # Corrupted prompts, in the CIE's order: kind, then instruction, then its 5 items.
-        rows, meta = [], []
-        for kind in KINDS:
-            for wording in INSTRUCTIONS:
-                for text, item in zip(corrupted[task][wording][kind], plan[task]["items"][wording]["cie"]):
-                    c = tok(text, add_special_tokens=False).input_ids
-                    query = tok(QUERY.format(input=data[item]["input"]), add_special_tokens=False).input_ids
-                    rows.append([tok.bos_token_id] + c + query)
-                    meta.append(dict(kind=kind, wording=wording, item=item, instruction=text,
-                                     input=data[item]["input"], expected=data[item]["output"],
-                                     answer_token=lm.first_token(" " + data[item]["output"])))
+        rows, meta = corrupted_rows(lm, task, plan, corrupted)
         z_rows, next_tokens = [], []
         for b in range(0, len(rows), simple.BATCH):
             t, z = lm.next_tokens_batch(rows[b:b + simple.BATCH])

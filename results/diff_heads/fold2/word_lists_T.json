@@ -1,0 +1,573 @@
+{
+ "antonym": {
+  "specific": [
+   "opposite",
+   "opposing",
+   "ant",
+   "words",
+   "word",
+   "opposition",
+   "opposed",
+   "reverse",
+   "contrast",
+   "anti"
+  ],
+  "common": [
+   "what",
+   "http",
+   "https",
+   "mph",
+   "tom",
+   "colour",
+   "why",
+   "how",
+   "which",
+   "herself"
+  ],
+  "cc": [
+   "opposite",
+   "opposing",
+   "ant",
+   "words",
+   "word"
+  ],
+  "n_prompts": 400,
+  "answer_removed": [
+   [
+    20,
+    9
+   ]
+  ]
+ },
+ "synonym": {
+  "specific": [
+   "syn",
+   "similar",
+   "synonyms",
+   "words",
+   "synthesis",
+   "word",
+   "synth",
+   "why",
+   "synonym",
+   "alternative"
+  ],
+  "common": [
+   "what",
+   "http",
+   "https",
+   "mph",
+   "tom",
+   "colour",
+   "why",
+   "how",
+   "which",
+   "herself"
+  ],
+  "cc": [
+   "syn",
+   "similar",
+   "synonyms",
+   "words",
+   "synthesis"
+  ],
+  "n_prompts": 400,
+  "answer_removed": [
+   [
+    17,
+    20
+   ],
+   [
+    17,
+    21
+   ]
+  ]
+ },
+ "singular-plural": {
+  "specific": [
+   "single",
+   "plural",
+   "multiple",
+   "individual",
+   "nouns",
+   "linguistic",
+   "sisters",
+   "names",
+   "solo",
+   "grammar"
+  ],
+  "common": [
+   "what",
+   "http",
+   "https",
+   "mph",
+   "tom",
+   "colour",
+   "why",
+   "how",
+   "which",
+   "herself"
+  ],
+  "cc": [
+   "single",
+   "plural",
+   "multiple",
+   "individual",
+   "nouns"
+  ],
+  "n_prompts": 397,
+  "answer_removed": [
+   [
+    29,
+    31
+   ]
+  ]
+ },
+ "present-past": {
+  "specific": [
+   "past",
+   "verb",
+   "retro",
+   "took",
+   "verbs",
+   "historians",
+   "today",
+   "historical",
+   "gave",
+   "changed"
+  ],
+  "common": [
+   "what",
+   "http",
+   "https",
+   "mph",
+   "tom",
+   "colour",
+   "why",
+   "how",
+   "which",
+   "herself"
+  ],
+  "cc": [
+   "past",
+   "verb",
+   "retro",
+   "took",
+   "verbs"
+  ],
+  "n_prompts": 400,
+  "answer_removed": []
+ },
+ "country-capital": {
+  "specific": [
+   "city",
+   "cities",
+   "downtown",
+   "town",
+   "capitals",
+   "capital",
+   "towns",
+   "african",
+   "political",
+   "london"
+  ],
+  "common": [
+   "what",
+   "http",
+   "https",
+   "mph",
+   "tom",
+   "colour",
+   "why",
+   "how",
+   "which",
+   "herself"
+  ],
+  "cc": [
+   "city",
+   "cities",
+   "downtown",
+   "town",
+   "capitals"
+  ],
+  "n_prompts": 374,
+  "answer_removed": []
+ },
+ "country-currency": {
+  "specific": [
+   "currency",
+   "currencies",
+   "monetary",
+   "money",
+   "dollar",
+   "financial",
+   "dollars",
+   "economic",
+   "uses",
+   "use"
+  ],
+  "common": [
+   "what",
+   "http",
+   "https",
+   "mph",
+   "tom",
+   "colour",
+   "why",
+   "how",
+   "which",
+   "herself"
+  ],
+  "cc": [
+   "currency",
+   "currencies",
+   "monetary",
+   "money",
+   "dollar"
+  ],
+  "n_prompts": 288,
+  "answer_removed": []
+ },
+ "landmark-country": {
+  "specific": [
+   "country",
+   "countries",
+   "australia",
+   "germany",
+   "canada",
+   "international",
+   "italy",
+   "england",
+   "japan",
+   "france"
+  ],
+  "common": [
+   "what",
+   "http",
+   "https",
+   "mph",
+   "tom",
+   "colour",
+   "why",
+   "how",
+   "which",
+   "herself"
+  ],
+  "cc": [
+   "country",
+   "countries",
+   "australia",
+   "germany",
+   "canada"
+  ],
+  "n_prompts": 400,
+  "answer_removed": [
+   [
+    14,
+    24
+   ],
+   [
+    16,
+    18
+   ],
+   [
+    16,
+    25
+   ],
+   [
+    17,
+    5
+   ],
+   [
+    17,
+    15
+   ],
+   [
+    17,
+    23
+   ],
+   [
+    21,
+    2
+   ],
+   [
+    22,
+    19
+   ],
+   [
+    24,
+    2
+   ],
+   [
+    24,
+    3
+   ],
+   [
+    24,
+    30
+   ],
+   [
+    25,
+    23
+   ],
+   [
+    31,
+    6
+   ],
+   [
+    31,
+    7
+   ]
+  ]
+ },
+ "park-country": {
+  "specific": [
+   "country",
+   "countries",
+   "park",
+   "nationality",
+   "nation",
+   "germany",
+   "england",
+   "parks",
+   "canada",
+   "australia"
+  ],
+  "common": [
+   "what",
+   "http",
+   "https",
+   "mph",
+   "tom",
+   "colour",
+   "why",
+   "how",
+   "which",
+   "herself"
+  ],
+  "cc": [
+   "country",
+   "countries",
+   "park",
+   "nationality",
+   "nation"
+  ],
+  "n_prompts": 400,
+  "answer_removed": []
+ },
+ "product-company": {
+  "specific": [
+   "company",
+   "companies",
+   "product",
+   "manufacturers",
+   "ownership",
+   "manufacturer",
+   "products",
+   "owned",
+   "manufacturing",
+   "marketing"
+  ],
+  "common": [
+   "what",
+   "http",
+   "https",
+   "mph",
+   "tom",
+   "colour",
+   "why",
+   "how",
+   "which",
+   "herself"
+  ],
+  "cc": [
+   "company",
+   "companies",
+   "product",
+   "manufacturers",
+   "ownership"
+  ],
+  "n_prompts": 400,
+  "answer_removed": [
+   [
+    17,
+    15
+   ]
+  ]
+ },
+ "next_item": {
+  "specific": [
+   "next",
+   "sequence",
+   "items",
+   "item",
+   "sequences",
+   "each",
+   "math",
+   "monday",
+   "friday",
+   "sunday"
+  ],
+  "common": [
+   "what",
+   "http",
+   "https",
+   "mph",
+   "tom",
+   "colour",
+   "why",
+   "how",
+   "which",
+   "herself"
+  ],
+  "cc": [
+   "next",
+   "sequence",
+   "items",
+   "item",
+   "sequences"
+  ],
+  "n_prompts": 171,
+  "answer_removed": []
+ },
+ "prev_item": {
+  "specific": [
+   "previous",
+   "preceding",
+   "prior",
+   "item",
+   "items",
+   "previously",
+   "next",
+   "sequence",
+   "earlier",
+   "return"
+  ],
+  "common": [
+   "what",
+   "http",
+   "https",
+   "mph",
+   "tom",
+   "colour",
+   "why",
+   "how",
+   "which",
+   "herself"
+  ],
+  "cc": [
+   "previous",
+   "preceding",
+   "prior",
+   "item",
+   "items"
+  ],
+  "n_prompts": 280,
+  "answer_removed": []
+ },
+ "english-french": {
+  "specific": [
+   "french",
+   "france",
+   "paris",
+   "english",
+   "translation",
+   "italian",
+   "translations",
+   "translated",
+   "european",
+   "portuguese"
+  ],
+  "common": [
+   "what",
+   "http",
+   "https",
+   "mph",
+   "tom",
+   "colour",
+   "why",
+   "how",
+   "which",
+   "herself"
+  ],
+  "cc": [
+   "french",
+   "france",
+   "paris",
+   "english",
+   "translation"
+  ],
+  "n_prompts": 400,
+  "answer_removed": []
+ },
+ "english-german": {
+  "specific": [
+   "german",
+   "germans",
+   "germany",
+   "berlin",
+   "english",
+   "munich",
+   "translation",
+   "european",
+   "die",
+   "french"
+  ],
+  "common": [
+   "what",
+   "http",
+   "https",
+   "mph",
+   "tom",
+   "colour",
+   "why",
+   "how",
+   "which",
+   "herself"
+  ],
+  "cc": [
+   "german",
+   "germans",
+   "germany",
+   "berlin",
+   "english"
+  ],
+  "n_prompts": 400,
+  "answer_removed": []
+ },
+ "english-spanish": {
+  "specific": [
+   "spanish",
+   "hispanic",
+   "translation",
+   "english",
+   "mexican",
+   "bilingual",
+   "spain",
+   "portuguese",
+   "translations",
+   "mexico"
+  ],
+  "common": [
+   "what",
+   "http",
+   "https",
+   "mph",
+   "tom",
+   "colour",
+   "why",
+   "how",
+   "which",
+   "herself"
+  ],
+  "cc": [
+   "spanish",
+   "hispanic",
+   "translation",
+   "english",
+   "mexican"
+  ],
+  "n_prompts": 400,
+  "answer_removed": []
+ }
+}
