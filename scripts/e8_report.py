@@ -10,7 +10,8 @@ fold 1 (scores from half A, scored on half B, each task at its own best alpha) i
 fold-2 accuracy (scores from B, scored on A, at fold 1's best alpha) is the reported number.
 
 References on the same items and folds, cross-fitted over alpha 1 and 2 only (their own runs had
-ten alphas): E7 ``raw_att`` (= E8 ``DB``) and E4's CC-20, FV-20, CC and FV-N_t.
+ten alphas): E7 ``raw_att`` (= the first run's ``DB``: 10-word list, Yang's expansion only) and E4's
+CC-20, FV-20, CC and FV-N_t.
 
 Writes ``results/e8_filters/accuracy_alpha.csv``, ``accuracy_crossfit.csv``, ``report.md``.
 
@@ -68,8 +69,10 @@ def main() -> None:
 
     lines = ["# E8: every combination of five head filters (D decoding, B BOS, T task words, I input, R rest)",
              "", "Accuracy at the cross-fitted alpha (1 or 2), mean of the two folds. A set is named by the "
-             "filters a head must pass. References: earlier sets on the same items, cross-fitted over alpha "
-             "1 and 2 only. Empty sets are left out for that task (blank cell).", ""]
+             "filters a head must pass. D uses each task's 30 most active decoded words, matched with and "
+             "without a leading space in lower, capitalised and upper case. References: earlier sets on the "
+             "same items, cross-fitted over alpha 1 and 2 only (E7 raw_att = DB with E7's 10-word list and "
+             "no leading-space capitalised forms). Empty sets are left out for that task (blank cell).", ""]
     for family, check in CHECKS.items():
         for source in ("task", "control"):
             g = s[(s.family == family) & (s.source == source)].pivot_table(index="task", columns="set", values="accuracy")

@@ -35,6 +35,19 @@ def expand_to_token_ids(tokenizer, candidate_strs: list[str]) -> list[int]:
     return [token_id for token_id, _ in sorted(unique_tokens)]
 
 
+def expand_lowercase_to_token_ids(tokenizer, words: list[str]) -> list[int]:
+    """``expand_to_token_ids`` plus the leading-space capitalised and upper-case forms
+    (`` Canada``, `` CANADA``), which Yang et al.'s rule never tries. For our lowercased,
+    data-driven word lists (E8 on); Yang's capitalised lists keep ``expand_to_token_ids``."""
+    ids = set(expand_to_token_ids(tokenizer, words))
+    for word in words:
+        for text in (" " + word.capitalize(), " " + word.upper()):
+            encoded = tokenizer.encode(text, add_special_tokens=False)
+            if len(encoded) == 1:
+                ids.add(encoded[0])
+    return sorted(ids)
+
+
 def simple_term_lists() -> dict[str, list[str]]:
     """Yang et al.'s human-written lists (``task_relation_dict.json``)."""
     return json.loads((YANG / "datasets" / "dataset_info" / "task_relation_dict.json").read_text())

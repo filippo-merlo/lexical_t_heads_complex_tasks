@@ -6,12 +6,16 @@
 # results/e8_filters/fold{1,2}/patching_{simple,simple-wrong}.part-main-<group>.csv and answers/.
 # Start detached:
 #   setsid nohup scripts/e8_patch.sh > logs/e8/patch.log 2>&1 < /dev/null &
+# D-filter rerun (30-word list + case fix; the old D rows were dropped from the main-* parts):
+#   SETS="D DB DT DI DR DBT DBI DBR DTI DTR DIR DBTI DBTR DBIR DTIR DBTIR" PART=d30 \
+#     setsid nohup scripts/e8_patch.sh > logs/e8/patch_d30.log 2>&1 < /dev/null &
 set -uo pipefail
 cd "$(dirname "$0")/.."
 PY=.venv/bin/python
 export CUDA_DEVICE_ORDER=PCI_BUS_ID
 ALPHAS="1 2"
-SETS="D B T I R DB DT DI DR BT BI BR TI TR IR DBT DBI DBR DTI DTR DIR BTI BTR BIR TIR DBTI DBTR DBIR DTIR BTIR DBTIR"
+SETS="${SETS:-D B T I R DB DT DI DR BT BI BR TI TR IR DBT DBI DBR DTI DTR DIR BTI BTR BIR TIR DBTI DBTR DBIR DTIR BTIR DBTIR}"
+PART="${PART:-main}"
 mkdir -p logs/e8
 say() { echo "[$(date '+%F %T')] $*"; }
 
@@ -20,7 +24,7 @@ run() {  # gpu group fold family
     local half; half=$([ "$fold" = 1 ] && echo A || echo B)
     LTH_RESULTS=results/e8_filters/fold$fold $PY scripts/patch.py --gpu "$gpu" --family "$family" --set-list \
         --same-style --alphas $ALPHAS --half "$half" --wrong-control --max-new-tokens 16 \
-        --tasks $TASKS --part "main-$group" --names $SETS > "logs/e8/patch_f${fold}_${family}_main-$group.log" 2>&1
+        --tasks $TASKS --part "$PART-$group" --names $SETS > "logs/e8/patch_f${fold}_${family}_$PART-$group.log" 2>&1
     say "fold $fold $family $group exit $?"
 }
 
@@ -43,4 +47,4 @@ part 5 d english-french english-german english-spanish &
 PIDS+=($!)
 wait "${PIDS[@]}"
 say "all parts done"
-touch logs/e8/patch.done
+touch "logs/e8/patch_$PART.done"

@@ -4,9 +4,14 @@ from last-token attention. J-head only, one E4 fold, all scores on the choosing 
 Per task and head, on the choosing half's rule prompts (five wordings pooled, 500 prompts;
 ``--choose A`` for fold 1, ``B`` for fold 2), at the last prompt token:
 
-- ``D`` decoding: share of prompts whose J-head top 10 holds a token of the task's E7 ``raw``
-  list (``results/e7_attfilter/fold<f>/word_lists.json``, the 10 most active decoded words);
-  accept if >= 0.10 (the E7 / CC-pooled rule);
+- ``D`` decoding: share of prompts whose J-head top 10 holds a token of the task's word list;
+  accept if >= 0.10 (the E7 / CC-pooled rule). The list is the task's 30 most active decoded
+  words, E7's word rules (``scripts/e7_sets.py``: top-10 tokens decoded, lowercased, alphabetic,
+  at least three letters, not in ``STOP``, Zipf >= 3; activity = share of (prompt, head) pairs
+  whose top 10 holds the word), nothing removed. Its tokens come from
+  ``lth.terms.expand_lowercase_to_token_ids``, which adds `` Canada`` / `` CANADA`` to Yang et
+  al.'s expansion. (First run: E7's 10-word ``raw`` list with Yang's expansion only, which never
+  matched the leading-space capitalised tokens the lens decodes; commit 4d19133.)
 - ``B`` BOS: mean attention on BOS; accept if <= 0.5 (the E7 filter);
 - ``T`` task words: mean attention on the instruction's task-word tokens; accept if >= 0.05;
 - ``I`` input: mean attention on the query (the item the task is applied to); accept if >= 0.05;
@@ -17,8 +22,8 @@ The attention masses (task words, query, rest, BOS) are ``data/readings/heldout/
 (``DB`` = D and B); a head is in it if it passes all of them. All 31 non-empty combinations, all
 layers, no size cap; an empty set is left out for that task. No controls.
 
-Writes ``--out``: ``heads.json`` (set-list layout of ``scripts/rank_heads.py``), ``scores.npz``
-and ``set_sizes.csv``.
+Writes ``--out``: ``heads.json`` (set-list layout of ``scripts/rank_heads.py``), ``scores.npz``,
+``word_lists.json`` and ``set_sizes.csv``.
 
     .venv/bin/python scripts/e8_sets.py --choose A --out results/e8_filters/fold1
 """
@@ -29,7 +34,9 @@ import argparse
 import csv
 import itertools
 import json
+import re
 import sys
+from collections import Counter
 from pathlib import Path
 
 import numpy as np
@@ -42,6 +49,9 @@ N_HEADS = 32
 R = READOUTS.index("jhead")
 FILTERS = "DBTIR"
 COMBOS = ["".join(c) for n in range(1, 6) for c in itertools.combinations(FILTERS, n)]
+N_WORDS = 30
+STOP = set("the and for with that this from are was were you your has have had not but its".split())  # as E7
+WORD = re.compile(r"^[a-z]{3,}$")
 
 
 def passes(dec, att) -> dict[str, np.ndarray]:
@@ -58,16 +68,30 @@ def main() -> None:
 
     from lth.evaluation import tokenizer as get_tok
     from lth.store import load
-    from lth.terms import expand_to_token_ids
+    from wordfreq import zipf_frequency
+
+    from lth.terms import expand_lowercase_to_token_ids
 
     tok = get_tok()
-    fold = 1 if args.choose == "A" else 2
-    lists = json.loads((RESULTS / "e7_attfilter" / f"fold{fold}" / "word_lists.json").read_text())["tasks"]
+    cache: dict[int, str | None] = {}
+
+    def word(t: int):  # E7's word rules
+        if t not in cache:
+            w = tok.decode([t]).strip().lower()
+            cache[t] = w if WORD.match(w) and w not in STOP and zipf_frequency(w, "en") >= 3 else None
+        return cache[t]
+
     root = DATA / "readings" / "heldout" / args.choose
-    out, scores, sizes = {}, {}, []
+    out, scores, sizes, word_lists = {}, {}, [], {}
     for t in simple.TASKS:
         pooled = np.concatenate([load(root / "simple" / t, w)["top"][:, R] for w in simple.WORDINGS["rule"]])
-        ids = np.array(sorted(set(expand_to_token_ids(tok, lists[t]["raw"]))))
+        c = Counter()
+        for p in range(pooled.shape[0]):
+            for h in range(pooled.shape[1]):
+                c.update({w for x in pooled[p, h] if (w := word(int(x)))})
+        words = sorted(c, key=lambda w: (-c[w], w))[:N_WORDS]
+        word_lists[t] = {w: round(c[w] / (pooled.shape[0] * pooled.shape[1]), 4) for w in words}
+        ids = np.array(expand_lowercase_to_token_ids(tok, words))
         dec = np.isin(pooled, ids).any(-1).mean(0)
         att = np.load(DATA / "readings" / "heldout" / f"attention_{args.choose}" / f"{t}.npy").astype(np.float32).mean(0)
         ok = passes(dec, att)
@@ -83,6 +107,7 @@ def main() -> None:
         print(t, {c: row[c] for c in ("D", "DB", "DBT", "DBTIR")})
     args.out.mkdir(parents=True, exist_ok=True)
     (args.out / "heads.json").write_text(json.dumps({"simple": out}, indent=1))
+    (args.out / "word_lists.json").write_text(json.dumps({"n_words": N_WORDS, "tasks": word_lists}, indent=1))
     np.savez_compressed(args.out / "scores.npz", **scores)
     with (args.out / "set_sizes.csv").open("w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=["task", *COMBOS])
