@@ -1,0 +1,72 @@
+{
+ "antonym": {
+  "max_abs_diff": 0.0,
+  "saved_norm": 14.192652702331543,
+  "cosine": 1.0
+ },
+ "synonym": {
+  "max_abs_diff": 0.0,
+  "saved_norm": 12.734888076782227,
+  "cosine": 0.9999999403953552
+ },
+ "singular-plural": {
+  "max_abs_diff": 0.0,
+  "saved_norm": 14.506377220153809,
+  "cosine": 0.9999999403953552
+ },
+ "present-past": {
+  "max_abs_diff": 0.0,
+  "saved_norm": 14.363960266113281,
+  "cosine": 1.0000001192092896
+ },
+ "country-capital": {
+  "max_abs_diff": 0.0,
+  "saved_norm": 12.975937843322754,
+  "cosine": 1.0000001192092896
+ },
+ "country-currency": {
+  "max_abs_diff": 0.0,
+  "saved_norm": 12.06591510772705,
+  "cosine": 1.0
+ },
+ "landmark-country": {
+  "max_abs_diff": 0.0,
+  "saved_norm": 14.352526664733887,
+  "cosine": 1.0
+ },
+ "park-country": {
+  "max_abs_diff": 0.0,
+  "saved_norm": 14.604860305786133,
+  "cosine": 1.0
+ },
+ "product-company": {
+  "max_abs_diff": 0.0,
+  "saved_norm": 12.30228042602539,
+  "cosine": 1.0
+ },
+ "next_item": {
+  "max_abs_diff": 0.0,
+  "saved_norm": 14.981563568115234,
+  "cosine": 0.9999999403953552
+ },
+ "prev_item": {
+  "max_abs_diff": 0.0,
+  "saved_norm": 16.475650787353516,
+  "cosine": 1.0
+ },
+ "english-french": {
+  "max_abs_diff": 0.0,
+  "saved_norm": 11.820191383361816,
+  "cosine": 1.0000001192092896
+ },
+ "english-german": {
+  "max_abs_diff": 0.0,
+  "saved_norm": 10.699442863464355,
+  "cosine": 1.0
+ },
+ "english-spanish": {
+  "max_abs_diff": 0.0,
+  "saved_norm": 11.640509605407715,
+  "cosine": 1.0
+ }
+}
