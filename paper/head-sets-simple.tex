@@ -34,7 +34,7 @@
 \maketitle
 
 \begin{abstract}
-We look for the smallest set of attention heads whose mean output, written into a prompt that does not state the task, makes Llama-3.1-8B-Instruct perform it, on 14 simple tasks. We start from two published ways of choosing heads: lexical task heads, found by decoding each head's output into words \citep{yang2026shared}, and the heads of instruction function vectors, found by their causal effect \citep{davidson2025different}. We re-implement both, read heads with the per-head logit lens and with Head-JLens, and then compare a series of selection rules under one held-out protocol. Head-JLens finds more heads that carry the task than the logit lens. The hand-written term list is the weak point of the lexical method. Lists built from the words heads actually decode, together with filters on where a head attends, come close to causally chosen sets without patching anything during selection. Different task types rest on different heads: causal rankings carry morphology and sequences, attention to the instruction's task words carries translations, and facts are carried by almost any good set, sometimes by one head. A single set of 20 to 30 heads, chosen once for all tasks, carries most tasks nearly as well as per-task sets several times its size.
+We look for the smallest set of attention heads whose mean output, written into a prompt that does not state the task, makes Llama-3.1-8B-Instruct perform it, on 14 simple tasks. We start from two published ways of choosing heads: lexical task heads, found by decoding each head's output into words \citep{yang2026shared}, and the heads of instruction function vectors, found by their causal effect \citep{davidson2025different}. We re-implement both, read heads with the per-head logit lens and with Head-JLens, and then compare a series of selection rules under one held-out protocol. Head-JLens finds more heads that carry the task than the logit lens. The hand-written term list is the weak point of the lexical method. Lists built from the words heads actually decode, together with filters on where a head attends, come close to causally chosen sets without patching anything during selection. Different task types rest on different heads: causal rankings carry morphology and sequences, attention to the instruction's task words carries translations, and facts are carried by almost any good set, sometimes by one head. The best set we found is shared by all tasks: Davidson et al.'s function vector without the few heads that add the same direction on every task. With about two dozen heads it carries most tasks better than per-task sets several times its size.
 \end{abstract}
 
 % =====================================================================
@@ -135,7 +135,7 @@ Evaluation & zero-shot, no instruction, their prompt & check 1 (`` x:''), flexib
 \label{tab:fid-dav}
 \end{table}
 
-\paragraph{What we find.} The FV works at their weight: accuracy peaks at $\alpha=1$ and vanishes from $\alpha=3$ on. With the 30 heads chosen over the 14 tasks, it beats our best lexical-head set on 11 of 14 tasks, including tasks the lexical sets do not carry (singular--plural, antonym). It does nothing on present--past, prev-item and synonym and little on the translations. On held-out items it is about level with the decoded-word sets and below the best sets found later (Table~\ref{tab:main}). Reading its 30 heads with J-head shows why the weight is so constrained. Six of them decode the same tokens on every task (line ends, colons), attend to the answer slot, and add one large direction shared by all tasks. Without these six (24 heads) the FV is at least as good on all 14 tasks, works best at $\alpha$ 2--3, and also carries the translations. Removing six random FV heads instead does not help.
+\paragraph{What we find.} The FV works at their weight: accuracy peaks at $\alpha=1$ and vanishes from $\alpha=3$ on. With the 30 heads chosen over the 14 tasks, it beats our best lexical-head set on 11 of 14 tasks, including tasks the lexical sets do not carry (singular--plural, antonym). It does nothing on present--past, prev-item and synonym and little on the translations. On held-out items it is about level with the decoded-word sets and below the best sets found later (Table~\ref{tab:main}). Reading its 30 heads with J-head shows why the weight is so constrained. Six of them decode the same tokens on every task (line ends, colons), attend to the answer slot, and add one large direction shared by all tasks. Without these six (24 heads) the FV is at least as good on all 14 tasks, works best at $\alpha$ 2--3, and also carries the translations. Removing six random FV heads instead does not help. On held-out items, the FV without its generic heads is the best set we found (Sec.~\ref{sec:shared}).
 
 Two further sets come from Davidson et al.'s score: \textbf{FV-$N$}, the top $N$ heads by the score on each task alone, and \textbf{FV-univ-$N$}, the top $N$ by the score averaged over the 14 tasks (their choice of heads). Both are patched head by head, like every other set here, rather than summed into the residual stream.
 
@@ -164,20 +164,24 @@ FV-$N$ & top $N$ by Davidson et al.'s score on the task & causal \\
 E8 D, DB, DBT, BT, T & it passes every named filter (D decoding, B BOS, T task-word attention) & lens and/or attention \\
 \midrule
 \multicolumn{3}{@{}l}{\textit{One set for all 14 tasks}} \\
-Davidson FV-30 & top 30 by the score averaged over tasks; their intervention at $\alpha=1$ & causal \\
-FV-univ-$N$ & top $N$ by the score averaged over tasks, patched head by head & causal \\
-E10 shared & per filter, each head's within-task rank averaged over tasks (BT: its mean score); filters' ranks averaged; top 30 & lens, attention \\
+Davidson FV-30 & top 30 by the score averaged over tasks; their intervention (summed means added after layer 11) at $\alpha=1$ & causal \\
+\quad no generic heads & the same 30 minus the generic heads among them (5; 25 heads left); their intervention & causal \\
+FV-univ-$N$ & top $N$ by the score averaged over tasks, patched head by head; FV-univ-30 = the heads of FV-30 & causal \\
+E10 shared DBT-$N$ & per filter, each head's within-task rank averaged over tasks; D, B, T ranks averaged; top $N$ (BT: mean scores) & lens, attention \\
 \midrule
 \multicolumn{3}{@{}l}{\textit{Controls}} \\
 Random-$N$ & as many heads per layer as CC-$N$, drawn outside it (5 draws) & -- \\
 Random from E7 & as many heads as E7 words + B, drawn from E7's unfiltered set (5 draws) & -- \\
+Random, DB/DBT/T layers & as many heads per layer as the E8 set, drawn outside it where the layer allows (5 draws) & -- \\
+Random from D & as many heads as DB or DBT, drawn from the task's D set (5 draws) & -- \\
+Random shared & as many heads per layer as FV-univ-20 or E10 shared DBT, drawn outside it, one draw for all tasks (5 draws) & -- \\
 \bottomrule
 \end{tabularx}
 \caption{Head-selection rules compared under the held-out protocol. E-numbers name the experiment in which each was introduced.}
 \label{tab:approaches}
 \end{table}
 
-The order in which the rules were tried explains their shape. E1 (Yang et al.'s rule under J-head) carried few task types. Replacing the hand-written list by decoded words (CC-pooled) doubled the effect but needed about 120 heads, and its top 20 or 40 by rate did little. Davidson et al.'s ranking did better at every size, and reading its heads showed that the decoding heads which work attend to the prompt, whereas most others look at BOS (E7). E8 crossed decoding with four attention filters. E10 combined E8's scores over tasks into one set of 30 heads, the size of Davidson et al.'s set, for a direct comparison with theirs.
+The order in which the rules were tried explains their shape. E1 (Yang et al.'s rule under J-head) carried few task types. Replacing the hand-written list by decoded words (CC-pooled) doubled the effect but needed about 120 heads, and its top 20 or 40 by rate did little. Davidson et al.'s ranking did better at every size, and reading its heads showed that the decoding heads which work attend to the prompt, whereas most others look at BOS (E7). E8 crossed decoding with four attention filters. E10 combined E8's scores over tasks into one set of 30 heads, the size of Davidson et al.'s set, for a direct comparison with theirs. E11 completed the comparison: the shared rankings at 5 to 40 heads, random controls for every kind of set, Davidson et al.'s intervention in both checks with and without its generic heads, and both folds for every set.
 
 % =====================================================================
 \section{Results}\label{sec:results}
@@ -189,23 +193,23 @@ Figure~\ref{fig:size} and Table~\ref{tab:main} give every set's mean over the 14
 \begin{figure}[tbp]
 \centering
 \includegraphics[width=\textwidth]{figures/synth_size}
-\caption{Mean accuracy over the 14 tasks against the number of heads (median over tasks; log scale), held-out items, cross-fitted $\alpha\in\{1,2\}$. Colour: how heads are scored. Filled: one set per task; open: one set for all tasks; square: E1, Yang et al.'s term list. Lines join the top-20, top-40 and full-size sets of one ranking. Faint dots: the other E8 and E10 filter combinations. *FV-univ-20: fold~1 only. Davidson FV-30 was not run in check~2.}
+\caption{Check 1, mean accuracy over the 14 tasks against the number of heads (median over tasks; log scale), held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds. (a) One set per task; (b) one set for all tasks. Colour: how heads are scored; filled: per task; open: shared; square: E1, Yang et al.'s term list. Lines join the sets of one ranking at increasing size. Grey: random controls (unlabelled points: random from E7, and layer-matched to DB and DBT). Faint dots: the other E8 (a) and E10 (b) filter combinations. Dashed in (b): the per-task FV-$N$ line of (a), for reference.}
 \label{fig:size}
 \end{figure}
 
 \begin{table}[tbp]
 \centering\small
 \input{tables/synth_main}
-\caption{Mean accuracy over the 14 tasks, held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds. Heads: median (range) over tasks. Fold~1: check-1 task accuracy in fold~1 alone, to compare with the sets run only there ($\dagger$: fold~1 only, at the better $\alpha$ of the two there). Control: the same heads with the control task's mean. Random sets: task mean only; in check~2 they were not run at both values of $\alpha$. Davidson FV-30: their intervention at $\alpha=1$, not run in check~2. Unpatched accuracy: 0.01 (check 1), 0 (check 2). Sets run on a ten-value grid score higher at their best $\alpha$ there (CC-pooled 0.44, E7 words + B 0.40, FV-20 0.38, FV-40 0.43); the order of the leading sets does not change.}
+\caption{Mean accuracy over the 14 tasks, held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds. Heads: median (range) over tasks. Control: the same heads with the control task's mean. Random sets: task mean only, at the $\alpha$ of the set they are matched to. Davidson FV-30: their intervention at their $\alpha=1$; without its generic heads, cross-fitted like the rest. Unpatched accuracy: 0.01 (check 1), 0 (check 2). Sets run on a ten-value grid score higher at their best $\alpha$ there (CC-pooled 0.44, E7 words + B 0.40, FV-20 0.38, FV-40 0.43); the order of the leading sets does not change. The shared rankings at 5 to 40 heads are in Table~\ref{tab:sizes}.}
 \label{tab:main}
 \end{table}
 
 \begin{itemize}
-\item \textbf{Which heads matters, not how many.} Random heads do nothing at any size, and heads drawn at random from E7's unfiltered set fall far below the filtered set of the same size. Control means stay low for every set in check~1, so the gains are task-specific.
+\item \textbf{Which heads matters, not how many.} Random heads with the same number of heads per layer do nothing, at any size, per task or shared. Random decoders do little: as many heads drawn from D as DB or DBT holds reach a fraction of the filtered sets, and the same holds for E7. The one random control above zero is the one matched to T, whose sets fill whole layers so that the draws share many of T's heads. Control means stay low for every set in check~1, so the gains are task-specific.
 \item \textbf{Hand-written lists are the bottleneck of the lexical method.} Decoded-word lists (CC-pooled) more than double E1's mean, but only at about 120 heads; their top 20 or 40 by rate are no better than E1. Heads chosen on what the instruction adds (E6) are worse than CC at full size: the heads they drop decode the task's words with and without the instruction, and check~1 needs them.
-\item \textbf{A causal ranking is better at every fixed size} (FV-20, FV-40, FV-$N_t$ against CC-20, CC-40, CC-pooled), and FV-$N_t$ has the highest mean of all two-fold sets. It grows steadily with size.
+\item \textbf{A causal ranking is better at every fixed size} (FV-20, FV-40, FV-$N_t$ against CC-20, CC-40, CC-pooled), and FV-$N_t$ has the highest mean of the per-task sets. It grows steadily with size.
 \item \textbf{Attention filters close most of the gap without patching.} Keeping the decoding heads that do not look at BOS (DB) or that also attend to the task words (DBT) gives sets of about 40 to 65 heads above FV-40 and below FV-$N_t$. Attention to the task words alone (T) comes close to FV-$N_t$, but with more heads. Attention to the query or to the rest of the instruction lowers every combination it is added to (faint dots).
-\item \textbf{Per head, the shared sets do best} (Sec.~\ref{sec:shared}).
+\item \textbf{A shared set does best overall} (Sec.~\ref{sec:shared}): Davidson et al.'s FV without its generic heads, with about a fifth of FV-$N_t$'s heads per task.
 \end{itemize}
 
 \subsection{By task type}
@@ -215,36 +219,48 @@ The means hide large differences between task types (Figure~\ref{fig:tasks}, Tab
 \begin{figure}[tbp]
 \centering
 \includegraphics[width=\textwidth]{figures/synth_tasks}
-\caption{Check 1 per task, held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds. Rows grouped by task type; column labels give the median number of heads. Bold: the row's highest value among the two-fold sets. *FV-univ: FV-univ-20, fold~1 only.}
+\caption{Check 1 per task, held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds. Rows grouped by task type; column labels give the median number of heads. Bold: the row's highest value. Shared sets: Davidson FV-30 ($\alpha=1$), the same without its generic heads (FV$-$gen), FV-univ-40, E10 shared DBT (30).}
 \label{fig:tasks}
 \end{figure}
 
 \begin{table}[tbp]
 \centering\small\setlength{\tabcolsep}{3.5pt}
 \resizebox{\textwidth}{!}{\input{tables/synth_groups}}
-\caption{Check 1, mean accuracy per task type (number of tasks in brackets), the sets of Figure~\ref{fig:tasks}. Bold: highest among the two-fold sets. $\dagger$: fold~1 only.}
+\caption{Check 1, mean accuracy per task type (number of tasks in brackets), the sets of Figure~\ref{fig:tasks}. Bold: highest in the row.}
 \label{tab:groups}
 \end{table}
 
 \begin{itemize}
-\item \textbf{Facts} (capitals, currency, landmark, park, product) are carried by almost every good set, shared or not. E7 is the exception on landmark--country: its patched replies begin ``Country:''.
-\item \textbf{Morphology}: singular--plural is easy for most sets; present--past is carried by causally chosen heads (FV-20, FV-$N_t$, FV-univ-20) and, less well, by DB and the shared BT set. T and DBT have almost no heads on present--past (13 and 3) and do nothing.
-\item \textbf{Sequences} (next-, prev-item) are carried only by FV-$N_t$, and prev-item only weakly. No decoding or attention filter finds those heads.
-\item \textbf{Translations} are carried by the attention filters (T, DB, DBT) and by no causally chosen per-task set; CC-pooled and the shared sets carry them partly.
-\item \textbf{Word relations} need either many causally chosen heads (FV-$N_t$) or the decoding filters (DB, T); FV-20 and the shared sets carry synonym poorly.
+\item \textbf{Facts} (capitals, currency, landmark, park, product) are carried by almost every good set, shared or not, best by the FV without generic heads. E7 is the exception on landmark--country: its patched replies begin ``Country:''.
+\item \textbf{Morphology}: singular--plural is easy for most sets; present--past is carried by causally chosen heads (FV-20, FV-$N_t$, FV-univ, FV$-$gen) and, less well, by DB. T and DBT have almost no heads on present--past (13 and 3) and do nothing.
+\item \textbf{Sequences} (next-, prev-item) are carried only by FV-$N_t$, and prev-item only weakly. No decoding or attention filter and no shared set finds those heads.
+\item \textbf{Translations} are carried by the attention filters (T, DB, DBT) and by the FV without generic heads, and by no causally chosen per-task set. Removing the generic heads is what brings Davidson et al.'s FV to the translations.
+\item \textbf{Word relations} need many causally chosen heads (FV-$N_t$), the decoding filters (DB, T) or the FV without generic heads; FV-20 and the other shared sets carry synonym poorly.
 \end{itemize}
 
-No single per-task rule wins everywhere: FV-$N_t$ leads on morphology, sequences and facts, the attention filters on translations and word relations.
+No single per-task rule wins everywhere: FV-$N_t$ leads on morphology and sequences, the attention filters on translations and word relations. The shared FV without generic heads is never far below the best set of a type, except on sequences.
 
 \subsection{One set for all tasks}\label{sec:shared}
 
-The aim is a small set that represents the tasks in general. Three shared sets stand out (Table~\ref{tab:main}, open markers in Figure~\ref{fig:size}).
+The aim is a small set that represents the tasks in general. Figure~\ref{fig:size}b, Table~\ref{tab:main} (lower part) and Table~\ref{tab:sizes} give the shared sets.
+
+\begin{table}[H]
+\centering\small
+\input{tables/synth_shared_sizes}
+\caption{The two shared rankings at 5 to 40 heads: check-1 task and control mean, check-2 task mean, over the 14 tasks; held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds. FV-univ-30 holds the same heads as Davidson FV-30; E10 shared DBT-30 is E10's set.}
+\label{tab:sizes}
+\end{table}
+
 \begin{itemize}
-\item \textbf{FV-univ-20}, the top 20 heads by Davidson et al.'s score averaged over the 14 tasks, patched head by head, is the best set per head. In fold~1 it is level with FV-$N_t$ and T, which use six to eight times as many heads per task, and it carries present--past and currency well. It was run in fold~1 only. Its ranking is stable, though: the top 20 heads of the two halves share 18.
-\item \textbf{E10 shared DBT}, 30 heads chosen by decoding, attention off BOS and attention to task words, ranked within each task and averaged, needs no patching to select. It is close to E8's per-task DBT sets and above Davidson et al.'s own FV, best on facts and translations and weak on word relations. Taking the weakest task instead of the average gives worse sets.
-\item \textbf{Davidson et al.'s FV-30}, their intervention at $\alpha=1$, is below both.
+\item \textbf{Davidson et al.'s FV without its generic heads is the best set we found.} The FV-30 heads chosen on the choosing half hold five of the six generic heads in both folds. Removing them leaves 25 heads, one set for all tasks, which with Davidson et al.'s intervention at $\alpha=2$ (the value chosen on the other fold for every task and fold) is above every per-task set in check~1, including FV-$N_t$ and T with about five to six times as many heads per task. In check~2 it is level with the best sets, and its control is low in check~1.
+\item \textbf{The same 30 heads, used three ways.} Summed into the residual stream at Davidson et al.'s weight, the 30 heads are about level with the decoded-word sets, and at $\alpha=2$ they collapse. Patched head by head (FV-univ-30) they are well above that and tolerate $\alpha=2$. Summed without the generic heads they do best. So most of the gain over the published FV comes from the generic heads, whose shared direction limits how strongly the vector can be added. The remaining run, the 25 heads patched head by head, would tell how much the intervention itself adds.
+\item \textbf{Twenty heads are not enough to be safe.} The shared rankings rise steeply up to 30 heads; from 30 to 40, FV-univ changes little and E10 shared DBT still gains. At 5 or 10 heads they carry little. FV-univ-20 was the best set per head in fold~1 but much weaker in fold~2, where its top 20 holds a third generic head (L31H14). Without its generic heads it is better in both folds and steadier across them. At 30 and 40 heads the two folds agree.
+\item \textbf{Without patching, E10 shared DBT} is below FV-univ at every size and close to it only at 40 heads. It is chosen from J-head readings and attention alone, so selecting it needs no patching.
+\item \textbf{Random shared sets} with the same layers do nothing.
 \end{itemize}
-FV-univ-20 is the top 20 of the same ranking as Davidson FV-30, so the gap between them comes from the intervention, its fixed weight and the ten extra heads. The 20 keep only 2 of the 6 generic heads (L14H29, L15H5); the 30 keep 5. The two best shared sets converge: E10 shared DBT holds 12 of FV-univ-20's heads, all in layers 13--16 (L13H6, L13H8, L14H12, L14H13, L14H25, L15H5, L15H7, L15H14, L15H21, L15H22, L15H27, L16H25), although one was chosen by causal effect and the other without any patching.
+The two kinds of shared set converge: E10 shared DBT (30) holds 12 of fold~1's FV-univ-20 heads, all in layers 13--16 (L13H6, L13H8, L14H12, L14H13, L14H25, L15H5, L15H7, L15H14, L15H21, L15H22, L15H27, L16H25), although one was chosen by causal effect and the other without any patching.
+
+\paragraph{Caveat.} The six generic heads were identified from J-head readings and attention, not from patched accuracy. But the decision to remove them followed the FV split, which was patched on check-1 items of both halves. The no-generic sets are therefore not as cleanly held out as the others.
 
 \subsection{Very small sets for single tasks}
 
@@ -270,7 +286,14 @@ landmark / product & 5--10 & Davidson et al.'s FV with fewer heads, $\alpha$ 3--
 
 \subsection{Check 2}
 
-In check~2 all sets lie close together (Table~\ref{tab:main}, right; App.~\ref{app:tables}), random sets of E4's size reach about 0.12 at their own $\alpha$, and control means are larger than in check~1, on next- and prev-item as large as the task means. The ranking also differs: D, mid-table in check~1, is last here. With an example in the prompt the model needs little from the patch, so check~2 does not separate good sets from mediocre ones. We use check~1 to choose.
+In check~2 all sets lie close together (Figure~\ref{fig:checks}, Table~\ref{tab:main}, App.~\ref{app:tables}). Random sets already reach up to a quarter of the best sets' accuracy, and control means are larger than in check~1, on next- and prev-item as large as the task means. The ranking also differs: D, mid-table in check~1, is last here. With an example in the prompt the model needs little from the patch, so check~2 does not separate good sets from mediocre ones. We use check~1 to choose.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{figures/synth_checks}
+\caption{Check 2 against check 1, mean over the 14 tasks, every set of Table~\ref{tab:main} run in both checks (colours and markers as Figure~\ref{fig:size}). The line is $y=x$. Check-1 accuracy spans 0 to 0.63, check-2 accuracy of the non-random sets only 0.26 to 0.41.}
+\label{fig:checks}
+\end{figure}
 
 \subsection{What did not help}
 \begin{itemize}
@@ -287,36 +310,33 @@ In check~2 all sets lie close together (Table~\ref{tab:main}, right; App.~\ref{a
 For the stated goal, a small set of heads that represents the tasks in general:
 \begin{enumerate}
 \item \textbf{Read heads with J-head.} It finds more heads that carry the task, in middle layers the logit lens misses, and its lead holds at equal set size.
-\item \textbf{One shared set: FV-univ-20.} Davidson et al.'s causal score averaged over tasks, top 20, patched head by head at $\alpha$ 1--2, is the best set per head we have, though measured in one fold only. Use it head by head rather than as their summed vector at weight 1, and keep it near 20 heads: the 40-head version is weaker, and the next ten heads of the ranking include three of the six generic heads.
-\item \textbf{One shared set without patching: E10 shared DBT} (30 heads). It needs only J-head readings and attention patterns, and it holds many of the same middle-layer heads.
-\item \textbf{Per task, if size does not matter: FV-$N_t$} (about 120 heads), the only set that carries sequences and the best on morphology; or \textbf{T} (about 150), best on facts and translations.
+\item \textbf{One shared set: Davidson et al.'s FV without its generic heads} (25 heads). Rank heads by their causal score averaged over tasks, take the top 30, drop the heads whose J-head readings are alike on every task (line ends, colons), and add the summed means after layer 11 at $\alpha=2$. It is the best set we found on average and on facts, and it carries every task type but sequences.
+\item \textbf{One shared set patched head by head: FV-univ-30 or FV-univ-40}, or FV-univ-20 without its generic heads. Twenty heads with the generic ones included are not reliable.
+\item \textbf{One shared set without patching: E10 shared DBT} at 30 to 40 heads. It needs only J-head readings and attention patterns, and it holds many of the same middle-layer heads as the causal sets.
+\item \textbf{Per task, if size does not matter: FV-$N_t$} (about 120 heads), the only set that carries sequences and the best on morphology; or \textbf{T} (about 150), best of the per-task sets on facts and translations.
 \item \textbf{Per task, small: DBT} (about 40 heads) or \textbf{DB} (about 65). Both are lens and attention only, and above causally ranked sets of similar size.
-\item \textbf{By task type}: translations need attention-filtered heads; sequences and present--past need causally ranked heads; fact tasks can rest on one to five heads.
+\item \textbf{By task type}: translations need attention-filtered heads or the FV without generic heads; sequences need many causally ranked heads per task; fact tasks can rest on one to five heads.
 \end{enumerate}
 
 % =====================================================================
 \section{Limitations}
 
-One model and 14 simple tasks. Every run is single and greedy, without intervals, so differences of a few points between sets are not established. Sets differ in size, and size alone changes accuracy. Only $\alpha$ 1 and 2 are compared, which may underrate sets that peak higher (sequences peaked at larger $\alpha$ in earlier runs). FV-univ-20, the best shared set, was run in one fold. T uses Yang et al.'s term lists as part of its task words. The CC and E7 word lists predate the case fix of the decoding filter and miss capitalised name tokens. Items are held out, but wordings are not: every set was chosen and tested on the same five templates, so whether the sets carry the task when it is asked differently is untested. Check~2 has few items on several tasks.
+One model and 14 simple tasks. Every run is single and greedy, without intervals, so differences of a few points between sets are not established. Sets differ in size, and size alone changes accuracy. Only $\alpha$ 1 and 2 are compared, which may underrate sets that peak higher: sequences peaked at larger $\alpha$ in earlier runs, and $\alpha=2$ is chosen for about two thirds of the set and task pairs in check~1. The generic heads were removed after a result on the same items (Sec.~\ref{sec:shared}). T uses Yang et al.'s term lists as part of its task words. The CC and E7 word lists predate the case fix of the decoding filter and miss capitalised name tokens. Items are held out, but wordings are not: every set was chosen and tested on the same five templates, so whether the sets carry the task when it is asked differently is untested. Check~2 has few items on several tasks.
 
 \subsection*{Conditions still to run}
-Some cells of the comparison are missing or rest on one fold. Table~\ref{tab:todo} lists the runs that would complete it, under the held-out protocol above (both folds, both checks, $\alpha\in\{1,2\}$, control means). None has been run.
+E11 ran the conditions listed in the first version of this document: both folds for FV-univ, the shared rankings at 5 to 40 heads, random controls for every kind of set, and Davidson et al.'s intervention in both checks with and without its generic heads. Table~\ref{tab:todo} lists what remains, under the same protocol. None has been run.
 
 \begin{table}[H]
 \centering\small
-\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{4.6cm}L@{}}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{5.2cm}L@{}}
 \toprule
 Condition & What it settles \\
 \midrule
-FV-univ-20 and FV-univ-40 in fold~2 & whether the best shared set holds on both halves (its heads are already ranked on half $B$) \\
-FV-univ-20 without its 2 generic heads & whether the generic heads still cost accuracy at 20 heads \\
-Shared sets at equal sizes: FV-univ-$N$ and E10 shared DBT at $N\in\{5,10,20,30,40\}$ & the smallest shared set that keeps the effect \\
-Random shared sets: layer-matched to FV-univ-20 and to E10 shared DBT & a chance level for the shared sets, which have none \\
-Random controls for DB, DBT and T (layer-matched and drawn from D) & whether the attention filters, like E7's, beat random subsets of their size \\
-Random sets in check~2 at $\alpha$ 1 and 2 & the missing check-2 chance level \\
-Davidson FV-30 in check~2 & the missing check-2 cell of their intervention \\
-FV with the 6 generic heads removed (24 heads), their intervention & the FV-split result on held-out items \\
-Best rules under Logit-head (DB, DBT, E10 shared DBT) & the readout comparison under the common protocol, not only in E1 \\
+The 25 no-generic FV heads patched head by head & how much of the best set's lead comes from Davidson et al.'s intervention rather than the heads \\
+The no-generic FV at fewer heads (top 10, 15, 20 of the ranking minus generic heads) & the smallest version of the best set \\
+Generic heads identified on each choosing half & a cleanly held-out version of the no-generic sets \\
+$\alpha$ up to 3--4 for the leading sets & whether sets that prefer $\alpha=2$, and the sequences, gain further \\
+Best rules under Logit-head (DB, DBT, E10 shared DBT) & the readout comparison under the common protocol, not only in E1 (word list for D to be decided) \\
 Best sets on new wordings (E4b; wordings await a hand check) & whether the sets carry the task when it is asked differently \\
 \bottomrule
 \end{tabularx}
@@ -337,14 +357,14 @@ Best sets on new wordings (E4b; wordings await a hand check) & whether the sets 
 \begin{table}[H]
 \centering\footnotesize\setlength{\tabcolsep}{3pt}
 \resizebox{\textwidth}{!}{\input{tables/synth_check1_tasks}}
-\caption{Check 1 per task, held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds. Items: patched items in fold~1 / fold~2. Unp.: unpatched accuracy. Columns as in Figure~\ref{fig:tasks}; E7 +B: E7 words + B; E10 DBT, E10 BT: the shared sets. Bold: the row's highest value among the two-fold sets. $\dagger$: fold~1 only.}
+\caption{Check 1 per task, held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds. Items: patched items in fold~1 / fold~2. Unp.: unpatched accuracy. Columns as in Figure~\ref{fig:tasks}; E7 +B: E7 words + B; FV$-$gen: Davidson FV-30 without its generic heads; FV-univ: FV-univ-40; E10 DBT: E10 shared DBT (30). Bold: the row's highest value.}
 \label{tab:check1}
 \end{table}
 
 \begin{table}[H]
 \centering\footnotesize\setlength{\tabcolsep}{3pt}
 \resizebox{\textwidth}{!}{\input{tables/synth_check2_tasks}}
-\caption{Check 2 per task, as Table~\ref{tab:check1}. Davidson FV-30 was not run in this check. Few items on singular--plural, country--capital and park--country.}
+\caption{Check 2 per task, as Table~\ref{tab:check1}. Few items on singular--plural, country--capital and park--country.}
 \label{tab:check2}
 \end{table}
 
