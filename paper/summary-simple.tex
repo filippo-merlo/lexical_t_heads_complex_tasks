@@ -32,7 +32,7 @@
 
 \title{Lexical Task Heads on Simple Tasks\\\large Schematic project summary}
 \author{Filippo Merlo}
-\date{Last updated: 9 November 2026}
+\date{Last updated: 10 November 2026}
 
 \begin{document}
 \maketitle
@@ -149,6 +149,11 @@ Check 2 & The four main sets, control mean. & Raw 0.31, raw + filter 0.34, clean
 Filters and sets & D: J-head top 10 holds a word of the task's 30 most active decoded words on $\geq$10\% of prompts (E7 word rules; tokens with leading-space capitalised/upper forms added); B: BOS attention $\leq$0.5; T: attention on the instruction's task words (Yang terms + E4 specific words) $\geq$0.05; I: on the query $\geq$0.05; R: on the rest $\leq$0.5. All 31 AND-combinations, no size cap, no controls. & First run with E7's 10-word list and Yang's expansion missed the `` Capital'' tokens the lens decodes (L21H2: `` England'' on 488/500 prompts, D rate 0). Fix + 30 words (chosen on FV-20 overlap of the choosing halves, no patching): all 16 D sets rerun; sets about 2$\times$ larger (DB 32 $\to$ 65 heads). & -- \\
 Check 1 & All 31 sets; fold-1 pick read on fold 2. & \textbf{T 0.55} (154 heads; fold-1 pick, fold 2 0.55), \textbf{DB 0.51} (65; first run 0.31), DT 0.49, DBT 0.49 (38), D 0.41. DB above CC and FV-20 on 9/14, below FV-$N_t$ on 10/14; T wins the facts, DB word relations, present--past (T has 13 heads there) and French. B raises D (+0.10) but lowers T ($-$0.09); adding I or R lowers all 15 sets. Next/prev-item $\leq$0.11 on every set. DB holds 8.5 of FV-20 (chance 1.3). & \yes \\
 Check 2 & Same sets. & Close: T 0.40 $\approx$ FV-$N_t$ 0.39, DB 0.32, CC 0.34; T sets' next-item gains matched by their control. & \mixed \\
+\midrule
+\multicolumn{4}{@{}p{\linewidth}@{}}{\textbf{E10 --- one shared 30-head set for all 14 tasks} (J-head, rule style; E8's scores, split and protocol, $\alpha\in\{1,2\}$ cross-fitted; each task still patched with its own means. Aim: a Davidson-style shared set, for a direct comparison. Report: \texttt{results/e10\_shared/report.md}.)} \\
+Sets & Each of E8's five per-head scores combined over the 14 tasks: average (\texttt{mean}), weakest task (\texttt{worst}: lowest D/T/I, highest B/R), average within-task rank (\texttt{rank}). Per combination, the heads' ranks on its filters averaged, best 30 kept; no thresholds (on the weakest task they leave $<$30 heads in 27/31 combinations). 93 sets per fold. & Folds share $\sim$29/30 heads (\texttt{mean}), $\sim$25 (\texttt{worst}). Overlap with Davidson et al.'s 30 FV heads up to 13 (DBT, DT; chance 3--4), 0 for sets with R; mostly their layer 13--16 heads, rarely the late ones. & -- \\
+Check 1 & All 93 sets; fold-1 pick read on fold 2. & \textbf{rank\_DBT 0.47} (fold-1 pick, fold 2 0.47; E8 per-task DBT 0.48), mean\_BT 0.44, rank\_DB 0.43, mean\_DBT 0.42: about equal to E8's per-task sets of the same combination (DBT 0.49, BT 0.45, DB 0.51), above Davidson's shared FV (0.33, residual-stream FV, other items), below FV-$N_t$ 0.59. T alone loses most (0.35 vs 0.55). \texttt{worst} lowest (best 0.36); R or I combinations $\approx$0.01--0.2. Shared sets gain on facts and present--past (rank\_DBT 0.16 vs 0.00) and lose antonym (0.08 vs 0.61), synonym and translations. Controls $\leq$0.05; no constant replies. & \yes \\
+Check 2 & Same sets. & Best sets 0.36--0.38, T 0.41: equal to E8 per task (BT 0.38) and FV-$N_t$ (0.39). & \mixed \\
 \bottomrule
 \end{xltabular}
 \normalsize
@@ -213,6 +218,7 @@ H7--H9 (E4b) & Not run. & -- \\
 \item \no{} \textbf{Subtracting the instruction-free output does not sharpen the sets} (E6): heads chosen on what the instruction adds tie CC at 20 heads and fall far below it at full size in check 1; the heads whose words do not depend on the instruction are needed.
 \item \yes{} \textbf{Attention separates working decoders from the rest} (E7): among heads that decode the task's most active words, keeping only those that look at the prompt rather than BOS cuts the set to about a quarter and keeps or raises check 1 (0.37 $\to$ 0.40); random subsets of the same size fall to 0.09. It matches causally chosen FV sets of the same size (FV-20/40); still below CC (landmark collapses) and FV-$N_t$; the WikiText cut halves the effect again.
 \item \yes{} \textbf{Where a head looks, or what it decodes plus not looking at BOS, picks task heads} (E8): attention to the instruction's task words alone (0.55) and decoding the task's words with the BOS filter (0.51, no hand-written list) come close to FV-$N_t$ (0.59) and win different tasks; attention to the query or the rest of the instruction hurts. Our lowercased lists had missed `` Capital'' tokens (E3--E7 lists still do).
+\item \yes{} \textbf{One head set can serve all 14 tasks} (E10): ranking heads on E8's scores combined over tasks (average or average rank; DBT, BT, DB) gives 30 shared heads that carry check 1 about as well as E8's per-task sets (0.47 vs 0.49), better on facts, worse on antonym, synonym and translations; requiring every task to pass (weakest task) is worse.
 \item \textbf{E3 caveats:} words, list sizes and designs chosen after seeing check 1 on the same items; best of 4 $\alpha$; one run. E4 tests them on held-out items; new wordings (E4b) not yet run.
 \item \textbf{Read the replies, not only accuracy:} 19--33\% of patched replies on several tasks contain the answer after a prefix the flexible score rejects, and part of a ``loss'' can be a format change (landmark--country under J-head). \texttt{notebooks/patching\_outputs.py} shows them.
 \end{itemize}
