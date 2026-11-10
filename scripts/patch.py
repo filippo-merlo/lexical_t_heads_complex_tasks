@@ -271,7 +271,8 @@ def score_complex(level, mode: str, rules: str | None, replies: dict[str, str], 
             for r in results if fu.item_id(r) in items]
 
 
-def run_fu(lm, heads_json, rows, log, family, levels, sources=("task", "control")):
+def run_fu(lm, heads_json, rows, log, family, levels, sources=("task", "control"), set_list=False,
+           alphas=COMPLEX_ALPHAS):
     """The complex tasks, rule style only: each rule wording's own mean patched into the rule
     heads, one wording at a time, as for the simple tasks.
 
@@ -279,7 +280,9 @@ def run_fu(lm, heads_json, rows, log, family, levels, sources=("task", "control"
     check 2 (``complex-wrong``) the original rules prompt of the first 100 items answered
     wrongly under it; both with a control, the control task's mean under its original rules
     prompt. ``sources`` limits the means to the task's (``task``) or the control's
-    (``control``). The patch is at the last prompt token only."""
+    (``control``). The patch is at the last prompt token only. ``set_list``: patch instead the
+    rule-style sets listed under each task's ``sets`` key, ``[style, name, heads]`` (E9,
+    ``scripts/e9_sets.py``). ``alphas``: the scaling factors."""
     from lth import fu
     from lth.store import CAP, done, load, load_outputs, outputs_path, readings_dir
 
@@ -319,16 +322,21 @@ def run_fu(lm, heads_json, rows, log, family, levels, sources=("task", "control"
         prompts = list(dict.fromkeys(outputs[i]["prompt"] for i in items))
         ids = [lm.encode_chat(p) for p in prompts]
         item_set = set(items)
-        for name, heads in head_sets(heads_json["complex"][key][STYLE]).items():
+        if set_list:
+            candidates = {name: [tuple(h) for h in heads]
+                          for style, name, heads in heads_json["complex"][key]["sets"] if style == STYLE}
+        else:
+            candidates = head_sets(heads_json["complex"][key][STYLE])
+        for name, heads in candidates.items():
             for source, wording, mean, n_mean in means:
                 if not heads or mean is None:
                     continue
                 start = time.time()
-                replies = generate_patched(lm, ids, heads, mean, COMPLEX_ALPHAS, COMPLEX_MAX_TOKENS,
+                replies = generate_patched(lm, ids, heads, mean, alphas, COMPLEX_MAX_TOKENS,
                                            PATCH_ROWS["complex"])
                 condition = dict(family=family, task=key, style=STYLE, heads=name, source=source,
                                  mean_wording=wording)
-                for alpha in COMPLEX_ALPHAS:
+                for alpha in alphas:
                     texts = {prompts[p]: lm.decode(replies[p, alpha]) for p in range(len(prompts))}
                     lines = [dict(**condition, alpha=alpha, **line)
                              for line in score_complex(level, mode, rules, texts, item_set)]
@@ -354,9 +362,9 @@ def main() -> None:
     parser.add_argument("--sets", nargs="+", choices=SETS, default=list(SETS),
                         help="simple tasks: the head sets to patch (default: all three)")
     parser.add_argument("--set-list", action="store_true",
-                        help="simple tasks: patch the sets listed in heads.json (scripts/rank_heads.py)")
+                        help="patch the sets listed in heads.json (scripts/rank_heads.py; complex: scripts/e9_sets.py)")
     parser.add_argument("--alphas", nargs="+", type=float, default=None,
-                        help="simple tasks: the scaling factors (default: ALPHAS, Yang et al.'s 15)")
+                        help="the scaling factors (default: ALPHAS, Yang et al.'s 15; complex: COMPLEX_ALPHAS)")
     parser.add_argument("--same-style", action="store_true",
                         help="simple tasks: patch each set with the means of its own style only")
     parser.add_argument("--half", choices=("A", "B"), default=None,
@@ -379,7 +387,8 @@ def main() -> None:
     rows: list[dict] = []
     log: list[dict] = []
     if args.family in COMPLEX_FAMILIES:
-        run_fu(lm, heads_json, rows, log, args.family, args.levels, tuple(args.sources))
+        run_fu(lm, heads_json, rows, log, args.family, args.levels, tuple(args.sources), args.set_list,
+               args.alphas or COMPLEX_ALPHAS)
     else:
         run_simple(lm, heads_json, rows, log, args.tasks or simple.TASKS, args.family, tuple(args.sets),
                    args.set_list, args.same_style, args.alphas or ALPHAS, args.half, args.wrong_control,

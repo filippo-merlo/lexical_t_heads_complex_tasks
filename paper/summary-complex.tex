@@ -32,7 +32,7 @@
 
 \title{Lexical Task Heads on Complex Tasks\\\large Schematic project summary}
 \author{Filippo Merlo}
-\date{Last updated: 3 November 2026}
+\date{Last updated: 10 November 2026}
 
 \begin{document}
 \maketitle
@@ -89,6 +89,9 @@ Scoring audit & Every reply saved; strict (Fu et al.'s parser) vs flexible. & Op
 Head sets & 100 prompts per style (fewer where few correct). & Heads found for every task and style, but counts not comparable with E1 (term lists 10$\times$ longer; Set Game example $P^+$ = 1 prompt). J-head again larger, layers 10--19; covers 44--91\% of Logit-head. Rule/example overlap 48--94\%. & \mixed \\
 Check 1 (no task info) & Rule heads, 7 means, 11 $\alpha$, control of same answer format. & Without task info the model does not attempt the task on 4/5 tasks, and no patch changes this. Set Game: $\leq$+5 items, control as much. & \no \\
 Check 2 (rules, wrong) & Rule prompts answered wrongly; control added. & Gains everywhere, but the control matches them. $\alpha=0$ alone fixes 21--23 Set Game items; on Yes/No tasks gains = pushing every answer to one label. & \no \\
+\midrule
+\multicolumn{4}{@{}l}{\textbf{E9 --- E8's DB set on the complex tasks} (\texttt{e9-complex-db.tex})} \\
+DB set, both checks & J-head decodes the task's 30 most active words ($\geq$10\% of 700 rule prompts) and BOS attention $\leq$0.5; E2's checks, $\alpha$ 1, 2, control. & 87--109 heads, mostly shared across tasks. No task-specific effect. On Yes/No tasks a stronger one-label push than E2 (check 1: answers return, always ``Yes''; check 2: one label for all), control alike. Set Game, Tapatan: control matches or beats it. & \no \\
 \bottomrule
 \end{xltabular}
 \normalsize
@@ -133,7 +136,7 @@ H2 J-head $\supseteq$ Logit-head & Fails: J-head misses part of the Logit-head s
 
 \begin{itemize}
 \item \yes{} \textbf{Scoring matters first.} Flexible scoring removes most of the apparent wording sensitivity; always check it before reading wording effects.
-\item \no{} \textbf{Complex tasks:} heads are found, but no causal check shows a task-specific effect. Prompts without task info elicit no attempt; on wrong-answer prompts, any perturbation (zero, control, label shift) helps as much.
+\item \no{} \textbf{Complex tasks:} heads are found, but no causal check shows a task-specific effect, neither for Yang et al.'s sets (E2) nor for E8's DB rule (E9). Prompts without task info elicit no attempt (DB only brings back a ``Yes''); on wrong-answer prompts, any perturbation (zero, control, label shift) helps as much.
 \item \no{} \textbf{Head counts on complex tasks} are not interpretable with long term lists and tiny $P^+$ sets.
 \item \textbf{Controls are essential} on long-reasoning and Yes/No tasks: without them, check 2 looked positive.
 \end{itemize}

@@ -1,0 +1,6 @@
+task,n_prompts,D,B,DB
+set_game/easy,700,184,460,97
+operator_func/easy,700,195,431,87
+noun_class_agreement/easy,700,190,444,99
+tapatan/easy,700,184,450,105
+lexical_category_inference/easy,700,192,449,109
