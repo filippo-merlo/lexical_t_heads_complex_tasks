@@ -1,0 +1,15 @@
+task,fv30_nogen,fv30_nogen_half,fvuniv20_nogen,fvuniv20_nogen_half
+antonym,0.625,0.52,0.542,0.396
+country-capital,0.994,0.988,0.985,0.982
+country-currency,0.697,0.675,0.628,0.48
+english-french,0.505,0.115,0.155,0.03
+english-german,0.485,0.1,0.0,0.001
+english-spanish,0.75,0.31,0.229,0.113
+landmark-country,0.955,0.935,0.898,0.856
+next_item,0.102,0.025,0.088,0.02
+park-country,0.89,0.905,0.793,0.697
+present-past,0.525,0.215,0.683,0.439
+prev_item,0.148,0.0,0.117,0.081
+product-company,0.89,0.88,0.827,0.798
+singular-plural,0.91,0.882,0.885,0.818
+synonym,0.33,0.25,0.248,0.164

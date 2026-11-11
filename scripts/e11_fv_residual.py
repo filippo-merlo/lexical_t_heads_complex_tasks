@@ -44,6 +44,9 @@ def main() -> None:
     parser.add_argument("--fold", type=int, choices=(1, 2), required=True)
     parser.add_argument("--tasks", nargs="+", default=list(simple.TASKS))
     parser.add_argument("--out", type=Path, default=None, help="output folder (default results/e11_complete/fold<f>)")
+    parser.add_argument("--sets-from", type=Path, default=None,
+                        help="E12: patch only the fold's fv30_nogen_half of this generic.json "
+                             "(scripts/e12_generic_halves.py) instead of fv30 and fv30_nogen")
     args = parser.parse_args()
     gpu.pin(args.gpu)
 
@@ -63,6 +66,11 @@ def main() -> None:
     assert info["layer"] == LAYER
     fv30 = [(l, h) for l, h, _ in info["heads"]]
     sets = {"fv30": fv30, "fv30_nogen": [x for x in fv30 if x not in GENERIC6]}
+    if args.sets_from:
+        e12 = json.loads(args.sets_from.read_text())
+        assert e12["fold"] == args.fold
+        sets = {"fv30_nogen_half": [tuple(h) for h in e12["sets"]["fv30_nogen_half"]]}
+        assert set(sets["fv30_nogen_half"]) < set(fv30)
     half = "A" if args.fold == 1 else "B"
     split = json.loads((RESULTS / "heldout" / "split.json").read_text())
     out = args.out or RESULTS / "e11_complete" / f"fold{args.fold}"
