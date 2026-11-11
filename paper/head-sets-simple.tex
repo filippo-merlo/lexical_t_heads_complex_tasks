@@ -253,7 +253,7 @@ The aim is a small set that represents the tasks in general. Figure~\ref{fig:siz
 
 \begin{itemize}
 \item \textbf{Davidson et al.'s FV without its generic heads is the best set we found.} The FV-30 heads chosen on the choosing half hold five of the six generic heads in both folds. Removing them leaves 25 heads, one set for all tasks, which with Davidson et al.'s intervention at $\alpha=2$ (the value chosen on the other fold for every task and fold) is above every per-task set in check~1, including FV-$N_t$ and T with about five to six times as many heads per task. In check~2 it is level with the best sets, and its control is low in check~1.
-\item \textbf{The same 30 heads, used three ways.} Summed into the residual stream at Davidson et al.'s weight, the 30 heads are about level with the decoded-word sets, and at $\alpha=2$ they collapse. Patched head by head (FV-univ-30) they are well above that and tolerate $\alpha=2$. Summed without the generic heads they do best. So most of the gain over the published FV comes from the generic heads, whose shared direction limits how strongly the vector can be added. The remaining run, the 25 heads patched head by head, would tell how much the intervention itself adds.
+\item \textbf{The same 30 heads, used three ways.} Summed into the residual stream at Davidson et al.'s weight, the 30 heads are about level with the decoded-word sets, and at $\alpha=2$ they collapse. Patched head by head (FV-univ-30) they are well above that and tolerate $\alpha=2$. Summed without the generic heads they do best. So most of the gain over the published FV comes from the generic heads, whose shared direction limits how strongly the vector can be added. How much of this lead comes from the intervention rather than the heads is not tested.
 \item \textbf{Twenty heads are not enough to be safe.} The shared rankings rise steeply up to 30 heads; from 30 to 40, FV-univ changes little and E10 shared DBT still gains. At 5 or 10 heads they carry little. FV-univ-20 was the best set per head in fold~1 but much weaker in fold~2, where its top 20 holds a third generic head (L31H14). Without its generic heads it is better in both folds and steadier across them. At 30 and 40 heads the two folds agree.
 \item \textbf{Without patching, E10 shared DBT} is below FV-univ at every size and close to it only at 40 heads. It is chosen from J-head readings and attention alone, so selecting it needs no patching.
 \item \textbf{Random shared sets} with the same layers do nothing.
@@ -324,7 +324,7 @@ For the stated goal, a small set of heads that represents the tasks in general:
 One model and 14 simple tasks. Every run is single and greedy, without intervals, so differences of a few points between sets are not established. Sets differ in size, and size alone changes accuracy. Only $\alpha$ 1 and 2 are compared, which may underrate sets that peak higher: sequences peaked at larger $\alpha$ in earlier runs, and $\alpha=2$ is chosen for about two thirds of the set and task pairs in check~1. The generic heads were removed after a result on the same items (Sec.~\ref{sec:shared}). T uses Yang et al.'s term lists as part of its task words. The CC and E7 word lists predate the case fix of the decoding filter and miss capitalised name tokens. Items are held out, but wordings are not: every set was chosen and tested on the same five templates, so whether the sets carry the task when it is asked differently is untested. Check~2 has few items on several tasks.
 
 \subsection*{Conditions still to run}
-E11 ran the conditions listed in the first version of this document: both folds for FV-univ, the shared rankings at 5 to 40 heads, random controls for every kind of set, and Davidson et al.'s intervention in both checks with and without its generic heads. Table~\ref{tab:todo} lists what remains, under the same protocol. None has been run.
+E11 ran the conditions listed in the first version of this document: both folds for FV-univ, the shared rankings at 5 to 40 heads, random controls for every kind of set, and Davidson et al.'s intervention in both checks with and without its generic heads. Two conditions remain (Table~\ref{tab:todo}). Neither has been run.
 
 \begin{table}[H]
 \centering\small
@@ -332,15 +332,11 @@ E11 ran the conditions listed in the first version of this document: both folds 
 \toprule
 Condition & What it settles \\
 \midrule
-The 25 no-generic FV heads patched head by head & how much of the best set's lead comes from Davidson et al.'s intervention rather than the heads \\
-The no-generic FV at fewer heads (top 10, 15, 20 of the ranking minus generic heads) & the smallest version of the best set \\
-Generic heads identified on each choosing half & a cleanly held-out version of the no-generic sets \\
-$\alpha$ up to 3--4 for the leading sets & whether sets that prefer $\alpha=2$, and the sequences, gain further \\
-Best rules under Logit-head (DB, DBT, E10 shared DBT) & the readout comparison under the common protocol, not only in E1 (word list for D to be decided) \\
-Best sets on new wordings (E4b; wordings await a hand check) & whether the sets carry the task when it is asked differently \\
+Generic heads identified on each choosing half, by a rule fixed in advance & the no-generic sets held out like every other set: the testing half is used only for testing, never for a measure that chooses heads \\
+Next, once the comparison of methods is settled: the best sets on new wordings (E4b; wordings await a hand check) & whether the sets carry the task under instructions worded differently \\
 \bottomrule
 \end{tabularx}
-\caption{Runs that would complete the comparison. All but the last reuse existing readings, scores and means.}
+\caption{Runs that would complete the comparison. The first reuses existing readings and means; the second needs new readings.}
 \label{tab:todo}
 \end{table}
 
