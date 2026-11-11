@@ -7,28 +7,28 @@ Head set & Heads & \multicolumn{2}{c}{Check 1} & \multicolumn{2}{c}{Check 2} \\
 \midrule
 \multicolumn{6}{@{}l}{\textit{One set per task}} \\
 \quad Decoded words (lens) & & & & & \\
-\qquad E1: Yang term list & 26 (8--48) & 0.17 & 0.03 & 0.27 & 0.09 \\
-\qquad CC-20 & 20 & 0.16 & 0.03 & 0.27 & 0.10 \\
-\qquad CC-40 & 40 & 0.22 & 0.05 & 0.31 & 0.10 \\
-\qquad CC-pooled & 118 (98--146) & 0.40 & 0.05 & 0.34 & 0.13 \\
-\qquad E7 raw words & 110 (80--134) & 0.34 & 0.04 & 0.32 & 0.10 \\
-\qquad E7 raw words + B & 32 (18--42) & 0.31 & 0.02 & 0.34 & 0.13 \\
-\qquad E6 instruction diff. & 107 (84--128) & 0.18 & 0.01 & 0.33 & 0.10 \\
+\qquad Yang terms & 26 (8--48) & 0.17 & 0.03 & 0.27 & 0.09 \\
+\qquad Task+common-20 & 20 & 0.16 & 0.03 & 0.27 & 0.10 \\
+\qquad Task+common-40 & 40 & 0.22 & 0.05 & 0.31 & 0.10 \\
+\qquad Task+common & 118 (98--146) & 0.40 & 0.05 & 0.34 & 0.13 \\
+\qquad Task+common, instr.\ diff. & 107 (84--128) & 0.18 & 0.01 & 0.33 & 0.10 \\
 \quad Causal score (Davidson et al.) & & & & & \\
-\qquad FV-20 & 20 & 0.33 & 0.03 & 0.34 & 0.10 \\
-\qquad FV-40 & 40 & 0.41 & 0.03 & 0.39 & 0.12 \\
-\qquad FV-$N_t$ & 118 (98--146) & 0.59 & 0.04 & 0.39 & 0.12 \\
-\quad Attention and decoding filters & & & & & \\
-\qquad E8 D & 249 (210--274) & 0.41 & 0.02 & 0.26 & 0.05 \\
-\qquad E8 DB & 65 (52--84) & 0.51 & 0.01 & 0.32 & 0.09 \\
-\qquad E8 DBT & 38 (3--47) & 0.49 & 0.03 & 0.35 & 0.14 \\
-\qquad E8 BT & 94 (12--114) & 0.45 & 0.02 & 0.38 & 0.13 \\
-\qquad E8 T & 154 (13--302) & 0.55 & 0.02 & 0.40 & 0.11 \\
+\qquad Causal-20 & 20 & 0.33 & 0.03 & 0.34 & 0.10 \\
+\qquad Causal-40 & 40 & 0.41 & 0.03 & 0.39 & 0.12 \\
+\qquad Causal-matched & 118 (98--146) & 0.59 & 0.04 & 0.39 & 0.12 \\
+\quad Filters: decoding (D), not BOS (B), task-word attention (T) & & & & & \\
+\qquad D$_{10}$ & 110 (80--134) & 0.34 & 0.04 & 0.32 & 0.10 \\
+\qquad DB$_{10}$ & 32 (18--42) & 0.31 & 0.02 & 0.34 & 0.13 \\
+\qquad D & 249 (210--274) & 0.41 & 0.02 & 0.26 & 0.05 \\
+\qquad DB & 65 (52--84) & 0.51 & 0.01 & 0.32 & 0.09 \\
+\qquad DBT & 38 (3--47) & 0.49 & 0.03 & 0.35 & 0.14 \\
+\qquad BT & 94 (12--114) & 0.45 & 0.02 & 0.38 & 0.13 \\
+\qquad T & 154 (13--302) & 0.55 & 0.02 & 0.40 & 0.11 \\
 \quad Random heads & & & & & \\
-\qquad Random-20 & 20 & 0.01 & -- & 0.08 & -- \\
-\qquad Random-40 & 40 & 0.01 & -- & 0.10 & -- \\
-\qquad Random-$N_t$ & 118 (98--146) & 0.02 & -- & 0.12 & -- \\
-\qquad Random from E7 raw & 32 (18--42) & 0.07 & -- & -- & -- \\
+\qquad Random, Task+common-20 layers & 20 & 0.01 & -- & 0.08 & -- \\
+\qquad Random, Task+common-40 layers & 40 & 0.01 & -- & 0.10 & -- \\
+\qquad Random, Task+common layers & 118 (98--146) & 0.02 & -- & 0.12 & -- \\
+\qquad Random from D$_{10}$, DB$_{10}$ size & 32 (18--42) & 0.07 & -- & -- & -- \\
 \qquad Random from D, DB size & 65 (52--84) & 0.13 & -- & 0.18 & -- \\
 \qquad Random, DB layers & 65 (52--84) & 0.01 & -- & 0.08 & -- \\
 \qquad Random from D, DBT size & 38 (3--47) & 0.06 & -- & 0.14 & -- \\
@@ -38,16 +38,16 @@ Head set & Heads & \multicolumn{2}{c}{Check 1} & \multicolumn{2}{c}{Check 2} \\
 \multicolumn{6}{@{}l}{\textit{One set for all 14 tasks}} \\
 \quad Causal score (Davidson et al.) & & & & & \\
 \qquad Davidson FV-30 ($\alpha{=}1$) & 30 & 0.39 & 0.05 & 0.34 & 0.16 \\
-\qquad Davidson FV-30, no generic heads & 25 & 0.63 & 0.05 & 0.41 & 0.13 \\
-\qquad FV-univ-20 & 20 & 0.40 & 0.03 & 0.34 & 0.12 \\
-\qquad FV-univ-40 & 40 & 0.53 & 0.04 & 0.38 & 0.14 \\
-\qquad FV-univ-20, no generic heads & 18 & 0.51 & 0.04 & 0.39 & 0.14 \\
-\quad Attention and decoding filters & & & & & \\
-\qquad E10 shared DBT & 30 & 0.47 & 0.01 & 0.38 & 0.10 \\
-\qquad E10 shared BT & 30 & 0.44 & 0.02 & 0.38 & 0.15 \\
-\qquad E10 shared DB & 30 & 0.43 & 0.02 & 0.36 & 0.18 \\
+\qquad Davidson FV-30 $-$ generic & 25 & 0.63 & 0.05 & 0.41 & 0.13 \\
+\qquad Shared causal-20 & 20 & 0.40 & 0.03 & 0.34 & 0.12 \\
+\qquad Shared causal-40 & 40 & 0.53 & 0.04 & 0.38 & 0.14 \\
+\qquad Shared causal-20 $-$ generic & 18 & 0.51 & 0.04 & 0.39 & 0.14 \\
+\quad Filters: decoding (D), not BOS (B), task-word attention (T) & & & & & \\
+\qquad Shared DBT-30 & 30 & 0.47 & 0.01 & 0.38 & 0.10 \\
+\qquad Shared BT-30 & 30 & 0.44 & 0.02 & 0.38 & 0.15 \\
+\qquad Shared DB-30 & 30 & 0.43 & 0.02 & 0.36 & 0.18 \\
 \quad Random heads & & & & & \\
-\qquad Random shared, FV-univ-20 layers & 20 & 0.01 & -- & 0.06 & -- \\
-\qquad Random shared, E10 DBT layers & 30 & 0.01 & -- & 0.06 & -- \\
+\qquad Random shared, causal-20 layers & 20 & 0.01 & -- & 0.06 & -- \\
+\qquad Random shared, DBT-30 layers & 30 & 0.01 & -- & 0.06 & -- \\
 \bottomrule
 \end{tabular}

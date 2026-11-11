@@ -53,29 +53,43 @@ assert sorted(TASK_ORDER) == sorted(simple.TASKS)
 
 # (source folder, set key, label, approach, scope, in the main table). Approach = how heads are
 # scored; scope = one set per task or one set for all tasks.
+#
+# Naming scheme (labels only; the set keys and result folders keep their experiment names):
+#   family name  = how heads are chosen: "Yang terms" / "Task+common" (word lists decoded under
+#                  J-head), filter letters D B T (D decodes the task's most active words, B does not
+#                  look mainly at BOS, T attends to the instruction's task words), "Causal" (Davidson
+#                  et al.'s causal score);
+#   "-N"         = the top N heads of a ranking; no suffix = every head passing a threshold;
+#   "Shared"     = one set for all 14 tasks (otherwise one set per task);
+#   "FV"         = Davidson et al.'s intervention (means summed, added after layer 11); every other
+#                  set is patched head by head;
+#   "- generic"  = without the generic heads;
+#   "Random, X layers" = X's heads per layer drawn outside X; "Random from D, X size" = X's size
+#                  drawn from D.
 LEXICAL, CAUSAL, ATTENTION, RANDOM = "lexical", "causal", "attention", "random"
 DAV = "Davidson FV-30 ($\\alpha{=}1$)"
-DAV_NOGEN = "Davidson FV-30, no generic heads"
+DAV_NOGEN = "Davidson FV-30 $-$ generic"
+CC_DIFF = "Task+common, instr.\\ diff."
 SETS = [
-    ("heldout", "e1", "E1: Yang term list", LEXICAL, "task", True),
-    ("heldout", "cc20", "CC-20", LEXICAL, "task", True),
-    ("heldout", "cc40", "CC-40", LEXICAL, "task", True),
-    ("heldout", "cc", "CC-pooled", LEXICAL, "task", True),
-    ("e7_attfilter", "raw", "E7 raw words", LEXICAL, "task", True),
-    ("e7_attfilter", "raw_att", "E7 raw words + B", LEXICAL, "task", True),
-    ("diff_heads", "dcc", "E6 instruction diff.", LEXICAL, "task", True),
-    ("heldout", "fv20", "FV-20", CAUSAL, "task", True),
-    ("heldout", "fv40", "FV-40", CAUSAL, "task", True),
-    ("heldout", "fvNt", "FV-$N_t$", CAUSAL, "task", True),
-    ("e8_filters", "D", "E8 D", ATTENTION, "task", True),
-    ("e8_filters", "DB", "E8 DB", ATTENTION, "task", True),
-    ("e8_filters", "DBT", "E8 DBT", ATTENTION, "task", True),
-    ("e8_filters", "BT", "E8 BT", ATTENTION, "task", True),
-    ("e8_filters", "T", "E8 T", ATTENTION, "task", True),
-    ("heldout", "random20", "Random-20", RANDOM, "task", True),
-    ("heldout", "random40", "Random-40", RANDOM, "task", True),
-    ("heldout", "randomNt", "Random-$N_t$", RANDOM, "task", True),
-    ("e7_attfilter", "random_drop_raw", "Random from E7 raw", RANDOM, "task", True),
+    ("heldout", "e1", "Yang terms", LEXICAL, "task", True),
+    ("heldout", "cc20", "Task+common-20", LEXICAL, "task", True),
+    ("heldout", "cc40", "Task+common-40", LEXICAL, "task", True),
+    ("heldout", "cc", "Task+common", LEXICAL, "task", True),
+    ("diff_heads", "dcc", CC_DIFF, LEXICAL, "task", True),
+    ("heldout", "fv20", "Causal-20", CAUSAL, "task", True),
+    ("heldout", "fv40", "Causal-40", CAUSAL, "task", True),
+    ("heldout", "fvNt", "Causal-matched", CAUSAL, "task", True),
+    ("e7_attfilter", "raw", "D$_{10}$", ATTENTION, "task", True),  # = E8's first-run D (same heads)
+    ("e7_attfilter", "raw_att", "DB$_{10}$", ATTENTION, "task", True),  # = E8's first-run DB
+    ("e8_filters", "D", "D", ATTENTION, "task", True),
+    ("e8_filters", "DB", "DB", ATTENTION, "task", True),
+    ("e8_filters", "DBT", "DBT", ATTENTION, "task", True),
+    ("e8_filters", "BT", "BT", ATTENTION, "task", True),
+    ("e8_filters", "T", "T", ATTENTION, "task", True),
+    ("heldout", "random20", "Random, Task+common-20 layers", RANDOM, "task", True),
+    ("heldout", "random40", "Random, Task+common-40 layers", RANDOM, "task", True),
+    ("heldout", "randomNt", "Random, Task+common layers", RANDOM, "task", True),
+    ("e7_attfilter", "random_drop_raw", "Random from D$_{10}$, DB$_{10}$ size", RANDOM, "task", True),
     ("e11_complete", "random_drop_DB", "Random from D, DB size", RANDOM, "task", True),
     ("e11_complete", "random_layer_DB", "Random, DB layers", RANDOM, "task", True),
     ("e11_complete", "random_drop_DBT", "Random from D, DBT size", RANDOM, "task", True),
@@ -83,26 +97,25 @@ SETS = [
     ("e11_complete", "random_layer_T", "Random, T layers", RANDOM, "task", True),
     ("fvres", "fv30", DAV, CAUSAL, "shared", True),
     ("fvres", "fv30_nogen", DAV_NOGEN, CAUSAL, "shared", True),
-    ("e11_complete", "fvuniv5", "FV-univ-5", CAUSAL, "shared", False),
-    ("e11_complete", "fvuniv10", "FV-univ-10", CAUSAL, "shared", False),
-    ("e11_complete", "fvuniv20", "FV-univ-20", CAUSAL, "shared", True),
-    ("e11_complete", "fvuniv30", "FV-univ-30", CAUSAL, "shared", False),
-    ("e11_complete", "fvuniv40", "FV-univ-40", CAUSAL, "shared", True),
-    ("e11_complete", "fvuniv20_nogen", "FV-univ-20, no generic heads", CAUSAL, "shared", True),
-    ("e11_complete", "e10dbt5", "E10 shared DBT-5", ATTENTION, "shared", False),
-    ("e11_complete", "e10dbt10", "E10 shared DBT-10", ATTENTION, "shared", False),
-    ("e11_complete", "e10dbt20", "E10 shared DBT-20", ATTENTION, "shared", False),
-    ("e10_shared", "rank_DBT", "E10 shared DBT", ATTENTION, "shared", True),
-    ("e11_complete", "e10dbt40", "E10 shared DBT-40", ATTENTION, "shared", False),
-    ("e10_shared", "mean_BT", "E10 shared BT", ATTENTION, "shared", True),
-    ("e10_shared", "rank_DB", "E10 shared DB", ATTENTION, "shared", True),
-    ("e11_complete", "randomuniv20", "Random shared, FV-univ-20 layers", RANDOM, "shared", True),
-    ("e11_complete", "randomdbt30", "Random shared, E10 DBT layers", RANDOM, "shared", True),
+    ("e11_complete", "fvuniv5", "Shared causal-5", CAUSAL, "shared", False),
+    ("e11_complete", "fvuniv10", "Shared causal-10", CAUSAL, "shared", False),
+    ("e11_complete", "fvuniv20", "Shared causal-20", CAUSAL, "shared", True),
+    ("e11_complete", "fvuniv30", "Shared causal-30", CAUSAL, "shared", False),
+    ("e11_complete", "fvuniv40", "Shared causal-40", CAUSAL, "shared", True),
+    ("e11_complete", "fvuniv20_nogen", "Shared causal-20 $-$ generic", CAUSAL, "shared", True),
+    ("e11_complete", "e10dbt5", "Shared DBT-5", ATTENTION, "shared", False),
+    ("e11_complete", "e10dbt10", "Shared DBT-10", ATTENTION, "shared", False),
+    ("e11_complete", "e10dbt20", "Shared DBT-20", ATTENTION, "shared", False),
+    ("e10_shared", "rank_DBT", "Shared DBT-30", ATTENTION, "shared", True),
+    ("e11_complete", "e10dbt40", "Shared DBT-40", ATTENTION, "shared", False),
+    ("e10_shared", "mean_BT", "Shared BT-30", ATTENTION, "shared", True),
+    ("e10_shared", "rank_DB", "Shared DB-30", ATTENTION, "shared", True),
+    ("e11_complete", "randomuniv20", "Random shared, causal-20 layers", RANDOM, "shared", True),
+    ("e11_complete", "randomdbt30", "Random shared, DBT-30 layers", RANDOM, "shared", True),
 ]
 SHARED_SIZES = {  # ranking -> [(N, label)]
-    "FV-univ": [(5, "FV-univ-5"), (10, "FV-univ-10"), (20, "FV-univ-20"), (30, "FV-univ-30"), (40, "FV-univ-40")],
-    "E10 shared DBT": [(5, "E10 shared DBT-5"), (10, "E10 shared DBT-10"), (20, "E10 shared DBT-20"),
-                       (30, "E10 shared DBT"), (40, "E10 shared DBT-40")],
+    "Shared causal": [(n, f"Shared causal-{n}") for n in (5, 10, 20, 30, 40)],
+    "Shared DBT": [(n, f"Shared DBT-{n}") for n in (5, 10, 20, 30, 40)],
 }
 ONE_FOLD = {("heldout", s) for s in ("fvuniv20", "fvuniv40", "ad20", "ad40", "ccclean")}
 RANDOM_BASE = {  # (folder, random set) -> (folder, set) whose cross-fitted alpha it takes
@@ -218,7 +231,7 @@ def all_combos(per: pd.DataFrame) -> pd.DataFrame:
 
 def tex_main(s: pd.DataFrame) -> None:
     heads = {"lexical": "Decoded words (lens)", "causal": "Causal score (Davidson et al.)",
-             "attention": "Attention and decoding filters", "random": "Random heads"}
+             "attention": "Filters: decoding (D), not BOS (B), task-word attention (T)", "random": "Random heads"}
     lines = []
     s = s[s.main]
     for scope, title in (("task", "One set per task"), ("shared", "One set for all 14 tasks")):
@@ -255,7 +268,7 @@ def tex_shared_sizes(s: pd.DataFrame) -> None:
             r = idx.loc[dict(labels)[n]]
             cells += [rt.num(r.check1_task), rt.num(r.check1_control), rt.num(r.check2_task)]
         lines.append(f"{n} & " + " & ".join(cells) + r" \\")
-    header = [r" & \multicolumn{3}{c}{FV-univ-$N$} & \multicolumn{3}{c}{E10 shared DBT-$N$} \\",
+    header = [r" & \multicolumn{3}{c}{Shared causal-$N$} & \multicolumn{3}{c}{Shared DBT-$N$} \\",
               r"\cmidrule(lr){2-4}\cmidrule(lr){5-7}",
               r"$N$ & check 1 & control & check 2 & check 1 & control & check 2 \\"]
     text = "\n".join([r"\begin{tabular}{@{}ccccccc@{}}", r"\toprule", *header, r"\midrule", *lines,
@@ -263,13 +276,21 @@ def tex_shared_sizes(s: pd.DataFrame) -> None:
     (rt.TABLES / "synth_shared_sizes.tex").write_text("% Generated by scripts/synthesis_report.py.\n" + text + "\n")
 
 
-PER_TASK_SETS = [  # (folder, key, short column label)
-    ("heldout", "e1", "E1"), ("heldout", "cc", "CC"), ("e7_attfilter", "raw_att", "E7 +B"),
-    ("heldout", "fv20", "FV-20"), ("heldout", "fvNt", "FV-$N_t$"),
-    ("e8_filters", "T", "T"), ("e8_filters", "DB", "DB"), ("e8_filters", "DBT", "DBT"),
-    ("fvres", "fv30", "FV-30"), ("fvres", "fv30_nogen", "FV$-$gen"), ("e11_complete", "fvuniv40", "FV-univ"),
-    ("e10_shared", "rank_DBT", "E10 DBT"),
+PER_TASK_SETS = [  # (folder, key, short column label; "\n" = line break)
+    ("heldout", "e1", "Yang\nterms"), ("heldout", "cc", "Task+\ncommon"),
+    ("heldout", "fv20", "Causal-20"), ("heldout", "fvNt", "Causal-\nmatched"),
+    ("e7_attfilter", "raw_att", "DB$_{10}$"), ("e8_filters", "DB", "DB"), ("e8_filters", "DBT", "DBT"),
+    ("e8_filters", "T", "T"),
+    ("fvres", "fv30", "Davidson\nFV-30"), ("fvres", "fv30_nogen", "FV-30\n$-$generic"),
+    ("e11_complete", "fvuniv40", "Shared\ncausal-40"), ("e10_shared", "rank_DBT", "Shared\nDBT-30"),
 ]
+
+
+def tex_head(label: str) -> str:
+    """A column label for a LaTeX table, its line breaks as a stacked cell."""
+    if "\n" not in label:
+        return label
+    return r"\begin{tabular}[b]{@{}c@{}}" + label.replace("\n", r"\\") + r"\end{tabular}"
 
 
 def per_task_grid(per: pd.DataFrame, family: str, source: str = "task") -> pd.DataFrame:
@@ -299,7 +320,7 @@ def tex_per_task(per: pd.DataFrame, base: pd.DataFrame, family: str, name: str) 
     lines.append(r"\midrule")
     lines.append("Mean & & " + rt.num(b.mean()) + " & " + " & ".join(rt.num(v) for v in g.mean()) + r" \\")
     lines.append(r"Heads (median) & & & " + " & ".join(f"{v:.0f}" for v in sizes.median()) + r" \\")
-    header = [r"Task & Items & Unp. & " + " & ".join(cols) + r" \\"]
+    header = [r"Task & Items & Unp. & " + " & ".join(map(tex_head, cols)) + r" \\"]
     text = "\n".join([r"\begin{tabular}{@{}lcc" + "c" * len(cols) + r"@{}}", r"\toprule", *header, r"\midrule",
                       *lines, r"\bottomrule", r"\end{tabular}"])
     (rt.TABLES / f"{name}.tex").write_text("% Generated by scripts/synthesis_report.py.\n" + text + "\n")
@@ -314,7 +335,7 @@ def tex_groups(per: pd.DataFrame) -> None:
         top = vals[[c for c in g.columns if "dagger" not in c]].max()
         rows.append(group + f" ({len(tasks)}) & " + " & ".join(
             (r"\textbf{" + rt.num(v) + "}") if v == top else rt.num(v) for v in vals) + r" \\")
-    header = [r"Task group & " + " & ".join(g.columns) + r" \\"]
+    header = [r"Task group & " + " & ".join(map(tex_head, g.columns)) + r" \\"]
     text = "\n".join([r"\begin{tabular}{@{}l" + "c" * len(g.columns) + r"@{}}", r"\toprule", *header, r"\midrule",
                       *rows, r"\bottomrule", r"\end{tabular}"])
     (rt.TABLES / "synth_groups.tex").write_text("% Generated by scripts/synthesis_report.py.\n" + text + "\n")
@@ -357,32 +378,32 @@ def preview(fig, name: str) -> None:
 
 
 PER_TASK_PLOT = {  # label -> (dx, dy, ha) of its direct label, None = no label
-    "E1: Yang term list": (0, -9, "center"), "CC-20": (-6, 0, "right"), "CC-40": (0, -9, "center"),
-    "CC-pooled": (0, -9, "center"), "E7 raw words + B": (6, -5, "left"), "E6 instruction diff.": (0, -9, "center"),
-    "FV-20": (-6, 0, "right"), "FV-40": (6, -1, "left"), "FV-$N_t$": (6, 2, "left"),
-    "E8 D": (0, 8, "center"), "E8 DB": (4, 7, "left"), "E8 DBT": (-4, 7, "right"), "E8 BT": (6, -4, "left"),
-    "E8 T": (6, 0, "left"), "Random-20": None, "Random-40": None, "Random-$N_t$": (6, 0, "left"),
-    "Random from E7 raw": None, "Random from D, DB size": (6, 0, "left"), "Random, DB layers": None,
+    "Yang terms": (0, -9, "center"), "Task+common-20": (7, 17, "center"), "Task+common-40": None,
+    "Task+common": (0, -9, "center"), "DB$_{10}$": (6, 0, "left"), CC_DIFF: (0, 12, "center"),
+    "Causal-20": (-6, 0, "right"), "Causal-40": None, "Causal-matched": (6, 2, "left"),
+    "D": (0, 8, "center"), "DB": (4, 7, "left"), "DBT": (-4, 7, "right"), "BT": (6, -4, "left"),
+    "T": (6, 0, "left"), "Random, Task+common-20 layers": None, "Random, Task+common-40 layers": None,
+    "Random, Task+common layers": (6, 0, "left"),
+    "Random from D$_{10}$, DB$_{10}$ size": None, "Random from D, DB size": (6, 0, "left"), "Random, DB layers": None,
     "Random from D, DBT size": None, "Random, DBT layers": None, "Random, T layers": (6, 0, "left")}
 SHARED_PLOT = {
-    DAV: (6, -2, "left"), DAV_NOGEN: (6, 2, "left"), "FV-univ-20, no generic heads": (-6, 3, "right"),
-    "E10 shared BT": None, "E10 shared DB": None,
-    "FV-univ-5": (0, 9, "center"), "E10 shared DBT-5": (0, -9, "center"),
-    "Random shared, FV-univ-20 layers": None, "Random shared, E10 DBT layers": (6, 0, "left")}
-NAMES = {"E1: Yang term list": "E1 (Yang list)", DAV: "Davidson FV-30 ($\\alpha$=1)",
-         DAV_NOGEN: "Davidson FV, no generic heads", "E7 raw words + B": "E7 words + B",
-         "FV-univ-5": "FV-univ-$N$", "E10 shared DBT-5": "E10 shared DBT-$N$",
-         "FV-univ-20, no generic heads": "FV-univ-20, no generic",
+    DAV: (6, -2, "left"), DAV_NOGEN: (6, 2, "left"), "Shared causal-20 $-$ generic": (-6, 3, "right"),
+    "Shared BT-30": None, "Shared DB-30": None,
+    "Shared causal-5": (0, 9, "center"), "Shared DBT-5": (0, -9, "center"),
+    "Random shared, causal-20 layers": None, "Random shared, DBT-30 layers": (6, 0, "left")}
+NAMES = {DAV: "Davidson FV-30 ($\\alpha$=1)", CC_DIFF: "Task+common,\ninstr. diff.",
+         "Causal-20": "Causal-$N$", "Task+common-20": "Task+common-$N$",
+         "Shared causal-5": "Shared causal-$N$", "Shared DBT-5": "Shared DBT-$N$",
          "Random from D, DB size": "random from D", "Random, T layers": "random, T layers",
-         "Random shared, E10 DBT layers": "random shared", "Random-$N_t$": "random"}
-LINES = {"task": [("CC-20", "CC-40", "CC-pooled"), ("FV-20", "FV-40", "FV-$N_t$"),
-                  ("Random-20", "Random-40", "Random-$N_t$")],
+         "Random shared, DBT-30 layers": "random shared", "Random, Task+common layers": "random"}
+LINES = {"task": [("Task+common-20", "Task+common-40", "Task+common"), ("Causal-20", "Causal-40", "Causal-matched"),
+                  ("Random, Task+common-20 layers", "Random, Task+common-40 layers", "Random, Task+common layers")],
          "shared": [tuple(lab for _, lab in labs) for labs in SHARED_SIZES.values()]}
 
 
 def point(ax, r, label, offset) -> None:
     col = COLOUR[r.approach]
-    ax.scatter(r.heads_median, r.check1_task, s=30, marker="s" if label == "E1: Yang term list" else "o",
+    ax.scatter(r.heads_median, r.check1_task, s=30, marker="s" if label == "Yang terms" else "o",
                facecolor=col if r.scope == "task" else rt.SURFACE, edgecolor=col if r.scope == "shared" else rt.SURFACE,
                lw=1.5 if r.scope == "shared" else 0.8, zorder=4)
     if offset:
@@ -394,8 +415,8 @@ def point(ax, r, label, offset) -> None:
 def figure_size(s: pd.DataFrame, combos: pd.DataFrame) -> None:
     """Check 1, mean accuracy over the 14 tasks against the number of heads (median over tasks),
     log x: (a) one set per task, (b) one set for all tasks. Colour = how heads are scored; filled =
-    per task, open = shared. Faint dots: the other E8 (a) and E10 (b) filter combinations; faint
-    line in (b): the per-task FV-N sets of (a), for reference."""
+    per task, open = shared. Faint dots: the other filter combinations, per task (a) and shared (b);
+    faint line in (b): the per-task Causal-N sets of (a), for reference."""
     fig, axes = plt.subplots(1, 2, figsize=(6.6, 3.1), sharey=True)
     idx = s.set_index("label")
     for ax, scope, plot, folder, title in (
@@ -405,9 +426,9 @@ def figure_size(s: pd.DataFrame, combos: pd.DataFrame) -> None:
         ax.scatter(g.heads, g.acc, s=8, facecolor=rt.AQUA if scope == "task" else "none", edgecolor=rt.AQUA,
                    alpha=0.25, lw=0.6, zorder=1)
         if scope == "shared":
-            r = idx.loc[["FV-20", "FV-40", "FV-$N_t$"]]
+            r = idx.loc[["Causal-20", "Causal-40", "Causal-matched"]]
             ax.plot(r.heads_median, r.check1_task, color=rt.ORANGE, lw=0.9, alpha=0.35, ls=(0, (3, 2)), zorder=1)
-            ax.annotate("per-task FV-$N$ (a)", (r.heads_median.iloc[-1], r.check1_task.iloc[-1]), xytext=(4, -8),
+            ax.annotate("per-task Causal-$N$ (a)", (r.heads_median.iloc[-1], r.check1_task.iloc[-1]), xytext=(4, -8),
                         textcoords="offset points", fontsize=6, color=rt.INK_2, alpha=0.8)
         for chain in LINES[scope]:
             r = idx.loc[list(chain)]
@@ -420,17 +441,17 @@ def figure_size(s: pd.DataFrame, combos: pd.DataFrame) -> None:
         ax.set_xticks(ticks)
         ax.set_xticklabels([str(t) for t in ticks])
         ax.minorticks_off()
-        ax.set_xlim((14, 340) if scope == "task" else (3.5, 150))
+        ax.set_xlim((10, 340) if scope == "task" else (3.5, 150))
         ax.set_ylim(-0.02, 0.7)
         ax.set_xlabel("heads in the set (median over tasks)")
         ax.set_title(title, loc="left")
         rt.style_axes(ax)
     axes[0].set_ylabel("check 1 accuracy, mean of 14 tasks")
     handles = [plt.Line2D([], [], ls="none", marker="o", ms=5, color=COLOUR[a]) for a in (LEXICAL, CAUSAL, ATTENTION, RANDOM)]
-    labels = ["decoded words (lens)", "causal score (FV)", "attention + decoding filters", "random heads"]
+    labels = ["decoded word lists (lens)", "causal score (Davidson et al.)", "filters D, B, T", "random heads"]
     handles += [plt.Line2D([], [], ls="none", marker="o", ms=5, mfc=rt.SURFACE, mec=rt.INK_2, mew=1.4),
                 plt.Line2D([], [], ls="none", marker="o", ms=3.5, color=rt.AQUA, alpha=0.3)]
-    labels += ["open: one set for all tasks", "faint: other E8 / E10 combinations"]
+    labels += ["open: one set for all tasks", "faint: other filter combinations"]
     fig.legend(handles, labels, loc="upper center", ncol=3, frameon=False, fontsize=6.8)
     fig.tight_layout(rect=(0, 0, 1, 0.86))
     fig.savefig(rt.FIGURES / "synth_size.pdf")
@@ -438,8 +459,8 @@ def figure_size(s: pd.DataFrame, combos: pd.DataFrame) -> None:
     plt.close(fig)
 
 
-CHECK_LABELS = {"FV-$N_t$": (4, -7, "left"), DAV_NOGEN: (2, 10, "right"),
-                "E8 D": (5, -3, "left"), "E1: Yang term list": (5, -3, "left"), "Random-$N_t$": (5, 0, "left"),
+CHECK_LABELS = {"Causal-matched": (4, -7, "left"), DAV_NOGEN: (2, 10, "right"),
+                "D": (5, -3, "left"), "Yang terms": (5, -3, "left"), "Random, Task+common layers": (5, 0, "left"),
                 "Random, T layers": (5, 0, "left")}
 
 
@@ -450,7 +471,7 @@ def figure_checks(s: pd.DataFrame) -> None:
     ax.plot([0, 0.7], [0, 0.7], color=rt.AXIS_LINE, lw=0.8, zorder=1)
     for x in r.itertuples():
         col = COLOUR[x.approach]
-        ax.scatter(x.check1_task, x.check2_task, s=22, marker="s" if x.label == "E1: Yang term list" else "o",
+        ax.scatter(x.check1_task, x.check2_task, s=22, marker="s" if x.label == "Yang terms" else "o",
                    facecolor=col if x.scope == "task" else rt.SURFACE, edgecolor=col if x.scope == "shared" else rt.SURFACE,
                    lw=1.3 if x.scope == "shared" else 0.6, zorder=3)
         if x.label in CHECK_LABELS:
@@ -489,7 +510,7 @@ def figure_tasks(per: pd.DataFrame) -> None:
     ax.set_xticks(range(data.shape[1]))
     names = [c.replace("$N_t$", "Nt").replace(chr(92) + " ", " ").replace("$-$", "\u2212") for c in g.columns]
     ax.set_xticklabels([f"{n}\n{sizes[c]:.0f}" for n, c in zip(names, g.columns)],
-                       fontsize=6.5)
+                       fontsize=6.1)
     ax.set_yticks(range(len(TASK_ORDER)))
     ax.set_yticklabels([rt.plot_name("simple", t) for t in TASK_ORDER], fontsize=6.8)
     ax.tick_params(length=0)
@@ -502,8 +523,8 @@ def figure_tasks(per: pd.DataFrame) -> None:
     n_task = sum(1 for _, k, _ in PER_TASK_SETS if k not in ("fv30", "fv30_nogen", "fvuniv40", "rank_DBT"))
     ax.axvline(n_task - 0.5, color=rt.SURFACE, lw=3)
     ax.xaxis.tick_top()
-    ax.text(n_task / 2 - 0.5, -2.0, "one set per task", ha="center", fontsize=7, color=rt.INK_2)
-    ax.text(n_task + 1.5, -2.0, "one set for all tasks", ha="center", fontsize=7, color=rt.INK_2)
+    ax.text(n_task / 2 - 0.5, -2.55, "one set per task", ha="center", fontsize=7, color=rt.INK_2)
+    ax.text(n_task + 1.5, -2.55, "one set for all tasks", ha="center", fontsize=7, color=rt.INK_2)
     fig.tight_layout()
     fig.savefig(rt.FIGURES / "synth_tasks.pdf")
     preview(fig, "synth_tasks")
