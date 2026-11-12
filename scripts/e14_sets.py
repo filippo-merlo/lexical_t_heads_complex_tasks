@@ -10,9 +10,10 @@ Two kinds of set, both later patched with the means of all 35 rule templates (``
   generic heads from the J-head generic score (``e12_generic_halves``) on the 35 templates, cut among
   the fold's Davidson top 30 by the two-group split (none if more than 15).
 
-Names (per task; shared ones start ``shared_``): DBT, causal and causal_nogen at N = 40 and 80, and
-random draws with as many heads per layer as the a35 DBT-80 set, outside it (``e11_sets.layer_matched``,
-seeds 0-4): ``random_a35_dbt80_<i>`` and ``random_shared_a35_dbt80_<i>``. Ties: lower layer, then head.
+Names (per task; shared ones start ``shared_``): DBT, causal and causal_nogen at N = 40, 80, 100 and 120
+(100 and 120 added 2026-11-12), and random draws with as many heads per layer as the a35 DBT-80 and DBT-120
+sets, outside them (``e11_sets.layer_matched``, seeds 0-4): ``random_a35_dbt{80,120}_<i>`` and
+``random_shared_a35_dbt{80,120}_<i>``. Ties: lower layer, then head.
 
 Writes ``results/e14_wordings/fold{f}/heads.json`` (``scripts/patch.py`` set-list layout),
 ``generic.json`` and ``sets.csv`` (sizes, layers, generic heads, overlap of each a35 set with its y5 twin).
@@ -38,8 +39,8 @@ from lth import DATA, RESULTS, simple  # noqa: E402
 
 OUT = RESULTS / "e14_wordings"
 HALF = {1: "A", 2: "B"}
-SIZES = (40, 80)
-RANDOM_N = 80
+SIZES = (40, 80, 100, 120)  # 100 and 120 added 2026-11-12
+RANDOM_NS = (80, 120)  # 120 added 2026-11-12
 TASKS = list(simple.TASKS)
 # E13 set names kept (per task; the shared ones with the prefix ``shared_``).
 CORE = [m for n in SIZES for m in (f"DBT{n}", f"causal{n}", f"causal{n}_nogen")]
@@ -111,9 +112,10 @@ def main() -> None:
                 per_task[t].append(["rule", f"a35_DBT{n}", top(dbt_order, n)])
                 per_task[t].append(["rule", f"a35_causal{n}", top(causal_order[t], n)])
                 per_task[t].append(["rule", f"a35_causal{n}_nogen", top(causal_order[t], n, generic)])
-            base = top(dbt_order, RANDOM_N)
-            per_task[t] += [["rule", f"random_a35_dbt{RANDOM_N}_{i}", layer_matched(base, i, (t, f"dbt{RANDOM_N}"))]
-                            for i in range(N_RANDOM)]
+            for rn in RANDOM_NS:
+                base = top(dbt_order, rn)
+                per_task[t] += [["rule", f"random_a35_dbt{rn}_{i}", layer_matched(base, i, (t, f"dbt{rn}"))]
+                                for i in range(N_RANDOM)]
         # a35 sets, shared (E10's rank rule for the filters, Davidson's mean score over tasks).
         within = {f: np.stack([ranks(SIGN[f] * score[t][f]) for t in TASKS]).mean(0) for f in "DBT"}
         combined = {f: ranks(-within[f]) for f in "DBT"}
@@ -123,8 +125,8 @@ def main() -> None:
             shared.append(["rule", f"a35_shared_DBT{n}", top(shared_dbt_order, n)])
             shared.append(["rule", f"a35_shared_causal{n}", top(shared_causal_order, n)])
             shared.append(["rule", f"a35_shared_causal{n}_nogen", top(shared_causal_order, n, generic)])
-        shared += [["rule", f"random_shared_a35_dbt{RANDOM_N}_{i}", layer_matched(top(shared_dbt_order, RANDOM_N), i)]
-                   for i in range(N_RANDOM)]
+        shared += [["rule", f"random_shared_a35_dbt{rn}_{i}", layer_matched(top(shared_dbt_order, rn), i)]
+                   for rn in RANDOM_NS for i in range(N_RANDOM)]
 
         # y5 sets: E13's, unchanged.
         e13 = json.loads((RESULTS / "e13_capped" / f"fold{fold}" / "heads.json").read_text())["simple"]

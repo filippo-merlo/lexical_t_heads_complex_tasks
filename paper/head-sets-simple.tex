@@ -221,7 +221,7 @@ Figure~\ref{fig:size} and Table~\ref{tab:main} give each rule's mean over the 14
 
 \begin{table}[tbp]
 \centering\small
-\input{tables/e13_main}
+\resizebox{\textwidth}{!}{\input{tables/e13_main}}
 \caption{Check 1, mean accuracy over the 14 tasks, held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds. Bold: the best non-random set in each column. Davidson FV: their summed vector, run on the shared ranking only. Yang terms holds fewer heads than $N$ on some tasks at 60 and 80 (58 and 72 heads on average over tasks and folds). Random: layer-matched to DBT, five draws, at DBT's $\alpha$. Unpatched accuracy: 0.01.}
 \label{tab:main}
 \end{table}
@@ -338,7 +338,7 @@ Wordings held out: sets chosen on some of the 35 templates and tested on the oth
 
 \begin{table}[H]
 \centering\small
-\input{tables/e13_control}
+\resizebox{\textwidth}{!}{\input{tables/e13_control}}
 \caption{Control: the sets of Table~\ref{tab:main} patched with the control task's mean (Sec.~\ref{sec:setup}), check~1, mean over the 14 tasks, at the task mean's cross-fitted $\alpha$. Random sets are not run with the control mean.}
 \label{tab:control}
 \end{table}
@@ -374,6 +374,13 @@ The 50 generic words removed from every list, from WikiText-103 (Sec.~\ref{sec:a
 \resizebox{\textwidth}{!}{\input{tables/e14_tasks}}
 \caption{Check 1 per task with the means of all 35 templates, held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds. Y5, A35: heads chosen on Yang's five or on all 35 templates. Causal\,$-$g.: Causal $-$ generic. Unp.: unpatched accuracy.}
 \label{tab:w-tasks}
+\end{table}
+
+\begin{table}[H]
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\resizebox{\textwidth}{!}{\input{tables/e14_tasks_large}}
+\caption{As Table~\ref{tab:w-tasks}, at 100 and 120 heads.}
+\label{tab:w-tasks-large}
 \end{table}
 
 \begin{table}[H]

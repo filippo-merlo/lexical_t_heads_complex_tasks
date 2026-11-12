@@ -7,7 +7,8 @@ residual stream after layer 11 at the last prompt token; the task mean over the 
 task's 1-shot prompts at its choosing-half items correct under inst1), with the sets of
 ``results/e13_capped/fold{f}/fv_sets.json``: the top N heads by Davidson et al.'s score averaged over
 the 14 tasks (``fvsum{N}``) and the same ranking without the generic heads (``fvsum{N}_nogen``),
-N = 20, 40, 60, 80. Check 1: the fold's patched items, zero-shot prompts. Alpha 1 and 2; replies of
+N = 20, 40, 60, 80 (100 and 120 added 2026-11-12; ``--sizes`` runs only the given N and adds them to the
+output name). Check 1: the fold's patched items, zero-shot prompts. Alpha 1 and 2; replies of
 at most 16 tokens, flexible score; every reply saved.
 
 Writes ``results/e13_capped/fold{f}/fv_residual.part-<tasks>.csv`` and ``answers/``.
@@ -21,6 +22,7 @@ import argparse
 import csv
 import gzip
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -38,6 +40,7 @@ def main() -> None:
     parser.add_argument("--gpu", type=int, required=True)
     parser.add_argument("--fold", type=int, choices=(1, 2), required=True)
     parser.add_argument("--tasks", nargs="+", default=list(simple.TASKS))
+    parser.add_argument("--sizes", nargs="+", type=int, default=None, help="only these N (default: all)")
     args = parser.parse_args()
     gpu.pin(args.gpu)
 
@@ -55,6 +58,8 @@ def main() -> None:
     assert json.loads((fv_dir / "heads.json").read_text())["layer"] == LAYER
     out = RESULTS / "e13_capped" / f"fold{args.fold}"
     sets = {k: [tuple(h) for h in v] for k, v in json.loads((out / "fv_sets.json").read_text())["sets"].items()}
+    if args.sizes:
+        sets = {k: v for k, v in sets.items() if int(re.match(r"fvsum(\d+)", k).group(1)) in args.sizes}
     half = "A" if args.fold == 1 else "B"
     split = json.loads((RESULTS / "heldout" / "split.json").read_text())
     (out / "answers").mkdir(parents=True, exist_ok=True)
@@ -101,7 +106,7 @@ def main() -> None:
                     rows.append(dict(family="simple", task=task, set=name, source=source, n_heads=len(heads),
                                      alpha=alpha, n_prompts=len(fixed), accuracy=hits / len(fixed)))
         print(f"{task} done", flush=True)
-    name = "fv_residual.part-" + "-".join(args.tasks)
+    name = "fv_residual.part-" + "-".join(args.tasks) + ("-n" + "-".join(map(str, args.sizes)) if args.sizes else "")
     with (out / f"{name}.csv").open("w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=["family", "task", "set", "source", "n_heads", "alpha", "n_prompts",
                                            "accuracy"])

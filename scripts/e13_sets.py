@@ -21,7 +21,8 @@ condition. Each set is the top N of a ranking; ties go to the lower layer, then 
 - **yang**: the share of the 500 prompts whose top 10 holds a token of Yang et al.'s term list
   (their expansion, ``lth.terms.expand_to_token_ids``); heads with a share of 0 are not used, so a
   set may hold fewer than N heads (its real size is recorded); ties: mean number of list tokens in
-  the top 10. Shared: the within-task ranks of the share averaged over tasks, among heads with a
+  the top 10; from N = 100 on, a per-task set with fewer than N heads is not built. Shared: the
+  within-task ranks of the share averaged over tasks, among heads with a
   share above 0 on some task.
 - **random**: as many heads in every layer as the DBT set of the same scope and N, drawn outside
   it (E4's rule, ``e11_sets.layer_matched``), seeds 0-4; shared: one draw for all tasks.
@@ -50,7 +51,7 @@ from lth import DATA, READOUTS, RESULTS, simple  # noqa: E402
 
 OUT = RESULTS / "e13_capped"
 HALF = {1: "A", 2: "B"}
-SIZES = (20, 40, 60, 80)
+SIZES = (20, 40, 60, 80, 100, 120)  # 100 and 120 added 2026-11-12
 COMBOS = ("D", "B", "T", "DB", "DT", "BT", "DBT")
 N_RANDOM = 5
 N_HEADS, N_ALL = 32, 1024
@@ -154,7 +155,10 @@ def main() -> None:
                 per_task[t].append(["rule", f"causal{n}_nogen", top(causal_order[t], n, generic)])
                 eligible = np.flatnonzero(yang_rate[t] > 0)
                 y = eligible[np.lexsort((eligible, -yang_count[t][eligible], -yang_rate[t][eligible]))]
-                per_task[t].append(["rule", f"yang{n}", heads_of(y[:n])])
+                # From N = 100 on (added later), a Yang set with fewer than N heads is not built (user,
+                # 2026-11-12: not enough heads, do not run it again); at 20-80 it is kept as before.
+                if n <= 80 or len(y) >= n:
+                    per_task[t].append(["rule", f"yang{n}", heads_of(y[:n])])
                 per_task[t] += [["rule", f"random_dbt{n}_{i}", layer_matched(dbt, i, (t, f"dbt{n}"))]
                                 for i in range(N_RANDOM)]
 
