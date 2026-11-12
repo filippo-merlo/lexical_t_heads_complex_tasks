@@ -1,0 +1,184 @@
+{
+ "antonym": {
+  "source": "e13",
+  "found": [
+   "opposite",
+   "question",
+   "word"
+  ],
+  "found_e13": [
+   "opposite",
+   "question",
+   "word"
+  ]
+ },
+ "synonym": {
+  "source": "e13",
+  "found": [
+   "synonym",
+   "word"
+  ],
+  "found_e13": [
+   "synonym",
+   "word"
+  ]
+ },
+ "singular-plural": {
+  "source": "e13",
+  "found": [
+   "plural"
+  ],
+  "found_e13": [
+   "plural"
+  ]
+ },
+ "present-past": {
+  "source": "e13",
+  "found": [
+   "english",
+   "verb",
+   "word"
+  ],
+  "found_e13": [
+   "english",
+   "verb",
+   "word"
+  ]
+ },
+ "country-capital": {
+  "source": "e13",
+  "found": [
+   "answer",
+   "capital",
+   "city",
+   "country"
+  ],
+  "found_e13": [
+   "answer",
+   "capital",
+   "city",
+   "country"
+  ]
+ },
+ "country-currency": {
+  "source": "e13",
+  "found": [
+   "answer",
+   "country",
+   "currency"
+  ],
+  "found_e13": [
+   "answer",
+   "country",
+   "currency"
+  ]
+ },
+ "landmark-country": {
+  "source": "new pass",
+  "found": [
+   "country",
+   "located"
+  ],
+  "found_e13": [
+   "country",
+   "located",
+   "where"
+  ]
+ },
+ "park-country": {
+  "source": "e13",
+  "found": [
+   "country",
+   "located",
+   "nation",
+   "park"
+  ],
+  "found_e13": [
+   "country",
+   "located",
+   "nation",
+   "park"
+  ]
+ },
+ "product-company": {
+  "source": "e13",
+  "found": [
+   "company",
+   "product"
+  ],
+  "found_e13": [
+   "company",
+   "product"
+  ]
+ },
+ "next_item": {
+  "source": "e13",
+  "found": [
+   "after",
+   "item",
+   "next",
+   "sequence"
+  ],
+  "found_e13": [
+   "after",
+   "item",
+   "next",
+   "sequence"
+  ]
+ },
+ "prev_item": {
+  "source": "new pass",
+  "found": [
+   "before",
+   "item",
+   "previous",
+   "sequence"
+  ],
+  "found_e13": [
+   "before",
+   "item",
+   "previous",
+   "return",
+   "sequence"
+  ]
+ },
+ "english-french": {
+  "source": "e13",
+  "found": [
+   "english",
+   "french",
+   "translation"
+  ],
+  "found_e13": [
+   "english",
+   "french",
+   "translation"
+  ]
+ },
+ "english-german": {
+  "source": "e13",
+  "found": [
+   "english",
+   "german",
+   "translation"
+  ],
+  "found_e13": [
+   "english",
+   "german",
+   "translation"
+  ]
+ },
+ "english-spanish": {
+  "source": "e13",
+  "found": [
+   "english",
+   "spanish",
+   "translation"
+  ],
+  "found_e13": [
+   "english",
+   "spanish",
+   "translation"
+  ]
+ }
+}
