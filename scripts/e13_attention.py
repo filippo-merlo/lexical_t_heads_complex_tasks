@@ -13,6 +13,7 @@ the words found per template).
 
     LTH_READINGS=data/readings/heldout/A CUDA_DEVICE_ORDER=PCI_BUS_ID \
         .venv/bin/python scripts/e13_attention.py --gpu 0 --fold 1
+    (E14: add ``--e14``; the 35 templates' prompts, E14's lists, ``attention14_<half>``.)
 """
 
 from __future__ import annotations
@@ -37,6 +38,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--gpu", type=int, required=True)
     parser.add_argument("--fold", type=int, choices=(1, 2), required=True)
+    parser.add_argument("--e14", action="store_true",
+                        help="E14: all 35 rule templates (Yang's five and the 30 new ones), the lists of "
+                             "results/e14_wordings, output data/readings/heldout/attention14_<half>")
     args = parser.parse_args()
     half = HALF[args.fold]
     gpu.pin(args.gpu)
@@ -48,8 +52,10 @@ def main() -> None:
     from lth.store import READINGS, load, readings_dir
 
     assert READINGS.resolve() == (DATA / "readings" / "heldout" / half).resolve(), f"set LTH_READINGS to the half's readings ({half})"
-    lists = json.loads((RESULTS / "e13_capped" / f"fold{args.fold}" / "word_lists.json").read_text())["tasks"]
-    out = DATA / "readings" / "heldout" / f"attention13_{half}"
+    exp, tag = ("e14_wordings", "14") if args.e14 else ("e13_capped", "13")
+    wordings = simple.ALL_RULE if args.e14 else simple.WORDINGS["rule"]
+    lists = json.loads((RESULTS / exp / f"fold{args.fold}" / "word_lists.json").read_text())["tasks"]
+    out = DATA / "readings" / "heldout" / f"attention{tag}_{half}"
     out.mkdir(parents=True, exist_ok=True)
 
     lm = LM.load()
@@ -72,7 +78,7 @@ def main() -> None:
                 data = simple.dataset(t)
                 pat = re.compile(r"\b(" + "|".join(map(re.escape, words)) + r")\b", re.I)
                 masses, n_kw, found = [], [], {}
-                for w in simple.WORDINGS["rule"]:
+                for w in wordings:
                     prompts = simple.prompts(t, w)[0]
                     seen = Counter()
                     for item in load(readings_dir("simple", t), w)["id_items"]:

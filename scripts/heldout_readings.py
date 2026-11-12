@@ -12,6 +12,7 @@ E5 (paper/proposal-llm-heads.tex) reads the same prompts with each head's top 20
 
     .venv/bin/python scripts/heldout_readings.py --gpu 2
     .venv/bin/python scripts/heldout_readings.py --gpu 0 --k 20 --out data/readings/heldout_top20 --tasks english-german
+    .venv/bin/python scripts/heldout_readings.py --gpu 0 --wordings e4b   # E14
 """
 
 from __future__ import annotations
@@ -36,6 +37,8 @@ def main() -> None:
     parser.add_argument("--tasks", nargs="+", default=list(simple.TASKS))
     parser.add_argument("--k", type=int, default=10, help="top tokens kept per head (E4: 10)")
     parser.add_argument("--out", type=Path, default=OUT, help="readings folder (E4: data/readings/heldout)")
+    parser.add_argument("--wordings", choices=("rule", "e4b"), default="rule",
+                        help="Yang et al.'s five rule templates (E4) or the 30 new ones (E14, scripts/e14_outputs.py)")
     args = parser.parse_args()
     gpu.pin(args.gpu)
     from lth.model import LM
@@ -43,7 +46,7 @@ def main() -> None:
     lm = LM.load()
     halves = json.loads((RESULTS / "heldout" / "split.json").read_text())
     for task in args.tasks:
-        for wording in simple.WORDINGS["rule"]:
+        for wording in simple.WORDINGS["rule"] if args.wordings == "rule" else simple.E4B_WORDINGS:
             records = load(readings_dir("simple", task), wording)["records"]
             prompts = {int(r["item"]): r["prompt"] for r in load_outputs(outputs_path("simple", task, wording))}
             for half in ("A", "B"):

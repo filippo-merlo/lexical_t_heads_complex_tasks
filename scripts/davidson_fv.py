@@ -56,6 +56,9 @@ from lth import RESULTS, gpu, simple  # noqa: E402
 
 TASKS = ("landmark-country", "product-company", "english-french", "present-past")
 INSTRUCTIONS = ("inst1", "inst2", "inst3", "inst4")
+# E14 (``--instructions all``): also the 10 new templates of the question-answer form
+# (``lth.simple.E4B_WORDINGS``, cells qa-named and qa-unnamed), which end in the same query.
+E4B_QA = tuple(w for w in simple.E4B_WORDINGS if w.startswith(simple.E4B_PREFIX + "qa-"))
 QUERY = " Q: {input}\nA:"
 N_MEAN = 25  # correct prompts per instruction for the mean (100 in all; Davidson et al.: 20 x 5)
 N_CIE = 5  # uninformative instructions per instruction and kind, each with its own query
@@ -70,7 +73,8 @@ SEED = 0
 
 
 def instruction(task: str, wording: str) -> str:
-    template = simple.instruction_dict()[task][wording[4:]]
+    template = (simple.e4b_templates()[task][wording] if wording.startswith(simple.E4B_PREFIX)
+                else simple.instruction_dict()[task][wording[4:]])
     assert template.endswith(QUERY), template
     return template[: -len(QUERY)]
 
@@ -167,21 +171,23 @@ def wiki_prefixes(lm, rng) -> dict[int, list[list[int]]]:
     return by_length
 
 
-def uninformative(lm, task: str, rng, wiki) -> dict:
-    """For each instruction of ``task``: its tokens, log-probability, and ``N_CIE``
-    uninformative instructions of each kind (token ids)."""
-    own = {instruction(task, w) for w in INSTRUCTIONS}
+def uninformative(lm, task: str, rng, wiki, wordings=INSTRUCTIONS, new_others: bool = False) -> dict:
+    """For each instruction of ``task`` in ``wordings``: its tokens, log-probability, and ``N_CIE``
+    uninformative instructions of each kind (token ids). ``new_others`` (E14): the other tasks'
+    new question-answer instructions join the pool of the ``other_task`` kind."""
+    own = {instruction(task, w) for w in wordings}
     others = []
     for other, templates in simple.instruction_dict().items():
         if other == task:
             continue
-        for template in templates.values():
+        for template in list(templates.values()) + ([simple.e4b_templates()[other][w] for w in E4B_QA]
+                                                     if new_others and other in simple.e4b_templates() else []):
             if template.endswith(QUERY) and template[: -len(QUERY)] not in own:
                 others.append(template[: -len(QUERY)])
     others = [lm.tokenizer(t, add_special_tokens=False).input_ids for t in dict.fromkeys(others)]
     wiki_all = [c for cs in wiki.values() for c in cs]
     out = {}
-    for wording in INSTRUCTIONS:
+    for wording in wordings:
         q = lm.tokenizer(instruction(task, wording)).input_ids  # with BOS
         target = token_logprobs(lm, [q])[0]
         logprob, length = sum(target), len(q) - 1
@@ -302,8 +308,12 @@ def main() -> None:
     parser.add_argument("--half", choices=("A", "B"), default=None,
                         help="E4 fold (results/heldout/split.json): means, CIE and control items from this "
                              "half, check-1 items from the other")
+    parser.add_argument("--instructions", choices=("yang", "all"), default="yang",
+                        help="E14: 'all' adds the 10 new question-answer templates per task to Yang et al.'s "
+                             "inst1-inst4 (an instruction with fewer than N_CIE + 1 correct prompts is left out)")
     args = parser.parse_args()
     tasks = list(simple.TASKS) if args.tasks == ["all"] else args.tasks
+    instructions = INSTRUCTIONS + (E4B_QA if args.instructions == "all" else ())
     halves = json.loads((RESULTS / "heldout" / "split.json").read_text()) if args.half else None
 
     def chosen(task, items):  # the items of the choosing half, in order
@@ -339,8 +349,11 @@ def main() -> None:
         fixed = tested(task, simple.correct_items(records(task, simple.FIXING)))[: simple.CAP]
         per = {}
         parts = []
-        for wording in INSTRUCTIONS:
+        for wording in instructions:
             free = [i for i in chosen(task, simple.correct_items(records(task, wording))) if i not in set(fixed)]
+            if len(free) <= N_CIE:
+                print(f"{task} {wording}: only {len(free)} correct prompts, left out", flush=True)
+                continue
             if len(free) >= N_MEAN + N_CIE:
                 per[wording] = dict(mean=free[:N_MEAN], cie=free[N_MEAN:N_MEAN + N_CIE])
             else:  # too few correct prompts (next_item): CIE first, the rest for the mean
@@ -351,7 +364,7 @@ def main() -> None:
         plan[task] = dict(fixed=fixed, items=per)
         means[task] = sum(m * n for m, n in parts) / sum(n for _, n in parts)  # over all mean prompts
         if not reuse:
-            corrupt[task] = uninformative(lm, task, rng, wiki)
+            corrupt[task] = uninformative(lm, task, rng, wiki, list(per), args.instructions == "all")
         print(f"{task}: mean ready", flush=True)
     (out / "items.json").write_text(json.dumps(plan, indent=1))
 
@@ -371,7 +384,7 @@ def main() -> None:
         data = simple.dataset(task)
         for kind in KINDS:
             rows, targets = [], []
-            for wording in INSTRUCTIONS:
+            for wording in plan[task]["items"]:
                 for c, item in zip(corrupt[task][wording][kind], plan[task]["items"][wording]["cie"]):
                     query = lm.tokenizer(QUERY.format(input=data[item]["input"]), add_special_tokens=False).input_ids
                     rows.append([lm.tokenizer.bos_token_id] + c + query)
@@ -409,7 +422,8 @@ def main() -> None:
         control = simple.CONTROL[task]
         items = chosen(control, simple.correct_items(records(control, simple.CONTROL_ITEMS["rule"])))
         ids = simple.token_ids(lm.tokenizer, simple.prompts(control, simple.CONTROL_PROMPTS)[0])
-        sources = [("task", "+".join(INSTRUCTIONS), means[task], len(INSTRUCTIONS) * N_MEAN),
+        kept = plan[task]["items"]
+        sources = [("task", "+".join(kept), means[task], sum(len(v["mean"]) for v in kept.values())),
                    ("control", simple.CONTROL_PROMPTS, simple_mean(lm, ids, items), len(items))]
         patched = [corrupt_ids[i] for i in fixed]
         first = [lm.first_token(answers[i]) for i in fixed]

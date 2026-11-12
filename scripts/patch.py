@@ -134,7 +134,7 @@ def simple_mean(lm, ids: list[list[int]], items: list[int]):
 
 def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple", sets=SETS,
                set_list=False, same_style=False, alphas=ALPHAS, half=None, wrong_control=False,
-               max_new_tokens=None, task_only=(), set_alphas=None, names=None):
+               max_new_tokens=None, task_only=(), set_alphas=None, names=None, mean_wordings="rule"):
     """Yang et al.'s ``fix_corrupted_prompts_vary_prompt_instances_average_new``, with each
     style's heads (``intervention_component_prompt_type``) patched with the means of each
     style (``prompt_type_fix``), one source wording at a time, and their control.
@@ -153,7 +153,11 @@ def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple", s
     other half); ``wrong_control``, the control mean in the second check too;
     ``max_new_tokens``, the reply length; ``task_only``, name prefixes of sets patched with the
     task means only; ``set_alphas``, {task: {set: alphas}} replacing ``alphas`` for those sets;
-    ``names``, names or wildcard patterns of the listed sets to patch (default: all)."""
+    ``names``, names or wildcard patterns of the listed sets to patch (default: all).
+
+    E14: ``mean_wordings="all"``, the rule style's means come from all 35 rule templates
+    (``simple.ALL_RULE``: Yang et al.'s five and the 30 new ones), each patched on its own; a
+    template with no correct prompt on the choosing half gives no mean."""
     from run_outputs import SIMPLE_MAX_TOKENS, simple_answer
 
     from lth.evaluation import flexible_simple
@@ -198,7 +202,8 @@ def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple", s
         # control: the control task's 1-shot prompts at all its items correct under the
         # mean style's wording 1.
         means = []  # (mean style, source, wording, items, mean)
-        for mean_style, wordings in simple.WORDINGS.items():
+        styles = dict(simple.WORDINGS, **({"rule": simple.ALL_RULE} if mean_wordings == "all" else {}))
+        for mean_style, wordings in styles.items():
             for wording in wordings:
                 items = sorted(set(chosen(task, simple.correct_items(records(task, wording)))) - set(fixed))[: simple.CAP]
                 ids = simple.token_ids(lm.tokenizer, simple.prompts(task, wording)[0])
@@ -376,6 +381,8 @@ def main() -> None:
     parser.add_argument("--set-alphas", type=Path, default=None,
                         help="E4: JSON {task: {set: [alphas]}} replacing --alphas for those sets")
     parser.add_argument("--names", nargs="+", default=None, help="E4: names or wildcard patterns of the listed sets to patch")
+    parser.add_argument("--mean-wordings", choices=("rule", "all"), default="rule",
+                        help="E14: 'all' takes the rule means from all 35 rule templates (Yang's five and the 30 new)")
     args = parser.parse_args()
     gpu.pin(args.gpu)
     sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -393,7 +400,8 @@ def main() -> None:
         run_simple(lm, heads_json, rows, log, args.tasks or simple.TASKS, args.family, tuple(args.sets),
                    args.set_list, args.same_style, args.alphas or ALPHAS, args.half, args.wrong_control,
                    args.max_new_tokens, tuple(args.task_only),
-                   json.loads(args.set_alphas.read_text()) if args.set_alphas else None, args.names)
+                   json.loads(args.set_alphas.read_text()) if args.set_alphas else None, args.names,
+                   args.mean_wordings)
     name = args.family + "".join("_" + level.replace("/", "-") for level in args.levels or [])
     if args.tasks:
         name += f".part-{args.part}"

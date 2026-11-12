@@ -24,11 +24,12 @@ computed as if run alone. Which wordings each step uses is theirs (``behavior_va
 
 from __future__ import annotations
 
+import functools
 import json
 
-from lth import YANG
+from lth import MATERIALS, YANG
 
-TASKS = ("antonym", "synonym", "singular-plural", "present-past", "country-capital",
+TASKS =("antonym", "synonym", "singular-plural", "present-past", "country-capital",
          "country-currency", "landmark-country", "park-country", "product-company",
          "next_item", "prev_item", "english-french", "english-german", "english-spanish")
 SHOTS = (1, 5, 10, 20, 30)
@@ -93,7 +94,29 @@ def prompts(task: str, wording: str) -> tuple[list[str], list[str]]:
         return prompts_, answers
     if wording.startswith("inst"):
         return create_instruction_prompts(data, instruction_dict()[task][wording[4:]])
+    if wording.startswith(E4B_PREFIX):
+        return create_instruction_prompts(data, e4b_templates()[task][wording])
     raise ValueError(wording)
+
+
+# ---- E4b / E14: the 30 new rule templates per task (proposal-simple Sec. 16) ---------------
+# Six cells of five: form (cloze, qa = an instruction then " Q: {input}\nA:", label) x whether
+# the template names the task. Ids ``e4b-<cell>-<k>``, k = 0..4, the same for every task.
+E4B_PREFIX = "e4b-"
+E4B_CELLS = ("cloze-named", "cloze-unnamed", "qa-named", "qa-unnamed", "label-named", "label-unnamed")
+E4B_WORDINGS = tuple(f"{E4B_PREFIX}{c}-{k}" for c in E4B_CELLS for k in range(5))
+ALL_RULE = WORDINGS["rule"] + E4B_WORDINGS  # E14: Yang's five and the 30 new ones
+
+
+@functools.cache
+def e4b_templates() -> dict[str, dict[str, str]]:
+    """task -> wording id -> template (``materials/simple/e4b_wordings.json``)."""
+    return json.loads((MATERIALS / "simple" / "e4b_wordings.json").read_text())["tasks"]
+
+
+def wording_group(wording: str) -> str:
+    """``yang`` for Yang's templates, else the E4b cell (``cloze-named``, ...)."""
+    return wording[len(E4B_PREFIX):].rsplit("-", 1)[0] if wording.startswith(E4B_PREFIX) else "yang"
 
 
 # ---- copied from Yang et al., src/Shared_utils/prompt_utils.py ---------------------------
