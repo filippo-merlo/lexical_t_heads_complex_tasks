@@ -172,8 +172,6 @@ B & it attends little to the first token (BOS) & attention \\
 T & it attends to the task words of the instruction & lens, attention \\
 DB, DT, BT, DBT & its ranks on the named filters are good on average & lens, attention \\
 DBT $-$ generic & as DBT, the generic heads removed & lens, attention \\
-O & its output is large for its layer (head output norm) & activations \\
-DO, OT, DOT & as DB, BT, DBT, with O in place of B & lens, attention \\
 \midrule
 \multicolumn{3}{@{}l}{\textit{Davidson et al.\ (reference)}} \\
 Causal & its causal score is high (patched head by head) & causal \\
@@ -200,8 +198,6 @@ Random & drawn at random, as many heads in each layer as DBT of the same scope a
 The lists hold the task's own vocabulary (\emph{opposite}, \emph{capital}, \emph{currency}, month names, language names, \zh{法国} on English--French) together with some word pieces (\emph{lingu}, \emph{oppos}) and numbers. App.~\ref{app:lists} gives every list.
 
 \paragraph{Filter scores.} Over the same prompts, at the last token: \textbf{D}, the share of prompts whose top 10 holds a word of the list; \textbf{B}, the mean attention on BOS (lower ranks higher); \textbf{T}, the mean attention on the task-word positions, the tokens of the instruction (outside the query) that match a word of the list. Three templates contain no list word (the cloze templates of antonym and present--past, and present--past's third instruction); there T is zero for every head, so those tasks are ranked on their other templates. Per task, each filter's ranks are averaged over the combination's filters. Shared sets average ranks over tasks: each filter's within-task ranks are averaged over the 14 tasks, ranked again, and averaged over the combination's filters. Because sets are ranked rather than thresholded, a combination set at large $N$ also holds heads that rank well overall but poorly on one filter.
-
-\paragraph{Output norm in place of BOS attention.} B stands in for whether a head is active at all: a head that puts most of its attention on BOS often writes little. \citet{sandovalsegura2025inactive} compare several scores for finding such inactive heads and find the layer-normalised Avg Head Output Norm the best (their Sec.~3, Eq.~1). We take only this score, not their thresholds or their test by zeroing heads, and use it as a fourth filter, \textbf{O}, ranked like the others. On the same prompts, a head's output before the output projection is measured by its $\ell_2$ norm at every token, averaged over the prompt's tokens and divided by the same quantity averaged over the 32 heads of its layer; O is this ratio averaged over the prompts, and higher ranks higher. O, DO, OT and DOT take the place of B, DB, BT and DBT, per task and shared, at the four sizes; everything else is as above. Their paper tests only the low end of the score, heads that can be removed; ranking every head by it, so that a head that writes much ranks high, is our extension. O and low BOS attention agree only in part (rank correlation about 0.5 on every task): O alone shares about 2 of 20 heads with B alone and favours later layers (median layer 22 to 25), while DOT shares about half its heads with DBT.
 
 \paragraph{Causal score and generic heads.} Davidson et al.'s score (Sec.~\ref{sec:repro}) on the choosing half: per task the task's score, shared the score averaged over tasks. \emph{Generic heads} are defined among the fold's 30 top heads by the shared score. Each head's J-head generic score (the cosine between the 14 tasks' counts of its top-10 tokens, averaged over task pairs; five templates) is sorted, and the 30 scores are cut into a high and a low group with the least spread within each. This marks 9 heads in fold~1 and 8 in fold~2 (L12H9, L13H31, L14H11, L14H29, L15H5, L15H7, L16H29, L31H14, and L28H10 in fold~1); if it marked more than 15, none would be removed. The generic heads are removed from the Causal and DBT rankings before the top $N$ is taken. They are not removed from every head: the same score marks over half of all heads, most of which decode task-independent tokens but are never chosen.
 
@@ -246,31 +242,6 @@ Figure~\ref{fig:size} and Table~\ref{tab:main} give each rule's mean over the 14
 \item \textbf{Decoding without T fails at larger sizes.} Per task, DB stays level from 20 to 40 heads and then falls, below D alone at 60 and 80. The loss is mostly on the fact tasks: with the larger DB sets the model describes the query (``Located in the heart of \dots'', ``A UNESCO World Heritage \dots'' on park--country) instead of naming the answer. DBT sets of the same size, which add attention to the task words, give the answer. Shared DB does not fall.
 \item \textbf{The filters and the causal score partly agree.} Per task, DBT shares about a third of its heads with Causal of the same size; shared, about half. The median layer of both is about 14; that of the sets that only decode (D, Yang terms) is 16 to 18.
 \end{itemize}
-
-\subsection{Output norm in place of BOS attention}\label{sec:ahon}
-
-Table~\ref{tab:ahon} sets each combination with O, the layer-normalised head output norm of \citet{sandovalsegura2025inactive}, beside the same combination with B.
-
-\begin{table}[tbp]
-\centering\small
-\input{tables/e16_main}
-\caption{Check 1, mean accuracy over the 14 tasks, each filter combination with B (low BOS attention; the numbers of Table~\ref{tab:main}) and with O (layer-normalised head output norm) in its place. Held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds. Bold: the higher of each pair. Control means of the O sets stay at or below 0.03.}
-\label{tab:ahon}
-\end{table}
-
-\begin{itemize}
-\item \textbf{O ranks heads worse than B.} With O in place of B, every combination is lower per task at every size, and shared at every size but one: DOT at 20 heads, where it is slightly above DBT. Per task, no O set beats its B counterpart on more than five of the 14 tasks.
-\item \textbf{A large output does not mark a task head.} O alone does nothing at any size, like random heads. Its top heads lie mostly in the last ten layers, with a few in layers 0 and 1 and the generic head L31H14. B alone, though the weakest of our filters, carries part of the task. Their paper tests only the low end of the score, heads that can be removed; the high end, which a ranking relies on, does not pick heads that carry the task.
-\item \textbf{O lowers the filters it is added to.} OT is below T alone at every size, and DO below D alone per task at every size (shared up to 40 heads); DOT is about level with DT. B, by contrast, raises T at every size and D in most cases. So O adds nothing that D and T do not already give, and its high-output late heads displace useful ones.
-\item \textbf{The loss is outside the fact tasks} (Table~\ref{tab:ahon-groups}). The fact tasks are carried with O about as well as with B from 40 heads on, and per task DO falls less than DB at large sizes. Morphology, translations and sequences lose most of what B gives them; only per-task DOT at 60 and 80 heads comes close to DBT, on translations and word relations.
-\end{itemize}
-
-\begin{table}[tbp]
-\centering\small
-\input{tables/e16_groups}
-\caption{Check 1, mean accuracy per task type (number of tasks in brackets), BT and DBT against OT and DOT; held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds. Bold: the higher of each pair.}
-\label{tab:ahon-groups}
-\end{table}
 
 \subsection{Generic heads and Davidson et al.'s summed vector}
 
@@ -348,7 +319,7 @@ One model and 14 simple tasks. Every run is single and greedy, without intervals
 \subsection*{Conditions still to run}
 Wordings held out: sets chosen on some of the 35 templates and tested on the others. The other rules (BT, T, Davidson FV) and the other sizes on all 35 templates.
 
-{\sloppy\paragraph{Code and data.} The capped comparison: word lists \texttt{scripts/e13\_lists.py}, attention pass \texttt{scripts/e13\_attention.py}, sets and generic heads \texttt{scripts/e13\_sets.py}, runs \texttt{scripts/e13\_patch.sh}, which also runs Davidson et al.'s summed vector with \texttt{scripts/e13\_fv\_residual.py}, and tables and figures \texttt{scripts/e13\_report.py}. Results in \texttt{results/e13\_capped}: per fold the word lists, sets, generic heads, accuracies and every patched reply; \texttt{summary.csv} and \texttt{per\_task.csv} at the cross-fitted $\alpha$. The causal scores are those of the first held-out runs (\texttt{results/heldout/fold\{1,2\}/fv}). Other wordings: templates \texttt{materials/simple/e4b\_wordings.json}, unpatched accuracy \texttt{scripts/e14\_outputs.py}, word lists \texttt{scripts/e14\_lists.py}, attention \texttt{scripts/e13\_attention.py --e14}, causal scores \texttt{scripts/davidson\_fv.py --instructions all}, sets \texttt{scripts/e14\_sets.py}, runs \texttt{scripts/e14\_run.sh}, tables \texttt{scripts/e14\_report.py}; results in \texttt{results/e14\_wordings} (report \texttt{paper/e14-all-wordings}). Output norm: norm pass \texttt{scripts/e16\_norms.py}, sets \texttt{scripts/e16\_sets.py}, runs \texttt{scripts/e16\_patch.sh}, tables \texttt{scripts/e16\_report.py}; results in \texttt{results/e16\_ahon}. The reproductions and earlier comparisons: App.~\ref{app:earlier}.\par}
+{\sloppy\paragraph{Code and data.} The capped comparison: word lists \texttt{scripts/e13\_lists.py}, attention pass \texttt{scripts/e13\_attention.py}, sets and generic heads \texttt{scripts/e13\_sets.py}, runs \texttt{scripts/e13\_patch.sh}, which also runs Davidson et al.'s summed vector with \texttt{scripts/e13\_fv\_residual.py}, and tables and figures \texttt{scripts/e13\_report.py}. Results in \texttt{results/e13\_capped}: per fold the word lists, sets, generic heads, accuracies and every patched reply; \texttt{summary.csv} and \texttt{per\_task.csv} at the cross-fitted $\alpha$. The causal scores are those of the first held-out runs (\texttt{results/heldout/fold\{1,2\}/fv}). Other wordings: templates \texttt{materials/simple/e4b\_wordings.json}, unpatched accuracy \texttt{scripts/e14\_outputs.py}, word lists \texttt{scripts/e14\_lists.py}, attention \texttt{scripts/e13\_attention.py --e14}, causal scores \texttt{scripts/davidson\_fv.py --instructions all}, sets \texttt{scripts/e14\_sets.py}, runs \texttt{scripts/e14\_run.sh}, tables \texttt{scripts/e14\_report.py}; results in \texttt{results/e14\_wordings} (report \texttt{paper/e14-all-wordings}). The reproductions and earlier comparisons: App.~\ref{app:earlier}.\par}
 
 \bibliographystyle{plainnat}
 \bibliography{references}
