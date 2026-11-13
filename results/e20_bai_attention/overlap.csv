@@ -1,0 +1,781 @@
+fold,scope,task,n,ranking,overlap
+1,per task,antonym,40,bos,12
+1,per task,antonym,40,task,12
+1,per task,antonym,40,query,5
+1,per task,antonym,40,self,5
+1,per task,antonym,40,template,2
+1,per task,antonym,40,punct,7
+1,per task,antonym,40,function,5
+1,per task,antonym,40,content,12
+1,per task,antonym,40,punct+function,8
+1,per task,antonym,40,instruction,11
+1,per task,antonym,40,E13 DBT,15
+1,per task,antonym,40,E13 BT,12
+1,per task,antonym,40,E13 T,12
+1,per task,antonym,80,bos,29
+1,per task,antonym,80,task,26
+1,per task,antonym,80,query,21
+1,per task,antonym,80,self,13
+1,per task,antonym,80,template,12
+1,per task,antonym,80,punct,13
+1,per task,antonym,80,function,18
+1,per task,antonym,80,content,25
+1,per task,antonym,80,punct+function,17
+1,per task,antonym,80,instruction,24
+1,per task,antonym,80,E13 DBT,35
+1,per task,antonym,80,E13 BT,27
+1,per task,antonym,80,E13 T,26
+1,per task,synonym,40,bos,10
+1,per task,synonym,40,task,16
+1,per task,synonym,40,query,3
+1,per task,synonym,40,self,4
+1,per task,synonym,40,template,6
+1,per task,synonym,40,punct,7
+1,per task,synonym,40,function,5
+1,per task,synonym,40,content,7
+1,per task,synonym,40,punct+function,8
+1,per task,synonym,40,instruction,17
+1,per task,synonym,40,E13 DBT,12
+1,per task,synonym,40,E13 BT,16
+1,per task,synonym,40,E13 T,16
+1,per task,synonym,80,bos,20
+1,per task,synonym,80,task,27
+1,per task,synonym,80,query,12
+1,per task,synonym,80,self,12
+1,per task,synonym,80,template,20
+1,per task,synonym,80,punct,19
+1,per task,synonym,80,function,15
+1,per task,synonym,80,content,19
+1,per task,synonym,80,punct+function,15
+1,per task,synonym,80,instruction,27
+1,per task,synonym,80,E13 DBT,28
+1,per task,synonym,80,E13 BT,29
+1,per task,synonym,80,E13 T,27
+1,per task,singular-plural,40,bos,14
+1,per task,singular-plural,40,task,17
+1,per task,singular-plural,40,query,2
+1,per task,singular-plural,40,self,8
+1,per task,singular-plural,40,template,2
+1,per task,singular-plural,40,punct,4
+1,per task,singular-plural,40,function,3
+1,per task,singular-plural,40,content,12
+1,per task,singular-plural,40,punct+function,4
+1,per task,singular-plural,40,instruction,17
+1,per task,singular-plural,40,E13 DBT,19
+1,per task,singular-plural,40,E13 BT,17
+1,per task,singular-plural,40,E13 T,17
+1,per task,singular-plural,80,bos,32
+1,per task,singular-plural,80,task,31
+1,per task,singular-plural,80,query,15
+1,per task,singular-plural,80,self,16
+1,per task,singular-plural,80,template,10
+1,per task,singular-plural,80,punct,16
+1,per task,singular-plural,80,function,10
+1,per task,singular-plural,80,content,27
+1,per task,singular-plural,80,punct+function,12
+1,per task,singular-plural,80,instruction,31
+1,per task,singular-plural,80,E13 DBT,36
+1,per task,singular-plural,80,E13 BT,35
+1,per task,singular-plural,80,E13 T,31
+1,per task,present-past,40,bos,9
+1,per task,present-past,40,task,8
+1,per task,present-past,40,query,4
+1,per task,present-past,40,self,3
+1,per task,present-past,40,template,0
+1,per task,present-past,40,punct,6
+1,per task,present-past,40,function,8
+1,per task,present-past,40,content,10
+1,per task,present-past,40,punct+function,9
+1,per task,present-past,40,instruction,12
+1,per task,present-past,40,E13 DBT,12
+1,per task,present-past,40,E13 BT,9
+1,per task,present-past,40,E13 T,8
+1,per task,present-past,80,bos,21
+1,per task,present-past,80,task,29
+1,per task,present-past,80,query,16
+1,per task,present-past,80,self,14
+1,per task,present-past,80,template,9
+1,per task,present-past,80,punct,19
+1,per task,present-past,80,function,22
+1,per task,present-past,80,content,23
+1,per task,present-past,80,punct+function,23
+1,per task,present-past,80,instruction,27
+1,per task,present-past,80,E13 DBT,29
+1,per task,present-past,80,E13 BT,28
+1,per task,present-past,80,E13 T,29
+1,per task,country-capital,40,bos,16
+1,per task,country-capital,40,task,15
+1,per task,country-capital,40,query,4
+1,per task,country-capital,40,self,5
+1,per task,country-capital,40,template,2
+1,per task,country-capital,40,punct,8
+1,per task,country-capital,40,function,11
+1,per task,country-capital,40,content,2
+1,per task,country-capital,40,punct+function,11
+1,per task,country-capital,40,instruction,13
+1,per task,country-capital,40,E13 DBT,17
+1,per task,country-capital,40,E13 BT,17
+1,per task,country-capital,40,E13 T,15
+1,per task,country-capital,80,bos,26
+1,per task,country-capital,80,task,25
+1,per task,country-capital,80,query,15
+1,per task,country-capital,80,self,13
+1,per task,country-capital,80,template,17
+1,per task,country-capital,80,punct,23
+1,per task,country-capital,80,function,21
+1,per task,country-capital,80,content,10
+1,per task,country-capital,80,punct+function,24
+1,per task,country-capital,80,instruction,28
+1,per task,country-capital,80,E13 DBT,30
+1,per task,country-capital,80,E13 BT,28
+1,per task,country-capital,80,E13 T,25
+1,per task,country-currency,40,bos,8
+1,per task,country-currency,40,task,9
+1,per task,country-currency,40,query,9
+1,per task,country-currency,40,self,6
+1,per task,country-currency,40,template,2
+1,per task,country-currency,40,punct,3
+1,per task,country-currency,40,function,3
+1,per task,country-currency,40,content,4
+1,per task,country-currency,40,punct+function,3
+1,per task,country-currency,40,instruction,7
+1,per task,country-currency,40,E13 DBT,9
+1,per task,country-currency,40,E13 BT,11
+1,per task,country-currency,40,E13 T,9
+1,per task,country-currency,80,bos,25
+1,per task,country-currency,80,task,22
+1,per task,country-currency,80,query,20
+1,per task,country-currency,80,self,16
+1,per task,country-currency,80,template,19
+1,per task,country-currency,80,punct,13
+1,per task,country-currency,80,function,12
+1,per task,country-currency,80,content,18
+1,per task,country-currency,80,punct+function,12
+1,per task,country-currency,80,instruction,22
+1,per task,country-currency,80,E13 DBT,23
+1,per task,country-currency,80,E13 BT,25
+1,per task,country-currency,80,E13 T,22
+1,per task,landmark-country,40,bos,10
+1,per task,landmark-country,40,task,11
+1,per task,landmark-country,40,query,3
+1,per task,landmark-country,40,self,4
+1,per task,landmark-country,40,template,6
+1,per task,landmark-country,40,punct,6
+1,per task,landmark-country,40,function,9
+1,per task,landmark-country,40,content,8
+1,per task,landmark-country,40,punct+function,9
+1,per task,landmark-country,40,instruction,12
+1,per task,landmark-country,40,E13 DBT,13
+1,per task,landmark-country,40,E13 BT,13
+1,per task,landmark-country,40,E13 T,11
+1,per task,landmark-country,80,bos,25
+1,per task,landmark-country,80,task,16
+1,per task,landmark-country,80,query,13
+1,per task,landmark-country,80,self,13
+1,per task,landmark-country,80,template,20
+1,per task,landmark-country,80,punct,19
+1,per task,landmark-country,80,function,29
+1,per task,landmark-country,80,content,25
+1,per task,landmark-country,80,punct+function,26
+1,per task,landmark-country,80,instruction,27
+1,per task,landmark-country,80,E13 DBT,28
+1,per task,landmark-country,80,E13 BT,27
+1,per task,landmark-country,80,E13 T,16
+1,per task,park-country,40,bos,13
+1,per task,park-country,40,task,12
+1,per task,park-country,40,query,1
+1,per task,park-country,40,self,5
+1,per task,park-country,40,template,4
+1,per task,park-country,40,punct,13
+1,per task,park-country,40,function,11
+1,per task,park-country,40,content,5
+1,per task,park-country,40,punct+function,13
+1,per task,park-country,40,instruction,15
+1,per task,park-country,40,E13 DBT,17
+1,per task,park-country,40,E13 BT,11
+1,per task,park-country,40,E13 T,12
+1,per task,park-country,80,bos,27
+1,per task,park-country,80,task,27
+1,per task,park-country,80,query,13
+1,per task,park-country,80,self,14
+1,per task,park-country,80,template,21
+1,per task,park-country,80,punct,30
+1,per task,park-country,80,function,26
+1,per task,park-country,80,content,16
+1,per task,park-country,80,punct+function,28
+1,per task,park-country,80,instruction,32
+1,per task,park-country,80,E13 DBT,39
+1,per task,park-country,80,E13 BT,33
+1,per task,park-country,80,E13 T,27
+1,per task,product-company,40,bos,13
+1,per task,product-company,40,task,18
+1,per task,product-company,40,query,4
+1,per task,product-company,40,self,8
+1,per task,product-company,40,template,2
+1,per task,product-company,40,punct,13
+1,per task,product-company,40,function,10
+1,per task,product-company,40,content,16
+1,per task,product-company,40,punct+function,13
+1,per task,product-company,40,instruction,17
+1,per task,product-company,40,E13 DBT,17
+1,per task,product-company,40,E13 BT,18
+1,per task,product-company,40,E13 T,18
+1,per task,product-company,80,bos,26
+1,per task,product-company,80,task,28
+1,per task,product-company,80,query,13
+1,per task,product-company,80,self,19
+1,per task,product-company,80,template,15
+1,per task,product-company,80,punct,26
+1,per task,product-company,80,function,17
+1,per task,product-company,80,content,26
+1,per task,product-company,80,punct+function,24
+1,per task,product-company,80,instruction,28
+1,per task,product-company,80,E13 DBT,29
+1,per task,product-company,80,E13 BT,29
+1,per task,product-company,80,E13 T,28
+1,per task,next_item,40,bos,9
+1,per task,next_item,40,task,8
+1,per task,next_item,40,query,5
+1,per task,next_item,40,self,3
+1,per task,next_item,40,template,5
+1,per task,next_item,40,punct,7
+1,per task,next_item,40,function,4
+1,per task,next_item,40,content,1
+1,per task,next_item,40,punct+function,6
+1,per task,next_item,40,instruction,9
+1,per task,next_item,40,E13 DBT,10
+1,per task,next_item,40,E13 BT,10
+1,per task,next_item,40,E13 T,8
+1,per task,next_item,80,bos,20
+1,per task,next_item,80,task,17
+1,per task,next_item,80,query,13
+1,per task,next_item,80,self,15
+1,per task,next_item,80,template,15
+1,per task,next_item,80,punct,12
+1,per task,next_item,80,function,15
+1,per task,next_item,80,content,7
+1,per task,next_item,80,punct+function,16
+1,per task,next_item,80,instruction,16
+1,per task,next_item,80,E13 DBT,17
+1,per task,next_item,80,E13 BT,21
+1,per task,next_item,80,E13 T,17
+1,per task,prev_item,40,bos,9
+1,per task,prev_item,40,task,10
+1,per task,prev_item,40,query,3
+1,per task,prev_item,40,self,4
+1,per task,prev_item,40,template,4
+1,per task,prev_item,40,punct,7
+1,per task,prev_item,40,function,7
+1,per task,prev_item,40,content,4
+1,per task,prev_item,40,punct+function,8
+1,per task,prev_item,40,instruction,9
+1,per task,prev_item,40,E13 DBT,11
+1,per task,prev_item,40,E13 BT,11
+1,per task,prev_item,40,E13 T,10
+1,per task,prev_item,80,bos,23
+1,per task,prev_item,80,task,23
+1,per task,prev_item,80,query,18
+1,per task,prev_item,80,self,11
+1,per task,prev_item,80,template,15
+1,per task,prev_item,80,punct,18
+1,per task,prev_item,80,function,14
+1,per task,prev_item,80,content,19
+1,per task,prev_item,80,punct+function,21
+1,per task,prev_item,80,instruction,22
+1,per task,prev_item,80,E13 DBT,22
+1,per task,prev_item,80,E13 BT,28
+1,per task,prev_item,80,E13 T,23
+1,per task,english-french,40,bos,7
+1,per task,english-french,40,task,7
+1,per task,english-french,40,query,6
+1,per task,english-french,40,self,5
+1,per task,english-french,40,template,4
+1,per task,english-french,40,punct,5
+1,per task,english-french,40,function,1
+1,per task,english-french,40,content,3
+1,per task,english-french,40,punct+function,5
+1,per task,english-french,40,instruction,6
+1,per task,english-french,40,E13 DBT,6
+1,per task,english-french,40,E13 BT,6
+1,per task,english-french,40,E13 T,7
+1,per task,english-french,80,bos,24
+1,per task,english-french,80,task,19
+1,per task,english-french,80,query,15
+1,per task,english-french,80,self,15
+1,per task,english-french,80,template,16
+1,per task,english-french,80,punct,9
+1,per task,english-french,80,function,8
+1,per task,english-french,80,content,15
+1,per task,english-french,80,punct+function,10
+1,per task,english-french,80,instruction,18
+1,per task,english-french,80,E13 DBT,18
+1,per task,english-french,80,E13 BT,21
+1,per task,english-french,80,E13 T,19
+1,per task,english-german,40,bos,5
+1,per task,english-german,40,task,6
+1,per task,english-german,40,query,1
+1,per task,english-german,40,self,1
+1,per task,english-german,40,template,3
+1,per task,english-german,40,punct,2
+1,per task,english-german,40,function,1
+1,per task,english-german,40,content,4
+1,per task,english-german,40,punct+function,1
+1,per task,english-german,40,instruction,5
+1,per task,english-german,40,E13 DBT,6
+1,per task,english-german,40,E13 BT,6
+1,per task,english-german,40,E13 T,6
+1,per task,english-german,80,bos,14
+1,per task,english-german,80,task,13
+1,per task,english-german,80,query,10
+1,per task,english-german,80,self,12
+1,per task,english-german,80,template,15
+1,per task,english-german,80,punct,10
+1,per task,english-german,80,function,9
+1,per task,english-german,80,content,11
+1,per task,english-german,80,punct+function,11
+1,per task,english-german,80,instruction,12
+1,per task,english-german,80,E13 DBT,13
+1,per task,english-german,80,E13 BT,14
+1,per task,english-german,80,E13 T,13
+1,per task,english-spanish,40,bos,7
+1,per task,english-spanish,40,task,8
+1,per task,english-spanish,40,query,7
+1,per task,english-spanish,40,self,6
+1,per task,english-spanish,40,template,1
+1,per task,english-spanish,40,punct,2
+1,per task,english-spanish,40,function,1
+1,per task,english-spanish,40,content,5
+1,per task,english-spanish,40,punct+function,2
+1,per task,english-spanish,40,instruction,7
+1,per task,english-spanish,40,E13 DBT,6
+1,per task,english-spanish,40,E13 BT,6
+1,per task,english-spanish,40,E13 T,8
+1,per task,english-spanish,80,bos,18
+1,per task,english-spanish,80,task,18
+1,per task,english-spanish,80,query,12
+1,per task,english-spanish,80,self,11
+1,per task,english-spanish,80,template,13
+1,per task,english-spanish,80,punct,8
+1,per task,english-spanish,80,function,13
+1,per task,english-spanish,80,content,10
+1,per task,english-spanish,80,punct+function,9
+1,per task,english-spanish,80,instruction,17
+1,per task,english-spanish,80,E13 DBT,18
+1,per task,english-spanish,80,E13 BT,20
+1,per task,english-spanish,80,E13 T,18
+1,shared,all,40,bos,14
+1,shared,all,80,bos,32
+1,shared,all,40,task,17
+1,shared,all,80,task,34
+1,shared,all,40,query,6
+1,shared,all,80,query,15
+1,shared,all,40,self,6
+1,shared,all,80,self,15
+1,shared,all,40,template,3
+1,shared,all,80,template,17
+1,shared,all,40,punct,8
+1,shared,all,80,punct,18
+1,shared,all,40,function,10
+1,shared,all,80,function,24
+1,shared,all,40,content,14
+1,shared,all,80,content,32
+1,shared,all,40,punct+function,9
+1,shared,all,80,punct+function,23
+1,shared,all,40,instruction,14
+1,shared,all,80,instruction,33
+1,shared,all,40,E13 DBT,19
+1,shared,all,40,E13 BT,15
+1,shared,all,40,E13 T,17
+1,shared,all,80,E13 DBT,39
+1,shared,all,80,E13 BT,33
+1,shared,all,80,E13 T,34
+2,per task,antonym,40,bos,14
+2,per task,antonym,40,task,14
+2,per task,antonym,40,query,5
+2,per task,antonym,40,self,6
+2,per task,antonym,40,template,1
+2,per task,antonym,40,punct,8
+2,per task,antonym,40,function,6
+2,per task,antonym,40,content,13
+2,per task,antonym,40,punct+function,9
+2,per task,antonym,40,instruction,13
+2,per task,antonym,40,E13 DBT,18
+2,per task,antonym,40,E13 BT,14
+2,per task,antonym,40,E13 T,14
+2,per task,antonym,80,bos,21
+2,per task,antonym,80,task,25
+2,per task,antonym,80,query,15
+2,per task,antonym,80,self,13
+2,per task,antonym,80,template,12
+2,per task,antonym,80,punct,14
+2,per task,antonym,80,function,22
+2,per task,antonym,80,content,27
+2,per task,antonym,80,punct+function,19
+2,per task,antonym,80,instruction,27
+2,per task,antonym,80,E13 DBT,35
+2,per task,antonym,80,E13 BT,25
+2,per task,antonym,80,E13 T,25
+2,per task,synonym,40,bos,9
+2,per task,synonym,40,task,15
+2,per task,synonym,40,query,5
+2,per task,synonym,40,self,6
+2,per task,synonym,40,template,3
+2,per task,synonym,40,punct,7
+2,per task,synonym,40,function,8
+2,per task,synonym,40,content,9
+2,per task,synonym,40,punct+function,8
+2,per task,synonym,40,instruction,18
+2,per task,synonym,40,E13 DBT,12
+2,per task,synonym,40,E13 BT,18
+2,per task,synonym,40,E13 T,15
+2,per task,synonym,80,bos,25
+2,per task,synonym,80,task,25
+2,per task,synonym,80,query,15
+2,per task,synonym,80,self,16
+2,per task,synonym,80,template,19
+2,per task,synonym,80,punct,22
+2,per task,synonym,80,function,15
+2,per task,synonym,80,content,20
+2,per task,synonym,80,punct+function,19
+2,per task,synonym,80,instruction,27
+2,per task,synonym,80,E13 DBT,23
+2,per task,synonym,80,E13 BT,27
+2,per task,synonym,80,E13 T,25
+2,per task,singular-plural,40,bos,12
+2,per task,singular-plural,40,task,14
+2,per task,singular-plural,40,query,2
+2,per task,singular-plural,40,self,6
+2,per task,singular-plural,40,template,2
+2,per task,singular-plural,40,punct,5
+2,per task,singular-plural,40,function,4
+2,per task,singular-plural,40,content,11
+2,per task,singular-plural,40,punct+function,6
+2,per task,singular-plural,40,instruction,15
+2,per task,singular-plural,40,E13 DBT,16
+2,per task,singular-plural,40,E13 BT,15
+2,per task,singular-plural,40,E13 T,14
+2,per task,singular-plural,80,bos,26
+2,per task,singular-plural,80,task,26
+2,per task,singular-plural,80,query,14
+2,per task,singular-plural,80,self,18
+2,per task,singular-plural,80,template,11
+2,per task,singular-plural,80,punct,17
+2,per task,singular-plural,80,function,12
+2,per task,singular-plural,80,content,20
+2,per task,singular-plural,80,punct+function,13
+2,per task,singular-plural,80,instruction,26
+2,per task,singular-plural,80,E13 DBT,27
+2,per task,singular-plural,80,E13 BT,27
+2,per task,singular-plural,80,E13 T,26
+2,per task,present-past,40,bos,13
+2,per task,present-past,40,task,4
+2,per task,present-past,40,query,5
+2,per task,present-past,40,self,5
+2,per task,present-past,40,template,1
+2,per task,present-past,40,punct,3
+2,per task,present-past,40,function,8
+2,per task,present-past,40,content,13
+2,per task,present-past,40,punct+function,7
+2,per task,present-past,40,instruction,12
+2,per task,present-past,40,E13 DBT,11
+2,per task,present-past,40,E13 BT,10
+2,per task,present-past,40,E13 T,4
+2,per task,present-past,80,bos,29
+2,per task,present-past,80,task,18
+2,per task,present-past,80,query,21
+2,per task,present-past,80,self,17
+2,per task,present-past,80,template,9
+2,per task,present-past,80,punct,12
+2,per task,present-past,80,function,25
+2,per task,present-past,80,content,30
+2,per task,present-past,80,punct+function,23
+2,per task,present-past,80,instruction,30
+2,per task,present-past,80,E13 DBT,27
+2,per task,present-past,80,E13 BT,28
+2,per task,present-past,80,E13 T,18
+2,per task,country-capital,40,bos,15
+2,per task,country-capital,40,task,16
+2,per task,country-capital,40,query,4
+2,per task,country-capital,40,self,6
+2,per task,country-capital,40,template,2
+2,per task,country-capital,40,punct,7
+2,per task,country-capital,40,function,11
+2,per task,country-capital,40,content,1
+2,per task,country-capital,40,punct+function,12
+2,per task,country-capital,40,instruction,12
+2,per task,country-capital,40,E13 DBT,19
+2,per task,country-capital,40,E13 BT,16
+2,per task,country-capital,40,E13 T,16
+2,per task,country-capital,80,bos,26
+2,per task,country-capital,80,task,30
+2,per task,country-capital,80,query,16
+2,per task,country-capital,80,self,12
+2,per task,country-capital,80,template,15
+2,per task,country-capital,80,punct,23
+2,per task,country-capital,80,function,24
+2,per task,country-capital,80,content,9
+2,per task,country-capital,80,punct+function,26
+2,per task,country-capital,80,instruction,30
+2,per task,country-capital,80,E13 DBT,35
+2,per task,country-capital,80,E13 BT,32
+2,per task,country-capital,80,E13 T,30
+2,per task,country-currency,40,bos,8
+2,per task,country-currency,40,task,4
+2,per task,country-currency,40,query,4
+2,per task,country-currency,40,self,7
+2,per task,country-currency,40,template,4
+2,per task,country-currency,40,punct,2
+2,per task,country-currency,40,function,4
+2,per task,country-currency,40,content,4
+2,per task,country-currency,40,punct+function,2
+2,per task,country-currency,40,instruction,4
+2,per task,country-currency,40,E13 DBT,4
+2,per task,country-currency,40,E13 BT,5
+2,per task,country-currency,40,E13 T,4
+2,per task,country-currency,80,bos,15
+2,per task,country-currency,80,task,10
+2,per task,country-currency,80,query,13
+2,per task,country-currency,80,self,17
+2,per task,country-currency,80,template,10
+2,per task,country-currency,80,punct,11
+2,per task,country-currency,80,function,13
+2,per task,country-currency,80,content,8
+2,per task,country-currency,80,punct+function,12
+2,per task,country-currency,80,instruction,10
+2,per task,country-currency,80,E13 DBT,16
+2,per task,country-currency,80,E13 BT,10
+2,per task,country-currency,80,E13 T,10
+2,per task,landmark-country,40,bos,14
+2,per task,landmark-country,40,task,14
+2,per task,landmark-country,40,query,4
+2,per task,landmark-country,40,self,4
+2,per task,landmark-country,40,template,7
+2,per task,landmark-country,40,punct,5
+2,per task,landmark-country,40,function,13
+2,per task,landmark-country,40,content,11
+2,per task,landmark-country,40,punct+function,10
+2,per task,landmark-country,40,instruction,14
+2,per task,landmark-country,40,E13 DBT,18
+2,per task,landmark-country,40,E13 BT,13
+2,per task,landmark-country,40,E13 T,14
+2,per task,landmark-country,80,bos,34
+2,per task,landmark-country,80,task,19
+2,per task,landmark-country,80,query,19
+2,per task,landmark-country,80,self,14
+2,per task,landmark-country,80,template,22
+2,per task,landmark-country,80,punct,19
+2,per task,landmark-country,80,function,26
+2,per task,landmark-country,80,content,21
+2,per task,landmark-country,80,punct+function,26
+2,per task,landmark-country,80,instruction,27
+2,per task,landmark-country,80,E13 DBT,36
+2,per task,landmark-country,80,E13 BT,29
+2,per task,landmark-country,80,E13 T,19
+2,per task,park-country,40,bos,17
+2,per task,park-country,40,task,12
+2,per task,park-country,40,query,3
+2,per task,park-country,40,self,3
+2,per task,park-country,40,template,5
+2,per task,park-country,40,punct,14
+2,per task,park-country,40,function,12
+2,per task,park-country,40,content,5
+2,per task,park-country,40,punct+function,15
+2,per task,park-country,40,instruction,17
+2,per task,park-country,40,E13 DBT,17
+2,per task,park-country,40,E13 BT,10
+2,per task,park-country,40,E13 T,12
+2,per task,park-country,80,bos,25
+2,per task,park-country,80,task,24
+2,per task,park-country,80,query,13
+2,per task,park-country,80,self,14
+2,per task,park-country,80,template,20
+2,per task,park-country,80,punct,28
+2,per task,park-country,80,function,24
+2,per task,park-country,80,content,15
+2,per task,park-country,80,punct+function,27
+2,per task,park-country,80,instruction,30
+2,per task,park-country,80,E13 DBT,36
+2,per task,park-country,80,E13 BT,30
+2,per task,park-country,80,E13 T,24
+2,per task,product-company,40,bos,11
+2,per task,product-company,40,task,16
+2,per task,product-company,40,query,2
+2,per task,product-company,40,self,7
+2,per task,product-company,40,template,2
+2,per task,product-company,40,punct,13
+2,per task,product-company,40,function,9
+2,per task,product-company,40,content,14
+2,per task,product-company,40,punct+function,13
+2,per task,product-company,40,instruction,17
+2,per task,product-company,40,E13 DBT,20
+2,per task,product-company,40,E13 BT,18
+2,per task,product-company,40,E13 T,16
+2,per task,product-company,80,bos,29
+2,per task,product-company,80,task,29
+2,per task,product-company,80,query,21
+2,per task,product-company,80,self,11
+2,per task,product-company,80,template,15
+2,per task,product-company,80,punct,28
+2,per task,product-company,80,function,23
+2,per task,product-company,80,content,29
+2,per task,product-company,80,punct+function,24
+2,per task,product-company,80,instruction,28
+2,per task,product-company,80,E13 DBT,35
+2,per task,product-company,80,E13 BT,32
+2,per task,product-company,80,E13 T,29
+2,per task,next_item,40,bos,7
+2,per task,next_item,40,task,6
+2,per task,next_item,40,query,8
+2,per task,next_item,40,self,3
+2,per task,next_item,40,template,4
+2,per task,next_item,40,punct,6
+2,per task,next_item,40,function,4
+2,per task,next_item,40,content,2
+2,per task,next_item,40,punct+function,5
+2,per task,next_item,40,instruction,7
+2,per task,next_item,40,E13 DBT,13
+2,per task,next_item,40,E13 BT,9
+2,per task,next_item,40,E13 T,6
+2,per task,next_item,80,bos,23
+2,per task,next_item,80,task,19
+2,per task,next_item,80,query,20
+2,per task,next_item,80,self,13
+2,per task,next_item,80,template,14
+2,per task,next_item,80,punct,17
+2,per task,next_item,80,function,15
+2,per task,next_item,80,content,7
+2,per task,next_item,80,punct+function,15
+2,per task,next_item,80,instruction,19
+2,per task,next_item,80,E13 DBT,32
+2,per task,next_item,80,E13 BT,27
+2,per task,next_item,80,E13 T,19
+2,per task,prev_item,40,bos,6
+2,per task,prev_item,40,task,8
+2,per task,prev_item,40,query,4
+2,per task,prev_item,40,self,5
+2,per task,prev_item,40,template,1
+2,per task,prev_item,40,punct,4
+2,per task,prev_item,40,function,6
+2,per task,prev_item,40,content,4
+2,per task,prev_item,40,punct+function,6
+2,per task,prev_item,40,instruction,8
+2,per task,prev_item,40,E13 DBT,8
+2,per task,prev_item,40,E13 BT,9
+2,per task,prev_item,40,E13 T,8
+2,per task,prev_item,80,bos,18
+2,per task,prev_item,80,task,20
+2,per task,prev_item,80,query,14
+2,per task,prev_item,80,self,10
+2,per task,prev_item,80,template,14
+2,per task,prev_item,80,punct,12
+2,per task,prev_item,80,function,16
+2,per task,prev_item,80,content,15
+2,per task,prev_item,80,punct+function,14
+2,per task,prev_item,80,instruction,16
+2,per task,prev_item,80,E13 DBT,16
+2,per task,prev_item,80,E13 BT,19
+2,per task,prev_item,80,E13 T,20
+2,per task,english-french,40,bos,8
+2,per task,english-french,40,task,8
+2,per task,english-french,40,query,3
+2,per task,english-french,40,self,11
+2,per task,english-french,40,template,2
+2,per task,english-french,40,punct,5
+2,per task,english-french,40,function,4
+2,per task,english-french,40,content,5
+2,per task,english-french,40,punct+function,5
+2,per task,english-french,40,instruction,10
+2,per task,english-french,40,E13 DBT,9
+2,per task,english-french,40,E13 BT,10
+2,per task,english-french,40,E13 T,8
+2,per task,english-french,80,bos,23
+2,per task,english-french,80,task,19
+2,per task,english-french,80,query,11
+2,per task,english-french,80,self,20
+2,per task,english-french,80,template,12
+2,per task,english-french,80,punct,11
+2,per task,english-french,80,function,9
+2,per task,english-french,80,content,11
+2,per task,english-french,80,punct+function,10
+2,per task,english-french,80,instruction,18
+2,per task,english-french,80,E13 DBT,18
+2,per task,english-french,80,E13 BT,19
+2,per task,english-french,80,E13 T,19
+2,per task,english-german,40,bos,5
+2,per task,english-german,40,task,3
+2,per task,english-german,40,query,5
+2,per task,english-german,40,self,3
+2,per task,english-german,40,template,7
+2,per task,english-german,40,punct,3
+2,per task,english-german,40,function,3
+2,per task,english-german,40,content,2
+2,per task,english-german,40,punct+function,3
+2,per task,english-german,40,instruction,5
+2,per task,english-german,40,E13 DBT,3
+2,per task,english-german,40,E13 BT,6
+2,per task,english-german,40,E13 T,3
+2,per task,english-german,80,bos,18
+2,per task,english-german,80,task,13
+2,per task,english-german,80,query,10
+2,per task,english-german,80,self,7
+2,per task,english-german,80,template,22
+2,per task,english-german,80,punct,13
+2,per task,english-german,80,function,13
+2,per task,english-german,80,content,9
+2,per task,english-german,80,punct+function,13
+2,per task,english-german,80,instruction,12
+2,per task,english-german,80,E13 DBT,13
+2,per task,english-german,80,E13 BT,15
+2,per task,english-german,80,E13 T,13
+2,per task,english-spanish,40,bos,6
+2,per task,english-spanish,40,task,7
+2,per task,english-spanish,40,query,3
+2,per task,english-spanish,40,self,4
+2,per task,english-spanish,40,template,3
+2,per task,english-spanish,40,punct,5
+2,per task,english-spanish,40,function,3
+2,per task,english-spanish,40,content,4
+2,per task,english-spanish,40,punct+function,5
+2,per task,english-spanish,40,instruction,7
+2,per task,english-spanish,40,E13 DBT,5
+2,per task,english-spanish,40,E13 BT,11
+2,per task,english-spanish,40,E13 T,7
+2,per task,english-spanish,80,bos,19
+2,per task,english-spanish,80,task,17
+2,per task,english-spanish,80,query,11
+2,per task,english-spanish,80,self,16
+2,per task,english-spanish,80,template,14
+2,per task,english-spanish,80,punct,14
+2,per task,english-spanish,80,function,8
+2,per task,english-spanish,80,content,13
+2,per task,english-spanish,80,punct+function,13
+2,per task,english-spanish,80,instruction,14
+2,per task,english-spanish,80,E13 DBT,16
+2,per task,english-spanish,80,E13 BT,18
+2,per task,english-spanish,80,E13 T,17
+2,shared,all,40,bos,15
+2,shared,all,80,bos,32
+2,shared,all,40,task,17
+2,shared,all,80,task,34
+2,shared,all,40,query,6
+2,shared,all,80,query,16
+2,shared,all,40,self,5
+2,shared,all,80,self,14
+2,shared,all,40,template,3
+2,shared,all,80,template,17
+2,shared,all,40,punct,7
+2,shared,all,80,punct,21
+2,shared,all,40,function,10
+2,shared,all,80,function,24
+2,shared,all,40,content,16
+2,shared,all,80,content,33
+2,shared,all,40,punct+function,9
+2,shared,all,80,punct+function,24
+2,shared,all,40,instruction,15
+2,shared,all,80,instruction,33
+2,shared,all,40,E13 DBT,20
+2,shared,all,40,E13 BT,16
+2,shared,all,40,E13 T,17
+2,shared,all,80,E13 DBT,41
+2,shared,all,80,E13 BT,34
+2,shared,all,80,E13 T,33
