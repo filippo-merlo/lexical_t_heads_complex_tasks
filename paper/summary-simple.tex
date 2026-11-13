@@ -170,9 +170,77 @@ Sets & New scores from E20's attention split (choosing half, 5 templates, last t
 \midrule
 \multicolumn{4}{@{}p{\linewidth}@{}}{\textbf{E22 --- every combination of the seven filters} (J-head, rule style; E13's protocol exactly: E4 split, check 1, $\alpha\in\{1,2\}$ cross-fitted, control mean; 40 heads, per task and shared. Results \texttt{results/e22\_all\_combos/report.md}.)} \\
 Sets & All combinations of D, B, T (E13) and L, M, S, N (E21) except those holding N with T or S (N already counts their positions): 79, of which 19 were run in E13/E21 (rebuilt exactly) and 60 are new. Ranks combined as E13/E21. & Per task: \textbf{DBMN 0.63} (folds 0.63/0.63), DBTM 0.61, DBTMS 0.61, DBS 0.60, DBT 0.55; DBMN is above every earlier per-task set at any size (E13 Causal-120 0.61). Shared: \textbf{DBTLS 0.60} (folds 0.60/0.61), DBTLM and DBTM 0.59, DBMN 0.58: above Causal $-$ gen.\ at 40 (0.55), below it at 80--100 (0.69--0.71). Mean gain of adding a letter (with vs without, every pair; per task/shared): D $+$0.24/$+$0.32 (nearly every pair), N $+$0.13/$+$0.05, T $+$0.10/$+$0.08, B $+$0.06/$+$0.09, S $+$0.06/$-$0.02, M $-$0.05/$-$0.03, L $-$0.09/$-$0.05. M helps only next to DB with T or N (DBN$\to$DBMN $+$0.09, DBT$\to$DBTM $+$0.06) and hurts next to S (DBS$\to$DBMS $-$0.09). Without D, every combination holding L or M is $\leq$0.35 per task. Sequences stay low in the ten best ($\leq$0.19 per task). Controls $\leq$0.05. The best are the best of 79 on the test items, so their accuracy is optimistic by selection. & \yes \\
+\midrule
+\multicolumn{4}{@{}p{\linewidth}@{}}{\textbf{E23 --- the 15 best E22 combinations per scope at every size} (J-head, rule style; E13's protocol exactly; 20, 60, 80, 100, 120 heads, 40 from E13/E21/E22; E13's own filter combinations not rerun. Results \texttt{results/e23\_best\_sizes/report.md}; Table~\ref{tab:e23}.)} \\
+Sets & The 15 best of E22's 79 at 40 heads, per task and shared chosen separately, built by E22's rule at every E13 size (the rebuilt 40-head sets equal the patched ones); 145 new sets per task and fold. Chosen on the same test items, so their curves are optimistic. & Per task: \textbf{DBTMS 0.68} at 100--120 heads, DBTLS 0.67 at 80, DBMN 0.66 at 60; 11 of the 15 peak above the earlier per-task best (Causal-120 0.61; T-120 0.58, BT-60 0.58). Combinations with S keep rising to 100--120 heads; DBT falls after 60 (0.41 at 120); DBMN and DBTM peak at 60. At 20 heads DBS and DBTS lead (0.47). By task type the filter sets win translations (0.53--0.69 vs Causal 0.26) and most word relations; Causal keeps sequences (0.43 vs $\leq$0.25) and morphology (0.89 vs $\leq$0.84). Shared: Causal $-$ gen.\ still reaches the top (0.71 at 100); DBTMS ties it at 120 (0.71), DBMN 0.70 at 80; the new sets lead only at 40 (0.60 vs 0.55) and tie at 20 and 60. Shared curves are noisier (fold gap up to 0.14, DBM). Causal $-$ gen.\ keeps sequences (0.41 vs $\leq$0.27). Controls $\leq$0.05. & \yes \\
 \bottomrule
 \end{xltabular}
 \normalsize
+
+\begin{table}[ht]
+\centering\small\setlength{\tabcolsep}{4pt}
+\caption{E23: check-1 accuracy (held-out items, $\alpha$ cross-fitted, mean of folds and of 14 tasks) of the 15 best E22 combinations per scope at every size, ranked by their 40-head accuracy, and E13's reference sets. Rows 1--15 were chosen on these items at 40 heads. Bold: best of the column at two decimals. D decodes task words; B low BOS; T task words; L last token; M template markers; S punctuation + stopwords; N whole instruction. Random: layer-matched to DBT.}\label{tab:e23}
+\begin{minipage}[t]{0.49\textwidth}\centering
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+\multicolumn{7}{@{}l}{\textbf{per-task sets (one set per task)}} \\
+Set & 20 & 40 & 60 & 80 & 100 & 120 \\
+\midrule
+1. DBMN & 0.36 & \textbf{0.63} & \textbf{0.66} & 0.65 & 0.65 & 0.62 \\
+2. DBTM & 0.41 & 0.61 & \textbf{0.66} & 0.64 & 0.60 & 0.57 \\
+3. DBTMS & 0.36 & 0.61 & 0.65 & \textbf{0.67} & \textbf{0.68} & \textbf{0.68} \\
+4. DBS & \textbf{0.47} & 0.60 & 0.62 & 0.63 & 0.62 & 0.58 \\
+5. DBTS & \textbf{0.47} & 0.57 & 0.62 & 0.61 & 0.64 & 0.64 \\
+6. DBTLS & 0.43 & 0.56 & \textbf{0.66} & \textbf{0.67} & 0.66 & 0.65 \\
+7. BTS & 0.43 & 0.56 & 0.60 & 0.62 & 0.62 & 0.64 \\
+8. DS & 0.41 & 0.56 & 0.61 & 0.62 & 0.63 & 0.64 \\
+9. DTS & 0.43 & 0.55 & 0.59 & 0.61 & 0.62 & 0.64 \\
+10. DBT & 0.43 & 0.55 & 0.57 & 0.55 & 0.48 & 0.41 \\
+11. DBLN & 0.46 & 0.55 & 0.62 & 0.59 & 0.59 & 0.55 \\
+12. DBLS & 0.41 & 0.55 & 0.62 & 0.63 & 0.65 & 0.63 \\
+13. BN & 0.42 & 0.55 & 0.57 & 0.59 & 0.58 & 0.59 \\
+14. DBN & 0.43 & 0.54 & 0.58 & 0.58 & 0.55 & 0.53 \\
+15. DLN & 0.41 & 0.54 & 0.58 & 0.57 & 0.58 & 0.58 \\
+\midrule
+Causal & 0.33 & 0.41 & 0.46 & 0.53 & 0.56 & 0.61 \\
+Causal $-$ generic & 0.38 & 0.46 & 0.50 & 0.51 & 0.53 & 0.58 \\
+T (E13) & 0.31 & 0.45 & 0.48 & 0.54 & 0.57 & 0.58 \\
+BT (E13) & 0.42 & 0.54 & 0.58 & 0.55 & 0.57 & 0.57 \\
+random & 0.01 & 0.01 & 0.01 & 0.01 & 0.01 & 0.01 \\
+\bottomrule
+\end{tabular}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\textwidth}\centering
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+\multicolumn{7}{@{}l}{\textbf{shared sets (one set for all 14 tasks)}} \\
+Set & 20 & 40 & 60 & 80 & 100 & 120 \\
+\midrule
+1. DBTLS & 0.41 & \textbf{0.60} & 0.62 & 0.67 & 0.64 & 0.65 \\
+2. DBTLM & \textbf{0.50} & 0.59 & 0.64 & 0.60 & 0.58 & 0.62 \\
+3. DBTM & 0.37 & 0.58 & 0.62 & 0.66 & 0.69 & 0.68 \\
+4. DBTLMS & 0.37 & 0.58 & \textbf{0.65} & 0.65 & 0.67 & 0.68 \\
+5. DBMN & 0.35 & 0.58 & 0.64 & \textbf{0.70} & 0.68 & 0.68 \\
+6. DBMS & 0.34 & 0.58 & 0.62 & 0.60 & 0.67 & 0.69 \\
+7. DBLMN & 0.43 & 0.57 & 0.58 & 0.65 & 0.62 & 0.62 \\
+8. DLMN & 0.40 & 0.55 & 0.57 & 0.53 & 0.59 & 0.65 \\
+9. DBLMS & 0.40 & 0.54 & 0.57 & 0.67 & 0.61 & 0.61 \\
+10. DBTL & \textbf{0.50} & 0.54 & 0.58 & 0.55 & 0.60 & 0.58 \\
+11. DBTMS & 0.33 & 0.53 & \textbf{0.65} & 0.66 & 0.67 & \textbf{0.71} \\
+12. DBM & 0.25 & 0.53 & 0.62 & 0.63 & 0.60 & 0.63 \\
+13. DBLN & 0.45 & 0.52 & 0.63 & 0.55 & 0.64 & 0.60 \\
+14. DTLMS & 0.35 & 0.52 & \textbf{0.65} & 0.61 & 0.68 & 0.66 \\
+15. DTLM & 0.42 & 0.51 & 0.57 & 0.57 & 0.56 & 0.63 \\
+\midrule
+Causal & 0.40 & 0.53 & 0.60 & 0.65 & 0.68 & 0.69 \\
+Causal $-$ generic & \textbf{0.50} & 0.55 & 0.64 & 0.69 & \textbf{0.71} & 0.69 \\
+T (E13) & 0.23 & 0.43 & 0.44 & 0.50 & 0.56 & 0.53 \\
+BT (E13) & 0.35 & 0.45 & 0.60 & 0.56 & 0.58 & 0.63 \\
+random & 0.01 & 0.01 & 0.00 & 0.01 & 0.01 & 0.01 \\
+\bottomrule
+\end{tabular}
+\end{minipage}
+\end{table}
 
 % ---------------------------------------------------------------------
 \section{Hypotheses}
@@ -240,7 +308,8 @@ H7--H9 (E4b) & Not run. & -- \\
 \item \yes{} \textbf{At equal size, attention filters match or beat Davidson et al.'s per-task ranking, and a shared causal ranking without generic heads is best overall} (E13): per task, DBT/BT reach their level at 40 heads (0.55), above Causal up to 60 heads and level at 80; shared, Causal $-$ generic is best at every size (0.69 at 80). T is the strongest single filter and D adds nothing to BT; without T, larger DB sets make the model describe the query instead of answering. Generic heads hurt the causal sets and the summed FV but not DBT.
 \item \no{} \textbf{Causal heads do not read Bai et al.'s template or punctuation tokens more than the filter sets} (E20): what sets them apart is more attention to BOS and to the last token; the template-and-answer-slot profile belongs to the generic heads. Attention to the whole instruction, with no word list, picks heads that agree with the causal ranking as well as T does.
 \item \yes{} \textbf{Attention to the instruction's punctuation and stopwords, with decoding and low BOS, is the best per-task rule at 40 heads} (E21): DBS 0.60 vs DBT 0.55; attention to the whole instruction alone (N, no word list) beats T (0.53 vs 0.45) and carries present--past. Heads that look at the last token or the Q/A markers carry nothing alone; shared, DB with those (DBM, DBL) comes close to Causal $-$ generic, but nothing beats it.
-\item \yes{} \textbf{Decoding and low BOS, plus attention to the instruction and the Q/A markers, is the best 40-head rule} (E22, all 79 combinations): per task DBMN 0.63, above every earlier per-task set at any size; shared DBTLS 0.60, above Causal $-$ generic at 40 heads (0.55) but not at 80--100 (0.69--0.71). Decoding the task's words (D) is the letter that matters most; last-token and marker attention carry nothing alone and help only next to D and B. Picked as the best of 79 on the test items; E23 runs the 15 best per scope at every size.
+\item \yes{} \textbf{Decoding and low BOS, plus attention to the instruction and the Q/A markers, is the best 40-head rule} (E22, all 79 combinations): per task DBMN 0.63, above every earlier per-task set at any size; shared DBTLS 0.60, above Causal $-$ generic at 40 heads (0.55) but not at 80--100 (0.69--0.71). Decoding the task's words (D) is the letter that matters most; last-token and marker attention carry nothing alone and help only next to D and B. Picked as the best of 79 on the test items; E23 runs the 15 best per scope at every size (next).
+\item \yes{} \textbf{Filter sets with stopword or marker attention are the best per-task sets at every size from 40 heads} (E23): DBTMS 0.68 at 100 heads, DBTLS 0.67 at 80, against Causal's 0.61 at 120; they win translations and most word relations, causal heads still carry sequences and morphology better. Shared, they match Causal $-$ generic at its best (0.71) but beat it only at 40 heads. The 15 were picked on the test items at 40 heads, and the best size is read off the same items.
 \item \textbf{E3 caveats:} words, list sizes and designs chosen after seeing check 1 on the same items; best of 4 $\alpha$; one run. E4 tests them on held-out items; new wordings (E4b) not yet run.
 \item \textbf{Read the replies, not only accuracy:} 19--33\% of patched replies on several tasks contain the answer after a prefix the flexible score rejects, and part of a ``loss'' can be a format change (landmark--country under J-head). \texttt{notebooks/patching\_outputs.py} shows them.
 \end{itemize}
