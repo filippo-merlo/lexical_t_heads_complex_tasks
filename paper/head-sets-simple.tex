@@ -3,7 +3,7 @@
 %  (Yang et al.; Davidson et al.) as reproduced, the common design, every
 %  head-selection rule compared at the same set sizes, and which ones work best.
 %  Capped comparison: scripts/e13_report.py (paper/tables/e13_*, paper/figures/e13_*).
-%  Earlier comparisons (App. C): scripts/synthesis_report.py (synth_*).
+%  Reproduction readouts table: scripts/synthesis_report.py (synth_readouts).
 %  Compile with Tectonic (XeTeX): non-Latin words in the word lists need fontspec.
 % =====================================================================
 \documentclass[10pt,a4paper]{article}
@@ -52,7 +52,7 @@ A task representation in a language model can be located by finding the attentio
 
 Our goal is the smallest set of heads that represents the tasks well, ideally one set for all of them. We reproduce both methods on the same model and tasks, add a second readout, Head-JLens \citep{merlo2026headjlens}, and build selection rules from what the reproductions show: word lists taken from what heads decode, and filters on where a head attends. We then compare all rules on equal terms. Every rule ranks the heads and gives its top 20, 40, 60 and 80, once per task and once for all tasks, with heads chosen on one half of each task's items and tested on the other.
 
-The paper is organised linearly: the common setup (Sec.~\ref{sec:setup}), the two reproductions (Sec.~\ref{sec:repro}), the design of the comparison (Sec.~\ref{sec:approaches}), its results, including the leading rules on 30 other wordings of each task (Sec.~\ref{sec:results}), and the approaches we would keep (Sec.~\ref{sec:best}). The earlier comparisons at uneven set sizes, which led to this design, are in App.~\ref{app:earlier}. Only simple tasks are covered.
+The paper is organised linearly: the common setup (Sec.~\ref{sec:setup}), the two reproductions (Sec.~\ref{sec:repro}), the design of the comparison (Sec.~\ref{sec:approaches}), its results, including the leading rules on 30 other wordings of each task (Sec.~\ref{sec:results}), and the approaches we would keep (Sec.~\ref{sec:best}). Only simple tasks are covered.
 
 % =====================================================================
 \section{Setup}\label{sec:setup}
@@ -68,7 +68,7 @@ where $J_{l,h}$ is the head's part of the Jacobian map of Head-JLens, fitted on 
 \paragraph{Testing a head set.} A set is tested by mean patching \citep[Sec.~2.3.2]{yang2026shared}. For each head in the set, its mean output over prompts that state the task (correctly answered, items not patched) is computed; at the last token of the patched prompt, the head's output is replaced by $\alpha$ times this mean, and the model generates its answer. There are two checks.
 \begin{itemize}
 \item \textbf{Check 1} patches the zero-shot prompts of items the model answers correctly with one shot. The prompt says nothing about the task, so unpatched accuracy is near zero, and a gain means the set brings the task in. This is the main test, and the only one in the capped comparison.
-\item \textbf{Check 2} patches the 1-shot prompts of items the model answers \emph{wrongly} with one shot (unpatched accuracy 0). The prompt already shows the task and the answer format, so this check measures repair rather than transfer. It was run in the reproductions and the earlier comparisons, where it did not separate good sets from mediocre ones (App.~\ref{app:earlier}).
+\item \textbf{Check 2} patches the 1-shot prompts of items the model answers \emph{wrongly} with one shot (unpatched accuracy 0). The prompt already shows the task and the answer format, so this check measures repair rather than transfer. It is used in the reproductions only.
 \end{itemize}
 A \emph{control} patches the same heads with the mean of a related task (the pairing of \citealp{yang2026shared}, e.g.\ antonym with synonym); a set carries its task when its own mean helps and the control mean does not.
 
@@ -99,7 +99,7 @@ Head criterion & top 10, $\geq$1 term, $\geq$10\% of the first 100 correct promp
 Answer score & first generated token & generated reply, flexible score \\
 Means, $\alpha$, control & one mean per wording; 15 values $-10$..$10$; their control map & same \\
 Check 1 & zero-shot prompts (paper, App.~G.1); no released script & as the paper \\
-Check 2 & 1-shot prompts answered wrongly (the released script) & same; control added in the held-out runs \\
+Check 2 & 1-shot prompts answered wrongly (the released script) & same \\
 \bottomrule
 \end{tabularx}
 \caption{Lexical task heads: their setting and ours.}
@@ -108,7 +108,7 @@ Check 2 & 1-shot prompts answered wrongly (the released script) & same; control 
 
 \paragraph{What reproduces.} Logit-head finds lexical task heads for every task. In check~1, which their paper describes, patching gains only on the fact tasks (and a few more with example means) and does nothing on antonym, synonym, present--past, prev-item and the translations. The per-task curves of their App.~G.1 (Figs.~57 and~62), which the text attributes to zero-shot patching, reproduce only in check~2, the setting of their one released causal script. There every task gains, with the largest and smallest gains on the same tasks as in their figures. Their headline finding thus holds in check~2. In check~1, the lexical heads carry only some task types.
 
-\paragraph{J-head against Logit-head} (Table~\ref{tab:readouts}). J-head finds 50 to 70\% more heads; most of the added ones lie in layers 10--19, where Logit-head finds few. The heads only J-head finds have causal effects of their own, and J-head sets are at least as effective as Logit-head sets in both checks and both styles. The lead is not a matter of set size: comparing the top 5, 10 and 20 heads of each readout, most of J-head's leads remain and none reverses, while none of Logit-head's few leads remains. J-head does not contain the Logit-head set (only on 4 of 28 task--style pairs). From here on all sets are read with J-head. The one later comparison of readouts, LLM-scored heads on two tasks, mostly points the same way.
+\paragraph{J-head against Logit-head} (Table~\ref{tab:readouts}). J-head finds 50 to 70\% more heads; most of the added ones lie in layers 10--19, where Logit-head finds few. The heads only J-head finds have causal effects of their own, and J-head sets are at least as effective as Logit-head sets in both checks and both styles. The lead is not a matter of set size: comparing the top 5, 10 and 20 heads of each readout, most of J-head's leads remain and none reverses, while none of Logit-head's few leads remains. J-head does not contain the Logit-head set (only on 4 of 28 task--style pairs). From here on all sets are read with J-head.
 
 \begin{table}[H]
 \centering\small
@@ -134,7 +134,7 @@ Instructions & 5 best of LLM-generated instructions, short and long & Yang et al
 Mean outputs & 100 correct prompts, 20 per instruction & 100 correct prompts, 25 per template \\
 Uninformative text & 3 kinds, matched in length and log-probability; 25 prompts per kind; 2 instruction lengths & same 3 kinds and matching; 20 prompts per kind; one length; smaller WikiText pool \\
 Head score & first-token probability gain, averaged over kinds and tasks & same \\
-Heads in the FV & top 20, one set for all tasks & top 20 (4-task run); top 30 over the 14 tasks (later runs); 20 to 80 in the comparison \\
+Heads in the FV & top 20, one set for all tasks & top 30 over the 14 tasks; 20 to 80 in the comparison \\
 Intervention & sum of means added after layer 11, weight 1 & same at the last prompt token; also other weights \\
 Evaluation & zero-shot, no instruction, their prompt & check 1 (`` x:''), flexible score, control mean \\
 \bottomrule
@@ -143,7 +143,7 @@ Evaluation & zero-shot, no instruction, their prompt & check 1 (`` x:''), flexib
 \label{tab:fid-dav}
 \end{table}
 
-\paragraph{What we find.} The FV works at their weight: accuracy peaks at $\alpha=1$ and vanishes from $\alpha=3$ on. With the 30 heads chosen over the 14 tasks, it beats our best lexical-head set on 11 of 14 tasks, including tasks the lexical sets do not carry (singular--plural, antonym). It does nothing on present--past, prev-item and synonym and little on the translations. Reading its 30 heads with J-head shows why the weight is so constrained. Six of them, which we call \emph{generic heads}, decode the same tokens on every task (line ends, colons), attend to the answer slot, and add one large direction shared by all tasks. Without these six (24 heads) the FV is at least as good on all 14 tasks, works best at $\alpha$ 2--3, and also carries the translations. Removing six random FV heads instead does not help. These runs used all items. The comparison below defines the generic heads on the choosing half alone (Sec.~\ref{sec:approaches}) and tests the FV, with and without them, on held-out items.
+\paragraph{What we find.} The FV works at their weight: accuracy peaks at $\alpha=1$ and vanishes from $\alpha=3$ on. It does nothing on present--past, prev-item and synonym and little on the translations. Reading its 30 heads with J-head shows why the weight is so constrained. Some of them, which we call \emph{generic heads}, decode the same tokens on every task (line ends, colons), attend to the answer slot, and add one large direction shared by all tasks. The comparison below defines the generic heads on the choosing half alone (Sec.~\ref{sec:approaches}) and tests the FV, with and without them, on held-out items.
 
 In the comparison, Davidson et al.'s score ranks heads per task and over the 14 tasks, and its top heads are patched head by head like every other set (\emph{Causal}). Their own intervention, the summed vector, is run on the ranking over the 14 tasks (\emph{Davidson FV}).
 
@@ -249,7 +249,6 @@ Figure~\ref{fig:size} and Table~\ref{tab:main} give each rule's mean over the 14
 \item \textbf{Removing the generic heads helps the causal rankings}, in both scopes at nearly every size, most for the shared ranking at 20 heads. That set holds five of the generic heads, and from 40 heads on it holds all of them. Removing them also steadies it across folds: with the generic heads the two folds' Shared Causal-20 differ widely, without them they agree.
 \item \textbf{Removing them lowers DBT} at every size and in both scopes. DBT sets hold fewer generic heads (two to five) than the causal sets, and removing these costs accuracy instead of adding it. Whether a generic head harms a set thus depends on the set.
 \item \textbf{Davidson et al.'s summed vector is below head-by-head patching of the same heads.} With the generic heads it is below at every size. From 40 heads on, the cross-fit always picks $\alpha=1$, because at $\alpha=2$ the vector fails. At 20 heads it is unstable across folds: at $\alpha=2$ it is the second-best set of fold~1, behind one with four times its heads, and fails in fold~2, so the cross-fitted mean is low. The two folds' top 20 differ by two heads; fold~2's holds the late generic head L31H14. Without the generic heads, the summed vector is level with head-by-head patching at 20 heads but does not improve with more heads, so head-by-head patching overtakes it from 40 on.
-\item \textbf{The earlier best set does not hold up.} With the generic heads read on all items, the summed vector without them was the best set found (App.~\ref{app:earlier}). With the generic heads chosen on the choosing half it is no longer ahead: the shared causal sets patched head by head and the per-task filter sets of 40 heads or more lie above it.
 \end{itemize}
 
 \subsection{By task type}
@@ -314,12 +313,12 @@ For the stated goal, a small set of heads that represents the tasks in general:
 % =====================================================================
 \section{Limitations}
 
-One model and 14 simple tasks. Every run is single and greedy, without intervals; rerunning a set with differently made-up batches moves its mean by up to 0.004 (Sec.~\ref{sec:approaches}), so differences of a point or two between sets are not established. Only $\alpha$ 1 and 2 are compared, which may underrate sets that peak higher; sequences peaked at larger $\alpha$ in earlier runs. The generic-head rule was changed during the design. The rule fixed before the per-half runs (heads above the largest drop in the sorted generic score) became unstable once the score was computed on all five templates, where its two largest drops were nearly equal. We replaced it with the two-group split, choosing between the rules on the generic scores alone, not on accuracy. But the split marks the same heads as those per-half runs, whose accuracies we had seen (App.~\ref{app:earlier}). Ranked combination sets at large $N$ hold heads that rank poorly on one filter. T has no task word in three templates (antonym, present--past), so on those tasks it rests on fewer prompts. The word lists keep some word pieces and Japanese fragments. Yang terms has fewer than $N$ heads on seven tasks at 60 and 80 heads. Items are held out, but wordings only in part: the sets chosen on Yang's five templates are tested on 30 templates they were not chosen on, whereas the sets chosen on all 35 are tested on the same 35, so part of their gain may be a closer fit to these templates. The 30 new templates per task were checked by script only, not by hand; 20 of them have no correctly answered prompt on one half, and on the six small tasks some means rest on fewer than 30 prompts (Table~\ref{tab:w-e0}). The run on other wordings covers three rules at two sizes. The capped comparison runs check~1 only.
+One model and 14 simple tasks. Every run is single and greedy, without intervals; rerunning a set with differently made-up batches moves its mean by up to 0.004 (Sec.~\ref{sec:approaches}), so differences of a point or two between sets are not established. Only $\alpha$ 1 and 2 are compared, which may underrate sets that peak higher. The generic-head rule was changed during the design. The rule fixed before the per-half runs (heads above the largest drop in the sorted generic score) became unstable once the score was computed on all five templates, where its two largest drops were nearly equal. We replaced it with the two-group split, choosing between the rules on the generic scores alone, not on accuracy. But the split marks the same heads as earlier per-half runs whose accuracies we had seen. Ranked combination sets at large $N$ hold heads that rank poorly on one filter. T has no task word in three templates (antonym, present--past), so on those tasks it rests on fewer prompts. The word lists keep some word pieces and Japanese fragments. Yang terms has fewer than $N$ heads on seven tasks at 60 and 80 heads. Items are held out, but wordings only in part: the sets chosen on Yang's five templates are tested on 30 templates they were not chosen on, whereas the sets chosen on all 35 are tested on the same 35, so part of their gain may be a closer fit to these templates. The 30 new templates per task were checked by script only, not by hand; 20 of them have no correctly answered prompt on one half, and on the six small tasks some means rest on fewer than 30 prompts (Table~\ref{tab:w-e0}). The run on other wordings covers three rules at two sizes. The capped comparison runs check~1 only.
 
 \subsection*{Conditions still to run}
 Wordings held out: sets chosen on some of the 35 templates and tested on the others. The other rules (BT, T, Davidson FV) and the other sizes on all 35 templates.
 
-{\sloppy\paragraph{Code and data.} The capped comparison: word lists \texttt{scripts/e13\_lists.py}, attention pass \texttt{scripts/e13\_attention.py}, sets and generic heads \texttt{scripts/e13\_sets.py}, runs \texttt{scripts/e13\_patch.sh}, which also runs Davidson et al.'s summed vector with \texttt{scripts/e13\_fv\_residual.py}, and tables and figures \texttt{scripts/e13\_report.py}. Results in \texttt{results/e13\_capped}: per fold the word lists, sets, generic heads, accuracies and every patched reply; \texttt{summary.csv} and \texttt{per\_task.csv} at the cross-fitted $\alpha$. The causal scores are those of the first held-out runs (\texttt{results/heldout/fold\{1,2\}/fv}). Other wordings: templates \texttt{materials/simple/e4b\_wordings.json}, unpatched accuracy \texttt{scripts/e14\_outputs.py}, word lists \texttt{scripts/e14\_lists.py}, attention \texttt{scripts/e13\_attention.py --e14}, causal scores \texttt{scripts/davidson\_fv.py --instructions all}, sets \texttt{scripts/e14\_sets.py}, runs \texttt{scripts/e14\_run.sh}, tables \texttt{scripts/e14\_report.py}; results in \texttt{results/e14\_wordings} (report \texttt{paper/e14-all-wordings}). The reproductions and earlier comparisons: App.~\ref{app:earlier}.\par}
+{\sloppy\paragraph{Code and data.} The capped comparison: word lists \texttt{scripts/e13\_lists.py}, attention pass \texttt{scripts/e13\_attention.py}, sets and generic heads \texttt{scripts/e13\_sets.py}, runs \texttt{scripts/e13\_patch.sh}, which also runs Davidson et al.'s summed vector with \texttt{scripts/e13\_fv\_residual.py}, and tables and figures \texttt{scripts/e13\_report.py}. Results in \texttt{results/e13\_capped}: per fold the word lists, sets, generic heads, accuracies and every patched reply; \texttt{summary.csv} and \texttt{per\_task.csv} at the cross-fitted $\alpha$. The causal scores are those of the first held-out runs (\texttt{results/heldout/fold\{1,2\}/fv}). Other wordings: templates \texttt{materials/simple/e4b\_wordings.json}, unpatched accuracy \texttt{scripts/e14\_outputs.py}, word lists \texttt{scripts/e14\_lists.py}, attention \texttt{scripts/e13\_attention.py --e14}, causal scores \texttt{scripts/davidson\_fv.py --instructions all}, sets \texttt{scripts/e14\_sets.py}, runs \texttt{scripts/e14\_run.sh}, tables \texttt{scripts/e14\_report.py}; results in \texttt{results/e14\_wordings} (report \texttt{paper/e14-all-wordings}). Table~\ref{tab:readouts}: \texttt{scripts/synthesis\_report.py}, from the saved result files.\par}
 
 \bibliographystyle{plainnat}
 \bibliography{references}
@@ -391,61 +390,5 @@ The 50 generic words removed from every list, from WikiText-103 (Sec.~\ref{sec:a
 \end{table}
 
 Generic heads marked on all 35 templates, with those marked on Yang's five in brackets and the number of heads of Davidson et al.'s shared top 30 that stay: \input{tables/e14_generic}\unskip.
-
-% =====================================================================
-\section{Earlier selection rules}\label{app:earlier}
-
-Before the capped comparison, the rules were compared at the sizes each produced: per-task sets of every head passing a threshold, a few fixed sizes (20 and 40 heads), and shared rankings at 5 to 40 heads (Table~\ref{tab:earlier}, Figure~\ref{fig:earlier}). These runs led to the present design and are kept for reference. They differ from it in four ways. The word lists were each task's most active decoded words under an English-frequency filter, with no generic words removed. T's task words were Yang et al.'s terms and the task's 10 most task-specific decoded words. The generic heads were the six read on all items, so the sets without them were not cleanly held out. Both checks were run.
-
-\paragraph{Names.} \emph{Yang terms}: heads that decode a term of Yang et al.'s list on $\geq$10\% of the best template's prompts. \emph{Task+common}: heads that decode one of the task's 5 most task-specific and 5 most common decoded words on $\geq$10\% of prompts; \emph{Task+common-$N$} its top $N$ by that rate; \emph{instr.\ diff.}\ the same rule on the clean-minus-corrupted instruction readings. \emph{Causal-$N$} and \emph{Causal-matched} (as many heads as Task+common): Davidson et al.'s ranking per task. D, B, T and their combinations: every head passing the named thresholds (D: decodes a list word on $\geq$10\% of prompts; B: BOS attention $\leq$0.5; T: task-word attention $\geq$0.05); D$_{10}$, DB$_{10}$ with a 10-word list. \emph{Shared causal-$N$}, \emph{Shared DBT-30}: shared rankings. \emph{Davidson FV-30}: their summed vector with the 30 heads chosen over the 14 tasks. \emph{Random, X layers}: as many heads per layer as X, outside it; \emph{Random from D, X size}: X's size drawn from D.
-
-\begin{table}[tbp]
-\centering\small
-\input{tables/synth_main}
-\caption{Earlier rules: mean accuracy over the 14 tasks, held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds. Heads: median (range) over tasks. Davidson FV-30: their intervention at their $\alpha=1$. Unpatched accuracy: 0.01 (check 1), 0 (check 2). The generic heads of the $-$ generic rows were read on all items. Removing the generic heads of Sec.~\ref{sec:approaches} instead, chosen on each half, lowers Davidson FV-30 $-$ generic from 0.63 to 0.49 and Shared causal-20 $-$ generic from 0.51 to 0.42 in check~1.}
-\label{tab:earlier}
-\end{table}
-
-\begin{figure}[tbp]
-\centering
-\includegraphics[width=\textwidth]{figures/synth_size}
-\caption{Earlier rules, check 1 against the number of heads (median over tasks; log scale). (a) One set per task; (b) one set for all tasks. Colour: how heads are scored; filled: per task; open: shared; square: Yang terms. Lines join one ranking at increasing size. Faint dots: the other filter combinations.}
-\label{fig:earlier}
-\end{figure}
-
-What these runs showed, and what the capped comparison was built to test:
-\begin{itemize}
-\item Random heads with the same layers did nothing; random decoders did little; control means stayed low in check~1.
-\item The hand-written list was the weak point of the lexical method: decoded-word lists more than doubled its mean, but only at about 120 heads.
-\item At the sizes run, a causal ranking beat decoded words at every fixed size, and Causal-matched (about 120 heads) had the highest per-task mean.
-\item Attention filters closed most of that gap without patching: DB and DBT (40--65 heads) lay above Causal-40, and T (about 150 heads) close to Causal-matched. Attention to the query or to the rest of the instruction lowered every combination.
-\item Task types rested on different heads: causal rankings carried morphology and sequences, the attention filters translations and word relations, and facts were carried by almost any good set.
-\item Check~2 (1-shot prompts answered wrongly) did not separate good sets from mediocre ones: random sets reached a quarter of the best, and every non-random set lay between 0.26 and 0.41.
-\item Sets of different sizes could not be compared directly, and the best shared result depended on generic heads read on all items. Both led to the capped comparison.
-\end{itemize}
-
-Some single tasks rest on very few heads (Table~\ref{tab:small}; chosen and scored on the same items, so optimistic).
-
-\begin{table}[H]
-\centering\small
-\begin{tabularx}{\textwidth}{@{}llLc@{}}
-\toprule
-Task & Heads & How chosen & Check 1 \\
-\midrule
-country--capital & L16H25 alone & attends to \emph{capital}, \emph{country} in the instruction and decodes \emph{city} & 0.88 \\
-landmark--country & 5 & top 5 by attention to task words $\times$ decoding & 0.79 \\
-product--company & 20 & same rule, top 20 & 0.72 \\
-singular--plural & 20 & same rule, top 20 & 0.68 \\
-present--past & L15H1 alone & found in the top-5 J-head set; example-style means only (check 2: 0.76) & 0.80 \\
-landmark / product & 5--10 & Davidson et al.'s FV with fewer heads, $\alpha$ 3--4 & 0.95 / 0.87 \\
-\bottomrule
-\end{tabularx}
-\caption{Small sets that carry one task (exploratory: chosen and scored on the same items, best $\alpha$ on them). Controls are low except product--company with the 5--10-head FV (0.22).}
-\label{tab:small}
-\end{table}
-
-Other rules that did not help: heads passing Yang et al.'s rule under all five templates (better only on facts); word lists without a contrast between tasks; the weakest task's score for shared sets; head scores from GPT-5.5 reading each head's top tokens (two tasks: matched Task+common-20 on country--capital, nothing below 60 heads on English--German).
-
-\paragraph{Code and data.} Tables and figures of this appendix and of Sec.~\ref{sec:repro}: \texttt{scripts/synthesis\_report.py}, from the saved result files. Folders under \texttt{results/}: Yang terms, Task+common, Task+common-$N$, Causal-$N$, Causal-matched and their layer-matched random sets in \texttt{heldout} (report \texttt{paper/e4\_heldout}); Task+common, instr.\ diff.\ in \texttt{diff\_heads}; D$_{10}$, DB$_{10}$ in \texttt{e7\_attfilter} (\texttt{paper/e7-attention-filter}); D, DB, DBT, BT, T in \texttt{e8\_filters} (\texttt{paper/e8-filter-combos}); Shared DBT-30, DB-30, BT-30 in \texttt{e10\_shared}; Shared causal-$N$, Shared DBT-$N$ at the other sizes, Davidson FV-30 with and without generic heads, and the other random sets in \texttt{e11\_complete}; the per-half generic heads in \texttt{e12\_generic\_halves}.
 
 \end{document}
