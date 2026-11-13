@@ -143,7 +143,7 @@ Evaluation & zero-shot, no instruction, their prompt & check 1 (`` x:''), flexib
 \label{tab:fid-dav}
 \end{table}
 
-\paragraph{What we find.} The FV works at their weight: accuracy peaks at $\alpha=1$ and vanishes from $\alpha=3$ on. It does nothing on present--past, prev-item and synonym and little on the translations. Reading its 30 heads with J-head shows why the weight is so constrained. Some of them, which we call \emph{generic heads}, decode the same tokens on every task (line ends, colons), attend to the answer slot, and add one large direction shared by all tasks. The comparison below defines the generic heads on the choosing half alone (Sec.~\ref{sec:approaches}) and tests the FV, with and without them, on held-out items.
+\paragraph{What we find.} The FV works at their weight: accuracy peaks at $\alpha=1$ and vanishes from $\alpha=3$ on. It does nothing on present--past, prev-item and synonym and little on the translations. Reading its 30 heads with J-head shows why the weight is so constrained. Some of them, which we call \emph{generic heads}, decode the same tokens on every task (line ends, colons), attend to the answer slot, and add one large direction shared by all tasks (App.~\ref{app:fv-all}). The comparison below defines the generic heads on the choosing half alone (Sec.~\ref{sec:approaches}) and tests the FV, with and without them, on held-out items.
 
 In the comparison, Davidson et al.'s score ranks heads per task and over the 14 tasks, and its top heads are patched head by head like every other set (\emph{Causal}). Their own intervention, the summed vector, is run on the ranking over the 14 tasks (\emph{Davidson FV}).
 
@@ -390,5 +390,10 @@ The 50 generic words removed from every list, from WikiText-103 (Sec.~\ref{sec:a
 \end{table}
 
 Generic heads marked on all 35 templates, with those marked on Yang's five in brackets and the number of heads of Davidson et al.'s shared top 30 that stay: \input{tables/e14_generic}\unskip.
+
+% =====================================================================
+\section{Davidson et al.'s FV on all items}\label{app:fv-all}
+
+These runs precede the held-out protocol: heads, means and generic heads were read on all items, so they are not held out. With the 30 heads chosen over the 14 tasks, the FV beats our best lexical-head set on 11 of 14 tasks, including tasks the lexical sets do not carry (singular--plural, antonym). Six of the 30 heads were marked generic, read on all items. Without these six (24 heads) the FV is at least as good on all 14 tasks, works best at $\alpha$ 2--3, and also carries the translations. Removing six random FV heads instead does not help.
 
 \end{document}
