@@ -34,7 +34,7 @@ def md(df: pd.DataFrame) -> str:
     cols = [str(c) for c in df.columns]
     rows = ["| " + " | ".join([str(df.index.name or "")] + cols) + " |", "|" + "---|" * (len(cols) + 1)]
     rows += ["| " + " | ".join([str(i)] + ["--" if pd.isna(v) else str(v) for v in r]) + " |"
-             for i, r in zip(df.index, df.values)]
+             for i, r in zip(df.index, df.itertuples(index=False))]
     return "\n".join(rows)
 
 
