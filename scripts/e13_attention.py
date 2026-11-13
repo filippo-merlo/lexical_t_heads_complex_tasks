@@ -14,7 +14,6 @@ the words found per template).
     LTH_READINGS=data/readings/heldout/A CUDA_DEVICE_ORDER=PCI_BUS_ID \
         .venv/bin/python scripts/e13_attention.py --gpu 0 --fold 1
     (E14: add ``--e14``; the 35 templates' prompts, E14's lists, ``attention14_<half>``.)
-    (E18: add ``--e18 N``, N = 20 or 40; Yang's five templates, E13's rule at N words, ``attention18w<N>_<half>``.)
 """
 
 from __future__ import annotations
@@ -42,9 +41,6 @@ def main() -> None:
     parser.add_argument("--e14", action="store_true",
                         help="E14: all 35 rule templates (Yang's five and the 30 new ones), the lists of "
                              "results/e14_wordings, output data/readings/heldout/attention14_<half>")
-    parser.add_argument("--e18", type=int, choices=(20, 40), default=None,
-                        help="E18: the N-word lists of results/e18_list_length/w<N>, output "
-                             "data/readings/heldout/attention18w<N>_<half>")
     args = parser.parse_args()
     half = HALF[args.fold]
     gpu.pin(args.gpu)
@@ -56,8 +52,7 @@ def main() -> None:
     from lth.store import READINGS, load, readings_dir
 
     assert READINGS.resolve() == (DATA / "readings" / "heldout" / half).resolve(), f"set LTH_READINGS to the half's readings ({half})"
-    exp, tag = (("e14_wordings", "14") if args.e14
-                else (f"e18_list_length/w{args.e18}", f"18w{args.e18}") if args.e18 else ("e13_capped", "13"))
+    exp, tag = ("e14_wordings", "14") if args.e14 else ("e13_capped", "13")
     wordings = simple.ALL_RULE if args.e14 else simple.WORDINGS["rule"]
     lists = json.loads((RESULTS / exp / f"fold{args.fold}" / "word_lists.json").read_text())["tasks"]
     out = DATA / "readings" / "heldout" / f"attention{tag}_{half}"
