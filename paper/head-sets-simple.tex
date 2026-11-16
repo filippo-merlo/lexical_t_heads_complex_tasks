@@ -316,7 +316,7 @@ The means hide large differences between task types (Table~\ref{tab:groups}; per
 \item \textbf{Morphology} is carried best by the shared causal rankings, which from 60 heads get nearly every item. Per task, the best filter combinations are about level with the causal rankings, and DB and DBT also carry it. T alone does little here below 80 heads: present--past has no task word in two of its five templates.
 \item \textbf{Translations} are carried by the per-task sets that use attention (BT and DBT at every size, the best combinations most from 40 heads on), and by no per-task causal ranking at any size. Ranked over all tasks, the causal score does carry them, from 40 heads on, and so do the shared BT and DBT sets from 60. Removing the generic heads lowers the shared causal sets on translations at 40 and 60 heads.
 \item \textbf{Sequences} (next-, prev-item) stay low under every rule. They gain most from 60 heads on, with the causal rankings (per task and shared) and Shared DBT.
-\item \textbf{Word relations} are carried best per task by the best filter combinations from 40 heads on; shared, by them or by Causal $-$ generic in turn, and at 20 heads by the summed vector without generic heads.
+\item \textbf{Word relations} are carried best per task by the best filter combinations from 40 heads on; shared, by them or by Causal $-$ generic in turn.
 \end{itemize}
 
 No rule wins every type. Per task, the filters win translations and, with the further combinations, word relations; the causal rankings keep sequences, which no rule carries well, and shared morphology.

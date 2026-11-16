@@ -162,8 +162,7 @@ DETAIL = [  # (scope, condition, short column label; "\n" = line break)
     ("task", "causal", "Causal"), ("task", "causal_nogen", "Causal\n$-$gen."), ("task", "yang", "Yang"),
     ("shared", "DBT", "DBT"), ("shared", "DBTLS", "DBTLS"), ("shared", "DBTMS", "DBTMS"),
     ("shared", "DBT_nogen", "DBT\n$-$gen."), ("shared", "causal", "Causal"),
-    ("shared", "causal_nogen", "Causal\n$-$gen."), ("shared", "fvsum", "FV\nsum"),
-    ("shared", "fvsum_nogen", "FV sum\n$-$gen."), ("shared", "yang", "Yang"),
+    ("shared", "causal_nogen", "Causal\n$-$gen."), ("shared", "yang", "Yang"),
 ]
 
 
