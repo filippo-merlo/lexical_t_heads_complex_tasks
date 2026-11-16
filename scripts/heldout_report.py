@@ -1,4 +1,4 @@
-"""E4 (paper/e4_heldout.tex): tables and figures of the accuracies, no statistical tests.
+"""E4 (paper/archive/e4_heldout.tex): tables and figures of the accuracies, no statistical tests.
 
 Reads ``results/heldout/fold{1,2}/patching_{simple,simple-wrong}.part-*.csv`` (``scripts/
 heldout_patch.sh``) and the FV reference (``fold{f}/fv/patching_simple.csv``). For every fold,

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# E4 (paper/e4_heldout.tex), patching of Phases 3 and 4a: per GPU a fixed group of simple tasks,
+# E4 (paper/archive/e4_heldout.tex), patching of Phases 3 and 4a: per GPU a fixed group of simple tasks,
 # in order (1) the non-FV sets, both folds and checks; (2) the FV sets, once
 # scripts/heldout_fv_sets.py has added them (this script runs it when both folds' CIE exist);
 # (3) the random sets, check 1, task means only. Secondary sets (ccclean, ad*, fvuniv*) in

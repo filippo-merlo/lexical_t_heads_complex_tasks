@@ -1,4 +1,4 @@
-"""Tables of paper/e8-filter-combos.tex (no GPU).
+"""Tables of paper/archive/e8-filter-combos.tex (no GPU).
 
 Sources: results/e8_filters/{fold1,fold2}/{heads,word_lists}.json, set_sizes.csv
 (``scripts/e8_sets.py``); results/e8_filters/accuracy_{alpha,crossfit}.csv (``scripts/e8_report.py``);

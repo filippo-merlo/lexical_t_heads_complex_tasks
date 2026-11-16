@@ -192,14 +192,14 @@ Under the flexible score (Table~\ref{tab:e0-simple-flexible}), most of the sprea
 
 \begin{table}[H]
 \centering\footnotesize
-\input{tables/e0_simple}
+\input{../tables/e0_simple}
 \caption{E0, simple tasks: strict accuracy per prompt style. Rule: the five instruction templates of \citet{yang2026shared}, mean and range; example: by number of shots; zero-shot: the prompts without task information. Items: dataset size.}
 \label{tab:e0-simple}
 \end{table}
 
 \begin{table}[H]
 \centering\footnotesize
-\input{tables/e0_simple_flexible}
+\input{../tables/e0_simple_flexible}
 \caption{E0, simple tasks: flexible accuracy per prompt style (Sec.~\ref{sec:evaluation}), on the same saved replies and with the same layout as Table~\ref{tab:e0-simple}.}
 \label{tab:e0-simple-flexible}
 \end{table}
@@ -237,70 +237,70 @@ Patched with the means of the other style, the head sets raise accuracy on the s
 
 \begin{table}[H]
 \centering\footnotesize
-\input{tables/heads_simple}
+\input{../tables/heads_simple}
 \caption{E1: lexical task heads per task and style under Logit-head (L) and J-head (J). L$\cap$J: heads in both sets. Rule $\cap$ example: heads in both the rule-style and the example-style set of a readout. Identification prompts: 100 per task and style, the first answered correctly under the most accurate instruction template (rule) and under 5-shot prompts (example).}
 \label{tab:heads-simple}
 \end{table}
 
 \begin{table}[H]
 \centering\footnotesize
-\input{tables/head_counts_yang}
+\input{../tables/head_counts_yang}
 \caption{E1: Logit-head counts against those of \citet{yang2026shared} for Llama-3.1-8B-Instruct, read off the bar labels of their Figs.~28 (instruction-based prompts) and~20 (example-based), the Instruct bars of Fig.~79 and the bars for the original term lists of Fig.~88; Figs.~79 and~88 name no style and are placed by their match. Source: our sets in the setting of their code, with attended padding and the first-token score. E1: our sets (Table~\ref{tab:heads-simple}).}
 \label{tab:counts-yang}
 \end{table}
 
 \begin{table}[H]
 \centering\footnotesize
-\input{tables/effects_simple}
+\input{../tables/effects_simple}
 \caption{E1 causal check: causal effect, the highest accuracy over $\alpha\in[-10,10]$ minus the unpatched accuracy (baseline), on the 100 patched items of each task; accuracy is the flexible score of the reply generated from each patched prompt. The head set of each style is patched with means of the same style, and accuracy is averaged over the style's five source wordings before the maximum is taken. Task mean: the head set's mean output over the task's own prompts; control mean: over the control task's prompts (Sec.~\ref{sec:e1}). L: Logit-head set; J: J-head set; J only: heads in the J-head set and not in the Logit-head set. --: empty set.}
 \label{tab:effects-simple}
 \end{table}
 
 \begin{table}[H]
 \centering\footnotesize
-\input{tables/effects_simple_cross}
+\input{../tables/effects_simple_cross}
 \caption{E1 causal check across styles, as Table~\ref{tab:effects-simple}, with the head set of each style (Heads) patched with the means of the other style: rule-style heads with the means of the five shot counts, example-style heads with the means of the five instruction templates.}
 \label{tab:effects-simple-cross}
 \end{table}
 
 \begin{table}[H]
 \centering\footnotesize
-\input{tables/effects_simple_wrong}
+\input{../tables/effects_simple_wrong}
 \caption{E1, second causal check, as Table~\ref{tab:effects-simple}, with the 1-shot prompts of the first 100 items answered wrongly with one shot patched; fewer items are wrong on singular--plural (26), country--capital (27), park--country (45), present--past (61) and country--currency (65). Unpatched accuracy is 0 by construction. No control mean.}
 \label{tab:effects-simple-wrong}
 \end{table}
 
 \begin{table}[H]
 \centering\footnotesize
-\input{tables/effects_simple_wrong_cross}
+\input{../tables/effects_simple_wrong_cross}
 \caption{E1, second causal check across styles, as Table~\ref{tab:effects-simple-cross}.}
 \label{tab:effects-simple-wrong-cross}
 \end{table}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.55\textwidth]{figures/layers_simple.pdf}
+\includegraphics[width=0.55\textwidth]{../figures/layers_simple.pdf}
 \caption{Lexical task heads per layer under each readout, summed over the head sets of all simple tasks and styles, at the last prompt token.}
 \label{fig:layers-simple}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{figures/copy_share_simple.pdf}
+\includegraphics[width=0.7\textwidth]{../figures/copy_share_simple.pdf}
 \caption{Copy share of each simple-task head set (Sec.~\ref{sec:measures}): the share of prompts on which a head's matched terms occur in the prompt text, averaged over the set.}
 \label{fig:copy-simple}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/patching_simple.pdf}
+\includegraphics[width=\textwidth]{../figures/patching_simple.pdf}
 \caption{E1 causal check: accuracy on the 100 patched items of each task against $\alpha$, with each style's head set patched with means of the same style, averaged over the style's five source wordings. Solid: the head set's mean over the task's prompts; dotted: the control mean at the same heads; dashed: unpatched accuracy.}
 \label{fig:patch-simple}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/patching_simple_wrong.pdf}
+\includegraphics[width=\textwidth]{../figures/patching_simple_wrong.pdf}
 \caption{E1, second causal check, as Figure~\ref{fig:patch-simple}, with the wrongly answered 1-shot prompts patched. No control mean.}
 \label{fig:patch-simple-wrong}
 \end{figure}
@@ -337,28 +337,28 @@ On the simple tasks, rule-style lexical task heads that meet Definition~\ref{def
 
 \begin{table}[H]
 \centering\footnotesize\setlength{\tabcolsep}{3pt}
-\input{tables/heads_consensus}
+\input{../tables/heads_consensus}
 \caption{E1b: rule-style head sets under Logit-head (L) and J-head (J): from the most accurate instruction template (E1, Table~\ref{tab:heads-simple}), and the heads that meet Definition~\ref{def:lth} under at least $k$ of the five templates. Each cell: number of heads and, in brackets, its share of the model's 1,024 heads in \%. Distinct: heads in the set of at least one task. The set for $k=1$ contains the E1 set and the set for $k=5$ is contained in it; of the heads in the sets for $k=3$, summed over tasks, 198 of 227 (L) and 300 of 343 (J) are in the E1 sets.}
 \label{tab:heads-consensus}
 \end{table}
 
 \begin{table}[H]
 \centering\footnotesize
-\input{tables/effects_consensus}
+\input{../tables/effects_consensus}
 \caption{E1b, first causal check: causal effect of the rule-style head sets of Table~\ref{tab:heads-consensus} with rule-style means, as in Table~\ref{tab:effects-simple}; 100 patched items per task. --: empty set.}
 \label{tab:effects-consensus}
 \end{table}
 
 \begin{table}[H]
 \centering\footnotesize
-\input{tables/effects_consensus_control}
+\input{../tables/effects_consensus_control}
 \caption{E1b, first causal check: causal effect of the control mean at the head sets of Table~\ref{tab:heads-consensus}, as the control columns of Table~\ref{tab:effects-simple}.}
 \label{tab:effects-consensus-control}
 \end{table}
 
 \begin{table}[H]
 \centering\footnotesize
-\input{tables/effects_consensus_wrong}
+\input{../tables/effects_consensus_wrong}
 \caption{E1b, second causal check: causal effect of the head sets of Table~\ref{tab:heads-consensus} with rule-style means, as in Table~\ref{tab:effects-simple-wrong}. Items: the wrongly answered 1-shot prompts patched; the baseline is 0.}
 \label{tab:effects-consensus-wrong}
 \end{table}
@@ -366,7 +366,7 @@ On the simple tasks, rule-style lexical task heads that meet Definition~\ref{def
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/patching_consensus_k5.pdf}
+\includegraphics[width=\textwidth]{../figures/patching_consensus_k5.pdf}
 \caption{E1b, consensus sets ($k=5$): accuracy against $\alpha$ for the rule-style sets with rule-style means, averaged over the five instruction templates. For each task, the first check (zero-shot prompts of the first 100 items answered correctly with one shot) and the second (1-shot prompts answered wrongly; no control mean). Solid: the head set's mean over the task's prompts; dotted: the control mean at the same heads; dashed: unpatched accuracy. Synonym has no Logit-head consensus set.}
 \label{fig:patch-consensus}
 \end{figure}
@@ -392,14 +392,14 @@ The three requirements thus trade off against each other. Heads that every templ
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/patching_consensus_k1.pdf}
+\includegraphics[width=\textwidth]{../figures/patching_consensus_k1.pdf}
 \caption{E1b, heads from at least one template ($k=1$, the union), as Figure~\ref{fig:patch-consensus}.}
 \label{fig:patch-k1}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/patching_consensus_k3.pdf}
+\includegraphics[width=\textwidth]{../figures/patching_consensus_k3.pdf}
 \caption{E1b, heads from at least three templates ($k=3$), as Figure~\ref{fig:patch-consensus}.}
 \label{fig:patch-k3}
 \end{figure}
@@ -410,7 +410,7 @@ The three requirements thus trade off against each other. Heads that every templ
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/patching_shared.pdf}
+\includegraphics[width=\textwidth]{../figures/patching_shared.pdf}
 \caption{J-head union sets ($k=1$) restricted to the heads that are also in the union set of at least one other task, as Figure~\ref{fig:patch-consensus}.}
 \label{fig:patch-shared}
 \end{figure}
@@ -421,7 +421,7 @@ The three requirements thus trade off against each other. Heads that every templ
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/patching_pp_unshared.pdf}
+\includegraphics[width=\textwidth]{../figures/patching_pp_unshared.pdf}
 \caption{Present--past, J-head, rule-style means averaged over the five instruction templates: the union set ($k=1$, 19 heads), its 15 heads that are also in another task's union set (shared), and its 4 other heads (unshared: L19H10, L19H24, L20H28, L21H9). Left: first check (100 items); right: second check (61 items, no control mean). Solid: task mean; dotted: control mean at the same heads; dashed: unpatched accuracy.}
 \label{fig:patch-pp-unshared}
 \end{figure}
@@ -440,7 +440,7 @@ The three requirements thus trade off against each other. Heads that every templ
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/patching_pp_split.pdf}
+\includegraphics[width=\textwidth]{../figures/patching_pp_split.pdf}
 \caption{Present--past, as Figure~\ref{fig:patch-pp-unshared}: the 4 unshared heads, L21H9 alone, and the other three (L19H10, L19H24, L20H28) alone.}
 \label{fig:patch-pp-split}
 \end{figure}
@@ -451,7 +451,7 @@ The three requirements thus trade off against each other. Heads that every templ
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/patching_noretrieval.pdf}
+\includegraphics[width=\textwidth]{../figures/patching_noretrieval.pdf}
 \caption{Union sets ($k=1$) without the task's retrieval heads (found under any template and either readout), as Figure~\ref{fig:patch-consensus}.}
 \label{fig:patch-noretrieval}
 \end{figure}
@@ -491,112 +491,112 @@ Thus, at equal size, the difference between the readouts largely remains, while 
 
 \begin{table}[H]
 \centering\footnotesize
-\input{tables/sized_summary}
+\input{../tables/sized_summary}
 \caption{Equal-size sets: for each pair and check, the number of tasks on which the first or the second had the larger effect between the threshold sets, and of these, on how many the same one is larger at every size for which both sets are formed (holds) and on how many the other one is (reverses). Cells: tasks / holds / reverses. Effects of the threshold sets over the nine values of $\alpha$ of the procedure; ties and tasks without both threshold sets are counted on neither side. Every difference is counted, however small.}
 \label{tab:sized-summary}
 \end{table}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/sized_readouts.pdf}
+\includegraphics[width=\textwidth]{../figures/sized_readouts.pdf}
 \caption{Equal-size sets, E1 rule: causal effect against the number of heads (log scale), per task, in the first and the second check. Filled markers: sets of size 5, 10 and 20; hollow markers: the threshold set, at its own size. Solid: rule style; dashed: example style.}
 \label{fig:sized-readouts}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/sized_curves_n5.pdf}
+\includegraphics[width=\textwidth]{../figures/sized_curves_n5.pdf}
 \caption{Equal-size sets of the 5 highest-ranked heads under the rule of E1, first causal check: accuracy on the patched items against $\alpha$, with each style's set patched with means of the same style, averaged over the style's five source wordings, as Figure~\ref{fig:patch-simple}. Nine values of $\alpha$: $-10$, $-4$, and 2 to 10 (none between $-4$ and 2). Solid: the task mean; dotted: the control mean at the same heads; dashed: unpatched accuracy. Empty panel: fewer than 5 heads match on any prompt.}
 \label{fig:sized-curves-n5}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/sized_curves_n5_wrong.pdf}
+\includegraphics[width=\textwidth]{../figures/sized_curves_n5_wrong.pdf}
 \caption{Equal-size sets of 5 heads, E1 rule, second causal check, as Figure~\ref{fig:sized-curves-n5}, with the wrongly answered 1-shot prompts patched. No control mean.}
 \label{fig:sized-curves-n5-wrong}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/sized_curves_n10.pdf}
+\includegraphics[width=\textwidth]{../figures/sized_curves_n10.pdf}
 \caption{Equal-size sets of 10 heads, E1 rule, first causal check, as Figure~\ref{fig:sized-curves-n5}.}
 \label{fig:sized-curves-n10}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/sized_curves_n10_wrong.pdf}
+\includegraphics[width=\textwidth]{../figures/sized_curves_n10_wrong.pdf}
 \caption{Equal-size sets of 10 heads, E1 rule, second causal check, as Figure~\ref{fig:sized-curves-n5-wrong}.}
 \label{fig:sized-curves-n10-wrong}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/sized_curves_n20.pdf}
+\includegraphics[width=\textwidth]{../figures/sized_curves_n20.pdf}
 \caption{Equal-size sets of 20 heads, E1 rule, first causal check, as Figure~\ref{fig:sized-curves-n5}.}
 \label{fig:sized-curves-n20}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/sized_curves_n20_wrong.pdf}
+\includegraphics[width=\textwidth]{../figures/sized_curves_n20_wrong.pdf}
 \caption{Equal-size sets of 20 heads, E1 rule, second causal check, as Figure~\ref{fig:sized-curves-n5-wrong}.}
 \label{fig:sized-curves-n20-wrong}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/sized_rules_logithead.pdf}
+\includegraphics[width=\textwidth]{../figures/sized_rules_logithead.pdf}
 \caption{Equal-size sets, rule style, Logit-head: causal effect against the number of heads under the rule of E1 and the rules of E1b, as Figure~\ref{fig:sized-readouts}.}
 \label{fig:sized-rules-logithead}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/sized_rules_jhead.pdf}
+\includegraphics[width=\textwidth]{../figures/sized_rules_jhead.pdf}
 \caption{Equal-size sets, rule style, J-head, as Figure~\ref{fig:sized-rules-logithead}.}
 \label{fig:sized-rules-jhead}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/sized_rule_curves_logithead_n5.pdf}
+\includegraphics[width=\textwidth]{../figures/sized_rule_curves_logithead_n5.pdf}
 \caption{Equal-size sets of the 5 highest-ranked Logit-head heads, rule style, under the rule of E1 and the rules of E1b (at least $k$ of the five instruction templates): accuracy against $\alpha$ with rule-style means, averaged over the five templates, in the first check (with the control mean, dotted) and the second, as Figure~\ref{fig:patch-consensus}, at the nine values of $\alpha$ of Figure~\ref{fig:sized-curves-n5}. A missing curve: fewer than 5 heads match under that rule.}
 \label{fig:sized-rule-curves-logithead-n5}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/sized_rule_curves_logithead_n10.pdf}
+\includegraphics[width=\textwidth]{../figures/sized_rule_curves_logithead_n10.pdf}
 \caption{Equal-size sets of 10 Logit-head heads, rule style, E1 and E1b rules, as Figure~\ref{fig:sized-rule-curves-logithead-n5}.}
 \label{fig:sized-rule-curves-logithead-n10}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/sized_rule_curves_logithead_n20.pdf}
+\includegraphics[width=\textwidth]{../figures/sized_rule_curves_logithead_n20.pdf}
 \caption{Equal-size sets of 20 Logit-head heads, rule style, E1 and E1b rules, as Figure~\ref{fig:sized-rule-curves-logithead-n5}.}
 \label{fig:sized-rule-curves-logithead-n20}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/sized_rule_curves_jhead_n5.pdf}
+\includegraphics[width=\textwidth]{../figures/sized_rule_curves_jhead_n5.pdf}
 \caption{Equal-size sets of 5 J-head heads, rule style, E1 and E1b rules, as Figure~\ref{fig:sized-rule-curves-logithead-n5}.}
 \label{fig:sized-rule-curves-jhead-n5}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/sized_rule_curves_jhead_n10.pdf}
+\includegraphics[width=\textwidth]{../figures/sized_rule_curves_jhead_n10.pdf}
 \caption{Equal-size sets of 10 J-head heads, rule style, E1 and E1b rules, as Figure~\ref{fig:sized-rule-curves-logithead-n5}.}
 \label{fig:sized-rule-curves-jhead-n10}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/sized_rule_curves_jhead_n20.pdf}
+\includegraphics[width=\textwidth]{../figures/sized_rule_curves_jhead_n20.pdf}
 \caption{Equal-size sets of 20 J-head heads, rule style, E1 and E1b rules, as Figure~\ref{fig:sized-rule-curves-logithead-n5}.}
 \label{fig:sized-rule-curves-jhead-n20}
 \end{figure}
@@ -633,14 +633,14 @@ Thus, lists built from the words the heads decode select head sets that carry mo
 
 \begin{table}[H]
 \centering\footnotesize\setlength{\tabcolsep}{4pt}
-\input{tables/wordlists_jhead}
+\input{../tables/wordlists_jhead}
 \caption{Head sets from decoded words, J-head, rule style, first causal check: highest accuracy over $\alpha\in\{1,2,4,8\}$, rule-style means averaged over the five templates. E1: E1's J-head rule-style set over the same $\alpha$. A+D $N$: the $N$ heads ranked first by attention to task words times decode rate. Random 5: mean of the two layer-matched random sets of A+D 5. Bold: the largest of the six head sets.}
 \label{tab:words}
 \end{table}
 
 \begin{table}[H]
 \centering\footnotesize\setlength{\tabcolsep}{4pt}
-\input{tables/wordlists_jhead_control}
+\input{../tables/wordlists_jhead_control}
 \caption{As Table~\ref{tab:words}, with the control mean, at the $\alpha$ of the highest task-mean accuracy.}
 \label{tab:words-control}
 \end{table}
@@ -793,28 +793,28 @@ rate gave 0.21 and 0.25 (\texttt{summary-simple}, E3) and the 30-head FV of \tex
 Thus, on items not used to choose them, the decoded-word sets keep their lead over the E1 sets and over random heads, but heads ranked by their causal effect carry most tasks better at every size; the decoded-word sets are ahead only on the translation tasks and prev-item, and only at their own size.
 
 \begin{table}[H]
-\centering\footnotesize\setlength{\tabcolsep}{3pt}\resizebox{\textwidth}{!}{\input{tables/heldout_check1_nt}}
+\centering\footnotesize\setlength{\tabcolsep}{3pt}\resizebox{\textwidth}{!}{\input{../tables/heldout_check1_nt}}
 \caption{E4, first check, held-out items: accuracy at the cross-fitted $\alpha$, mean of the two folds, rule-style means of the choosing half averaged over the five templates. Items: patched items in fold~1 / fold~2. E1, CC: the sets chosen on the choosing half. FV-$N_t$: as many heads as the CC set, ranked by the function-vector score. Random-$N_t$: mean of the five draws with the CC set's heads per layer, at the CC set's $\alpha$. FV-30: the 30-head function vector of \citet{davidson2025different} at $\alpha=1$, a reference. ctrl: the control mean at the set's $\alpha$.}
 \label{tab:e4-check1}
 \end{table}
 
 \begin{table}[H]
 \centering\footnotesize\setlength{\tabcolsep}{4pt}
-\input{tables/heldout_check1_sizes}
+\input{../tables/heldout_check1_sizes}
 \caption{E4, first check, sets of 20 and 40 heads, as Table~\ref{tab:e4-check1}. CC-$N$: the first $N$ heads by pooled match rate under the CC list; FV-$N$: the first $N$ by the function-vector score; Random-$N$: mean of the five draws with the CC-$N$ set's heads per layer, at its $\alpha$.}
 \label{tab:e4-sizes}
 \end{table}
 
 \begin{table}[H]
 \centering\footnotesize\setlength{\tabcolsep}{3pt}
-\input{tables/heldout_check2_nt}
+\input{../tables/heldout_check2_nt}
 \caption{E4, second check (1-shot prompts answered wrongly), as Table~\ref{tab:e4-check1}. Random-$N_t$ is run only at the cross-fitted $\alpha$; the function vector of \citet{davidson2025different} is not run in this check.}
 \label{tab:e4-check2}
 \end{table}
 
 \begin{table}[H]
 \centering\footnotesize\setlength{\tabcolsep}{4pt}
-\input{tables/heldout_check2_sizes}
+\input{../tables/heldout_check2_sizes}
 \caption{E4, second check, sets of 20 and 40 heads, as Table~\ref{tab:e4-sizes}.}
 \label{tab:e4-sizes-check2}
 \end{table}
@@ -823,9 +823,9 @@ Thus, on items not used to choose them, the decoded-word sets keep their lead ov
 \centering\footnotesize\setlength{\tabcolsep}{4pt}
 \begin{tabular}{@{}c@{}}
 \textbf{First check}\\[2pt]
-\input{tables/heldout_check1_secondary}\\[8pt]
+\input{../tables/heldout_check1_secondary}\\[8pt]
 \textbf{Second check}\\[2pt]
-\input{tables/heldout_check2_secondary}
+\input{../tables/heldout_check2_secondary}
 \end{tabular}
 \caption{E4, secondary sets, fold~1 only: accuracy at the best $\alpha$ in fold~1 (not cross-fitted). CC-clean: CC-pooled-clean, 5\,+\,5 words. A+D-$N$: the first $N$ heads by attention to task words times decode rate. FV-univ-$N$: the first $N$ heads by the function-vector score averaged over the 14 tasks.}
 \label{tab:e4-secondary}
@@ -833,7 +833,7 @@ Thus, on items not used to choose them, the decoded-word sets keep their lead ov
 
 \begin{figure}[p]
 \centering
-\includegraphics[width=\textwidth]{figures/heldout_curves_nt}
+\includegraphics[width=\textwidth]{../figures/heldout_curves_nt}
 \caption{E4, accuracy against $\alpha$, mean of the two folds, sets of $N_t$ heads: CC, FV-$N_t$ and E1, task means (solid) and control mean (dotted, same colour). Grey band: range of the five random draws (first check); grey points: random draws in the second check, where they are run only at the cross-fitted $\alpha$ (each draw and fold).}
 \label{fig:e4-curves-nt}
 \end{figure}
@@ -1015,7 +1015,7 @@ Reused code and data: the lexical-task-head code of \citet{yang2026shared}; the 
 \paragraph{Deliverables.} Head sets, measures and causal-check curves for every task, style and readout.
 
 \bibliographystyle{plainnat}
-\bibliography{references}
+\bibliography{../references}
 
 \clearpage
 \appendix
@@ -1024,35 +1024,35 @@ The causal effects of the equal-size sets of Sec.~\ref{sec:sized}, as the highes
 
 \begin{table}[H]
 \centering\footnotesize
-\input{tables/sized_readouts}
+\input{../tables/sized_readouts}
 \caption{Equal-size sets, E1 rule, first causal check: causal effect of the $N$ highest-ranked heads with means of their own style, as in Table~\ref{tab:effects-simple}, over the nine values of $\alpha$. L: Logit-head, J: J-head. --: set not formed (fewer than $N$ heads match on any prompt).}
 \label{tab:sized-readouts}
 \end{table}
 
 \begin{table}[H]
 \centering\footnotesize
-\input{tables/sized_readouts_wrong}
+\input{../tables/sized_readouts_wrong}
 \caption{Equal-size sets, E1 rule, second causal check, as Table~\ref{tab:sized-readouts}. Items: the wrongly answered 1-shot prompts patched; the baseline is 0.}
 \label{tab:sized-readouts-wrong}
 \end{table}
 
 \begin{table}[H]
 \centering\footnotesize
-\input{tables/sized_readouts_control}
+\input{../tables/sized_readouts_control}
 \caption{Equal-size sets, E1 rule, first causal check: causal effect of the control mean at the sets of Table~\ref{tab:sized-readouts}.}
 \label{tab:sized-readouts-control}
 \end{table}
 
 \begin{table}[H]
 \centering\footnotesize\setlength{\tabcolsep}{4.5pt}
-\input{tables/sized_rules}
+\input{../tables/sized_rules}
 \caption{Equal-size sets, rule style, first causal check: causal effect of the $N$ highest-ranked heads under the rule of E1 and the rules of E1b (at least $k$ of the five templates), as Table~\ref{tab:sized-readouts}.}
 \label{tab:sized-rules}
 \end{table}
 
 \begin{table}[H]
 \centering\footnotesize\setlength{\tabcolsep}{4.5pt}
-\input{tables/sized_rules_wrong}
+\input{../tables/sized_rules_wrong}
 \caption{Equal-size sets, rule style, second causal check, as Table~\ref{tab:sized-rules}. The baseline is 0.}
 \label{tab:sized-rules-wrong}
 \end{table}
@@ -1061,13 +1061,13 @@ The causal effects of the equal-size sets of Sec.~\ref{sec:sized}, as the highes
 \section{E4: accuracy curves at 20 and 40 heads}\label{app:e4}
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/heldout_curves_20}
+\includegraphics[width=\textwidth]{../figures/heldout_curves_20}
 \caption{E4, accuracy against $\alpha$, sets of 20 heads (CC-20, FV-20, Random-20), as Figure~\ref{fig:e4-curves-nt}; E1 as there.}
 \label{fig:e4-curves-20}
 \end{figure}
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/heldout_curves_40}
+\includegraphics[width=\textwidth]{../figures/heldout_curves_40}
 \caption{E4, accuracy against $\alpha$, sets of 40 heads, as Figure~\ref{fig:e4-curves-20}.}
 \label{fig:e4-curves-40}
 \end{figure}

@@ -1,6 +1,6 @@
 # Lexical task heads beyond simple tasks
 
-Code for the project described in `paper/proposal-simple.tex` and `paper/proposal-complex.tex`. It
+Code for the project whose main report is `paper/head-sets-simple.tex` (schematic log of every experiment: `paper/summary-simple.tex`; earlier proposals and per-experiment reports in `paper/archive/`, starting from `paper/archive/proposal-simple.tex` and `paper/archive/proposal-complex.tex`). It
 identifies the lexical task
 heads of Yang et al. (2026) in Llama-3.1-8B-Instruct, on 14 simple tasks and on the five
 rule-defined tasks of Fu et al. (2026). Each attention head is read with two readouts:

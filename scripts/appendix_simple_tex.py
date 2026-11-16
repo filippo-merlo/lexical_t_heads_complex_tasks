@@ -1,6 +1,6 @@
 """LaTeX for proposal-simple's appendix on the simple tasks: term lists and instruction templates.
 
-Writes ``paper/appendix-simple.tex``, ``\\input`` by ``paper/proposal-simple.tex``:
+Writes ``paper/archive/appendix-simple.tex``, ``\\input`` by ``paper/archive/proposal-simple.tex``:
 - the term list of each task (Yang et al.'s ``task_relation_dict.json``, ``lth.terms``) and the
   single tokens it expands to under the Llama-3.1 tokenizer (``expand_to_token_ids``), the
   tokens a head's top 10 is matched against;
@@ -102,7 +102,7 @@ def main() -> None:
             end = r" \\[3pt]" if i == simple.INSTRUCTIONS[-1] else r" \\"
             out.append(f"{name} & {LETTERS[i]}{mark} & \\texttt{{{tex(templates[task][str(i)])}}}{end}")
     out += [r"\end{longtable}", "}"]
-    (PAPER / "appendix-simple.tex").write_text("\n".join(out) + "\n")
+    (PAPER / "archive" / "appendix-simple.tex").write_text("\n".join(out) + "\n")
     print("wrote appendix-simple.tex")
 
 

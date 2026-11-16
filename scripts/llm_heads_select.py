@@ -1,4 +1,4 @@
-"""E5 (paper/proposal-llm-heads.tex): GPT-5.5 scores every head of the tables of ``llm_heads_tables.py``.
+"""E5 (paper/archive/proposal-llm-heads.tex): GPT-5.5 scores every head of the tables of ``llm_heads_tables.py``.
 
 Requests, per task, choosing half (A: fold 1, B: fold 2) and readout:
 - batched: 8 requests, the prompts ``*_batch0`` ... ``*_batch7`` (128 heads each);

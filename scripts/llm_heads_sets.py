@@ -1,4 +1,4 @@
-"""E5 (paper/proposal-llm-heads.tex): head sets from the LLM's scores, references, review file.
+"""E5 (paper/archive/proposal-llm-heads.tex): head sets from the LLM's scores, references, review file.
 
 For each task and fold (fold 1 = scores on half A, fold 2 = half B), readout and condition
 (``all``, ``batched``), from ``data/llm_heads/scores`` (``scripts/llm_heads_select.py``):

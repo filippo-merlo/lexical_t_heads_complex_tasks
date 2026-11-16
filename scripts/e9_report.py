@@ -1,5 +1,5 @@
 """E9 (scripts/e9_sets.py, e9_patch.sh): E8's DB set on the complex tasks; accuracies, answer checks,
-set overlaps and the tables of paper/e9-complex-db.tex (no GPU, no statistical tests).
+set overlaps and the tables of paper/archive/e9-complex-db.tex (no GPU, no statistical tests).
 
 Accuracy of a condition = mean over the mean wordings (task: the seven rule wordings; control: the
 control task's orig mean), at alpha 1 and at alpha 2 separately (no folds, so no cross-fitting).

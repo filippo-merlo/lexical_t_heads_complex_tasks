@@ -194,7 +194,7 @@ If the full run is too costly, three cuts: reasoning effort \emph{low} in the ba
 
 One prompt for both conditions. Placeholders between \texttt{<<} and \texttt{>>} are filled by script: \texttt{DESCRIPTION} with the task's description (\texttt{materials/generation/e4b\_tasks.json}, the one written for E4b), \texttt{TEMPLATES} with the five templates as JSON strings, \texttt{EXAMPLES} with the ten input--answer pairs, \texttt{N\_PROMPTS} with the number of pooled prompts, \texttt{TABLE} with the rows. \texttt{TABLE\_NOTE} is ``The table lists all 1,024 heads.'' in the \emph{all} condition and ``The table lists 128 of the 1,024 heads; the others are scored in separate requests.'' in a batch.
 
-\VerbatimInput[breaklines,breakanywhere,fontsize=\footnotesize,frame=single,framesep=2mm]{../materials/llm_heads/prompt.txt}
+\VerbatimInput[breaklines,breakanywhere,fontsize=\footnotesize,frame=single,framesep=2mm]{../../materials/llm_heads/prompt.txt}
 
 \section{Example rows of the table}\label{app:rows}
 \tbd{rows of the English--German table, half $A$, both readouts, once the top-20 readings exist}
@@ -217,6 +217,6 @@ One prompt for both conditions. Placeholders between \texttt{<<} and \texttt{>>}
 \end{description}
 
 \bibliographystyle{plainnat}
-\bibliography{references}
+\bibliography{../references}
 
 \end{document}
