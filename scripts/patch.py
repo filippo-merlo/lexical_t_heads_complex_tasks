@@ -134,7 +134,8 @@ def simple_mean(lm, ids: list[list[int]], items: list[int]):
 
 def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple", sets=SETS,
                set_list=False, same_style=False, alphas=ALPHAS, half=None, wrong_control=False,
-               max_new_tokens=None, task_only=(), set_alphas=None, names=None, mean_wordings="rule"):
+               max_new_tokens=None, task_only=(), set_alphas=None, names=None, mean_wordings="rule",
+               example_wordings=None):
     """Yang et al.'s ``fix_corrupted_prompts_vary_prompt_instances_average_new``, with each
     style's heads (``intervention_component_prompt_type``) patched with the means of each
     style (``prompt_type_fix``), one source wording at a time, and their control.
@@ -157,7 +158,10 @@ def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple", s
 
     E14: ``mean_wordings="all"``, the rule style's means come from all 35 rule templates
     (``simple.ALL_RULE``: Yang et al.'s five and the 30 new ones), each patched on its own; a
-    template with no correct prompt on the choosing half gives no mean."""
+    template with no correct prompt on the choosing half gives no mean.
+
+    E24: ``example_wordings``, the example wordings whose means are patched (default: all five
+    shot counts; E24 uses ``("shot5",)``, the prompts Yang et al. identify example heads on)."""
     from run_outputs import SIMPLE_MAX_TOKENS, simple_answer
 
     from lth.evaluation import flexible_simple
@@ -202,7 +206,8 @@ def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple", s
         # control: the control task's 1-shot prompts at all its items correct under the
         # mean style's wording 1.
         means = []  # (mean style, source, wording, items, mean)
-        styles = dict(simple.WORDINGS, **({"rule": simple.ALL_RULE} if mean_wordings == "all" else {}))
+        styles = dict(simple.WORDINGS, **({"rule": simple.ALL_RULE} if mean_wordings == "all" else {}),
+                      **({"example": tuple(example_wordings)} if example_wordings else {}))
         for mean_style, wordings in styles.items():
             for wording in wordings:
                 items = sorted(set(chosen(task, simple.correct_items(records(task, wording)))) - set(fixed))[: simple.CAP]
@@ -383,6 +388,8 @@ def main() -> None:
     parser.add_argument("--names", nargs="+", default=None, help="E4: names or wildcard patterns of the listed sets to patch")
     parser.add_argument("--mean-wordings", choices=("rule", "all"), default="rule",
                         help="E14: 'all' takes the rule means from all 35 rule templates (Yang's five and the 30 new)")
+    parser.add_argument("--example-wordings", nargs="+", choices=simple.WORDINGS["example"], default=None,
+                        help="E24: the example wordings whose means are patched (default: all five)")
     args = parser.parse_args()
     gpu.pin(args.gpu)
     sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -401,7 +408,7 @@ def main() -> None:
                    args.set_list, args.same_style, args.alphas or ALPHAS, args.half, args.wrong_control,
                    args.max_new_tokens, tuple(args.task_only),
                    json.loads(args.set_alphas.read_text()) if args.set_alphas else None, args.names,
-                   args.mean_wordings)
+                   args.mean_wordings, args.example_wordings)
     name = args.family + "".join("_" + level.replace("/", "-") for level in args.levels or [])
     if args.tasks:
         name += f".part-{args.part}"
