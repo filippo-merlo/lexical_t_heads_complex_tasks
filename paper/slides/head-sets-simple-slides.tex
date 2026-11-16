@@ -13,8 +13,10 @@
 \setbeamertemplate{itemize items}{\textbullet}
 
 \usepackage{booktabs,array,amsmath,amssymb}
+\usepackage{fontspec}
+\newfontfamily\cjkfont{FandolSong-Regular.otf}
 \usepackage{tikz}
-\usetikzlibrary{positioning,arrows.meta,calc}
+\usetikzlibrary{positioning,arrows.meta,calc,decorations.pathreplacing}
 \graphicspath{{../figures/}}
 
 % ---- colours ------------------------------------------------------------
@@ -194,6 +196,35 @@ A head \textbf{decodes} a word when the word is in its top 10.
 \takeaway{Lexical heads exist, but chosen from a hand-written list they carry only some task types.}
 \end{frame}
 
+% ---------------------------------------------------------------------
+\begin{frame}{Lexical task heads: the procedure}
+\centering
+\begin{tikzpicture}[
+  stp/.style={draw=gray!60,rounded corners=3pt,fill=soft,align=center,font=\footnotesize,
+               text width=3.1cm,minimum height=1.45cm},
+  arr/.style={-{Latex[length=2.2mm]},thick,accent}]
+\node[stp](s1){\textbf{1. Prompts}\\100 rule prompts the model answers correctly};
+\node[stp,right=0.45cm of s1](s2){\textbf{2. Read}\\each head's top-10 words at the last token};
+\node[stp,right=0.45cm of s2](s3){\textbf{3. Match}\\is any of them in the hand-written list?};
+\node[stp,right=0.45cm of s3,fill=acc!15](s4){\textbf{4. Count}\\matches on $\geq$10\% of prompts\\$\Rightarrow$ lexical task head};
+\draw[arr](s1)--(s2); \draw[arr](s2)--(s3); \draw[arr](s3)--(s4);
+\end{tikzpicture}
+
+\vspace{0.7em}
+\raggedright\small
+\textbf{Example: antonym} \hfill {\scriptsize\color{gray}schematic heads and counts}\\[2pt]
+\footnotesize Prompt: \texttt{Output the antonym of the word in the question. Q: hot\textbackslash nA:}\\
+Hand-written list: \tok{cTask}{opposite}\,\tok{cTask}{reverse}\,\tok{cTask}{antonym}\,\tok{cTask}{opposing}\,\tok{cTask}{{\cjkfont 反}}
+
+\vspace{0.5em}
+\begin{tabular}{@{}l@{\hspace{0.6em}}l@{\hspace{1em}}c@{\hspace{1em}}l@{}}
+head A & \tok{cTask}{opposite}\,\tok{white}{cold}\,\tok{cTask}{reverse}\,\tok{white}{the}\,\dots & 41/100 prompts & $\Rightarrow$ \textbf{chosen} \\[3pt]
+head B & \tok{white}{\textbackslash n}\,\tok{white}{:}\,\tok{white}{the}\,\tok{white}{A}\,\dots & \phantom{0}3/100 prompts & $\Rightarrow$ not chosen \\
+\end{tabular}
+\takeaway{The set is every head that passes; its size varies by task (about 17 per task on average).
+Then it is tested by mean patching.}
+\end{frame}
+
 % =====================================================================
 \begin{frame}{J-head finds more heads that carry the task}
 \begin{columns}[c]
@@ -245,6 +276,55 @@ and add it after layer 11.
 \vspace{0.3em}
 \small\textbf{Cost:} one patched forward pass \emph{per head per prompt} --- 1{,}024 heads.
 \takeaway{The strongest reference, but the most expensive: it needs patching to choose the heads.}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{Causal score: the procedure}
+\centering
+\begin{tikzpicture}[font=\scriptsize,
+  lab/.style={anchor=east,align=right,text width=1.3cm,font=\footnotesize},
+  tk/.style={rounded corners=2pt,minimum height=0.5cm,inner sep=2.5pt,anchor=west},
+  ins/.style={tk,text width=5.9cm,align=center},
+  outp/.style={anchor=west,align=left},
+  arr/.style={-{Latex[length=2mm]},thick,gray}]
+% row 1: clean
+\node[lab] at (-0.15,0){\textbf{Clean}};
+\node[ins,fill=cTask](i1) at (0,0){Give me the antonym of the following word.};
+\node[tk,fill=cMark,right=1pt of i1](q1){Q:};
+\node[tk,fill=cQuery,right=1pt of q1](x1){hot};
+\node[tk,fill=cMark,right=1pt of x1](a1){\textbackslash nA:};
+\draw[arr](a1.east)--(8.75,0);
+\node[outp] at (8.8,0){\texttt{cold} \checkmark\\{\color{gray}store each head's mean}};
+% row 2: filler
+\node[lab] at (-0.15,-0.95){\textbf{Filler}};
+\node[ins,fill=cBOS](i2) at (0,-0.95){filler text, same length};
+\node[tk,fill=cMark,right=1pt of i2](q2){Q:};
+\node[tk,fill=cQuery,right=1pt of q2](x2){hot};
+\node[tk,fill=cMark,right=1pt of x2](a2){\textbackslash nA:};
+\draw[arr](a2.east)--(8.75,-0.95);
+\node[outp] at (8.8,-0.95){P(\texttt{cold}) low};
+% row 3: filler + head h
+\node[lab] at (-0.15,-1.9){\textbf{Filler +}\\\textbf{head $h$}};
+\node[ins,fill=cBOS](i3) at (0,-1.9){filler text, same length};
+\node[tk,fill=cMark,right=1pt of i3](q3){Q:};
+\node[tk,fill=cQuery,right=1pt of q3](x3){hot};
+\node[tk,fill=cMark,right=1pt of x3](a3){\textbackslash nA:};
+\draw[arr,acc](a3.east)--(8.75,-1.9);
+\node[outp] at (8.8,-1.9){P(\texttt{cold}) higher?};
+\draw[decorate,decoration={brace,amplitude=4pt},thick] (10.95,-0.75)--(10.95,-2.1)
+  node[midway,right=4pt,align=left,font=\footnotesize]{\textbf{score($h$)}\\= gain};
+\end{tikzpicture}
+
+\vspace{0.6em}
+\raggedright\small
+\begin{itemize}
+\item Filler = text of the same length and likelihood: random likely tokens, WikiText text, or another task's instruction.
+\item Repeat for \textbf{each of the 1{,}024 heads}, on many prompts and all three fillers; average
+      (and over the 14 tasks, for one shared ranking). Take the top $N$.
+\item Use the top $N$ in two ways: \textbf{head by head} (each head's output replaced by its mean; our \textcolor{caus}{Causal} sets)
+      or \textbf{summed} into one vector added after layer 11 (their function vector).
+\end{itemize}
+\takeaway{A head scores high if, alone, it brings back the answer when the instruction is gone.}
 \end{frame}
 
 % =====================================================================
@@ -313,6 +393,38 @@ next-item & next, january, july, september, november, october, february, sequenc
 \takeaway{The lists hold the task's own vocabulary, plus some noise (word pieces like \emph{oppos}, numbers).}
 \end{frame}
 
+% ---------------------------------------------------------------------
+\begin{frame}{Task-word list: the procedure}
+\centering
+\begin{tikzpicture}[
+  stp/.style={draw=gray!60,rounded corners=3pt,fill=soft,align=center,font=\scriptsize,
+               text width=1.85cm,minimum height=1.45cm},
+  arr/.style={-{Latex[length=2mm]},thick,accent}]
+\node[stp](a){\textbf{Rule prompts}\\(489 here)\\$\times$ 1{,}024 heads};
+\node[stp,right=0.25cm of a](b){\textbf{Read}\\top-10 J-head tokens of each head};
+\node[stp,right=0.25cm of b](c){\textbf{Keep words}\\letters/digits, not stop words, $\geq$3 letters};
+\node[stp,right=0.25cm of c](d){\textbf{Share}\\\% of (prompt, head) pairs that decode the word};
+\node[stp,right=0.25cm of d](e){\textbf{Drop generic}\\50 words heads decode on WikiText: \emph{which, what, http}};
+\node[stp,right=0.25cm of e,fill=acc!15](f){\textbf{Keep top 30}\\= the task list};
+\draw[arr](a)--(b); \draw[arr](b)--(c); \draw[arr](c)--(d); \draw[arr](d)--(e); \draw[arr](e)--(f);
+\end{tikzpicture}
+
+\vspace{0.6em}
+\begin{tikzpicture}[font=\footnotesize,x=2.4cm,y=-0.26cm]
+\node[anchor=west,font=\small\bfseries] at (-1.35,-1.4){country--capital, fold 1: the top 10 of the list};
+\foreach \w/\s [count=\i] in {city/2.31,cities/1.77,country/0.97,town/0.73,countries/0.73,
+                              answer/0.67,international/0.63,geography/0.55,downtown/0.55,capital/0.48}{
+  \node[anchor=east] at (0,\i){\w};
+  \fill[acc!70] (0.05,\i-0.35) rectangle (0.05+\s,\i+0.35);
+  \node[anchor=west,font=\scriptsize] at (0.07+\s,\i){\s\%};
+}
+\end{tikzpicture}
+
+\vspace{0.2em}
+{\scriptsize\color{gray} Share: percentage of all (prompt, head) readings whose top 10 holds the word.}
+\takeaway{The list is what the heads themselves say about the task, with words heads say on any text removed.}
+\end{frame}
+
 % =====================================================================
 \begin{frame}{Our ingredient 2: where does a head look?}
 We split the prompt into \textbf{token types} (after Bai et al., 2026) and measure how much each head attends to each type, at the last token.
@@ -333,6 +445,52 @@ We split the prompt into \textbf{token types} (after Bai et al., 2026) and measu
 \vspace{0.4em}
 \textbf{Combining:} each filter ranks the heads; a combination (e.g.\ DBT) averages the ranks and takes the top $N$.
 \takeaway{Filters need only the lens and one ordinary forward pass per prompt --- no patching.}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{Filters and combinations: the procedure}
+\raggedright\small
+{\scriptsize\color{gray}Schematic: four heads, made-up values.}
+
+\vspace{0.3em}
+\begin{columns}[T]
+\column{0.53\textwidth}
+\textbf{1. Where each head looks} \\
+\scriptsize attention from the last token, averaged over prompts\\[4pt]
+\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lcccccc@{}}
+ & \tok{cBOS}{BOS} & \tok{cTask}{task} & \tok{cQuery}{query} & \tok{cMark}{Q/A} & \tok{cStop}{p+s} & \tok{cLast}{last} \\[2pt]
+head A & \cv{0.85} & \cv{0.02} & \cv{0.03} & \cv{0.03} & \cv{0.05} & \cv{0.02} \\
+head B & \cv{0.20} & \cv{0.45} & \cv{0.10} & \cv{0.05} & \cv{0.15} & \cv{0.05} \\
+head C & \cv{0.35} & \cv{0.05} & \cv{0.10} & \cv{0.30} & \cv{0.15} & \cv{0.05} \\
+head D & \cv{0.40} & \cv{0.25} & \cv{0.15} & \cv{0.05} & \cv{0.10} & \cv{0.05} \\
+\end{tabular}
+
+\vspace{0.4em}
+\scriptsize Plus \textbf{D}: how often the head decodes a word of the task list.
+
+\column{0.45\textwidth}
+\textbf{2. Rank on each filter, average} \\
+\scriptsize 1 = best; B ranks \emph{low} BOS attention best\\[4pt]
+\footnotesize
+\begin{tabular}{@{}lccc|c@{}}
+ & D & B & T & DBT \\
+\midrule
+head A & 2 & 4 & 4 & 3.33 \\
+head B & 1 & 1 & 1 & \textbf{1.00} \\
+head C & 4 & 2 & 3 & 3.00 \\
+head D & 3 & 3 & 2 & \textbf{2.67} \\
+\end{tabular}
+
+\vspace{0.6em}
+\textbf{3. Take the top $N$} \\
+\footnotesize DBT, $N=2$: \textbf{heads B and D}.
+\end{columns}
+
+\vspace{0.6em}
+\small
+\textbf{One set for all tasks:} each filter's per-task ranks are first averaged over the 14 tasks.
+\takeaway{Head A decodes task words well but looks only at the first token, so its average rank keeps it out.}
 \end{frame}
 
 % =====================================================================
