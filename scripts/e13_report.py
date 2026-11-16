@@ -62,7 +62,7 @@ FAMILY_TITLE = {"filter": "Decoding and attention filters",
 COLOUR = {"filter": rt.AQUA, "best": rt.BLUE, "causal": rt.ORANGE, "yang": rt.INK_2, "random": rt.GREY}
 BEST = ("DBMN", "DBTMS", "DBTLS")
 BEST_SOURCES = ("e22_all_combos", "e23_best_sizes")  # 40 heads; other sizes
-FIG_SKIP = {("task", "DBTLS"), ("shared", "DBMN")}  # per scope: best at 40 heads and best peak only
+
 
 
 def parse(name: str) -> tuple[str, str, int]:
@@ -287,46 +287,114 @@ LINE = {  # condition -> (style, width, marker, direct label)
 }
 
 
-def figure_size(s: pd.DataFrame) -> None:
-    fig, axes = plt.subplots(1, 2, figsize=(6.6, 3.2), sharey=True)
-    for ax, scope, title in ((axes[0], "task", "(a) One set per task"), (axes[1], "shared", "(b) One set for all 14 tasks")):
-        g = s[s.scope == scope]
-        ends = []
-        for cond, (ls, lw, mk, lab) in LINE.items():
-            r = g[g.condition == cond].sort_values("n")
-            if r.empty or (scope, cond) in FIG_SKIP:
-                continue
-            col = COLOUR[CONDITIONS[cond][1]]
-            ax.plot(r.n, r.check1_task, color=col, ls=ls, lw=lw, marker=mk, ms=4.5, mec=rt.SURFACE, mew=0.8, zorder=3)
-            ends.append((r.check1_task.iloc[-1], lab, rt.INK_2, 1.0, r.n.iloc[-1]))
-        # direct labels at the right end, nudged apart
-        ends.sort()
-        ys, last = [], -1.0
-        for y, lab, colr, a, x in ends:
-            y = max(y, last + 0.028)
-            ys.append((y, lab, colr, a, x))
-            last = y
-        for y, lab, colr, a, x in ys:
-            ax.annotate(lab, (x, y), xytext=(6, 0), textcoords="offset points", va="center", fontsize=5.8,
-                        color=colr, alpha=a, annotation_clip=False)
-        ax.set_xticks(SIZES)
-        ax.set_xlim(14, SIZES[-1] + 6)
-        ax.set_ylim(-0.02, 0.75)
-        ax.set_xlabel("heads in the set (N)")
-        ax.set_title(title, loc="left")
-        rt.style_axes(ax)
-    axes[0].set_ylabel("check 1 accuracy, mean of 14 tasks")
+FIXED = ("DBT", "DBT_nogen", "causal", "causal_nogen", "yang", "random")
+EXPLORATORY = ("DBMN", "DBTMS", "DBTLS")
+REFERENCE = ("DBT", "causal_nogen")  # drawn thin and grey under the exploratory combinations
+
+
+def _labels(ax, ends, step=0.028) -> None:
+    """Direct labels at the right end of each line, nudged apart."""
+    last = -9.0
+    for y, lab, x in sorted(ends):
+        y = max(y, last + step)
+        last = y
+        ax.annotate(lab, (x, y), xytext=(6, 0), textcoords="offset points", va="center", fontsize=5.8,
+                    color=rt.INK_2, annotation_clip=False)
+
+
+def size_panels(s: pd.DataFrame, ycol: str, path: str, ylabel: str, ylim, zero: bool = False) -> None:
+    """Accuracy (or a difference) against N. Columns: per task, shared. Top row: the sets fixed before
+    any run; bottom row: the best further combinations, chosen on the test items, over thin grey
+    references (DBT, Causal - generic)."""
+    fig, axes = plt.subplots(2, 2, figsize=(6.6, 5.6), sharey=True, sharex=True)
+    titles = {"task": "one set per task", "shared": "one set for all 14 tasks"}
+    for j, scope in enumerate(("task", "shared")):
+        g = s[(s.scope == scope) & s[ycol].notna()]
+        for i, (conds, row) in enumerate(((FIXED, "fixed beforehand"), (EXPLORATORY, "chosen on the test items"))):
+            ax = axes[i, j]
+            if zero:
+                ax.axhline(0, color=rt.INK_2, lw=0.8, zorder=1)
+            ends = []
+            if i == 1:
+                for cond in REFERENCE:
+                    r = g[g.condition == cond].sort_values("n")
+                    ls = LINE[cond][0]
+                    ax.plot(r.n, r[ycol], color=rt.GREY, ls=ls, lw=1.0, alpha=0.8, zorder=2)
+                    ends.append((r[ycol].iloc[-1], LINE[cond][3], r.n.iloc[-1]))
+            for cond in conds:
+                r = g[g.condition == cond].sort_values("n")
+                if r.empty:
+                    continue
+                ls, lw, mk, lab = LINE[cond]
+                ax.plot(r.n, r[ycol], color=COLOUR[CONDITIONS[cond][1]], ls=ls, lw=lw, marker=mk, ms=4.5,
+                        mec=rt.SURFACE, mew=0.8, zorder=3)
+                ends.append((r[ycol].iloc[-1], lab, r.n.iloc[-1]))
+            _labels(ax, ends)
+            ax.set_xticks(SIZES)
+            ax.set_xlim(14, SIZES[-1] + 6)
+            ax.set_ylim(*ylim)
+            ax.set_title(f"({'abcd'[2 * i + j]}) {row}, {titles[scope]}", loc="left", fontsize=7.5)
+            if i == 1:
+                ax.set_xlabel("heads in the set (N)")
+            rt.style_axes(ax)
+    fig.supylabel(ylabel, fontsize=8, color=rt.INK_2)
     handles = [plt.Line2D([], [], color=COLOUR[f], lw=2, marker=m, ms=4) for f, m in
-               (("filter", "o"), ("best", "h"), ("causal", "s"), ("yang", "^"), ("random", "v"))]
-    labels = ["filters D, B, T", "best combinations with L, M, S, N", "Davidson et al. (causal)",
-              "Yang terms (baseline)", "random heads"]
-    handles.append(plt.Line2D([], [], color=rt.INK_2, lw=1.4, ls=(0, (4, 2))))
-    labels.append("dashed: generic heads removed")
+               (("filter", "o"), ("causal", "s"), ("yang", "^"), ("random", "v"), ("best", "h"))]
+    labels = ["filters D, B, T", "Davidson et al. (causal)", "Yang terms (baseline)", "random heads",
+              "best combinations with L, M, S, N"]
+    handles += [plt.Line2D([], [], color=rt.INK_2, lw=1.4, ls=(0, (4, 2))), plt.Line2D([], [], color=rt.GREY, lw=1.0)]
+    labels += ["dashed: generic heads removed", "grey, in (c, d): DBT and Causal − gen."]
     fig.legend(handles, labels, loc="upper center", ncol=3, frameon=False, fontsize=6.6)
-    fig.tight_layout(rect=(0, 0, 0.97, 0.85), w_pad=3.5)
-    fig.savefig(rt.FIGURES / "e13_size.pdf")
+    fig.tight_layout(rect=(0.01, 0, 0.96, 0.89), w_pad=3.5, h_pad=1.2)
+    fig.savefig(rt.FIGURES / f"{path}.pdf")
     if os.environ.get("SYNTH_PNG"):
-        fig.savefig(Path(os.environ["SYNTH_PNG"]) / "e13_size.png", dpi=200)
+        fig.savefig(Path(os.environ["SYNTH_PNG"]) / f"{path}.png", dpi=200)
+    plt.close(fig)
+
+
+def figure_size(s: pd.DataFrame) -> None:
+    size_panels(s, "check1_task", "e13_size", "check 1 accuracy, mean of 14 tasks", (-0.02, 0.75))
+
+
+TYPE_LINES = ("DBT", "DBTMS", "causal", "causal_nogen", "yang")
+
+
+def figure_types(per: pd.DataFrame) -> None:
+    """Accuracy per task type against N: rows per task / shared, one column per task type."""
+    p = per[(per.source == "task") & per.condition.isin(TYPE_LINES)]
+    fig, axes = plt.subplots(2, len(GROUPS), figsize=(6.9, 3.9), sharex=True, sharey=True)
+    for i, scope in enumerate(("task", "shared")):
+        for j, (group, tasks) in enumerate(GROUPS.items()):
+            ax = axes[i, j]
+            q = p[(p.scope == scope) & p.task.isin(tasks)]
+            for cond in TYPE_LINES:
+                r = q[q.condition == cond]
+                # a size enters only when the set exists on every task of the type
+                m = r.groupby("n").agg(acc=("accuracy", "mean"), k=("task", "nunique"), h=("n_heads", "min"))
+                m = m[(m.k == len(tasks)) & (m.h >= m.index - 0.5)]
+                ls, lw, mk, _ = LINE[cond]
+                ax.plot(m.index, m.acc, color=COLOUR[CONDITIONS[cond][1]], ls=ls, lw=lw * 0.75, marker=mk, ms=3.2,
+                        mec=rt.SURFACE, mew=0.6, zorder=3)
+            ax.set_xticks((20, 60, 100))
+            ax.set_xlim(12, 128)
+            ax.set_ylim(-0.03, 1.0)
+            if i == 0:
+                ax.set_title(f"{group} ({len(tasks)})", fontsize=7.5)
+            if j == 0:
+                ax.set_ylabel("per task" if scope == "task" else "shared", fontsize=7.5)
+            if i == 1:
+                ax.set_xlabel("N", fontsize=7)
+            ax.tick_params(labelsize=6.5)
+            rt.style_axes(ax)
+    fig.supylabel("check 1 accuracy, mean of the type's tasks", fontsize=8, color=rt.INK_2)
+    handles = [plt.Line2D([], [], color=COLOUR[CONDITIONS[c][1]], ls=LINE[c][0], lw=1.5, marker=LINE[c][2], ms=3.5)
+               for c in TYPE_LINES]
+    labels = ["DBT", "DBTMS (chosen on the test items)", "Causal", "Causal − generic", "Yang terms"]
+    fig.legend(handles, labels, loc="upper center", ncol=5, frameon=False, fontsize=6.6)
+    fig.tight_layout(rect=(0.02, 0, 1, 0.92), w_pad=0.6, h_pad=0.8)
+    fig.savefig(rt.FIGURES / "e13_types.pdf")
+    if os.environ.get("SYNTH_PNG"):
+        fig.savefig(Path(os.environ["SYNTH_PNG"]) / "e13_types.png", dpi=200)
     plt.close(fig)
 
 
@@ -358,6 +426,7 @@ def main() -> None:
     tex_tasks(per, base, N_DETAIL)
     tex_lists()
     figure_size(full)
+    figure_types(per[per.set.isin(full.set)])
     pd.set_option("display.width", 220)
     print(s.pivot_table(index="condition", columns=["scope", "n"], values="check1_task").round(3).to_string())
     print("unpatched", round(base.accuracy.mean(), 3))

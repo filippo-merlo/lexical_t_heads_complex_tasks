@@ -25,7 +25,7 @@ terms at 60 and above) is shown as "--".
 
 Writes ``results/e24_cross_style/{per_task,summary}.csv``, ``report.md``, the tables
 ``paper/tables/e24_{sizes_task,sizes_shared,types_task,types_shared,grid}.tex`` and the figures
-``paper/figures/e24_{sizes,overlap}.pdf``.
+``paper/figures/e24_{sizes,overlap,grid}.pdf``.
 
     .venv/bin/python scripts/e24_report.py
 """
@@ -262,6 +262,42 @@ def figure_sizes(per: pd.DataFrame) -> None:
     plt.close(fig)
 
 
+def figure_grid(per: pd.DataFrame) -> None:
+    """Built on rule or example prompts x patched with rule or example means, D/B/DB/DBMS: rows scope,
+    columns N. Colour: the means; fill: the prompts the set was built on."""
+    bars = [("rule", "rule", rt.BLUE, True), ("rule", "example", rt.ORANGE, True),
+            ("example", "rule", rt.BLUE, False), ("example", "example", rt.ORANGE, False)]
+    fig, axes = plt.subplots(2, len(GRID_SIZES), figsize=(6.6, 4.2), sharey=True)
+    x = np.arange(len(COMBOS))
+    w = 0.19
+    for i, scope in enumerate(("task", "shared")):
+        for j, n in enumerate(GRID_SIZES):
+            ax = axes[i, j]
+            p = PREFIX[scope]
+            for k, (built, means, colour, filled) in enumerate(bars):
+                v = [acc(per, (f"{p}{c}{n}" if built == "rule" else f"ex_{p}{c}{n}"), means) for c in COMBOS]
+                ax.bar(x + (k - 1.5) * (w + 0.02), v, width=w, color=colour if filled else rt.SURFACE,
+                       edgecolor=colour, linewidth=1.1, hatch=None if filled else "////", zorder=3)
+            r = [acc(per, f"random_ex_{p}db{n}", m) for m in ("rule", "example")]
+            ax.axhline(np.nanmax(r), color=rt.GREY, lw=0.8, ls=rt.CONTROL_STYLE, zorder=2)
+            ax.set_xticks(x, COMBOS)
+            ax.set_ylim(0, 0.85)
+            ax.set_title(f"({'abcd'[2 * i + j]}) {'Per task' if scope == 'task' else 'Shared'}, $N={n}$",
+                         loc="left", fontsize=7.5)
+            rt.style_axes(ax)
+    fig.supylabel("check 1 accuracy, mean of 14 tasks", fontsize=8, color=rt.INK_2)
+    handles = [plt.Rectangle((0, 0), 1, 1, facecolor=c if f else rt.SURFACE, edgecolor=c, hatch=None if f else "////")
+               for _, _, c, f in bars]
+    labels = ["built on rule prompts, rule means", "built on rule prompts, example mean",
+              "built on example prompts, rule means", "built on example prompts, example mean"]
+    handles.append(plt.Line2D([], [], color=rt.GREY, lw=0.8, ls=rt.CONTROL_STYLE))
+    labels.append("random heads (higher of the two means)")
+    fig.legend(handles, labels, loc="upper center", ncol=3, frameon=False, fontsize=6.4)
+    fig.tight_layout(rect=(0.02, 0, 1, 0.88), w_pad=1.0, h_pad=1.0)
+    fig.savefig(rt.FIGURES / "e24_grid.pdf")
+    plt.close(fig)
+
+
 def figure_overlap() -> None:
     o = pd.read_csv(OUT / "b" / "overlap.csv")
     o = o.assign(share=o.shared / o.n, chance=o.chance_layer / o.n)
@@ -310,6 +346,7 @@ def main() -> None:
     rt.write("e24_grid", grid_tex)
     figure_sizes(per)
     figure_overlap()
+    figure_grid(per)
     pd.DataFrame(sizes_md).to_csv(OUT / "summary.csv", index=False)
     names = {pat.format(p=PREFIX[sc], n=n) for pat, _ in RULES[:-1] for sc in PREFIX for n in ALL_SIZES}
     ctrl = per[(per.source == "control") & per.set.isin(names)].groupby(["set", "means"]).accuracy.mean()

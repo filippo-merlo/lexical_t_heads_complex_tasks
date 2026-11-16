@@ -11,7 +11,7 @@ Built-in check: the E13 sets (``y5_*``) with Yang's five means only, cross-fitte
 E13's numbers (``results/e13_capped/per_task.csv``): same prompts, means and alphas.
 
 Writes ``results/e14_wordings/{accuracy_alpha,per_task,summary,groups,e0}.csv``, the tables
-``paper/tables/e14_*.tex`` and the figure ``paper/figures/e14_groups.pdf``.
+``paper/tables/e14_*.tex`` and the figures ``paper/figures/e14_{groups,versions}.pdf``.
 
     .venv/bin/python scripts/e14_report.py
 """
@@ -171,6 +171,7 @@ def main() -> None:
     tex_e0(e0)
     tex_sets()
     figure_groups(s, gsum)
+    figure_versions(s)
     pd.set_option("display.width", 220)
     print(s.pivot_table(index=["scope", "condition"], columns=["kind", "n"], values="check1").round(3).to_string())
     print(gsum.round(3).to_string())
@@ -347,6 +348,36 @@ def tex_sets() -> None:
 
 
 # --------------------------------------------------------------------------- figure
+
+def figure_versions(s: pd.DataFrame) -> None:
+    """Accuracy against N for the three versions of each set: rows scope, columns rule."""
+    idx = s.set_index(["kind", "scope", "condition", "n"])
+    versions = [("e13", "y5", rt.GREY, "o", "heads and means from Yang's 5"),
+                ("check1", "y5", rt.ORANGE, "s", "heads from Yang's 5, means from all 35"),
+                ("check1", "a35", rt.BLUE, "D", "heads and means from all 35")]
+    fig, axes = plt.subplots(2, 3, figsize=(6.6, 4.2), sharex=True, sharey=True)
+    for i, scope in enumerate(SCOPES):
+        for j, (cond, label) in enumerate(CONDITIONS.items()):
+            ax = axes[i, j]
+            for col, kind, colour, mk, _ in versions:
+                y = [idx[col].get((kind, scope, cond, n), np.nan) for n in SIZES]
+                ax.plot(SIZES, y, color=colour, lw=1.6, marker=mk, ms=4, mec=rt.SURFACE, mew=0.7, zorder=3)
+            ax.set_xticks(SIZES)
+            ax.set_ylim(0.3, 0.75)
+            if i == 0:
+                ax.set_title(label.replace("$-$", "−"), fontsize=7.5)
+            if j == 0:
+                ax.set_ylabel("per task" if scope == "task" else "shared", fontsize=7.5)
+            if i == 1:
+                ax.set_xlabel("heads in the set (N)", fontsize=7)
+            rt.style_axes(ax)
+    fig.supylabel("check 1 accuracy, mean of 14 tasks", fontsize=8, color=rt.INK_2)
+    handles = [plt.Line2D([], [], color=c, lw=1.6, marker=m, ms=4) for _, _, c, m, _ in versions]
+    fig.legend(handles, [v[4] for v in versions], loc="upper center", ncol=3, frameon=False, fontsize=6.6)
+    fig.tight_layout(rect=(0.02, 0, 1, 0.93), w_pad=1.0, h_pad=0.8)
+    fig.savefig(rt.FIGURES / "e14_versions.pdf")
+    plt.close(fig)
+
 
 def figure_groups(s: pd.DataFrame, gsum: pd.DataFrame) -> None:
     """Accuracy by template group of the means, for the three conditions at 80 heads, both scopes:

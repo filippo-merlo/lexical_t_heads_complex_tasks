@@ -110,42 +110,10 @@ def tex_scope(c: pd.DataFrame, scope: str) -> None:
 
 
 def figure_diff(c: pd.DataFrame) -> None:
-    """Summed minus head by head against N, per scope; lines and colours of e13_size."""
-    fig, axes = plt.subplots(1, 2, figsize=(6.6, 3.2), sharey=True)
-    for ax, scope, title in ((axes[0], "task", "(a) One set per task"), (axes[1], "shared", "(b) One set for all 14 tasks")):
-        g = c[(c.scope == scope) & c["diff"].notna()]
-        ax.axhline(0, color=rt.INK_2, lw=0.8, zorder=1)
-        ends = []
-        for cond, (ls, lw, mk, lab) in e13.LINE.items():
-            r = g[g.condition == cond].sort_values("n")
-            if r.empty or cond.startswith("fvsum") or (scope, cond) in e13.FIG_SKIP:
-                continue
-            ax.plot(r.n, r["diff"], color=e13.COLOUR[e13.CONDITIONS[cond][1]], ls=ls, lw=lw, marker=mk, ms=4.5,
-                    mec=rt.SURFACE, mew=0.8, zorder=3)
-            ends.append((r["diff"].iloc[-1], lab, r.n.iloc[-1]))
-        ends.sort()
-        last = -9.0
-        for y, lab, x in ends:
-            y = max(y, last + 0.028)
-            last = y
-            ax.annotate(lab, (x, y), xytext=(6, 0), textcoords="offset points", va="center", fontsize=5.8,
-                        color=rt.INK_2, annotation_clip=False)
-        ax.set_xticks(SIZES)
-        ax.set_xlim(14, SIZES[-1] + 6)
-        ax.set_xlabel("heads in the set (N)")
-        ax.set_title(title, loc="left")
-        rt.style_axes(ax)
-    axes[0].set_ylabel("summed $-$ head by head\n(check 1 accuracy, mean of 14 tasks)")
-    handles = [plt.Line2D([], [], color=e13.COLOUR[f], lw=2, marker=m, ms=4) for f, m in
-               (("filter", "o"), ("best", "h"), ("causal", "s"), ("yang", "^"), ("random", "v"))]
-    labels = ["filters D, B, T", "best combinations with L, M, S, N", "Davidson et al. (causal)",
-              "Yang terms (baseline)", "random heads"]
-    handles.append(plt.Line2D([], [], color=rt.INK_2, lw=1.4, ls=(0, (4, 2))))
-    labels.append("dashed: generic heads removed")
-    fig.legend(handles, labels, loc="upper center", ncol=3, frameon=False, fontsize=6.6)
-    fig.tight_layout(rect=(0, 0, 0.97, 0.85), w_pad=3.5)
-    fig.savefig(rt.FIGURES / "e26_diff.pdf")
-    plt.close(fig)
+    """Summed minus head by head against N, in the panels of e13_size (fixed sets above, the best
+    further combinations below)."""
+    e13.size_panels(c, "diff", "e26_diff", "summed $-$ head by head (check 1 accuracy, mean of 14 tasks)",
+                    (-0.36, 0.1), zero=True)
 
 
 def main() -> None:
