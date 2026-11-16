@@ -1,0 +1,292 @@
+% =====================================================================
+%  Two-hop tasks: design of the head-set study on the 18 compositional tasks of
+%  Khandelwal & Pavlick (2026), in the style of head-sets-simple.tex.
+%  Status: DESIGN ONLY (16 November 2026). No run has been made; every result
+%  section is a placeholder (\pending). Templates table: paper/tables/th_templates.tex
+%  (Yang et al.'s instruction_dict.json for their 8 tasks, ours for the other 10).
+%  Compile with Tectonic (XeTeX).
+% =====================================================================
+\documentclass[10pt,a4paper]{article}
+
+\usepackage{fontspec}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,tabularx,array}
+\usepackage{xltabular}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage[round,authoryear]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=green!40!black,urlcolor=blue!60!black]{hyperref}
+
+\setlist{nosep,leftmargin=*}
+\captionsetup{font=small,labelfont=bf}
+\renewcommand{\arraystretch}{1.12}
+\setlength{\emergencystretch}{3em}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcommand{\pending}[1]{\par\noindent{\color{orange!70!black}\textbf{Pending.} #1}\par}
+
+\title{Small Head Sets for Two-Hop Tasks\\[2pt]
+\large Design of the study on Khandelwal and Pavlick's compositional tasks in Llama-3.1-8B-Instruct}
+\author{Filippo Merlo}
+\date{16 November 2026 (design, no runs yet)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This document lays out, before any run, how we will look for small sets of attention heads whose mean output, written into a prompt that does not state the task, makes Llama-3.1-8B-Instruct perform a two-hop task: one whose answer is a function of an intermediate entity that the prompt never names, such as the capital of the country a landmark is in. The tasks are the 18 compositional tasks of \citet{khandelwal2026compose}, three of which \citet{yang2026shared} used to show that lexical task heads extend to composition. We first reproduce that result on the eight tasks their code sets up, reading heads with both the logit lens and Head-JLens. We then apply the selection rules that worked best on simple tasks, fixed there before any two-hop run, with the same held-out protocol and set sizes. Three conditions are new: a filter that ranks heads by how often they decode the item's intermediate entity, the sets of the two simple tasks that make up a two-hop task, patched with two-hop or with single-hop means, and the simple tasks' shared sets applied unchanged. The questions are whether the simple-task rules carry over, whether decoding the intermediate entity marks the heads that carry the task, and whether a two-hop task is carried by the heads of its two hops.
+\end{abstract}
+
+% =====================================================================
+\section{Introduction}
+
+On 14 simple tasks, small head sets chosen from Head-JLens readings and attention patterns bring a task into a prompt that does not state it, about as well as or better than sets chosen by causal effect (\texttt{head-sets-simple}). Every one of those tasks is a single step: the answer is one lookup or one transformation of the query. A two-hop task composes two such steps, $x \to f(x) \to g(f(x))$, and the intermediate value $f(x)$, the \emph{bridge}, is never in the prompt. \citet{khandelwal2026compose} show that models often fail the composition while solving both hops, and that some tasks show the bridge in the residual stream before the answer while others go to the answer directly. \citet[Sec.~2.5.1, App.~M]{yang2026shared} take three of their tasks and report that patching the lexical task heads of the two hops recovers 12 to 50\% of the performance.
+
+Two-hop tasks test the simple-task findings in three ways. The rules are tested on tasks and items that played no part in choosing them. A head that decodes the bridge is a candidate of a kind that does not exist for simple tasks, and Head-JLens is the readout that ranks such unstated intermediate words highly \citep[Sec.~3]{merlo2026headjlens}. And where both hops are among the simple tasks, we can ask whether the heads of the two hops together carry the two-hop task.
+
+\paragraph{Questions.}
+\begin{enumerate}
+\item Does Yang et al.'s two-hop result reproduce, and does it hold with Head-JLens and in the zero-shot check?
+\item Do the selection rules that led on simple tasks, fixed there, lead on two-hop tasks too?
+\item Does ranking heads by how often they decode the bridge improve the sets?
+\item Is a two-hop task carried by the heads of its two hops, as locations (two-hop means) or as a sum of the two hop representations (hop means)?
+\item Do the simple tasks' shared sets carry two-hop tasks unchanged?
+\end{enumerate}
+
+The document follows the structure of \texttt{head-sets-simple}: setup (Sec.~\ref{sec:setup}), the reproduction (Sec.~\ref{sec:repro}), the comparison design (Sec.~\ref{sec:approaches}), results (Sec.~\ref{sec:results}), best approaches (Sec.~\ref{sec:best}) and limitations. At this stage only the setup and the designs are written; results are marked as pending.
+
+% =====================================================================
+\section{Setup}\label{sec:setup}
+
+\paragraph{Model.} Llama-3.1-8B-Instruct in bfloat16, as for the simple tasks. Heads are read as there: for head $h$ of layer $l$, \emph{Logit-head} scores token $v$ by $q_v^\top W_O^{(h)} z_{l,h}$ and \emph{J-head} by $q_v^\top J_{l,h} z_{l,h}$, with $z_{l,h}$ the head's output at the last prompt token and $J_{l,h}$ its part of the Head-JLens map \citep{merlo2026headjlens}. A head \emph{decodes} a word on a prompt when one of the word's token forms is among its 10 highest-scoring tokens.
+
+\paragraph{Tasks.} The 18 tasks of \citet[Table~1]{khandelwal2026compose}, in five groups (Table~\ref{tab:tasks}): lexical (an antonym, then a translation), factual (two facts from WikiData or IMDb), arithmetic, string and colour. Each item is an input $x$, its bridge $f(x)$ and the answer $g(f(x))$. The data are their released dataset (\texttt{apoorvkh/composing-functions} on the Hugging Face Hub, 36{,}802 items), which keeps the bridge. The copies in Yang et al.'s code keep only input and answer; they are the same answers, which we will check item by item. Khandelwal and Pavlick filter the factual items for popular, unambiguous subjects and drop parks and landmarks in their country's capital, so that the capital cannot be guessed without the country.
+
+\begin{table}[tbp]
+\centering\footnotesize
+\begin{tabularx}{\textwidth}{@{}llr>{\raggedright\arraybackslash}p{3.6cm}L@{}}
+\toprule
+Group & Task & Items & Hops ($f$, then $g$) & Example: $x \to f(x) \to g(f(x))$ \\
+\midrule
+Lexical & antonym-spanish & 2{,}398 & antonym, English$\to$Spanish & bogus $\to$ authentic $\to$ auténtico \\
+ & antonym-german & 2{,}398 & antonym, English$\to$German & philosophical $\to$ practical $\to$ praktisch \\
+ & antonym-french & 2{,}398 & antonym, English$\to$French & excessive $\to$ insufficient $\to$ insuffisant \\
+\midrule
+Factual & book-author-birthyear & 2{,}228 & book$\to$author, author$\to$birth year & The Boy in the Striped Pyjamas $\to$ John Boyne $\to$ 1971 \\
+ & song-artist-birthyear & 958 & song$\to$artist, artist$\to$birth year & Heartbreak Hotel $\to$ Elvis Presley $\to$ 1935 \\
+ & movie-director-birthyear & 2{,}180 & movie$\to$director, director$\to$birth year & Cape Fear $\to$ Martin Scorsese $\to$ 1942 \\
+ & landmark-country-capital & 1{,}385 & landmark$\to$country, country$\to$capital & Taq-i Kisra $\to$ Iraq $\to$ Baghdad \\
+ & park-country-capital & 743 & park$\to$country, country$\to$capital & Mount Rainier National Park $\to$ United States $\to$ Washington, D.C. \\
+ & person-university-year & 4{,}992 & person$\to$university, university$\to$founding year & Andi Gutmans $\to$ Technion -- Israel Institute of Technology $\to$ 1924 \\
+ & person-university-founder & 4{,}996 & person$\to$university, university$\to$founder & Ezra Abbot $\to$ Bowdoin College $\to$ James Bowdoin \\
+ & product-company-ceo & 1{,}904 & product$\to$company, company$\to$CEO & NES-101 $\to$ Nintendo $\to$ Shuntaro Furukawa \\
+ & product-company-hq & 2{,}276 & product$\to$company, company$\to$headquarters & Toyota Alphard $\to$ Toyota $\to$ Toyota \\
+\midrule
+Arithmetic & plus-10-times-2 & 1{,}000 & $x+10$, $2x$ & 699 $\to$ 709 $\to$ 1418 \\
+ & plus-100-times-2 & 1{,}000 & $x+100$, $2x$ & 922 $\to$ 1022 $\to$ 2044 \\
+ & mod-20-times-2 & 1{,}000 & $x \bmod 20$, $2x$ & 891 $\to$ 11 $\to$ 22 \\
+ & word-numeric & 1{,}000 & number word$\to$digits, $2x$ & one hundred and forty-eight $\to$ 148 $\to$ 296 \\
+\midrule
+String & word-truncate-reverse & 2{,}946 & drop the last letter, reverse & responsible $\to$ responsibl $\to$ lbisnopser \\
+\midrule
+Colour & rgb-rotate-name & 1{,}000 & rotate the hue by 120°, name the colour & 8a735a $\to$ 598a73 $\to$ dimgray \\
+\bottomrule
+\end{tabularx}
+\caption{The 18 two-hop tasks, with the item counts and examples of \citet[Table~1]{khandelwal2026compose}. The bridge $f(x)$ is never in the prompt. Inputs of the arithmetic tasks are 0 to 999. Some tasks also allow the order $x \to g(x) \to g(f(x))$ (e.g.\ translating first, then taking the antonym); the bridge here is always $f(x)$.}
+\label{tab:tasks}
+\end{table}
+
+\paragraph{Prompts.} As for the simple tasks, after \citet{yang2026shared}: raw text without the chat template; five instruction templates per task (a cloze form and four of the form ``\textless instruction\textgreater{} Q: \{x\}\textbackslash nA:''); example prompts with 1 and 5 shots (`` x$_1$: y$_1$; x:''); and the zero-shot prompt `` x:'', which states no task. Yang et al.'s code has templates for 8 of the 18 tasks, which we use unchanged (their first five, as for the simple tasks). For the other 10 we wrote five each in Yang et al.'s own two-hop patterns: the cloze ``The \textless answer\textgreater{} of the \textless bridge\textgreater{} of \{x\} is'', then ``What is \dots?'', ``Return \dots'', ``Help me find \dots'' and the arrow form ``Book $\rightarrow$ Author $\rightarrow$ Birth year.'' (App.~\ref{app:templates}). Every template names both hops. Ours never repeat the query inside the instruction; four of Yang et al.'s tasks do (park-country-capital, product-company-ceo and the two person-university tasks, e.g.\ ``What is the capital city of the country where \{x\} is located? Q: \{x\}\textbackslash nA:''), which matters for the attention filters and the causal score (Sec.~\ref{sec:approaches}). The prompt format of \citet{khandelwal2026compose}, 10 shots with no instruction, is not used.
+
+\paragraph{Testing a head set.} By mean patching, as for the simple tasks: at the last prompt token, each head of the set is replaced by $\alpha$ times its mean output over correctly answered prompts that state the task, and the model generates its answer.
+\begin{itemize}
+\item \textbf{Check 1} patches the zero-shot prompts `` x:'' of items the model answers correctly with one shot. This is the main test and the only one in the comparison.
+\item \textbf{Check 2} patches the 1-shot prompts of items the model answers wrongly with one shot. It is used in the reproduction only.
+\end{itemize}
+A \emph{control} patches the same heads with the mean of an unrelated task (Table~\ref{tab:controls}). We use Yang et al.'s control pairs where their code gives one. For the antonym tasks it names ``spanish'' and ``french'', which are not task names in their code; we read them as the simple tasks English--Spanish and English--French. For the 10 new tasks we take person--sport, the control Yang et al.\ give their factual two-hop tasks.
+
+\begin{table}[tbp]
+\centering\small
+\begin{tabularx}{\textwidth}{@{}lllL@{}}
+\toprule
+Task & Templates & Control & Hops among the simple tasks \\
+\midrule
+antonym-spanish & Yang & English--French (their ``french'') & antonym, English--Spanish \\
+antonym-german & Yang & English--French (their ``french'') & antonym, English--German \\
+antonym-french & Yang & English--Spanish (their ``spanish'') & antonym, English--French \\
+landmark-country-capital & Yang & person--sport & landmark--country, country--capital \\
+park-country-capital & Yang & person--sport & park--country, country--capital \\
+product-company-ceo & Yang & person--sport & product--company (hop 1 only) \\
+person-university-year & Yang & person--occupation & -- \\
+person-university-founder & Yang & person--occupation & -- \\
+product-company-hq & new & person--sport & product--company (hop 1 only) \\
+the other 9 & new & person--sport & -- \\
+\bottomrule
+\end{tabularx}
+\caption{Templates, control tasks and the hops that are also simple tasks. Yang et al.'s code also has a hand-written term list for each hop of its 8 tasks (\texttt{task\_relation\_dict.json}); the other 10 tasks have none.}
+\label{tab:controls}
+\end{table}
+
+\paragraph{Scoring.} The flexible score of the simple tasks: a reply is correct when it begins with the whole reference answer as words, ignoring case, accents, punctuation and a leading article. Multi-word answers (Washington, D.C.; Shuntaro Furukawa) must be complete, and a number must not continue (1418 is not 14180). On the antonym tasks some answers are function words (Spanish \emph{no}, French \emph{non}, German \emph{nicht}), which the score accepts at the start of any longer reply.
+
+\paragraph{Answer skew.} Some tasks have a dominant answer: Berlin is the answer of 23\% of landmark-country-capital items, one CEO of 14\% of product-company-ceo items, Washington, D.C.\ of 12\% of park-country-capital items and Thomas Jefferson of 9\% of person-university-founder items. A set that only pushes the model towards such a name scores at that rate. For every set and task we will compare the share of its most frequent reply with the share of the most frequent answer among the patched items.
+
+\paragraph{Held-out protocol.} Unchanged from the simple tasks. Each task's items are shuffled once (seed 0) and split into halves $A$ and $B$; fold~1 chooses on $A$ and tests on $B$, fold~2 the reverse. Everything that depends on items is computed on the choosing half: the prompts whose heads are read, the word lists, the bridge scores, the generic heads, the rankings, the causal scores and the task and control means. The means are one per instruction template, over its first 100 correctly answered prompts of the choosing half; each patched item is patched with each of the five means and accuracy is averaged over them. Up to 100 items per task and fold are patched. $\alpha\in\{1,2\}$, cross-fitted between the folds (ties to $\alpha=1$); random sets take the $\alpha$ of the set they are matched to. Reported numbers are means of the two folds. Replies stop at a newline, the example delimiter or 16 tokens. Runs are single and greedy, and we report accuracies only.
+
+\paragraph{Unpatched accuracy and the tasks kept.} Before any head is read, every item of every task is run unpatched with the five templates, 1 and 5 shots and the zero-shot prompt (and the control tasks with 1 shot and their template~1). A task is kept for the comparison if, on each half, at least 30 items are answered correctly with one shot (the patched items) and at least three of the five templates have at least 20 correctly answered prompts (the means). The shared sets use the kept tasks only.
+\pending{Accuracy by task and wording, items per half, the tasks kept (App.~\ref{app:e0}).}
+
+% =====================================================================
+\section{Reproducing Yang et al.'s two-hop result}\label{sec:repro}
+
+\paragraph{What their paper reports.} Three two-hop tasks, landmark-country-capital, park-country-capital and product-company-ceo \citep[App.~M]{yang2026shared}. Lexical task heads are found ``for each of the two composing tasks'' as for the simple tasks: a head counts for a hop if, on at least 10\% of 100 correctly answered prompts, one of its top-10 Logit-head tokens is in the hop's term list. The heads ``of both composing tasks'' are patched, and they recover 12 to 50\% of the performance (Fig.~78). The paper gives the prompts only as wording variations A to E and the results only in figures (Figs.~76 to 78); the model is not named (Llama-3.1-8B-Instruct is their main model).
+
+\paragraph{What their code does.} It sets up eight tasks (Table~\ref{tab:controls}, first eight rows), with templates, a term list for each hop and control pairs. A two-hop task's heads are read on its own prompts and scored against each hop's term list, which gives one head set per hop. In the patching code (\texttt{fix\_incorrect\_prompts.py}) the loop that should join the two hops' sets replaces the list on each pass, so only the second hop's heads are patched, for example only the capital heads of landmark-country-capital. This is our reading of the code, which we will check by running it.
+
+\paragraph{Design.} Their eight tasks, with the three of the paper marked. Heads read on the most accurate template (rule style) and on the 5-shot prompts (example style), with both Logit-head and J-head; hop term lists, thresholds and prompt counts theirs. Two sets per hop pair: the union of the two hops' heads (the paper) and the second hop's heads (the code). Both checks, each wording's own mean, the 15 values of $\alpha$ from $-10$ to $10$ of the simple reproduction, and their controls. We compare head counts and accuracy curves with their Figs.~77 and~78, read from the figures. Departures, by choice as for the simple tasks: the padding mask, the J-head readout, the flexible score, bfloat16, and the union where their code takes the second hop.
+\pending{Head counts per hop and readout; check 1 and check 2 by task, union against second hop; comparison with their figures.}
+
+% =====================================================================
+\section{Comparison design}\label{sec:approaches}
+
+The comparison of \texttt{head-sets-simple} is repeated on the kept tasks, with the same sizes, scopes and protocol. Every rule ranks the 1{,}024 heads and the set is its top $N$, $N\in\{20,40,60,80,100,120\}$, ties to the lower layer, then head. \emph{Per task}, heads are ranked on the task's scores; \emph{shared}, on scores combined over the kept two-hop tasks (within-task ranks averaged over tasks), and each task is still patched with its own means. Table~\ref{tab:approaches} lists the rules.
+
+\begin{table}[tbp]
+\centering\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{4.2cm}Lc@{}}
+\toprule
+Rule & A head ranks high if \dots & Needs \\
+\midrule
+\multicolumn{3}{@{}l}{\textit{Filters fixed on the simple tasks}} \\
+Per task: DBMN, DBTM, DBTMS, DBS, DBTS & its ranks on the named filters are good on average; the five best per-task combinations of the simple tasks at 40 heads & lens, attention \\
+Shared: DBTLS, DBTLM, DBTM, DBTLMS, DBMN & the same for the five best shared combinations & lens, attention \\
+DBT, BT & the combinations fixed before any simple-task run & lens, attention \\
+\midrule
+\multicolumn{3}{@{}l}{\textit{New}} \\
+F & it decodes the item's bridge on many prompts & lens, bridge \\
+F + each of the above (DBMNF, \dots, BTF) & its ranks on F and on the combination's filters are good on average & as its filters \\
+\midrule
+\multicolumn{3}{@{}l}{\textit{Davidson et al.\ (reference)}} \\
+Causal, Causal $-$ generic & its causal score is high; without the generic heads & causal \\
+\midrule
+\multicolumn{3}{@{}l}{\textit{Baseline and control}} \\
+Yang terms & it decodes a term of either hop's hand-written list on many prompts (8 tasks) & lens, lists \\
+Random & as many heads in each layer as DBT of the same scope and $N$ (5 draws) & -- \\
+\midrule
+\multicolumn{3}{@{}l}{\textit{Sets taken from the simple tasks}} \\
+Hop 1, hop 2, union & the per-task sets of the hop tasks, by the five per-task combinations above & -- \\
+Simple shared & the simple tasks' shared sets of the five shared combinations and Shared Causal $-$ generic, unchanged & -- \\
+\bottomrule
+\end{tabularx}
+\caption{The rules of the two-hop comparison. Every rule is run at $N$ = 20 to 120; the first four blocks per task and shared. D: decodes task words; B: low attention to the first token; T: attention to the task words; L: to the last token; M: to the question--answer markers; S: to punctuation and stopwords; N: to the whole instruction.}
+\label{tab:approaches}
+\end{table}
+
+\paragraph{Filters.} D, B, T, L, M, S and N are computed as for the simple tasks, on the correctly answered prompts of the five templates of the choosing half (up to 100 per template), at the last token. The task-word list is again the task's 30 words most often decoded by J-head, after removing the 50 words most often decoded on WikiText-103. On two-hop prompts it can hold bridges and answers that recur (Germany, Berlin) as well as task words (capital, country). Where a template repeats the query inside the instruction, both copies count as the query, for T as for the token types of L, M, S and N.
+
+\paragraph{The filters as a fresh test.} The five combinations per scope are the best five of 79 at 40 heads on the simple tasks, and on the simple tasks they were chosen on the same held-out items they were reported on. Here they are fixed before any two-hop run, so the two-hop comparison is their first test on tasks and items not used to choose them. DBT and BT were fixed before any run on either family.
+
+\paragraph{Bridge filter F.} A head's F score is the share of choosing-half prompts on which it decodes the item's bridge: the first token of $f(x)$, with and without a leading space and in its case variants, among its top-10 J-head tokens at the last token. Only prompts on which that token differs from the first token of the query and of the answer are counted, so that copying the query or writing the answer does not score (in the French antonym task, \emph{insufficient} and \emph{insuffisant} may share their first token). Unlike D, F needs no word list and changes with every item. It ranks heads higher the larger it is, and joins the combinations by rank like any other filter. F is added to each of the seven combinations of its scope.
+
+\paragraph{Causal score and generic heads.} Davidson et al.'s causal score on the choosing half, on the four question--answer templates, as for the simple tasks, with two adaptations. The pool of other tasks' instructions, one of the three kinds of uninformative text, excludes the task itself and every task that shares a hop with it (the antonym tasks with each other and with antonym and the translations; landmark- and park-country-capital with each other and with country--capital; and so on). Where an instruction repeats the query, the uninformative text replaces the whole instruction and is matched in length and log-probability to the instruction filled with the first item of the choosing half. Generic heads are defined as for the simple tasks: among the fold's 30 top heads by the shared causal score, split into two groups by the J-head generic score (now over the kept two-hop tasks), none removed if more than 15 are marked.
+
+\paragraph{Yang terms.} Heads ranked by the share of prompts on which they decode a term of either hop's list (union of the two lists, their token expansion), on the eight tasks that have lists. Shared Yang terms is chosen on those eight. A size the rule cannot fill on a task is not run and is shown as ``--''.
+
+\paragraph{Hop sets.} Five tasks have both hops among the simple tasks (Table~\ref{tab:controls}): landmark- and park-country-capital, and the three antonym tasks. Product-company-ceo and product-company-hq have only their first hop there. For each of the five per-task combinations and each size, the simple tasks' fold-$f$ sets of the two hops are taken unchanged and used for two-hop fold~$f$; they were chosen on simple-task items, so they use none of the two-hop items. Four conditions per combination and size:
+\begin{itemize}
+\item \textbf{hop 1} and \textbf{hop 2}, each patched with the two-hop task's means;
+\item \textbf{union, two-hop means}: both hop sets together (up to $2N$ heads), patched with the two-hop task's means. This asks whether the hop heads are where the two-hop task lives;
+\item \textbf{union, hop means}: each hop set patched with its own simple task's means (template $k$ of hop~1 on hop-1 heads together with template $k$ of hop~2 on hop-2 heads; the average of the two on heads in both), from the simple tasks' choosing half. This asks whether writing both single-hop tasks into the prompt makes the model compose them.
+\end{itemize}
+On the two tasks with one simple hop, hop~1 is run with both kinds of mean. A union is compared with the two-hop sets of the nearest size.
+
+\paragraph{Simple shared sets.} The simple tasks' shared sets of the five shared combinations and Shared Causal $-$ generic, at every size and fold, patched with each two-hop task's own means. They were chosen on simple tasks alone.
+
+\paragraph{Protocol and checkpoints.} Check~1 only, $\alpha\in\{1,2\}$ cross-fitted, the control mean for every non-random set, every patched reply logged. Before any patching, the sets are built on CPU and shown with their sizes, the shortfalls of Yang terms, their overlaps (F with D, two-hop sets with hop unions and with the simple shared sets) and the number of simple-task items that are also two-hop items. Table~\ref{tab:cost} gives the planned number of patched conditions.
+
+\begin{table}[tbp]
+\centering\small
+\begin{tabularx}{\textwidth}{@{}Lrrr@{}}
+\toprule
+Condition & Rules & Sets per task and fold & With control \\
+\midrule
+Per task: filters, F, Causal, Yang terms & 18 & 108 & 216 \\
+Per task: random & 5 draws & 30 & 30 \\
+Shared: as per task & 18 + 5 & 138 & 246 \\
+Simple shared sets & 6 & 36 & 72 \\
+Hop sets (5 tasks) & 5 $\times$ 4 & 120 & 240 \\
+Hop sets (2 tasks, hop 1 only) & 5 $\times$ 2 & 60 & 120 \\
+\bottomrule
+\end{tabularx}
+\caption{Planned patched conditions, each at six sizes, five means, up to 100 items and two values of $\alpha$. On 18 kept tasks, about 23{,}000 conditions over both folds and some 23 million short replies; extrapolated from the simple-task runs, about 13 hours on four GPUs. Fewer kept tasks lower this proportionally.}
+\label{tab:cost}
+\end{table}
+
+% =====================================================================
+\section{Results}\label{sec:results}
+
+\subsection{Accuracy against set size}
+\pending{Mean of the kept tasks by rule, scope and size, with control and random; per-task tables in App.~\ref{app:tables}.}
+
+\subsection{The simple-task filters on new tasks}
+\pending{Whether the five combinations per scope and DBT/BT keep their order and their lead over the causal ranking.}
+
+\subsection{Decoding the bridge}
+\pending{F alone and added to each combination; where the heads with high F lie; how F relates to D, and to the tasks in which \citet{khandelwal2026compose} find the bridge in the residual stream or not.}
+
+\subsection{Generic heads}
+\pending{The generic heads of the two-hop tasks, against those of the simple tasks; Causal against Causal $-$ generic.}
+
+\subsection{Hop sets}
+\pending{Hop 1, hop 2 and their union with two-hop means, the union with hop means, and native sets of the same size.}
+
+\subsection{Simple shared sets unchanged}
+\pending{The simple tasks' shared sets on two-hop tasks, against the shared sets chosen on two-hop tasks.}
+
+\subsection{By task group}
+\pending{Lexical, factual, arithmetic, string and colour tasks; the answer-skew check.}
+
+% =====================================================================
+\section{Best approaches}\label{sec:best}
+\pending{Written once the results are in.}
+
+% =====================================================================
+\section{Limitations}
+
+Known before any run. One model. Ten of the 18 tasks have templates we wrote, checked by eye only; Yang et al.'s eight are theirs. The control pairs of the antonym tasks are our reading of names their code does not define. Several tasks have a dominant answer, so accuracy must be read against the answer-skew check. The flexible score accepts the short function-word answers of the antonym tasks at the start of a longer reply. F uses the first token of the bridge only, which for numbers, hexadecimal colours and word fragments may be a piece rather than the entity. Hop sets exist only for the five tasks whose hops are simple tasks (and the first hop of two more), and the simple and two-hop datasets may share some inputs (counted before the runs). The five combinations per scope were chosen on the simple tasks' test items, which makes them optimistic there but fixed here. Only check~1 is used in the comparison, only $\alpha$ 1 and 2, and one prompt format; the 10-shot, instruction-free format of \citet{khandelwal2026compose} and their requirement that both hops be answered correctly are not used.
+
+\subsection*{Conditions not planned}
+Patched items restricted to those whose two hops the model also answers alone; means from 10-shot prompts without instructions; other wordings of the two-hop tasks; the other order of hops ($g$, then $f$) where the task allows it.
+
+{\sloppy\paragraph{Code and data (planned).} Data snapshot \texttt{materials/two\_hop/composing\_functions.json} and templates \texttt{materials/two\_hop/templates.json}; task layer \texttt{lth/two\_hop.py}; split \texttt{scripts/th\_split.py}; unpatched runs \texttt{scripts/th\_outputs.py}; readings, attention and causal scores through \texttt{scripts/heldout\_readings.py}, \texttt{scripts/e20\_bai\_attention.py} and \texttt{scripts/davidson\_fv.py} with a two-hop family; sets \texttt{scripts/th\_sets.py}; runs \texttt{scripts/th\_patch.sh}; tables and figures \texttt{scripts/th\_report.py}; results in \texttt{results/two\_hop}. Branch \texttt{two-hop}.\par}
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+% =====================================================================
+\appendix
+
+\section{Templates}\label{app:templates}
+
+Yang et al.'s first five templates for their eight tasks, and ours for the ten new ones (marked \emph{new}). \texttt{\{input\}} is replaced by the query; \textbackslash n is a line break.
+
+{\small
+\begin{xltabular}{\textwidth}{@{}>{\raggedright\arraybackslash}p{4.3cm}lL@{}}
+\toprule
+Task & & Template \\
+\midrule
+\endhead
+\input{tables/th_templates}
+\end{xltabular}
+}
+
+\section{Unpatched accuracy}\label{app:e0}
+\pending{Accuracy by task and wording; items answered correctly with one shot per half; correctly answered prompts per template and half; the tasks kept.}
+
+\section{Per-task results}\label{app:tables}
+\pending{Per task and control, by rule, scope and size.}
+
+\end{document}
