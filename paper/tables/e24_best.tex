@@ -5,20 +5,30 @@
 \cmidrule(lr){2-3}\cmidrule(lr){4-5}
 Set (chosen on rule prompts) & task & control & task & control \\
 \midrule
-\multicolumn{5}{@{}l}{\textit{Per task}} \\
-DBTMS-100 & 0.68 & 0.02 & 0.64 & 0.03 \\
-DBMN-60 & 0.66 & 0.02 & 0.49 & 0.03 \\
+\multicolumn{5}{@{}l}{\textit{Per task, $N=40$}} \\
 DBT-40 & 0.55 & 0.02 & 0.45 & 0.02 \\
-Causal-120 & 0.61 & 0.04 & 0.45 & 0.04 \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Per task, $N=60$}} \\
+DBMN-60 & 0.66 & 0.02 & 0.49 & 0.03 \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Per task, $N=100$}} \\
+DBTMS-100 & 0.68 & 0.02 & 0.64 & 0.03 \\
 Random-100 (DBT layers) & 0.01 & -- & 0.33 & -- \\
 Random-100 (ex.\ DB layers) & 0.02 & -- & 0.03 & -- \\
 \midrule
-\multicolumn{5}{@{}l}{\textit{Shared}} \\
-Causal $-$ generic-100 & 0.71 & 0.01 & 0.50 & 0.01 \\
+\multicolumn{5}{@{}l}{\textit{Per task, $N=120$}} \\
+Causal-120 & 0.61 & 0.04 & 0.45 & 0.04 \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Shared, $N=80$}} \\
 Causal $-$ generic-80 & 0.69 & 0.02 & 0.52 & 0.02 \\
-DBTMS-120 & 0.71 & 0.02 & 0.58 & 0.03 \\
 DBMN-80 & 0.70 & 0.02 & 0.54 & 0.02 \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Shared, $N=100$}} \\
+Causal $-$ generic-100 & 0.71 & 0.01 & 0.50 & 0.01 \\
 Random-100 (DBT layers) & 0.01 & -- & 0.34 & -- \\
 Random-100 (ex.\ DB layers) & 0.01 & -- & 0.01 & -- \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Shared, $N=120$}} \\
+DBTMS-120 & 0.71 & 0.02 & 0.58 & 0.03 \\
 \bottomrule
 \end{tabular}

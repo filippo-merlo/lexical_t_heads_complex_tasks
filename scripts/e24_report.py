@@ -115,38 +115,50 @@ def cell(v: float, bold: bool = False) -> str:
     return r"\textbf{" + s + "}" if bold else s
 
 
+def size_of(name: str) -> int:
+    return int(re.search(r"(\d+)(?:_nogen)?$", name).group(1))
+
+
+def by_size(scope: str) -> list[tuple[int, list[tuple[str, str]]]]:
+    """The scope's Step A sets grouped by size N (ascending), so that only sets of one N share a block."""
+    sizes = sorted({size_of(s) for s, _ in BEST[scope]})
+    return [(n, [(s, l) for s, l in BEST[scope] if size_of(s) == n]) for n in sizes]
+
+
 def table_best(per: pd.DataFrame) -> tuple[str, list[dict]]:
+    """One block per scope and set size N."""
     rows, md = [r"\begin{tabular}{@{}lrrrr@{}}", r"\toprule",
                 r" & \multicolumn{2}{c}{Rule means} & \multicolumn{2}{c}{Example means} \\",
                 r"\cmidrule(lr){2-3}\cmidrule(lr){4-5}",
-                r"Set (chosen on rule prompts) & task & control & task & control \\", r"\midrule"], []
+                r"Set (chosen on rule prompts) & task & control & task & control \\"], []
     for scope, title in (("task", "Per task"), ("shared", "Shared")):
-        rows.append(r"\multicolumn{5}{@{}l}{\textit{" + title + r"}} \\")
-        for s, label in BEST[scope]:
-            r_t, r_c = acc(per, s, "rule"), acc(per, s, "rule", "control")
-            e_t, e_c = acc(per, s, "example"), acc(per, s, "example", "control")
-            rows.append(f"{label} & {cell(r_t)} & {cell(r_c)} & {cell(e_t)} & {cell(e_c)} " + r"\\")
-            md.append(dict(scope=scope, set=s, rule_task=r_t, rule_control=r_c, example_task=e_t, example_control=e_c))
-        if scope == "task":
-            rows.append(r"\midrule")
+        for n, sets in by_size(scope):
+            rows += [r"\midrule", r"\multicolumn{5}{@{}l}{\textit{" + title + f", $N={n}$" + r"}} \\"]
+            for s, label in sets:
+                r_t, r_c = acc(per, s, "rule"), acc(per, s, "rule", "control")
+                e_t, e_c = acc(per, s, "example"), acc(per, s, "example", "control")
+                rows.append(f"{label} & {cell(r_t)} & {cell(r_c)} & {cell(e_t)} & {cell(e_c)} " + r"\\")
+                md.append(dict(scope=scope, n=n, set=s, rule_task=r_t, rule_control=r_c, example_task=e_t,
+                               example_control=e_c))
     rows += [r"\bottomrule", r"\end{tabular}", ""]
     return "\n".join(rows), md
 
 
 def table_types(per: pd.DataFrame) -> str:
-    sets = [(s, l) for scope in ("task", "shared") for s, l in BEST[scope]]
+    """By task type, one block per scope and set size N."""
+    ncol = 1 + 2 * len(GROUPS)
     rows = [r"\begin{tabular}{@{}l" + "rr" * len(GROUPS) + "@{}}", r"\toprule",
             " & " + " & ".join(r"\multicolumn{2}{c}{" + g + "}" for g in GROUPS) + r" \\",
             "".join(r"\cmidrule(lr){%d-%d}" % (2 + 2 * i, 3 + 2 * i) for i in range(len(GROUPS))),
-            "Set & " + " & ".join(["rule & ex."] * len(GROUPS)) + r" \\", r"\midrule"]
-    for i, (s, label) in enumerate(sets):
-        if i == len(BEST["task"]):
-            rows.append(r"\midrule")
-        prefix = "Shared " if s.startswith(("shared_", "random_shared", "random_ex_shared")) else ""
-        cells = []
-        for ts in GROUPS.values():
-            cells += [cell(acc(per, s, "rule", tasks=ts)), cell(acc(per, s, "example", tasks=ts))]
-        rows.append(prefix + label + " & " + " & ".join(cells) + r" \\")
+            "Set & " + " & ".join(["rule & ex."] * len(GROUPS)) + r" \\"]
+    for scope, title in (("task", "Per task"), ("shared", "Shared")):
+        for n, sets in by_size(scope):
+            rows += [r"\midrule", r"\multicolumn{%d}{@{}l}{\textit{%s, $N=%d$}} \\" % (ncol, title, n)]
+            for s, label in sets:
+                cells = []
+                for ts in GROUPS.values():
+                    cells += [cell(acc(per, s, "rule", tasks=ts)), cell(acc(per, s, "example", tasks=ts))]
+                rows.append(label + " & " + " & ".join(cells) + r" \\")
     rows += [r"\bottomrule", r"\end{tabular}", ""]
     return "\n".join(rows)
 

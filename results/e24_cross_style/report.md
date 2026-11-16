@@ -4,20 +4,20 @@ Check 1, held-out items, cross-fitted alpha in {1, 2}, mean of two folds and 14 
 
 ## Step A: best rule-built sets
 
-| set | scope | rule_task | rule_control | example_task | example_control |
-|---|---|---|---|---|---|
-| DBTMS100 | task | 0.683 | 0.022 | 0.643 | 0.027 |
-| DBMN60 | task | 0.664 | 0.024 | 0.486 | 0.026 |
-| DBT40 | task | 0.553 | 0.017 | 0.449 | 0.017 |
-| causal120 | task | 0.614 | 0.035 | 0.453 | 0.043 |
-| random_dbt100 | task | 0.006 | -- | 0.328 | -- |
-| random_ex_db100 | task | 0.023 | -- | 0.032 | -- |
-| shared_causal100_nogen | shared | 0.711 | 0.013 | 0.498 | 0.013 |
-| shared_causal80_nogen | shared | 0.691 | 0.02 | 0.515 | 0.019 |
-| shared_DBTMS120 | shared | 0.711 | 0.024 | 0.582 | 0.031 |
-| shared_DBMN80 | shared | 0.698 | 0.017 | 0.544 | 0.019 |
-| random_shared_dbt100 | shared | 0.008 | -- | 0.34 | -- |
-| random_ex_shared_db100 | shared | 0.008 | -- | 0.005 | -- |
+| set | scope | n | rule_task | rule_control | example_task | example_control |
+|---|---|---|---|---|---|---|
+| DBT40 | task | 40 | 0.553 | 0.017 | 0.449 | 0.017 |
+| DBMN60 | task | 60 | 0.664 | 0.024 | 0.486 | 0.026 |
+| DBTMS100 | task | 100 | 0.683 | 0.022 | 0.643 | 0.027 |
+| random_dbt100 | task | 100 | 0.006 | -- | 0.328 | -- |
+| random_ex_db100 | task | 100 | 0.023 | -- | 0.032 | -- |
+| causal120 | task | 120 | 0.614 | 0.035 | 0.453 | 0.043 |
+| shared_causal80_nogen | shared | 80 | 0.691 | 0.02 | 0.515 | 0.019 |
+| shared_DBMN80 | shared | 80 | 0.698 | 0.017 | 0.544 | 0.019 |
+| shared_causal100_nogen | shared | 100 | 0.711 | 0.013 | 0.498 | 0.013 |
+| random_shared_dbt100 | shared | 100 | 0.008 | -- | 0.34 | -- |
+| random_ex_shared_db100 | shared | 100 | 0.008 | -- | 0.005 | -- |
+| shared_DBTMS120 | shared | 120 | 0.711 | 0.024 | 0.582 | 0.031 |
 
 ## Steps B and C: built on rule or example prompts x rule or example means
 
