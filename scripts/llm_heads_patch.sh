@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# E5 (paper/proposal-llm-heads.tex), patching, as E4 (scripts/heldout_patch.sh): per fold, the
+# E5 (paper/archive/proposal-llm-heads.tex), patching, as E4 (scripts/heldout_patch.sh): per fold, the
 # LLM sets (after removal and raw), cc30, fv30 and E4's fv20 (check) in both checks with the task
 # and control means; the random sets in check 1 with the task means only. Ten alphas, rule means
 # of the choosing half, control in both checks, replies of at most 16 tokens. Sets from

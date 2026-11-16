@@ -1,4 +1,4 @@
-"""E4b (paper/e4_heldout.tex): new instruction templates for the 14 simple tasks, from GPT-5.5.
+"""E4b (paper/archive/e4_heldout.tex): new instruction templates for the 14 simple tasks, from GPT-5.5.
 
 For each task, six cells of five templates: three forms (cloze, question-answer, label) x
 whether the instruction names the task. Each cell has one fixed prompt

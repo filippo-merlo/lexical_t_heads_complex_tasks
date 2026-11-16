@@ -1,4 +1,4 @@
-"""E5 (paper/proposal-llm-heads.tex): the head tables and the prompts for the LLM (no GPU).
+"""E5 (paper/archive/proposal-llm-heads.tex): the head tables and the prompts for the LLM (no GPU).
 
 For each task, choosing half (A for fold 1, B for fold 2) and readout, from the top-20 readings
 of ``scripts/heldout_readings.py --k 20`` (``data/readings/heldout_top20``), pooled over the five

@@ -1,4 +1,4 @@
-"""E4 (paper/e4_heldout.tex): the item split of each simple task and the counts it leaves.
+"""E4 (paper/archive/e4_heldout.tex): the item split of each simple task and the counts it leaves.
 
 The items of each task (file order, ``lth.simple.dataset``) are shuffled with seed 0 and cut
 into two halves, A and B (one more in A when odd). Fold 1 chooses on A and tests on B, fold 2

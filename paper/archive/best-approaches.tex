@@ -171,35 +171,35 @@ Tables~\ref{tab:check1}--\ref{tab:llm} give every task. They are built by \textt
 
 \begin{table}[!htbp]
 \centering\small\setlength{\tabcolsep}{4pt}
-\input{tables/best_check1}
+\input{../tables/best_check1}
 \caption{Check 1 (zero-shot prompts), every approach, per task. \emph{Held-out}: E4, cross-fitted $\alpha$, mean of the two folds; E1 and CC J-head sets rechosen on the choosing half; FV-30 = Davidson et al.'s 30-head function vector at $\alpha=1$; FV-$N_t$ = as many heads as CC, ranked by the task's own FV score; Random = 5 layer-matched draws of CC's size at CC's $\alpha$. \emph{One fold}: E4 secondary sets, fold~1, best $\alpha$. \emph{Same items}: FV split run (FV-30: the full FV; task24: FV-30 minus its 6 generic heads), best of $\alpha\in\{0,1,2,3,5,8\}$ on the items scored. Control mean: the same heads patched with another task's mean (held-out sets only).}
 \label{tab:check1}
 \end{table}
 
 \begin{table}[!htbp]
 \centering\small
-\input{tables/heldout_check1_sizes}
+\input{../tables/heldout_check1_sizes}
 \caption{Check 1 at equal size (held-out, cross-fitted $\alpha$). CC-$N$: the first $N$ heads by CC match rate; FV-$N$: the first $N$ by the task's FV score; Random-$N$: layer-matched to CC-$N$.}
 \label{tab:sizes}
 \end{table}
 
 \begin{table}[!htbp]
 \centering\small\setlength{\tabcolsep}{4pt}
-\input{tables/best_check2}
+\input{../tables/best_check2}
 \caption{Check 2 (1-shot prompts answered wrongly, baseline 0), per task. Items: patched items in fold~1 / fold~2 (few on several tasks). Held-out and one-fold sets as in Table~\ref{tab:check1}. Control means are often as large as the task means (next-item, prev-item, singular--plural).}
 \label{tab:check2}
 \end{table}
 
 \begin{table}[!htbp]
 \centering\small
-\input{tables/best_fvsplit}
+\input{../tables/best_fvsplit}
 \caption{Davidson et al.'s 30-head FV split (check 1, same items, best $\alpha$ per task over $\{0,1,2,3,5,8\}$). all30: the full FV; task24: without the 6 generic heads; generic6: those 6 alone; drop-6 random: the FV minus 6 random non-generic heads, mean of 3 draws. Last two columns: the $\alpha$ of the best value.}
 \label{tab:fvsplit}
 \end{table}
 
 \begin{table}[!htbp]
 \centering\small
-\input{tables/best_llm}
+\input{../tables/best_llm}
 \caption{E5, LLM-scored heads (GPT-5.5 scores every head from its top-20 decoded tokens), the two tasks run so far; held-out, cross-fitted $\alpha$, mean of the two folds. LLM-J / LLM-L: top-$N$ heads by score on J-head / Logit-head readings (Logit-head sets run up to 40 heads). CC, FV: E4 sets of the same size (last English--German row: the full CC set and FV-$N_t$). Random: layer-matched to LLM-J. --: not run.}
 \label{tab:llm}
 \end{table}

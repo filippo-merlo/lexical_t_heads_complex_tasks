@@ -1,4 +1,4 @@
-"""E4 (paper/e4_heldout.tex): the decoded-word and E1 head sets of one fold, J-head only.
+"""E4 (paper/archive/e4_heldout.tex): the decoded-word and E1 head sets of one fold, J-head only.
 
 Everything is chosen on the choosing half (``--choose A`` for fold 1, ``B`` for fold 2): its
 identification readings (``scripts/heldout_readings.py``), its accuracies, the word shares of

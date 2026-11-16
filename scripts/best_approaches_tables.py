@@ -1,4 +1,4 @@
-"""Per-task result tables for paper/best-approaches.tex, gathered from existing outputs.
+"""Per-task result tables for paper/archive/best-approaches.tex, gathered from existing outputs.
 
 No number is recomputed here: every cell is copied from a file another script wrote.
 Sources:

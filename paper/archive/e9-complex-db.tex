@@ -59,7 +59,7 @@ DB is built as in E8 and patched as in E2's complex checks. The changes to eithe
 \section{Word lists and sets}
 
 \begin{table}[H]\centering\scriptsize
-\input{tables/e9_lists.tex}
+\input{../tables/e9_lists.tex}
 \caption{D's word lists, most active first. Generic (italics): among the 50 words heads decode most on WikiText under J-head (E8's definition).}
 \label{tab:lists}
 \end{table}
@@ -67,7 +67,7 @@ DB is built as in E8 and patched as in E2's complex checks. The changes to eithe
 As on the simple tasks, a part of each list is generic (5--14 of 30 words in the WikiText sense; \emph{covid}, \emph{wikipedia} or \emph{reddit} look generic too but are not in that set). The rest names the answer format (\emph{yes}, \emph{answer}, \emph{nos} on the two Yes/No tasks), the task's objects (\emph{card}, \emph{board}, \emph{player}, \emph{continue}) or its kind (\emph{math}, \emph{calculation}, \emph{grammar}, \emph{category}). No list holds the items a task is applied to (Set Game's animals and habitats, the words of the synthetic language, the objects Lexical Category Inference sorts); words like \emph{card}, \emph{board} or \emph{category} are in the prompt itself. Operator Function's answers are numbers, which the word rules leave out.
 
 \begin{table}[H]\centering\small
-\resizebox{\linewidth}{!}{\input{tables/e9_sets.tex}}
+\resizebox{\linewidth}{!}{\input{../tables/e9_sets.tex}}
 \caption{Heads per filter and in DB (1{,}024 heads in all); layers of the DB heads. In E2 J / L: DB heads in E2's rule-style J-head / Logit-head set, out of that set's size. In another DB: DB heads also in the DB set of at least one other task; in all DB: heads in all five DB sets.}
 \label{tab:sets}
 \end{table}
@@ -80,7 +80,7 @@ D passes about a fifth of all heads and B about 45\%, so DB keeps roughly half o
 \subsection{Check 1: prompts without task information}
 
 \begin{table}[H]\centering\small
-\input{tables/e9_complex.tex}
+\input{../tables/e9_complex.tex}
 \caption{Check 1. Accuracy of the patched replies, flexible score, task mean = mean over the seven rule wordings' means. Items: patched items; Unp.: their unpatched accuracy; Const.: accuracy of answering every item with its most frequent label (label tasks). DB (E9) and E2's rule-style J-head and Logit-head sets on the same items and means, at $\alpha$ 1 and 2. Control mean: the control task's mean under its original prompt, at the same heads.}
 \label{tab:check1}
 \end{table}
@@ -93,7 +93,7 @@ D passes about a fifth of all heads and B about 45\%, so DB keeps roughly half o
 \end{itemize}
 
 \begin{table}[H]\centering\scriptsize
-\resizebox{\linewidth}{!}{\input{tables/e9_labels.tex}}
+\resizebox{\linewidth}{!}{\input{../tables/e9_labels.tex}}
 \caption{Answers on the label tasks, pooled over the means of each condition (task: 7 wordings $\times$ 100 replies; control: 100). Answered: share of replies with an answer under the flexible score; top answer: the most frequent one, with its share of all replies; right: accuracy; one label: the accuracy of giving every answered item the label most frequent among the references of the answered items (unanswered items count as wrong), the line a one-label shift reaches without the task.}
 \label{tab:labels}
 \end{table}
@@ -101,7 +101,7 @@ D passes about a fifth of all heads and B about 45\%, so DB keeps roughly half o
 \subsection{Check 2: original prompts answered wrongly}
 
 \begin{table}[H]\centering\small
-\input{tables/e9_complex_wrong.tex}
+\input{../tables/e9_complex_wrong.tex}
 \caption{Check 2: the original rules prompts of the first 100 items answered wrongly under them (unpatched accuracy 0 by construction), as Table~\ref{tab:check1}.}
 \label{tab:check2}
 \end{table}
@@ -114,7 +114,7 @@ D passes about a fifth of all heads and B about 45\%, so DB keeps roughly half o
 \end{itemize}
 
 \begin{table}[H]\centering\small
-\input{tables/e9_overlap.tex}
+\input{../tables/e9_overlap.tex}
 \caption{Check 2: items right under a task mean (mean over the seven wordings), under the control mean, and under both (mean over wordings), out of 100.}
 \label{tab:overlap}
 \end{table}
@@ -148,7 +148,7 @@ D passes about a fifth of all heads and B about 45\%, so DB keeps roughly half o
 \section{Per wording}
 
 \begin{table}[H]\centering\small
-\input{tables/e9_wordings.tex}
+\input{../tables/e9_wordings.tex}
 \caption{DB, task accuracy under each rule wording's mean.}
 \label{tab:wordings}
 \end{table}

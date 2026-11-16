@@ -1,4 +1,4 @@
-"""E4 (paper/e4_heldout.tex): the function-vector head sets of one fold, added to its heads.json.
+"""E4 (paper/archive/e4_heldout.tex): the function-vector head sets of one fold, added to its heads.json.
 
 From the fold's CIE (``scripts/davidson_fv.py --half``, ``results/heldout/fold{f}/fv/cie.npz``,
 computed on the choosing half): a head's score on a task is its CIE averaged over the three

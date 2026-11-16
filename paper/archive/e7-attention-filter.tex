@@ -40,7 +40,7 @@
 Question: among heads that decode the task's words, what distinguishes the 24 FV task heads (the 30 FV heads of the 14-task run minus the 6 generic ones) from the CC heads that are not FV heads? Per task and head we compared the CC-list match rate, the FV score and its rank in the task, and last-token attention (Table~\ref{tab:profile}). These are whole-study readings, before the held-out split.
 
 \begin{table}[H]\centering\small
-\input{tables/e7_profile.tex}
+\input{../tables/e7_profile.tex}
 \caption{Medians per (task, head). FV task heads split by whether they decode the task's CC list (rate $\geq$0.3); CC-only = in the task's CC top 20 by match rate, not an FV head. Attention at the last prompt token, averaged over tasks. Source: \texttt{results/davidson\_fv\_diff/fv\_vs\_cc.json}.}
 \label{tab:profile}
 \end{table}
@@ -80,7 +80,7 @@ All choices were fixed before patching. E4's protocol, J-head only, rule style, 
 \section{Word lists and sets}\label{sec:sets}
 
 \begin{table}[H]\centering\scriptsize
-\input{tables/e7_lists.tex}
+\input{../tables/e7_lists.tex}
 \caption{Lists of fold 1; last column: words also in fold 2's lists (raw/clean). Removed WikiText words include \emph{which, what, http, https, mph, maybe, etc, instead, because}.}
 \label{tab:lists}
 \end{table}
@@ -88,7 +88,7 @@ All choices were fixed before patching. E4's protocol, J-head only, rule style, 
 The raw lists are roughly half task words and half generic words: \emph{what} and \emph{which} are on all 14, \emph{http} on 7. That is close to CC-pooled's own mix (5 task + 5 common words). After the WikiText cut no word is on more than 6 lists. The folds agree on 9--10 of the 10 words except next-item (different months come up).
 
 \begin{table}[H]\centering\small
-\resizebox{\linewidth}{!}{\input{tables/e7_sizes.tex}}
+\resizebox{\linewidth}{!}{\input{../tables/e7_sizes.tex}}
 \caption{Heads per set (range over the two folds); median BOS attention of the unfiltered set; heads reaching 10\% on only one of the five wordings.}
 \label{tab:sizes}
 \end{table}
@@ -101,7 +101,7 @@ The filter keeps a third or less of every set: most word-decoding heads look mai
 \subsection{Check 1}
 
 \begin{table}[H]\centering\small
-\resizebox{\linewidth}{!}{\input{tables/e7_check1.tex}}
+\resizebox{\linewidth}{!}{\input{../tables/e7_check1.tex}}
 \caption{Check 1, task accuracy at the cross-fitted $\alpha$, mean of the two folds. $+$F = BOS filter; drop / layer = random-drop and layer-matched random (mean of 5 draws, at the $\alpha$ of the filtered set). Items: patched items in fold 1/2. Control mean: accuracy with the control task's mean.}
 \label{tab:check1}
 \end{table}
@@ -114,7 +114,7 @@ The filter keeps a third or less of every set: most word-decoding heads look mai
 \end{itemize}
 
 \begin{table}[H]\centering\small
-\resizebox{\linewidth}{!}{\input{tables/e7_check1_refs.tex}}
+\resizebox{\linewidth}{!}{\input{../tables/e7_check1_refs.tex}}
 \caption{Check 1, raw $+$F against E4's sets on the same items: CC (CC-pooled, $\sim$120 heads), CC and FV ranked sets of 20 and 40 heads, and FV-$N_t$ (as many FV-ranked heads as CC).}
 \label{tab:refs}
 \end{table}
@@ -130,7 +130,7 @@ The filter keeps a third or less of every set: most word-decoding heads look mai
 \subsection{Check 2}
 
 \begin{table}[H]\centering\small
-\resizebox{\linewidth}{!}{\input{tables/e7_check2.tex}}
+\resizebox{\linewidth}{!}{\input{../tables/e7_check2.tex}}
 \caption{Check 2 (1-shot prompts answered wrongly), task accuracy at the cross-fitted $\alpha$. Random controls not run in this check.}
 \label{tab:check2}
 \end{table}
@@ -141,7 +141,7 @@ As in E4 the sets are close. The filter again helps slightly for both lists (10 
 \section{The filtered heads and the FV heads}
 
 \begin{table}[H]\centering\small
-\resizebox{\linewidth}{!}{\input{tables/e7_overlap.tex}}
+\resizebox{\linewidth}{!}{\input{../tables/e7_overlap.tex}}
 \caption{Heads of raw $+$F and of FV-20 / FV-40, per task, mean of the two folds. Shared: in both. Chance: expected shared heads if the FV set were drawn at random within its layers. No decode: FV heads not in the unfiltered raw set. Filtered: FV heads in the raw set dropped by the BOS filter.}
 \label{tab:overlap}
 \end{table}
@@ -154,7 +154,7 @@ As in E4 the sets are close. The filter again helps slightly for both lists (10 
 \paragraph{Which threshold would keep the decoding FV heads?} For each task, the largest BOS attention among the FV heads that are in the raw set (worst fold), and the raw $+$F set size at that threshold (Table~\ref{tab:threshold}). Keeping \emph{all} FV heads, decoding or not, would need a threshold up to 0.96, i.e.\ no filter.
 
 \begin{table}[H]\centering\small
-\input{tables/e7_threshold.tex}
+\input{../tables/e7_threshold.tex}
 \caption{BOS threshold that keeps every decoding FV head (max over the two folds) and the raw $+$F set size at it (the two folds). The filter used 0.5.}
 \label{tab:threshold}
 \end{table}

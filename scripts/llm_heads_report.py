@@ -1,4 +1,4 @@
-"""E5 (paper/proposal-llm-heads.tex): accuracies of the LLM head sets beside E4's, no statistical tests.
+"""E5 (paper/archive/proposal-llm-heads.tex): accuracies of the LLM head sets beside E4's, no statistical tests.
 
 Reads ``results/llm_heads/fold{1,2}/patching_{simple,simple-wrong}.part-*.csv``
 (``scripts/llm_heads_patch.sh``) and, for the references, E4's ``results/heldout`` (both read with

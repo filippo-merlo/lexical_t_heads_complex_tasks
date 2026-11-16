@@ -232,14 +232,14 @@ Under the flexible score (Table~\ref{tab:e0-complex-flexible}), Operator Functio
 
 \begin{table}[tbp]
 \centering\footnotesize\setlength{\tabcolsep}{3.5pt}
-\input{tables/e0_complex}
+\input{../tables/e0_complex}
 \caption{E0, complex tasks at the easy level: strict accuracy per prompt, on the whole reply up to 1,024 tokens (Sec.~\ref{sec:reasoning}). Rule: the original rules prompt (orig.) and the six added wordings (w1--6: mean, and range). No task info: the prompt without task information. Chance: share of the most frequent label for the tasks with a fixed label set, 0 for open answers.}
 \label{tab:e0-complex}
 \end{table}
 
 \begin{table}[tbp]
 \centering\footnotesize\setlength{\tabcolsep}{3.5pt}
-\input{tables/e0_complex_flexible}
+\input{../tables/e0_complex_flexible}
 \caption{E0, complex tasks: flexible accuracy per prompt (Sec.~\ref{sec:evaluation}), on the same saved replies and with the same layout as Table~\ref{tab:e0-complex}.}
 \label{tab:e0-complex-flexible}
 \end{table}
@@ -255,42 +255,42 @@ In the second check, every head set raises accuracy on the four tasks with wrong
 
 \begin{table}[tbp]
 \centering\footnotesize\setlength{\tabcolsep}{3.5pt}
-\input{tables/heads_complex}
+\input{../tables/heads_complex}
 \caption{E2: lexical task heads per task and style. $|P^{+}|$: identification prompts, the first (at most 100) answered correctly under the most accurate rule wording (rule; wording~6 for Noun Class Agreement and Lexical Category Inference, wording~5 for Set Game, the original prompt for Operator Function, whose seven wordings tie, wording~1 for Tapatan), under the example-based and under the combined prompts. L: Logit-head set; J: J-head set; L$\cap$J: heads in both sets. Rule $\cap$ ex.: heads in both the rule-style and the example-style set of a readout.}
 \label{tab:heads-complex}
 \end{table}
 
 \begin{table}[tbp]
 \centering\footnotesize
-\input{tables/effects_complex}
+\input{../tables/effects_complex}
 \caption{E2 causal check: causal effect, the highest accuracy over $\alpha$ minus the unpatched accuracy (baseline); accuracy is the flexible score of the reply generated from each patched prompt. Task mean: the head set's mean output over the task's own prompts; L: Logit-head set; J: J-head set; J only: heads in the J-head set and not in the Logit-head set. The rule-style head sets, patched with the means of the seven rule wordings into the prompts without task information; accuracy is averaged over the seven means before the maximum is taken. Control mean: the control task's mean under its original rules prompt. 100 patched items per task, the 11 values of $\alpha$ of Sec.~\ref{sec:causal}.}
 \label{tab:effects-complex}
 \end{table}
 
 \begin{table}[tbp]
 \centering\footnotesize
-\input{tables/effects_complex_wrong}
+\input{../tables/effects_complex_wrong}
 \caption{E2, second causal check, as Table~\ref{tab:effects-complex}, with the original rules prompts of the first 100 items answered wrongly under them patched; Operator Function answers every item correctly under its original rules prompt and has none. Unpatched accuracy is 0 by construction. Control mean as in Table~\ref{tab:effects-complex} (Sec.~\ref{sec:causal}, ``A control for the second check''). Answering every patched item with its more frequent label scores 0.58 on Noun Class Agreement and 0.72 on Lexical Category Inference (``Yes'' for both).}
 \label{tab:effects-complex-wrong}
 \end{table}
 
 \begin{figure}[p]
 \centering
-\includegraphics[width=\textwidth]{figures/patching_complex.pdf}
+\includegraphics[width=\textwidth]{../figures/patching_complex.pdf}
 \caption{E2 causal checks: accuracy on the patched items against $\alpha$. Solid: the head set's mean over the task's prompts; dotted: the control mean at the same heads; dashed: unpatched accuracy. The rule-style head sets, with accuracy averaged over the means of the seven rule wordings. Left: the prompts without task information patched (first check); right: the original rules prompts answered wrongly (second check). 100 patched items per task; Operator Function has no second check. Constant answer: the accuracy of answering every patched item with its more frequent label.}
 \label{fig:patch-complex}
 \end{figure}
 
 \begin{figure}[tbp]
 \centering
-\includegraphics[width=0.55\textwidth]{figures/layers_complex.pdf}
+\includegraphics[width=0.55\textwidth]{../figures/layers_complex.pdf}
 \caption{Lexical task heads per layer under each readout, summed over the head sets of all complex tasks and styles, at the last prompt token.}
 \label{fig:layers-complex}
 \end{figure}
 
 \begin{figure}[tbp]
 \centering
-\includegraphics[width=\textwidth]{figures/copy_share_complex.pdf}
+\includegraphics[width=\textwidth]{../figures/copy_share_complex.pdf}
 \caption{Copy share of each complex-task head set (Sec.~\ref{sec:measures}): the share of prompts on which a head's matched terms occur in the prompt text, averaged over the set, at the last prompt token; missing points are empty sets.}
 \label{fig:copy-complex}
 \end{figure}
@@ -309,7 +309,7 @@ Reused code and data: the lexical-task-head code of \citet{yang2026shared}; the 
 \paragraph{Deliverables.} Head sets, measures and causal-check curves for every task, style and readout.
 
 \bibliographystyle{plainnat}
-\bibliography{references}
+\bibliography{../references}
 
 \appendix
 

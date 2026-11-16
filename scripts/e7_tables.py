@@ -1,4 +1,4 @@
-"""Tables of paper/e7-attention-filter.tex, and the comparison of the E7 sets with E4's FV sets
+"""Tables of paper/archive/e7-attention-filter.tex, and the comparison of the E7 sets with E4's FV sets
 (no GPU).
 
 Sources: results/e7_attfilter/{fold1,fold2}/{heads,word_lists}.json, set_sizes.csv

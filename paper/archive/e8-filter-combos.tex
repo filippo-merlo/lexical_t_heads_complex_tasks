@@ -70,7 +70,7 @@ E4's protocol, J-head only, rule style, the 14 simple tasks. All filters and thr
 \paragraph{List length.} Ten words is short: on landmark--country the list holds six country names, so heads decoding `` Japan'' or `` Italy'' are missed for a second reason. Before any rerun, list lengths of 10, 30 and 50 words were compared on the stored readings of the choosing halves, without patching, by how many of E4's FV-20 heads (chosen on the same half) end up in D and DB (Table~\ref{tab:listlen}).
 
 \begin{table}[H]\centering\small
-\input{tables/e8_listlen.tex}
+\input{../tables/e8_listlen.tex}
 \caption{D-filter variants, mean over tasks and folds. Chance: FV-20 heads expected in a random set of the same size. Generic: list words among the 50 words heads decode most on WikiText. Source: \texttt{scripts/e8\_list\_length.py}.}
 \label{tab:listlen}
 \end{table}
@@ -78,7 +78,7 @@ E4's protocol, J-head only, rule style, the 14 simple tasks. All filters and thr
 The case fix adds FV heads at every length without lowering the ratio to chance. A longer list adds more, but less selectively: at 50 words almost half the list is generic and D holds 30\% of all heads; from 30 to 50 words DB grows by 15 heads for about one more FV head. We chose 30 words with the fix. This choice was prompted by a patched result (the collapse), but made without patched accuracies. The 15 sets without D were unchanged; the 16 with D were rebuilt and rerun on the same items.
 
 \begin{table}[H]\centering\small
-\input{tables/e8_first_run.tex}
+\input{../tables/e8_first_run.tex}
 \caption{Every set with D, first run (10 words, Yang's expansion) and now (30 words, with the fix): heads (median over tasks), task accuracy at the cross-fitted $\alpha$, mean over tasks.}
 \label{tab:firstrun}
 \end{table}
@@ -89,7 +89,7 @@ All 16 sets rise in check~1, those with B or T the most; sets roughly double in 
 \section{Word lists and sets}
 
 \begin{table}[H]\centering\scriptsize
-\input{tables/e8_lists.tex}
+\input{../tables/e8_lists.tex}
 \caption{D's word lists, fold 1; last column: words also on fold 2's list.}
 \label{tab:lists}
 \end{table}
@@ -97,7 +97,7 @@ All 16 sets rise in check~1, those with B or T the most; sets roughly double in 
 The folds agree on 24--30 of the 30 words. Between 6 and 18 words per list are generic (\emph{what, which, http, mph, maybe}); the rest name the task or its answers (country names on landmark and park, months on next-item, \emph{opposite} on antonym).
 
 \begin{table}[H]\centering\small
-\resizebox{\linewidth}{!}{\input{tables/e8_sizes.tex}}
+\resizebox{\linewidth}{!}{\input{../tables/e8_sizes.tex}}
 \caption{Heads per set, mean of the two folds (1{,}024 heads in all). D (1st), DB (1st): the first run's D and DB.}
 \label{tab:sizes}
 \end{table}
@@ -110,13 +110,13 @@ R passes nearly every head and I about a third, so neither selects much on its o
 \subsection{Check 1}
 
 \begin{table}[H]\centering\small
-\resizebox{\linewidth}{!}{\input{tables/e8_check1.tex}}
+\resizebox{\linewidth}{!}{\input{../tables/e8_check1.tex}}
 \caption{Check 1, task accuracy at the cross-fitted $\alpha$, mean of the two folds; the main E8 sets and the references (E7 raw $+$F; E4's CC-20, CC, FV-20, FV-$N_t$), all cross-fitted over $\alpha$ 1 and 2. Items: patched items in fold 1/2. Control mean: accuracy with the control task's mean. All 31 sets per task: Table~\ref{tab:all1}.}
 \label{tab:check1}
 \end{table}
 
 \begin{table}[H]\centering\small
-\input{tables/e8_overview.tex}
+\input{../tables/e8_overview.tex}
 \caption{Every set, mean over the 14 tasks, task and control mean in both checks, sorted by check 1; heads: median over tasks; tasks: tasks with a non-empty set.}
 \label{tab:overview}
 \end{table}
@@ -132,7 +132,7 @@ R passes nearly every head and I about a third, so neither selects much on its o
 \end{itemize}
 
 \begin{table}[H]\centering\small
-\input{tables/e8_select.tex}
+\input{../tables/e8_select.tex}
 \caption{Filter choice: check-1 accuracy on fold 1 at each task's own best $\alpha$ (top 8 sets), and the same set on fold 2 at the cross-fitted $\alpha$, mean over tasks.}
 \label{tab:select}
 \end{table}
@@ -142,7 +142,7 @@ Chosen on fold 1, T keeps its accuracy on fold 2. DB, DT and DBT lose a little a
 \subsection{Check 2}
 
 \begin{table}[H]\centering\small
-\resizebox{\linewidth}{!}{\input{tables/e8_check2.tex}}
+\resizebox{\linewidth}{!}{\input{../tables/e8_check2.tex}}
 \caption{Check 2 (1-shot prompts answered wrongly), task accuracy at the cross-fitted $\alpha$, as Table~\ref{tab:check1}. All 31 sets per task: Table~\ref{tab:all2}.}
 \label{tab:check2}
 \end{table}
@@ -153,7 +153,7 @@ As in E4 and E7, the sets are close. T is the best E8 set and level with FV-$N_t
 \section{The E8 heads and the FV heads}
 
 \begin{table}[H]\centering\small
-\resizebox{\linewidth}{!}{\input{tables/e8_overlap.tex}}
+\resizebox{\linewidth}{!}{\input{../tables/e8_overlap.tex}}
 \caption{E4's FV-20 and FV-$N_t$ heads (FV-$N_t$: as many as CC, about 120) found in D, T, DB and DBT, per task, mean of the two folds; in brackets the count expected for a random set of the same size.}
 \label{tab:overlap}
 \end{table}
@@ -194,13 +194,13 @@ DB holds about 6 times as many FV-20 heads as a random set of its size, T about 
 \section{All sets, per task}
 
 \begin{table}[H]\centering\scriptsize
-\resizebox{\linewidth}{!}{\input{tables/e8_all_check1.tex}}
+\resizebox{\linewidth}{!}{\input{../tables/e8_all_check1.tex}}
 \caption{Check 1, task accuracy at the cross-fitted $\alpha$, every set and task, mean of the two folds. Blank: empty set.}
 \label{tab:all1}
 \end{table}
 
 \begin{table}[H]\centering\scriptsize
-\resizebox{\linewidth}{!}{\input{tables/e8_all_check2.tex}}
+\resizebox{\linewidth}{!}{\input{../tables/e8_all_check2.tex}}
 \caption{Check 2, as Table~\ref{tab:all1}.}
 \label{tab:all2}
 \end{table}
