@@ -42,7 +42,7 @@
 \maketitle
 
 \begin{abstract}
-We look for small sets of attention heads whose mean output, written into a prompt that does not state the task, makes Llama-3.1-8B-Instruct perform it, on 14 simple tasks. We re-implement two published ways of choosing heads, by the words a head decodes \citep{yang2026shared} and by its causal effect \citep{davidson2025different}, read heads with Head-JLens as well as with the logit lens, and add rules that combine what a head decodes with where it attends. All rules are then compared at the same set sizes, 20 to 80 heads, both as one set per task and as one set for all tasks, with heads chosen on half of each task's items and tested on the other half. Head-JLens finds more heads that carry the task than the logit lens, and the hand-written word lists are the weak point of the lexical method. Per task, heads that attend to the instruction's task words and little to the first token match or beat the causal ranking at every size, without any patching during selection. Ranking heads also by their attention to the rest of the instruction and to its question--answer markers, token types that carry task information in in-context learning \citep{bai2026performance}, gives the best per-task sets so far, though they were picked among many combinations on the test items. For one set shared by all tasks the causal ranking is best, once a few generic heads that decode the same tokens on every task are removed. Task types rest on different heads: translations on attention-filtered heads, morphology on causally ranked ones. When the task is asked in 30 other wordings, every set loses some accuracy; chosen on all the wordings, the per-task filter sets and the shared causal set without generic heads win it back, and the filter sets come closer to the shared causal set. Readings and attention are enough to find a small head set for each task; one set for all tasks still needs the causal score.
+We look for small sets of attention heads whose mean output, written into a prompt that does not state the task, makes Llama-3.1-8B-Instruct perform it, on 14 simple tasks. We re-implement two published ways of choosing heads, by the words a head decodes \citep{yang2026shared} and by its causal effect \citep{davidson2025different}, read heads with Head-JLens as well as with the logit lens, and add rules that combine what a head decodes with where it attends. All rules are then compared at the same set sizes, 20 to 120 heads, both as one set per task and as one set for all tasks, with heads chosen on half of each task's items and tested on the other half. Head-JLens finds more heads that carry the task than the logit lens, and the hand-written word lists are the weak point of the lexical method. Per task, heads that attend to the instruction's task words and little to the first token match or beat the causal ranking at every size, without any patching during selection. Adding attention to the rest of the instruction and to its question--answer markers, token types that carry task information in in-context learning \citep{bai2026performance}, gives the best per-task sets, though these were picked among many combinations on the test items. For one set shared by all tasks the causal ranking is best, once a few generic heads that decode the same tokens on every task are removed. Task types rest on different heads: translations on attention-filtered heads, morphology on causally ranked ones. When the task is asked in 30 other wordings, every set loses some accuracy; chosen on all the wordings, the per-task filter sets and the shared causal set without generic heads win it back, and the filter sets come closer to the shared causal set. Readings and attention are enough to find a small head set for each task; one set for all tasks still needs the causal score.
 \end{abstract}
 
 % =====================================================================
@@ -50,9 +50,9 @@ We look for small sets of attention heads whose mean output, written into a prom
 
 A task representation in a language model can be located by finding the attention heads whose outputs, averaged over prompts that state the task and written into a prompt that does not, make the model perform the task \citep{todd2024function}. Two recent studies choose those heads in different ways. \citet{yang2026shared} decode each head's output at the last prompt token with the logit lens and call a head a \emph{lexical task head} when its top tokens contain words describing the task (\emph{opposite}, \emph{capital}). \citet{davidson2025different} rank heads by their causal effect on the answer when the prompt's instruction is replaced by uninformative text, and sum the mean outputs of the top heads into an \emph{instruction function vector}.
 
-Our goal is the smallest set of heads that represents the tasks well, ideally one set for all of them. We reproduce both methods on the same model and tasks, add a second readout, Head-JLens \citep{merlo2026headjlens}, and build selection rules from what the reproductions show: word lists taken from what heads decode, and filters on where a head attends. We then compare all rules on equal terms. Every rule ranks the heads and gives its top 20, 40, 60 and 80, once per task and once for all tasks, with heads chosen on one half of each task's items and tested on the other.
+Our goal is the smallest set of heads that represents the tasks well, ideally one set for all of them. We reproduce both methods on the same model and tasks, add a second readout, Head-JLens \citep{merlo2026headjlens}, and build selection rules from what the reproductions show: word lists taken from what heads decode, and filters on where a head attends. We then compare all rules on equal terms. Every rule ranks the heads and gives its top 20 to 120 in steps of 20, once per task and once for all tasks, with heads chosen on one half of each task's items and tested on the other.
 
-The paper is organised linearly: the common setup (Sec.~\ref{sec:setup}), the two reproductions (Sec.~\ref{sec:repro}), the design of the comparison (Sec.~\ref{sec:approaches}), its results, including the leading rules on 30 other wordings of each task and filters on further parts of the prompt (Sec.~\ref{sec:results}), and the approaches we would keep (Sec.~\ref{sec:best}). Only simple tasks are covered.
+The paper is organised linearly: the common setup (Sec.~\ref{sec:setup}), the two reproductions (Sec.~\ref{sec:repro}), the design of the comparison (Sec.~\ref{sec:approaches}), its results, including the leading rules on 30 other wordings of each task (Sec.~\ref{sec:results}), and the approaches we would keep (Sec.~\ref{sec:best}). Only simple tasks are covered.
 
 % =====================================================================
 \section{Setup}\label{sec:setup}
@@ -153,12 +153,12 @@ In the comparison, Davidson et al.'s score ranks heads per task and over the 14 
 Every rule is compared at the same set sizes, per task and shared, on the same held-out items. A set is defined by its rule, its scope and its size.
 
 \begin{itemize}
-\item \textbf{Size.} Each rule ranks the heads and the set is its top $N$, with $N\in\{20,40,60,80\}$. Ties go to the lower layer, then head.
+\item \textbf{Size.} Each rule ranks the heads and the set is its top $N$, with $N\in\{20,40,\dots,120\}$. Ties go to the lower layer, then head.
 \item \textbf{Scope.} \emph{Per task}: heads are ranked on the task's own scores. \emph{Shared} (one set for all 14 tasks): heads are ranked on scores combined over the tasks; each task is still patched with its own means.
 \item \textbf{Rule.} Our decoding and attention filters, Davidson et al.'s causal score as the reference, Yang et al.'s term list as the baseline, and random heads as the control (Table~\ref{tab:approaches}). The rules differ in what they need: the lens only, attention patterns (one forward pass per prompt), or a causal score (one patched forward pass per head and prompt, 1{,}024 heads).
 \end{itemize}
 
-\paragraph{Names.} Filter sets are named by their letters (D, B, T), the causal sets \emph{Causal}, the baseline \emph{Yang terms}; the size is the number $N$ (DBT-40). \emph{Shared} marks one set for all tasks. \emph{$-$ generic} marks a ranking from which the generic heads were removed before taking the top $N$, so the set still has $N$ heads. \emph{FV} marks Davidson et al.'s own intervention, the heads' means summed into one vector added to the residual stream after layer 11; every other set is patched head by head.
+\paragraph{Names.} Filter sets are named by their letters (D, B, T, L, M, S, N; DBMN combines four), the causal sets \emph{Causal}, the baseline \emph{Yang terms}; the size is the number $N$ (DBT-40). \emph{Shared} marks one set for all tasks. \emph{$-$ generic} marks a ranking from which the generic heads were removed before taking the top $N$, so the set still has $N$ heads. \emph{FV} marks Davidson et al.'s own intervention, the heads' means summed into one vector added to the residual stream after layer 11; every other set is patched head by head.
 
 \begin{table}[tbp]
 \centering\small
@@ -170,7 +170,11 @@ Rule & A head ranks high if \dots & Needs \\
 D & it decodes a word of the task's list on many prompts & lens \\
 B & it attends little to the first token (BOS) & attention \\
 T & it attends to the task words of the instruction & lens, attention \\
-DB, DT, BT, DBT & its ranks on the named filters are good on average & lens, attention \\
+L & it attends to the last token itself & attention \\
+M & it attends to the question--answer markers & attention \\
+S & it attends to the instruction's punctuation and stopwords & attention \\
+N & it attends to the whole instruction & attention \\
+DB, \dots, DBTMS & its ranks on the named filters are good on average & as its filters \\
 DBT $-$ generic & as DBT, the generic heads removed & lens, attention \\
 \midrule
 \multicolumn{3}{@{}l}{\textit{Davidson et al.\ (reference)}} \\
@@ -183,7 +187,7 @@ Yang terms & it decodes a term of Yang et al.'s hand-written list on many prompt
 Random & drawn at random, as many heads in each layer as DBT of the same scope and $N$ (5 draws) & -- \\
 \bottomrule
 \end{tabularx}
-\caption{The rules of the comparison. Each is run per task and shared, at $N$ = 20, 40, 60 and 80 heads.}
+\caption{The rules of the comparison. Each is run per task and shared, at $N$ = 20 to 120 heads; the filter combinations as described under \emph{Filter combinations run}.}
 \label{tab:approaches}
 \end{table}
 
@@ -197,13 +201,15 @@ Random & drawn at random, as many heads in each layer as DBT of the same scope a
 \end{enumerate}
 The lists hold the task's own vocabulary (\emph{opposite}, \emph{capital}, \emph{currency}, month names, language names, \zh{法国} on English--French) together with some word pieces (\emph{lingu}, \emph{oppos}) and numbers. App.~\ref{app:lists} gives every list.
 
-\paragraph{Filter scores.} Over the same prompts, at the last token: \textbf{D}, the share of prompts whose top 10 holds a word of the list; \textbf{B}, the mean attention on BOS (lower ranks higher); \textbf{T}, the mean attention on the task-word positions, the tokens of the instruction (outside the query) that match a word of the list. Three templates contain no list word (the cloze templates of antonym and present--past, and present--past's third instruction); there T is zero for every head, so those tasks are ranked on their other templates. Per task, each filter's ranks are averaged over the combination's filters. Shared sets average ranks over tasks: each filter's within-task ranks are averaged over the 14 tasks, ranked again, and averaged over the combination's filters. Because sets are ranked rather than thresholded, a combination set at large $N$ also holds heads that rank well overall but poorly on one filter.
+\paragraph{Filter scores.} Over the same prompts, at the last token. \textbf{D} is the share of prompts whose top 10 holds a word of the list. The attention filters split the prompt into token types, after \citet{bai2026performance}, who find that in in-context learning the model gathers what it needs at template tokens, punctuation and stopwords more than at content words. Each prompt token is put in one type, in this order: the first token (BOS), task words (the tokens of the instruction, outside the query, that match a word of the list), the query, the last token itself, the question--answer markers (`` Q:'' before the query and ``\textbackslash nA'' after it; the cloze templates have none), punctuation, stopwords (NLTK's English list) and other instruction words. Unlike Bai et al., who assign tokens by hand and mask them, we assign them by script and rank heads by their mean attention to a type: \textbf{B}, to BOS (lower ranks higher); \textbf{T}, to the task words; \textbf{L}, to the last token; \textbf{M}, to the markers; \textbf{S}, to punctuation and stopwords (Bai et al.'s stopword tokens); \textbf{N}, to the whole instruction (task words, punctuation, stopwords and other words), that is, T without the word list. Three templates contain no list word (the cloze templates of antonym and present--past, and present--past's third instruction); there T is zero for every head, so those tasks are ranked on their other templates. Per task, each filter's ranks are averaged over the combination's filters. Shared sets average ranks over tasks: each filter's within-task ranks are averaged over the 14 tasks, ranked again, and averaged over the combination's filters. Because sets are ranked rather than thresholded, a combination set at large $N$ also holds heads that rank well overall but poorly on one filter.
+
+\paragraph{Filter combinations run.} In two steps. First, the combinations of D, B and T (D, B, T, DB, DT, BT, DBT), fixed before any run, at every size. Second, every combination of the seven filters at 40 heads, except those that hold N together with T or S, whose positions N already counts (79 per scope), and then the 15 best of each scope at 40 heads at every size. These 15 are chosen on the held-out accuracy they are reported on, and so is the best size of each, so their accuracy is optimistic. The tables and Figure~\ref{fig:size} show, per scope, the best of them at 40 heads and the best at its peak: DBMN and DBTMS per task, DBTLS and DBTMS shared; App.~\ref{app:combos} gives all 15.
 
 \paragraph{Causal score and generic heads.} Davidson et al.'s score (Sec.~\ref{sec:repro}) on the choosing half: per task the task's score, shared the score averaged over tasks. \emph{Generic heads} are defined among the fold's 30 top heads by the shared score. Each head's J-head generic score (the cosine between the 14 tasks' counts of its top-10 tokens, averaged over task pairs; five templates) is sorted, and the 30 scores are cut into a high and a low group with the least spread within each. This marks 9 heads in fold~1 and 8 in fold~2 (L12H9, L13H31, L14H11, L14H29, L15H5, L15H7, L16H29, L31H14, and L28H10 in fold~1); if it marked more than 15, none would be removed. The generic heads are removed from the Causal and DBT rankings before the top $N$ is taken. They are not removed from every head: the same score marks over half of all heads, most of which decode task-independent tokens but are never chosen.
 
 \paragraph{Baseline and control.} \textbf{Yang terms} ranks heads by the share of prompts whose top 10 holds a term of Yang et al.'s hand-written list (their token expansion), on the same prompts; shared, by the within-task ranks averaged over tasks. Heads that never decode a term are not used, so on seven tasks the 60- and 80-head sets hold fewer heads (as few as 45); these are compared with the other rules at the size nearest to theirs. \textbf{Random} draws as many heads in each layer as DBT of the same scope and $N$, outside it, five times (shared: one draw for all tasks), and is scored at DBT's $\alpha$.
 
-\paragraph{Protocol.} Check~1 only, on the held-out items of Sec.~\ref{sec:setup}, $\alpha\in\{1,2\}$ cross-fitted between the folds, and the control mean for every non-random set: 128 head-patched sets per task and fold, and Davidson et al.'s summed vector at the four sizes with and without the generic heads. Rerunning a set can change a few greedy answers when its batches are made up differently. The per-task Causal-20 and -40 sets were first run with ten values of $\alpha$ per batch; here, with two, up to three prompts of 100 change their answer on some templates, which moves the 14-task mean by at most 0.004. The shared Causal-20 and -40, first run with the same two values, give identical answers.
+\paragraph{Protocol.} Check~1 only, on the held-out items of Sec.~\ref{sec:setup}, $\alpha\in\{1,2\}$ cross-fitted between the folds, and the control mean for every non-random set: 128 head-patched sets per task and fold, and Davidson et al.'s summed vector at every size with and without the generic heads; for the further filter combinations, 120 sets at 40 heads and 145 at the other sizes. Rerunning a set can change a few greedy answers when its batches are made up differently. The per-task Causal-20 and -40 sets were first run with ten values of $\alpha$ per batch; here, with two, up to three prompts of 100 change their answer on some templates, which moves the 14-task mean by at most 0.004. The shared Causal-20 and -40, first run with the same two values, give identical answers.
 
 % =====================================================================
 \section{Results}\label{sec:results}
@@ -215,30 +221,42 @@ Figure~\ref{fig:size} and Table~\ref{tab:main} give each rule's mean over the 14
 \begin{figure}[tbp]
 \centering
 \includegraphics[width=\textwidth]{figures/e13_size}
-\caption{Check 1, mean accuracy over the 14 tasks against the number of heads, held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds. (a) One set per task; (b) one set for all 14 tasks. Solid: the ranking as it is; dashed: the generic heads removed before taking the top $N$; dotted: Davidson et al.'s summed vector (shared only). Random: layer-matched to DBT, five draws. The other filter combinations are in Table~\ref{tab:main}.}
+\caption{Check 1, mean accuracy over the 14 tasks against the number of heads, held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds. (a) One set per task; (b) one set for all 14 tasks. Solid: the ranking as it is; dashed: the generic heads removed before taking the top $N$; dotted: Davidson et al.'s summed vector (shared only). Blue: per scope, the best further filter combination at 40 heads and the best at its peak, chosen on these items (Sec.~\ref{sec:approaches}). Random: layer-matched to DBT, five draws. The other filter combinations are in Table~\ref{tab:main} and App.~\ref{app:combos}.}
 \label{fig:size}
 \end{figure}
 
 \begin{table}[tbp]
 \centering\small
 \resizebox{\textwidth}{!}{\input{tables/e13_main}}
-\caption{Check 1, mean accuracy over the 14 tasks, held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds. Bold: the best non-random set in each column. Davidson FV: their summed vector, run on the shared ranking only. Yang terms holds fewer heads than $N$ on some tasks at 60 and 80 (58 and 72 heads on average over tasks and folds). Random: layer-matched to DBT, five draws, at DBT's $\alpha$. Unpatched accuracy: 0.01.}
+\caption{Check 1, mean accuracy over the 14 tasks, held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds. Bold: the best non-random set in each column. The three best further combinations were chosen on these items (Sec.~\ref{sec:approaches}). Davidson FV: their summed vector, run on the shared ranking only. Yang terms holds fewer heads than $N$ on some tasks at 60 and 80 (58 and 72 heads on average over tasks and folds). Random: layer-matched to DBT, five draws, at DBT's $\alpha$. Unpatched accuracy: 0.01.}
 \label{tab:main}
 \end{table}
 
 \begin{itemize}
 \item \textbf{Per task, the filters match or beat the causal ranking at every size.} DBT and BT lie above Causal, with or without the generic heads, from 20 to 60 heads and level with it at 80. They reach their level at 40 heads and gain little after, whereas the causal ranking keeps rising with size.
-\item \textbf{For one set shared by all tasks, the causal ranking is best.} Shared Causal $-$ generic is the best set at every size and still rising at 80 heads, the highest accuracy of the comparison. Shared DBT and BT reach the shared causal ranking with its generic heads at 60 heads, stay below the one without them, and fall back at 80.
+\item \textbf{Attention to the rest of the instruction and to the question--answer markers raises the per-task sets further.} The best combinations lie above every other per-task set from 40 heads on and lose less than DBT at larger sizes; DBMN at 40 heads passes the per-task causal ranking at 120. They were chosen on these items.
+\item \textbf{For one set shared by all tasks, the causal ranking is best among the sets fixed beforehand.} Shared Causal $-$ generic is above every other such set at nearly every size and peaks at 100 heads, the highest accuracy of the comparison. Shared DBT and BT reach the shared causal ranking with its generic heads at 60 heads, stay below the one without them, and fall back at 80. The best further combinations lead Shared Causal $-$ generic at 40 and 60 heads, trail it at 80 and 100, and match it at 120.
 \item \textbf{The two scopes favour different rules.} The causal score does better as one shared ranking than as per-task rankings at every size. DBT and BT do better per task at 20 and 40 heads, and about as well in both scopes at 60 and 80. At 40 heads, the per-task DBT sets are level with Shared Causal $-$ generic.
-\item \textbf{The hand-written list stays the weak point.} Yang terms is below every other rule except B alone, at every size and in both scopes, and per task it gains little from more heads.
+\item \textbf{The hand-written list stays the weak point.} Yang terms is below every other rule in Table~\ref{tab:main} except B alone, at every size and in both scopes, and per task it gains little from more heads.
 \item \textbf{Which heads matters, not how many.} Random heads with the same number of heads per layer as DBT do nothing at any size. Control means stay low for every set (Table~\ref{tab:control}), so the gains are task-specific.
 \end{itemize}
 
 \subsection{Which filters matter}
 
+Figure~\ref{fig:filters} gives each filter's effect at 40 heads, alone and added to the other filters, over the 79 combinations; Table~\ref{tab:main} gives D, B, T and their combinations at every size.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\textwidth]{figures/e22_filters}
+\caption{Each filter at 40 heads: (a) alone; (b) added to the other filters, as the accuracy of a combination with the filter minus that of the same combination without it, over every such pair among the 79 combinations (dots: mean; lines: middle half of the pairs; a filter alone against none is left out; N has fewer pairs, as it never joins T or S). Check~1, held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds and of the 14 tasks.}
+\label{fig:filters}
+\end{figure}
+
 \begin{itemize}
-\item \textbf{T is the strongest single filter.} Attention to the instruction's task words alone ranks heads better than decoding the task's words (D) or avoiding BOS (B), per task at every size and shared from 40 heads on. Per task, B alone is the weakest filter. D alone carries part of the task, and its shared ranking stops improving at 40 heads.
-\item \textbf{B and T together give most of the filters' effect.} BT and DBT are nearly equal in both scopes: D adds nothing once B and T are used. T's task words still come from the lens, so the lens is needed, though not as a filter. DT, without B, is below both. DB is level with BT and DBT or slightly above at 20 heads (shared also at 40), and below them at larger sizes.
+\item \textbf{Alone, attention to the instruction ranks heads best}: to the whole instruction per task, to its task words shared. T is also the strongest of D, B and T at nearly every size. D alone carries part of the task, B less, and attention to the last token or the markers almost nothing.
+\item \textbf{Added to other filters, decoding matters most.} Adding D raises nearly every combination in both scopes, by more than any attention filter. Per task, attention to the whole instruction adds next most, then attention to the task words, punctuation and stopwords, and low attention to BOS; shared, low attention to BOS and attention to the task words add most after D, and punctuation and stopwords nothing. Attention to the last token or the markers lowers accuracy on average.
+\item \textbf{Marker and last-token attention help only next to decoding.} Without D, adding M or L lowers most combinations. With D and without S, adding M raises the set in both scopes, and adding L raises the shared sets. The best per-task combination at 40 heads, DBMN, ranks attention without a word list: to the whole instruction and to the markers.
+\item \textbf{Once B and T are used, D adds little.} BT and DBT are nearly equal in both scopes. T's task words still come from the lens, so the lens is needed, though not as a filter. DT, without B, is below both. DB is level with BT and DBT or slightly above at 20 heads (shared also at 40), and below them at larger sizes.
 \item \textbf{Decoding without T fails at larger sizes.} Per task, DB stays level from 20 to 40 heads and then falls, below D alone at 60 and 80. The loss is mostly on the fact tasks: with the larger DB sets the model describes the query (``Located in the heart of \dots'', ``A UNESCO World Heritage \dots'' on park--country) instead of naming the answer. DBT sets of the same size, which add attention to the task words, give the answer. Shared DB does not fall.
 \item \textbf{The filters and the causal score partly agree.} Per task, DBT shares about a third of its heads with Causal of the same size; shared, about half. The median layer of both is about 14; that of the sets that only decode (D, Yang terms) is 16 to 18.
 \end{itemize}
@@ -258,19 +276,19 @@ The means hide large differences between task types (Table~\ref{tab:groups}; per
 \begin{table}[tbp]
 \centering\small\setlength{\tabcolsep}{3.5pt}
 \resizebox{\textwidth}{!}{\input{tables/e13_groups}}
-\caption{Check 1, mean accuracy per task type (number of tasks in brackets) at each set size; held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds. Bold: highest in the row. BT, close to DBT, is in Table~\ref{tab:main} only.}
+\caption{Check 1, mean accuracy per task type (number of tasks in brackets) at each set size; held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds. Bold: highest in the row. BT, close to DBT, is in Table~\ref{tab:main} only. DBMN, DBTMS and DBTLS were chosen on these items.}
 \label{tab:groups}
 \end{table}
 
 \begin{itemize}
 \item \textbf{Facts} (capitals, currency, landmark, park, product) are carried by almost every rule from 20 heads on, shared or not; Yang terms and per-task DB above 40 heads are the exceptions.
-\item \textbf{Morphology} is carried best by the causal rankings, most of all the shared one, which from 60 heads gets nearly every item. Per task, DB and DBT also carry it. T alone does little here below 80 heads: present--past has no task word in two of its five templates.
-\item \textbf{Translations} are carried by the per-task sets that use attention (BT and DBT at every size), and by no per-task causal ranking at any size. Ranked over all tasks, the causal score does carry them, from 40 heads on, and so do the shared BT and DBT sets from 60. Removing the generic heads lowers the shared causal sets on translations at 40 and 60 heads.
-\item \textbf{Sequences} (next-, prev-item) stay low under every rule. They gain most at 60 to 80 heads, with the causal rankings (per task and shared) and Shared DBT.
-\item \textbf{Word relations} are carried best by Causal $-$ generic in both scopes from 40 heads on, by the summed vector without generic heads at 20, and per task also by DB.
+\item \textbf{Morphology} is carried best by the shared causal rankings, which from 60 heads get nearly every item. Per task, the best filter combinations are about level with the causal rankings, and DB and DBT also carry it. T alone does little here below 80 heads: present--past has no task word in two of its five templates.
+\item \textbf{Translations} are carried by the per-task sets that use attention (BT and DBT at every size, the best combinations most from 40 heads on), and by no per-task causal ranking at any size. Ranked over all tasks, the causal score does carry them, from 40 heads on, and so do the shared BT and DBT sets from 60. Removing the generic heads lowers the shared causal sets on translations at 40 and 60 heads.
+\item \textbf{Sequences} (next-, prev-item) stay low under every rule. They gain most from 60 heads on, with the causal rankings (per task and shared) and Shared DBT.
+\item \textbf{Word relations} are carried best per task by the best filter combinations from 40 heads on; shared, by them or by Causal $-$ generic in turn, and at 20 heads by the summed vector without generic heads.
 \end{itemize}
 
-No rule wins every type. Per task, the filters win translations, and the causal ranking without generic heads wins word relations and, up to 60 heads, morphology. No rule carries sequences.
+No rule wins every type. Per task, the filters win translations and, with the further combinations, word relations; the causal rankings keep sequences, which no rule carries well, and shared morphology.
 
 \subsection{Other wordings}\label{sec:wordings}
 
@@ -295,48 +313,6 @@ Every set above was chosen and tested on Yang et al.'s five templates. To test t
 \item \textbf{Re-choosing changes the causal sets most} (Table~\ref{tab:w-overlap}): about three quarters of the DBT heads stay, a little over half of the per-task causal heads, and about four fifths of the shared causal heads. Control means stay at or below 0.03 and random sets do nothing.
 \end{itemize}
 
-\subsection{Attention to other parts of the prompt}\label{sec:more-filters}
-
-T counts only the attention a head pays to the instruction's task words. \citet{bai2026performance} find that in in-context learning the model gathers what it needs at the template tokens, punctuation and stopwords of the prompt more than at its content words. We split the rest of the prompt the same way and use the attention to each part as a filter.
-
-\paragraph{Filters.} Over the prompts and token of the other filters (the last token of the correctly answered prompts of the five rule templates, choosing half), every prompt token is put in one category, in this order: BOS, task words (T's positions), the query, the last token itself, the template markers (`` Q:'' before the query and ``\textbackslash nA'' after it; the cloze templates have none), punctuation, stopwords (NLTK's English list) and the other instruction words. Four new filters, each ranking heads by a head's attention to one part: \textbf{L}, the last token itself; \textbf{M}, the template markers; \textbf{S}, punctuation and stopwords (Bai et al.'s stopword tokens); \textbf{N}, the whole instruction (task words, punctuation, stopwords and other words), that is, T without the word list. Unlike Bai et al., who assign categories by hand and mask tokens, we assign them by script and rank heads.
-
-\paragraph{Design.} Two steps, under the protocol of Sec.~\ref{sec:approaches} (check~1, held-out items, $\alpha\in\{1,2\}$ cross-fitted, control mean), with ranks combined as there. First, every combination of the seven filters D, B, T, L, M, S and N at 40 heads, per task and shared, except those that hold N together with T or S, whose positions N already counts: 79 combinations per scope. Second, the 15 best combinations of each scope at all six sizes. The 15 are chosen on the held-out accuracy they are then reported on, and each set's best size is read off the same items, so their accuracy is optimistic; the sets of Sec.~\ref{sec:results} were fixed before their runs. The random sets of Figure~\ref{fig:size} remain the control.
-
-\begin{figure}[tbp]
-\centering
-\includegraphics[width=0.68\textwidth]{figures/e22_letters}
-\caption{What each filter adds at 40 heads: accuracy of a combination with the filter minus that of the same combination without it, over every such pair among the 79 combinations (check~1, held-out items, cross-fitted $\alpha$, mean of the folds and of the 14 tasks). Dots: mean over the pairs; lines: their middle half. A filter alone against no filter is left out. N has fewer pairs than the others, as it never joins T or S.}
-\label{fig:letters}
-\end{figure}
-
-\begin{figure}[tbp]
-\centering
-\includegraphics[width=\textwidth]{figures/e23_size}
-\caption{Check 1, mean accuracy over the 14 tasks against the number of heads for the 15 best combinations of each scope at 40 heads (blue), held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds; DBT, Causal, Causal $-$ generic and random as in Figure~\ref{fig:size}. Labelled: DBMN (best per task at 40 heads), DBTMS (best at its peak in both scopes) and DBTLS (best shared at 40 heads); the other twelve of each scope in pale blue. The 15 were chosen on these items. Every value is in Table~\ref{tab:e23}.}
-\label{fig:e23-size}
-\end{figure}
-
-\begin{table}[tbp]
-\centering\small\setlength{\tabcolsep}{4pt}
-\begin{minipage}[t]{0.49\textwidth}\centering
-\input{tables/e23_task}
-\end{minipage}\hfill
-\begin{minipage}[t]{0.49\textwidth}\centering
-\input{tables/e23_shared}
-\end{minipage}
-\caption{Check 1, mean accuracy over the 14 tasks of the 15 best combinations of each scope, ranked by their accuracy at 40 heads, at every size; held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds. Rows 1--15 were chosen on these items. Below: sets of Table~\ref{tab:main}. Bold: best of the column at two decimals. Letters: D decodes task words; B low BOS attention; attention to T task words, L the last token, M the template markers, S punctuation and stopwords, N the whole instruction. Random: layer-matched to DBT.}
-\label{tab:e23}
-\end{table}
-
-\begin{itemize}
-\item \textbf{Decoding matters most} (Figure~\ref{fig:letters}). Adding D raises nearly every combination, in both scopes, and by more than any attention filter. Among the attention filters, attention to the whole instruction adds most per task, then attention to the task words; low attention to BOS and attention to punctuation and stopwords add less, the latter per task only. Attention to the last token or the template markers lowers accuracy on average, and alone carries almost nothing.
-\item \textbf{Marker and last-token attention help only next to decoding.} Without D, adding M or L lowers most combinations. With D and without S, adding M raises the set in both scopes, and adding L raises the shared sets. The best per-task combination at 40 heads, DBMN, ranks attention without a word list: to the whole instruction and to the markers.
-\item \textbf{Per task, the new combinations are the best sets from 40 heads on} (Figure~\ref{fig:e23-size}, Table~\ref{tab:e23}). Eleven of the 15 peak above the best set of Table~\ref{tab:main}, the per-task causal ranking at 120 heads, and DBMN passes it with a third as many heads. With more heads they lose less than DBT, which falls back after 60: DBMN and DBTM peak at 60, and DBTS, BTS, DS and DTS still rise at 120. At 20 heads they are about level with DBT and BT.
-\item \textbf{Shared, they match the causal ranking without generic heads but do not beat it.} The best new combinations come within about a point of its peak at 80 to 120 heads, lead it at 40 and trail it slightly at 100. The shared curves differ more between the folds than the per-task ones.
-\item \textbf{By task type the new sets follow DBT}: per task they carry translations, facts and most word relations, and stay below the causal rankings on morphology and sequences. Control means stay at or below 0.05.
-\end{itemize}
-
 % =====================================================================
 \section{Best approaches}\label{sec:best}
 
@@ -344,9 +320,9 @@ For the stated goal, a small set of heads that represents the tasks in general:
 \begin{enumerate}
 \item \textbf{Read heads with J-head.} It finds more heads that carry the task, in middle layers the logit lens misses, and its lead holds at equal set size.
 \item \textbf{One set for all tasks: Shared Causal $-$ generic}, patched head by head. Rank heads by Davidson et al.'s causal score averaged over tasks, drop the generic heads among the top 30, and take the top $N$. It is the best set at every size; 20 heads already carry facts and morphology, and it keeps improving up to 80. On 30 other wordings of each task it stays the best set, with a smaller lead (Sec.~\ref{sec:wordings}).
-\item \textbf{Without patching, per task: decoding, low BOS and attention to the instruction and its markers}, DBMN at 60 heads or DBTMS at 80 to 100 (Sec.~\ref{sec:more-filters}). Chosen from J-head readings and attention alone, these are the best per-task sets of any size, above the per-task causal ranking. They were picked among 79 combinations on the test items, so a fresh test is still needed; of the sets fixed beforehand, DBT or BT at 40 heads come closest. On other wordings, DBT (the one run there) holds up best of the per-task rules.
+\item \textbf{Without patching, per task: decoding, low BOS and attention to the instruction and its markers}, DBMN at 60 heads or DBTMS at 80 to 100 (Sec.~\ref{sec:results}). Chosen from J-head readings and attention alone, these are the best per-task sets of any size, above the per-task causal ranking. They were picked among 79 combinations on the test items, so a fresh test is still needed; of the sets fixed beforehand, DBT or BT at 40 heads come closest. On other wordings, DBT (the one run there) holds up best of the per-task rules.
 \item \textbf{Choose on many wordings.} Sets chosen on all 35 templates beat those chosen on Yang's five, on the five themselves as well; only the causal ranking with its generic heads does not gain.
-\item \textbf{Without patching, shared: DBMN or DBTMS at 80 to 120 heads}, level with Shared Causal $-$ generic at its best (Sec.~\ref{sec:more-filters}; picked on the test items). Of the sets fixed beforehand, DBT or BT at 60 heads, about level with the shared causal ranking with its generic heads at that size.
+\item \textbf{Without patching, shared: DBMN or DBTMS at 80 to 120 heads}, level with Shared Causal $-$ generic at its best (picked on the test items). Of the sets fixed beforehand, DBT or BT at 60 heads, about level with the shared causal ranking with its generic heads at that size.
 \item \textbf{Davidson et al.'s summed vector only without its generic heads}, and not beyond 20 heads; the same heads patched one by one do better from 40 heads on.
 \item \textbf{By task type}: translations need per-task attention filters, or a shared causal set of at least 40 heads; morphology is carried best by causal rankings; facts by almost any rule from 20 heads; sequences by no set found here.
 \item \textbf{Not}: Yang et al.'s hand-written lists, D or B alone, and DB with more than 40 heads per task.
@@ -355,12 +331,12 @@ For the stated goal, a small set of heads that represents the tasks in general:
 % =====================================================================
 \section{Limitations}
 
-One model and 14 simple tasks. Every run is single and greedy, without intervals; rerunning a set with differently made-up batches moves its mean by up to 0.004 (Sec.~\ref{sec:approaches}), so differences of a point or two between sets are not established. Only $\alpha$ 1 and 2 are compared, which may underrate sets that peak higher. The generic-head rule was changed during the design. The rule fixed before the per-half runs (heads above the largest drop in the sorted generic score) became unstable once the score was computed on all five templates, where its two largest drops were nearly equal. We replaced it with the two-group split, choosing between the rules on the generic scores alone, not on accuracy. But the split marks the same heads as earlier per-half runs whose accuracies we had seen. Ranked combination sets at large $N$ hold heads that rank poorly on one filter. T has no task word in three templates (antonym, present--past), so on those tasks it rests on fewer prompts. The word lists keep some word pieces and Japanese fragments. Yang terms has fewer than $N$ heads on seven tasks at 60 and 80 heads. Items are held out, but wordings only in part: the sets chosen on Yang's five templates are tested on 30 templates they were not chosen on, whereas the sets chosen on all 35 are tested on the same 35, so part of their gain may be a closer fit to these templates. The 30 new templates per task were checked by script only, not by hand; 20 of them have no correctly answered prompt on one half, and on the six small tasks some means rest on fewer than 30 prompts (Table~\ref{tab:w-e0}). The run on other wordings covers three rules at two sizes. The capped comparison runs check~1 only. The filters on other parts of the prompt (Sec.~\ref{sec:more-filters}) were chosen among 79 combinations on the held-out accuracy they are reported on, and their categories are assigned by script; their lead is therefore not yet tested on fresh items.
+One model and 14 simple tasks. Every run is single and greedy, without intervals; rerunning a set with differently made-up batches moves its mean by up to 0.004 (Sec.~\ref{sec:approaches}), so differences of a point or two between sets are not established. Only $\alpha$ 1 and 2 are compared, which may underrate sets that peak higher. The generic-head rule was changed during the design. The rule fixed before the per-half runs (heads above the largest drop in the sorted generic score) became unstable once the score was computed on all five templates, where its two largest drops were nearly equal. We replaced it with the two-group split, choosing between the rules on the generic scores alone, not on accuracy. But the split marks the same heads as earlier per-half runs whose accuracies we had seen. Ranked combination sets at large $N$ hold heads that rank poorly on one filter. T has no task word in three templates (antonym, present--past), so on those tasks it rests on fewer prompts. The word lists keep some word pieces and Japanese fragments. Yang terms has fewer than $N$ heads on seven tasks at 60 and 80 heads. Items are held out, but wordings only in part: the sets chosen on Yang's five templates are tested on 30 templates they were not chosen on, whereas the sets chosen on all 35 are tested on the same 35, so part of their gain may be a closer fit to these templates. The 30 new templates per task were checked by script only, not by hand; 20 of them have no correctly answered prompt on one half, and on the six small tasks some means rest on fewer than 30 prompts (Table~\ref{tab:w-e0}). The run on other wordings covers three rules at two sizes. The capped comparison runs check~1 only. The further filter combinations (L, M, S, N) were chosen among 79 combinations on the held-out accuracy they are reported on, and their categories are assigned by script; their lead is therefore not yet tested on fresh items.
 
 \subsection*{Conditions still to run}
-Wordings held out: sets chosen on some of the 35 templates and tested on the others. The other rules (BT, T, Davidson FV) and the other sizes on all 35 templates. The best combinations of Sec.~\ref{sec:more-filters} on fresh items (a new split, or chosen on one fold's accuracy and tested on the other) and on other wordings.
+Wordings held out: sets chosen on some of the 35 templates and tested on the others. The other rules (BT, T, Davidson FV) and the other sizes on all 35 templates. The best further filter combinations on fresh items (a new split, or chosen on one fold's accuracy and tested on the other) and on other wordings.
 
-{\sloppy\paragraph{Code and data.} The capped comparison: word lists \texttt{scripts/e13\_lists.py}, attention pass \texttt{scripts/e13\_attention.py}, sets and generic heads \texttt{scripts/e13\_sets.py}, runs \texttt{scripts/e13\_patch.sh}, which also runs Davidson et al.'s summed vector with \texttt{scripts/e13\_fv\_residual.py}, and tables and figures \texttt{scripts/e13\_report.py}. Results in \texttt{results/e13\_capped}: per fold the word lists, sets, generic heads, accuracies and every patched reply; \texttt{summary.csv} and \texttt{per\_task.csv} at the cross-fitted $\alpha$. The causal scores are those of the first held-out runs (\texttt{results/heldout/fold\{1,2\}/fv}). Other wordings: templates \texttt{materials/simple/e4b\_wordings.json}, unpatched accuracy \texttt{scripts/e14\_outputs.py}, word lists \texttt{scripts/e14\_lists.py}, attention \texttt{scripts/e13\_attention.py --e14}, causal scores \texttt{scripts/davidson\_fv.py --instructions all}, sets \texttt{scripts/e14\_sets.py}, runs \texttt{scripts/e14\_run.sh}, tables \texttt{scripts/e14\_report.py}; results in \texttt{results/e14\_wordings} (report \texttt{paper/e14-all-wordings}). Other parts of the prompt: token categories and attention \texttt{scripts/e20\_bai\_attention.py} (stopword list \texttt{materials/stopwords/nltk\_english.txt}), sets \texttt{scripts/e22\_sets.py} and \texttt{scripts/e23\_sets.py}, runs \texttt{scripts/e22\_patch.sh} and \texttt{scripts/e23\_patch.sh}, tables \texttt{scripts/e22\_report.py} and \texttt{scripts/e23\_report.py}, figures \texttt{scripts/e23\_figures.py}; results in \texttt{results/e22\_all\_combos} and \texttt{results/e23\_best\_sizes}. Table~\ref{tab:readouts}: \texttt{scripts/synthesis\_report.py}, from the saved result files.\par}
+{\sloppy\paragraph{Code and data.} The capped comparison: word lists \texttt{scripts/e13\_lists.py}, attention pass \texttt{scripts/e13\_attention.py}, sets and generic heads \texttt{scripts/e13\_sets.py}, runs \texttt{scripts/e13\_patch.sh}, which also runs Davidson et al.'s summed vector with \texttt{scripts/e13\_fv\_residual.py}, and tables and figures \texttt{scripts/e13\_report.py}. Results in \texttt{results/e13\_capped}: per fold the word lists, sets, generic heads, accuracies and every patched reply; \texttt{summary.csv} and \texttt{per\_task.csv} at the cross-fitted $\alpha$. The causal scores are those of the first held-out runs (\texttt{results/heldout/fold\{1,2\}/fv}). Other wordings: templates \texttt{materials/simple/e4b\_wordings.json}, unpatched accuracy \texttt{scripts/e14\_outputs.py}, word lists \texttt{scripts/e14\_lists.py}, attention \texttt{scripts/e13\_attention.py --e14}, causal scores \texttt{scripts/davidson\_fv.py --instructions all}, sets \texttt{scripts/e14\_sets.py}, runs \texttt{scripts/e14\_run.sh}, tables \texttt{scripts/e14\_report.py}; results in \texttt{results/e14\_wordings} (report \texttt{paper/e14-all-wordings}). Filters L, M, S, N: token types and attention \texttt{scripts/e20\_bai\_attention.py} (stopword list \texttt{materials/stopwords/nltk\_english.txt}), sets \texttt{scripts/e22\_sets.py} and \texttt{scripts/e23\_sets.py}, runs \texttt{scripts/e22\_patch.sh} and \texttt{scripts/e23\_patch.sh}, tables \texttt{scripts/e22\_report.py} and \texttt{scripts/e23\_report.py}, Figure~\ref{fig:filters} \texttt{scripts/e23\_figures.py}, Figure~\ref{fig:size} and Tables~\ref{tab:main}--\ref{tab:groups} \texttt{scripts/e13\_report.py}; results in \texttt{results/e22\_all\_combos} and \texttt{results/e23\_best\_sizes}. Table~\ref{tab:readouts}: \texttt{scripts/synthesis\_report.py}, from the saved result files.\par}
 
 \bibliographystyle{plainnat}
 \bibliography{references}
@@ -385,6 +361,20 @@ Wordings held out: sets chosen on some of the 35 templates and tested on the oth
 \end{table}
 
 % =====================================================================
+\section{All further filter combinations}\label{app:combos}
+
+\begin{table}[H]
+\centering\small\setlength{\tabcolsep}{4pt}
+\begin{minipage}[t]{0.49\textwidth}\centering
+\input{tables/e23_task}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\textwidth}\centering
+\input{tables/e23_shared}
+\end{minipage}
+\caption{Check 1, mean accuracy over the 14 tasks of the 15 best combinations of each scope, ranked by their accuracy at 40 heads, at every size; held-out items, cross-fitted $\alpha\in\{1,2\}$, mean of the two folds. Rows 1--15 were chosen on these items. Below: sets fixed beforehand, from Table~\ref{tab:main}. Bold: best of the column at two decimals. Letters: D decodes task words; B low BOS attention; attention to T task words, L the last token, M the template markers, S punctuation and stopwords, N the whole instruction. Random: layer-matched to DBT.}
+\label{tab:e23}
+\end{table}
+
 \section{Task-word lists}\label{app:lists}
 
 The 50 generic words removed from every list, from WikiText-103 (Sec.~\ref{sec:approaches}), by share: \input{tables/e13_generic}\unskip. Five of them are not in a Latin, Chinese, Japanese or Cyrillic script and are described in brackets.

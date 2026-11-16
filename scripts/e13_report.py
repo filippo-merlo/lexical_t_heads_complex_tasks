@@ -50,13 +50,19 @@ CONDITIONS = {
     "D": ("D", "filter"), "B": ("B", "filter"), "T": ("T", "filter"), "DB": ("DB", "filter"),
     "DT": ("DT", "filter"), "BT": ("BT", "filter"), "DBT": ("DBT", "filter"),
     "DBT_nogen": ("DBT $-$ generic", "filter"),
+    # the best E22/E23 combinations (chosen on the test items): per scope, best at 40 heads and best peak
+    "DBMN": ("DBMN", "best"), "DBTMS": ("DBTMS", "best"), "DBTLS": ("DBTLS", "best"),
     "causal": ("Causal", "causal"), "causal_nogen": ("Causal $-$ generic", "causal"),
     "fvsum": ("Davidson FV (summed)", "causal"), "fvsum_nogen": ("Davidson FV $-$ generic (summed)", "causal"),
     "yang": ("Yang terms", "yang"), "random": ("Random (DBT layers)", "random"),
 }
-FAMILY_TITLE = {"filter": "Decoding and attention filters", "causal": "Davidson et al.\\ (causal score)",
+FAMILY_TITLE = {"filter": "Decoding and attention filters",
+                "best": "Best combinations with L, M, S, N (chosen on the test items)", "causal": "Davidson et al.\\ (causal score)",
                 "yang": "Baseline", "random": "Control"}
-COLOUR = {"filter": rt.AQUA, "causal": rt.ORANGE, "yang": rt.BLUE, "random": rt.GREY}
+COLOUR = {"filter": rt.AQUA, "best": rt.BLUE, "causal": rt.ORANGE, "yang": rt.INK_2, "random": rt.GREY}
+BEST = ("DBMN", "DBTMS", "DBTLS")
+BEST_SOURCES = ("e22_all_combos", "e23_best_sizes")  # 40 heads; other sizes
+FIG_SKIP = {("task", "DBTLS"), ("shared", "DBMN")}  # per scope: best at 40 heads and best peak only
 
 
 def parse(name: str) -> tuple[str, str, int]:
@@ -152,9 +158,10 @@ def tex_main(s: pd.DataFrame, value: str, name: str) -> None:
 
 
 DETAIL = [  # (scope, condition, short column label; "\n" = line break)
-    ("task", "DBT", "DBT"), ("task", "DB", "DB"), ("task", "T", "T"), ("task", "DBT_nogen", "DBT\n$-$gen."),
+    ("task", "DBT", "DBT"), ("task", "DBMN", "DBMN"), ("task", "DBTMS", "DBTMS"), ("task", "DB", "DB"), ("task", "T", "T"), ("task", "DBT_nogen", "DBT\n$-$gen."),
     ("task", "causal", "Causal"), ("task", "causal_nogen", "Causal\n$-$gen."), ("task", "yang", "Yang"),
-    ("shared", "DBT", "DBT"), ("shared", "DBT_nogen", "DBT\n$-$gen."), ("shared", "causal", "Causal"),
+    ("shared", "DBT", "DBT"), ("shared", "DBTLS", "DBTLS"), ("shared", "DBTMS", "DBTMS"),
+    ("shared", "DBT_nogen", "DBT\n$-$gen."), ("shared", "causal", "Causal"),
     ("shared", "causal_nogen", "Causal\n$-$gen."), ("shared", "fvsum", "FV\nsum"),
     ("shared", "fvsum_nogen", "FV sum\n$-$gen."), ("shared", "yang", "Yang"),
 ]
@@ -278,6 +285,7 @@ LINE = {  # condition -> (style, width, marker, direct label)
     "causal": ("-", 2.0, "s", "Causal"), "causal_nogen": ((0, (4, 2)), 1.4, "s", "Causal $-$ gen."),
     "fvsum": (":", 1.4, "D", "FV summed"), "fvsum_nogen": ((0, (1, 1.5)), 1.8, "D", "FV summed $-$ gen."),
     "yang": ("-", 1.4, "^", "Yang terms"), "random": ("-", 1.2, "v", "random"),
+    "DBMN": ("-", 2.0, "p", "DBMN"), "DBTMS": ("-", 2.0, "h", "DBTMS"), "DBTLS": ("-", 2.0, "*", "DBTLS"),
 }
 
 
@@ -288,7 +296,7 @@ def figure_size(s: pd.DataFrame) -> None:
         ends = []
         for cond, (ls, lw, mk, lab) in LINE.items():
             r = g[g.condition == cond].sort_values("n")
-            if r.empty:
+            if r.empty or (scope, cond) in FIG_SKIP:
                 continue
             col = COLOUR[CONDITIONS[cond][1]]
             ax.plot(r.n, r.check1_task, color=col, ls=ls, lw=lw, marker=mk, ms=4.5, mec=rt.SURFACE, mew=0.8, zorder=3)
@@ -311,8 +319,9 @@ def figure_size(s: pd.DataFrame) -> None:
         rt.style_axes(ax)
     axes[0].set_ylabel("check 1 accuracy, mean of 14 tasks")
     handles = [plt.Line2D([], [], color=COLOUR[f], lw=2, marker=m, ms=4) for f, m in
-               (("filter", "o"), ("causal", "s"), ("yang", "^"), ("random", "v"))]
-    labels = ["decoding + attention filters", "Davidson et al. (causal)", "Yang terms (baseline)", "random heads"]
+               (("filter", "o"), ("best", "h"), ("causal", "s"), ("yang", "^"), ("random", "v"))]
+    labels = ["filters D, B, T", "best combinations with L, M, S, N", "Davidson et al. (causal)",
+              "Yang terms (baseline)", "random heads"]
     handles += [plt.Line2D([], [], color=rt.INK_2, lw=1.4, ls=(0, (4, 2))),
                 plt.Line2D([], [], color=rt.ORANGE, lw=1.4, ls=":", marker="D", ms=3.5)]
     labels += ["dashed: generic heads removed", "dotted: Davidson et al.'s summed vector"]
@@ -324,6 +333,17 @@ def figure_size(s: pd.DataFrame) -> None:
     plt.close(fig)
 
 
+def add_best(s: pd.DataFrame, per: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """E13's rows plus the BEST combinations from E22 (40 heads) and E23 (other sizes), same protocol;
+    for the tables and figure only (E13's csv files stay E13's)."""
+    bs = pd.concat([pd.read_csv(RESULTS / x / "summary.csv") for x in BEST_SOURCES], ignore_index=True)
+    bp = pd.concat([pd.read_csv(RESULTS / x / "per_task.csv") for x in BEST_SOURCES], ignore_index=True)
+    bs, bp = bs[bs.condition.isin(BEST)], bp[bp.condition.isin(BEST)]
+    assert not bs.duplicated(["scope", "condition", "n"]).any()
+    assert len(bs) == len(BEST) * 2 * len(SIZES) and (bs.tasks == 14).all() and (bs.folds == 2).all()
+    return pd.concat([s, bs[s.columns]], ignore_index=True), pd.concat([per, bp[per.columns]], ignore_index=True)
+
+
 def main() -> None:
     curves, base = load()
     curves.to_csv(OUT / "accuracy_alpha.csv", index=False)
@@ -333,6 +353,7 @@ def main() -> None:
     s.to_csv(OUT / "summary.csv", index=False)
     # Tables and figure: only sets run on all 14 tasks in both folds (per-task Yang terms from N = 100 on
     # is built only where it fills N heads, so it has no 14-task mean there).
+    s, per = add_best(s, per)
     full = s[(s.tasks == 14) & (s.folds == 2)]
     tex_main(full, "check1_task", "e13_main")
     tex_main(full, "check1_control", "e13_control")
