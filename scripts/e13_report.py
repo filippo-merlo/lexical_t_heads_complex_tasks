@@ -53,7 +53,7 @@ CONDITIONS = {
     # the best E22/E23 combinations (chosen on the test items): per scope, best at 40 heads and best peak
     "DBMN": ("DBMN", "best"), "DBTMS": ("DBTMS", "best"), "DBTLS": ("DBTLS", "best"),
     "causal": ("Causal", "causal"), "causal_nogen": ("Causal $-$ generic", "causal"),
-    "fvsum": ("Davidson FV (summed)", "causal"), "fvsum_nogen": ("Davidson FV $-$ generic (summed)", "causal"),
+    # E13's pooled-mean summed vector (fvsum) is left out of Table/Figure main since E26 (scripts/e26_report.py)
     "yang": ("Yang terms", "yang"), "random": ("Random (DBT layers)", "random"),
 }
 FAMILY_TITLE = {"filter": "Decoding and attention filters",
@@ -283,7 +283,6 @@ def tex_lists() -> None:
 LINE = {  # condition -> (style, width, marker, direct label)
     "DBT": ("-", 2.0, "o", "DBT"), "DBT_nogen": ((0, (4, 2)), 1.4, "o", "DBT $-$ gen."),
     "causal": ("-", 2.0, "s", "Causal"), "causal_nogen": ((0, (4, 2)), 1.4, "s", "Causal $-$ gen."),
-    "fvsum": (":", 1.4, "D", "FV summed"), "fvsum_nogen": ((0, (1, 1.5)), 1.8, "D", "FV summed $-$ gen."),
     "yang": ("-", 1.4, "^", "Yang terms"), "random": ("-", 1.2, "v", "random"),
     "DBMN": ("-", 2.0, "p", "DBMN"), "DBTMS": ("-", 2.0, "h", "DBTMS"), "DBTLS": ("-", 2.0, "*", "DBTLS"),
 }
@@ -322,9 +321,8 @@ def figure_size(s: pd.DataFrame) -> None:
                (("filter", "o"), ("best", "h"), ("causal", "s"), ("yang", "^"), ("random", "v"))]
     labels = ["filters D, B, T", "best combinations with L, M, S, N", "Davidson et al. (causal)",
               "Yang terms (baseline)", "random heads"]
-    handles += [plt.Line2D([], [], color=rt.INK_2, lw=1.4, ls=(0, (4, 2))),
-                plt.Line2D([], [], color=rt.ORANGE, lw=1.4, ls=":", marker="D", ms=3.5)]
-    labels += ["dashed: generic heads removed", "dotted: Davidson et al.'s summed vector"]
+    handles.append(plt.Line2D([], [], color=rt.INK_2, lw=1.4, ls=(0, (4, 2))))
+    labels.append("dashed: generic heads removed")
     fig.legend(handles, labels, loc="upper center", ncol=3, frameon=False, fontsize=6.6)
     fig.tight_layout(rect=(0, 0, 0.97, 0.85), w_pad=3.5)
     fig.savefig(rt.FIGURES / "e13_size.pdf")

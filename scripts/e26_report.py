@@ -77,10 +77,13 @@ def compare(summed: pd.DataFrame, hbh: pd.DataFrame) -> pd.DataFrame:
 def tex_scope(c: pd.DataFrame, scope: str) -> None:
     """Rows: conditions; per N two columns, head by head (HbH) and summed (Sum)."""
     g = c[c.scope == scope].set_index(["condition", "n"])
-    best = {(n, col): g.xs(n, level="n").drop("random", errors="ignore")[col].max()
+    best = {(n, col): g.xs(n, level="n").drop(["random", "fvsum", "fvsum_nogen"], errors="ignore")[col].max()
             for n in SIZES for col in ("check1_task_hbh", "check1_task_summed")}
     lines, fam = [], None
-    rows = ROWS + (("fvsum", "fvsum_nogen") if scope == "shared" else ())
+    rows = list(ROWS)
+    if scope == "shared":  # the pooled-mean reference rows right after the causal rankings
+        k = rows.index("causal_nogen") + 1
+        rows[k:k] = ["fvsum", "fvsum_nogen"]
     for cond in rows:
         family = FAMILY.get(cond, "causal")
         if family != fam:
@@ -96,7 +99,7 @@ def tex_scope(c: pd.DataFrame, scope: str) -> None:
                 else:
                     v = g[col].get((cond, n), np.nan)
                 cells.append(e13.cell(v, cond != "random" and not cond.startswith("fvsum") and v == best[(n, col)]))
-        label = {"fvsum": "Causal, pooled mean (E13)", "fvsum_nogen": r"Causal $-$ generic, pooled mean (E13)"}.get(cond, LABEL.get(cond))
+        label = {"fvsum": "Causal, pooled mean", "fvsum_nogen": r"Causal $-$ generic, pooled mean"}.get(cond, LABEL.get(cond))
         lines.append(r"\quad " + label + " & " + " & ".join(cells) + r" \\")
     header = [" & " + " & ".join(rf"\multicolumn{{2}}{{c}}{{{n}}}" for n in SIZES) + r" \\",
               "".join(rf"\cmidrule(lr){{{2 + 2 * i}-{3 + 2 * i}}}" for i in range(len(SIZES))),
