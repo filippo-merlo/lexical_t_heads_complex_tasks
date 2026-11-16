@@ -1,0 +1,100 @@
+{
+ "antonym": {
+  "tried": 200,
+  "correct": 135,
+  "n_mean": 100,
+  "n_cie": 25,
+  "accuracy": 0.675
+ },
+ "synonym": {
+  "tried": 260,
+  "correct": 133,
+  "n_mean": 100,
+  "n_cie": 25,
+  "accuracy": 0.5115384615384615
+ },
+ "singular-plural": {
+  "tried": 102,
+  "correct": 99,
+  "n_mean": 74,
+  "n_cie": 25,
+  "accuracy": 0.9705882352941176
+ },
+ "present-past": {
+  "tried": 140,
+  "correct": 138,
+  "n_mean": 100,
+  "n_cie": 25,
+  "accuracy": 0.9857142857142858
+ },
+ "country-capital": {
+  "tried": 98,
+  "correct": 94,
+  "n_mean": 69,
+  "n_cie": 25,
+  "accuracy": 0.9591836734693877
+ },
+ "country-currency": {
+  "tried": 98,
+  "correct": 76,
+  "n_mean": 51,
+  "n_cie": 25,
+  "accuracy": 0.7755102040816326
+ },
+ "landmark-country": {
+  "tried": 140,
+  "correct": 125,
+  "n_mean": 100,
+  "n_cie": 25,
+  "accuracy": 0.8928571428571429
+ },
+ "park-country": {
+  "tried": 160,
+  "correct": 140,
+  "n_mean": 100,
+  "n_cie": 25,
+  "accuracy": 0.875
+ },
+ "product-company": {
+  "tried": 160,
+  "correct": 136,
+  "n_mean": 100,
+  "n_cie": 25,
+  "accuracy": 0.85
+ },
+ "next_item": {
+  "tried": 112,
+  "correct": 105,
+  "n_mean": 80,
+  "n_cie": 25,
+  "accuracy": 0.9375
+ },
+ "prev_item": {
+  "tried": 112,
+  "correct": 100,
+  "n_mean": 75,
+  "n_cie": 25,
+  "accuracy": 0.8928571428571429
+ },
+ "english-french": {
+  "tried": 160,
+  "correct": 135,
+  "n_mean": 100,
+  "n_cie": 25,
+  "accuracy": 0.84375
+ },
+ "english-german": {
+  "tried": 240,
+  "correct": 133,
+  "n_mean": 100,
+  "n_cie": 25,
+  "accuracy": 0.5541666666666667
+ },
+ "english-spanish": {
+  "tried": 160,
+  "correct": 134,
+  "n_mean": 100,
+  "n_cie": 25,
+  "accuracy": 0.8375
+ }
+}
