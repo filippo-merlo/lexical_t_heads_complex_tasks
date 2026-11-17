@@ -1,0 +1,208 @@
+{
+ "fold": 2,
+ "choosing_half": "B",
+ "top30_by_score": [
+  [
+   "L16H29",
+   0.7712
+  ],
+  [
+   "L28H10",
+   0.7585
+  ],
+  [
+   "L13H2",
+   0.7123
+  ],
+  [
+   "L31H14",
+   0.5976
+  ],
+  [
+   "L15H5",
+   0.5782
+  ],
+  [
+   "L13H31",
+   0.5702
+  ],
+  [
+   "L8H18",
+   0.5386
+  ],
+  [
+   "L15H7",
+   0.4314
+  ],
+  [
+   "L21H19",
+   0.3706
+  ],
+  [
+   "L11H4",
+   0.3277
+  ],
+  [
+   "L9H19",
+   0.3207
+  ],
+  [
+   "L15H11",
+   0.2931
+  ],
+  [
+   "L14H6",
+   0.2839
+  ],
+  [
+   "L9H31",
+   0.2828
+  ],
+  [
+   "L13H8",
+   0.2732
+  ],
+  [
+   "L15H8",
+   0.2443
+  ],
+  [
+   "L13H6",
+   0.2415
+  ],
+  [
+   "L13H4",
+   0.2344
+  ],
+  [
+   "L13H11",
+   0.2315
+  ],
+  [
+   "L13H30",
+   0.1896
+  ],
+  [
+   "L14H12",
+   0.1621
+  ],
+  [
+   "L15H27",
+   0.1611
+  ],
+  [
+   "L14H4",
+   0.1527
+  ],
+  [
+   "L17H5",
+   0.1433
+  ],
+  [
+   "L13H21",
+   0.1412
+  ],
+  [
+   "L14H13",
+   0.1405
+  ],
+  [
+   "L16H25",
+   0.1357
+  ],
+  [
+   "L13H22",
+   0.1342
+  ],
+  [
+   "L21H2",
+   0.1287
+  ],
+  [
+   "L25H23",
+   0.089
+  ]
+ ],
+ "generic": [
+  "L13H2",
+  "L13H31",
+  "L15H5",
+  "L15H7",
+  "L16H29",
+  "L28H10",
+  "L31H14",
+  "L8H18"
+ ],
+ "yang_own": {
+  "antonym": {
+   "template": "inst2",
+   "accuracy": 0.678,
+   "n": 15
+  },
+  "synonym": {
+   "template": "inst4",
+   "accuracy": 0.504,
+   "n": 1
+  },
+  "singular-plural": {
+   "template": "inst1",
+   "accuracy": 0.98,
+   "n": 21
+  },
+  "present-past": {
+   "template": "inst2",
+   "accuracy": 1.0,
+   "n": 10
+  },
+  "country-capital": {
+   "template": "inst3",
+   "accuracy": 0.959,
+   "n": 21
+  },
+  "country-currency": {
+   "template": "inst0",
+   "accuracy": 0.827,
+   "n": 17
+  },
+  "landmark-country": {
+   "template": "inst1",
+   "accuracy": 0.878,
+   "n": 22
+  },
+  "park-country": {
+   "template": "inst4",
+   "accuracy": 0.88,
+   "n": 22
+  },
+  "product-company": {
+   "template": "inst4",
+   "accuracy": 0.793,
+   "n": 29
+  },
+  "next_item": {
+   "template": "inst0",
+   "accuracy": 0.679,
+   "n": 35
+  },
+  "prev_item": {
+   "template": "inst1",
+   "accuracy": 0.759,
+   "n": 19
+  },
+  "english-french": {
+   "template": "inst3",
+   "accuracy": 0.779,
+   "n": 11
+  },
+  "english-german": {
+   "template": "inst1",
+   "accuracy": 0.766,
+   "n": 8
+  },
+  "english-spanish": {
+   "template": "inst2",
+   "accuracy": 0.83,
+   "n": 5
+  }
+ }
+}
