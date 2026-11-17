@@ -1,7 +1,9 @@
 % =====================================================================
-%  Talk version of paper/head-sets-simple.tex: one concept per slide.
+%  Talk version of paper/head-sets-simple.tex: one message per slide,
+%  the message in the title, at most a few short bullets.
 %  Same order as the paper (rules, main comparison, summed vector, beyond the
-%  five templates). Numbers are copied from paper/tables/{e13_main,e14_main,
+%  five templates); the coverage table is in the backup slide at the end.
+%  Numbers are copied from paper/tables/{e13_main,e14_main,
 %  e24_sizes_*,e26_shared,e26_task,synth_readouts}.tex; figures are paper/figures/*.pdf.
 %  Compile with Tectonic from this folder:  tectonic head-sets-simple-slides.tex
 % =====================================================================
@@ -12,6 +14,7 @@
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{footline}{\hfill\scriptsize\color{gray}\insertframenumber\hspace{1.2em}\vspace{0.6em}}
 \setbeamertemplate{itemize items}{\textbullet}
+\setbeamertemplate{itemize subitem}{\textendash}
 
 \usepackage{booktabs,array,amsmath,amssymb}
 \usepackage{fontspec}
@@ -39,14 +42,22 @@
 \setbeamercolor{structure}{fg=accent}
 \setbeamerfont{frametitle}{series=\bfseries,size=\Large}
 
-% one-line take-home message at the bottom of a slide
+% one-line take-home message at the bottom of a slide (used sparingly)
 \newcommand{\takeaway}[1]{\vfill
-  \begin{beamercolorbox}[wd=\textwidth,sep=6pt]{takeaway}\small #1\end{beamercolorbox}}
+  \begin{beamercolorbox}[wd=\textwidth,sep=6pt]{takeaway}#1\end{beamercolorbox}}
 \setbeamercolor{takeaway}{bg=soft,fg=ink}
+
+% small grey note (sources, schematic values, how to read a figure)
+\newcommand{\gnote}[1]{{\footnotesize\color{gray}#1}}
+
+% more air between bullets
+\newcommand{\spaced}{\setlength{\itemsep}{0.55em}}
 
 % shaded accuracy cell: \cv{0.62}
 \newcommand{\cv}[1]{\pgfmathtruncatemacro{\cvshade}{#1*70}\edef\cvcmd{\noexpand\cellcolor{acc!\cvshade!white}}\cvcmd#1}
 \newcommand{\opt}{$^\dagger$}
+\newcommand{\Causal}{\textcolor{caus}{Causal}}
+\newcommand{\CausalG}{\textcolor{caus}{Causal $-$ generic}}
 
 % a coloured token box for the prompt diagram
 \newcommand{\tok}[2]{\tikz[baseline=(t.base)]\node[fill=#1,rounded corners=2pt,inner sep=2.5pt,font=\ttfamily\small](t){\strut #2};}
@@ -65,100 +76,98 @@
 \end{frame}
 
 % =====================================================================
-\section{The question}
+\section{Setup}
 
-\begin{frame}{The question}
-\begin{itemize}
-\item When we write \texttt{"What is the capital of the country? Q: France A:"},
-      the model answers \emph{Paris}. Somewhere inside, it holds the idea
-      ``this is the \emph{capital} task''.
-\item Many studies say this idea lives in a \textbf{small group of attention heads}.
-\item We want that group:
+\begin{frame}{Goal: find the few heads that carry a task}
+\vspace{0.5em}
+\centering
+\texttt{What is the capital of the country? Q: France A:}
+\quad$\rightarrow$\quad \emph{Paris}
+
+\vspace{1.4em}
+\raggedright
+\begin{itemize}\spaced
+\item Earlier work: the task lives in a \textbf{small set of attention heads}.
+\item We want that set to be
   \begin{itemize}
-  \item \textbf{small} --- as few heads as possible,
-  \item \textbf{general} --- ideally one group that works for all tasks,
-  \item \textbf{cheap to find} --- without patching every head one by one.
+  \item \textbf{small}: as few heads as possible,
+  \item \textbf{general}: ideally one set for all tasks,
+  \item \textbf{cheap to find}: no patching of every head.
   \end{itemize}
 \end{itemize}
-\takeaway{\textbf{Goal:} find the smallest set of heads that carries the task, and the
-cheapest rule that finds it.}
 \end{frame}
 
 % =====================================================================
-\begin{frame}{The tasks: 14 simple ones, in 5 types}
-\centering\small
-\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{7.2cm}l@{}}
+\begin{frame}{14 simple tasks, three kinds of prompt}
+\centering
+\begin{tabular}{@{}lll@{}}
 \toprule
 Type & Tasks & Example \\
 \midrule
 Word relations & antonym, synonym & hot $\rightarrow$ cold \\
 Morphology & singular--plural, present--past & go $\rightarrow$ went \\
-Facts & country $\rightarrow$ capital, currency; landmark, park $\rightarrow$ country; product $\rightarrow$ company & France $\rightarrow$ Paris \\
+Facts & capital, currency, landmark, park, product & France $\rightarrow$ Paris \\
 Sequences & next-item, prev-item & Monday $\rightarrow$ Tuesday \\
 Translations & English to French, German, Spanish & dog $\rightarrow$ chien \\
 \bottomrule
 \end{tabular}
 
-\vspace{1em}
+\vspace{1.2em}
 \raggedright
-Every task can be asked in two ways, plus one prompt that asks nothing:
-\begin{itemize}\small
-\item \textbf{Rule prompt} (says the task): \texttt{What is the capital of the country? Q: France\textbackslash nA:}
-\item \textbf{Example prompt} (shows the task): \texttt{\ Italy: Rome; Spain: Madrid; France:}
-\item \textbf{Bare prompt} (no task at all): \texttt{\ France:}
-\end{itemize}
-\takeaway{Tasks and prompts are those of Yang et al.\ (2026); the bare prompt is where we test.}
+\begin{tabular}{@{}l@{\hspace{1em}}l@{}}
+\textbf{Rule} prompt: states the task & \texttt{\footnotesize What is the capital of the country? Q: France\textbackslash nA:} \\[3pt]
+\textbf{Example} prompt: shows it & \texttt{\footnotesize \ Italy: Rome; Spain: Madrid; France:} \\[3pt]
+\textbf{Bare} prompt: no task & \texttt{\footnotesize \ France:} \\
+\end{tabular}
+
+\vfill
+\gnote{Tasks and prompts: Yang et al.\ (2026).}
 \end{frame}
 
 % =====================================================================
-\begin{frame}{How we test a head set: copy the task in}
+\begin{frame}{How we test a set: patch the task into a bare prompt}
 \centering
 \begin{tikzpicture}[
   box/.style={draw=gray!60,rounded corners=3pt,fill=soft,align=left,font=\small,inner sep=5pt},
   arr/.style={-{Latex[length=2.5mm]},thick,accent}]
-\node[box,text width=5.6cm](rule){\textbf{1. Rule prompts} (task stated)\\[2pt]
+\node[box,text width=5.0cm](rule){\textbf{1. Rule prompts}\\[2pt]
   \texttt{\footnotesize The capital city of Peru is}\\
-  \texttt{\footnotesize Country -> Capital Q: Chile A:}\\
-  \texttt{\footnotesize \dots}};
-\node[box,text width=4.2cm,right=1.2cm of rule](mean){\textbf{2. Average} each chosen head's output over these prompts\\[2pt]
+  \texttt{\footnotesize Country -> Capital Q: Chile A:}};
+\node[box,text width=5.0cm,right=1.2cm of rule](mean){\textbf{2. Average} each head's output\\
   $\Rightarrow$ one \emph{mean} per head};
-\node[box,text width=5.6cm,below=1.1cm of rule](bare){\textbf{3. Bare prompt} \texttt{\ Japan:}\\[2pt]
-  without help: no task, accuracy $\approx$ 0.01};
-\node[box,text width=4.2cm,right=1.2cm of bare,fill=acc!15](out){\textbf{4. Replace} the heads' outputs by their means (scaled by $\alpha$ = 1 or 2)\\[2pt]
-  does it now answer \texttt{Tokyo}?};
+\node[box,text width=5.0cm,below=0.9cm of rule](bare){\textbf{3. Bare prompt} \texttt{\ Japan:}\\
+  alone: accuracy $\approx$ 0.01};
+\node[box,text width=5.0cm,right=1.2cm of bare,fill=acc!15](out){\textbf{4. Replace} the heads' outputs by their means ($\times\alpha$, $\alpha$ = 1 or 2): \texttt{Tokyo}?};
 \draw[arr](rule)--(mean);
 \draw[arr](mean)--(out);
 \draw[arr](bare)--(out);
 \end{tikzpicture}
 
-\vspace{0.6em}
-\raggedright\small
-Two sanity checks on every set:
-\textbf{control} --- patch the same heads with a \emph{related} task's mean (antonym $\leftrightarrow$ synonym): should stay low;
-\textbf{random heads} --- same number of heads per layer: should do nothing.
-\takeaway{A set \emph{carries} the task if its own means make the bare prompt work,
-and the control means and random heads do not. Default: head by head; the summed vector comes later.}
+\vspace{0.8em}
+\raggedright
+\textbf{Two checks on every set}, both should stay near zero:
+\begin{itemize}
+\item \textbf{Control}: same heads, a \emph{related} task's means (antonym $\leftrightarrow$ synonym).
+\item \textbf{Random heads}: same number of heads per layer.
+\end{itemize}
 \end{frame}
 
 % =====================================================================
-\begin{frame}{Reading a head: logit lens vs.\ Head-JLens}
-\begin{columns}[T]
-\column{0.5\textwidth}
-\textbf{Logit lens (``Logit-head'')}\\[2pt]
-\small Ask: \emph{if this head's output went straight to the output layer,
-which words would it push?}
+\begin{frame}{Reading a head: logit lens vs.\ J-head}
+\begin{columns}[c]
+\column{0.52\textwidth}
+\textbf{Logit lens} (``Logit-head'')\\[2pt]
+Which words would the head push if its output went \emph{straight} to the output?
 
-\vspace{0.6em}
-\normalsize\textbf{Head-JLens (``J-head'')}\\[2pt]
-\small Ask: \emph{after passing through all the layers that follow it,
-which words does this head end up pushing?}\\
-(A linear map per head, fitted once on WikiText.)
+\vspace{1em}
+\textbf{Head-JLens} (``J-head'')\\[2pt]
+Which words does it push \emph{after all the layers that follow}?\\
+\gnote{One linear map per head, fitted once on WikiText.}
 
-\vspace{0.6em}
-\normalsize
-A head \textbf{decodes} a word when the word is in its top 10.
+\vspace{1em}
+A head \textbf{decodes} a word if the word is in its top 10.
 
-\column{0.48\textwidth}
+\column{0.44\textwidth}
 \centering
 \begin{tikzpicture}[font=\small,
   lay/.style={draw=gray!60,fill=soft,minimum width=2.6cm,minimum height=0.42cm},
@@ -169,120 +178,92 @@ A head \textbf{decodes} a word when the word is in its top 10.
 \node[lay,above=0.15cm of l2](l3){layer 31};
 \node[lay,above=0.35cm of l3,fill=white](o){words};
 \draw[arr,caus,dashed](h.west)to[bend left=50]node[left,align=right]{logit\\lens}(o.west);
-\draw[arr,filt](h.east)to[bend right=50]node[right,align=left]{J-head:\\through\\the layers}(o.east);
+\draw[arr,filt](h.east)to[bend right=50]node[right,align=left]{J-head}(o.east);
 \end{tikzpicture}
 \end{columns}
-\takeaway{J-head reads heads the way the model actually uses them, which matters for heads in the middle layers.}
 \end{frame}
 
 % =====================================================================
 \section{Two published methods}
 
-\begin{frame}{Method 1 --- lexical task heads (Yang et al., 2026)}
-\textbf{Idea:} a head that ``thinks about'' the task should decode words \emph{about} the task.
-\begin{itemize}
-\item Hand-written word list per task, e.g.\ antonym: \emph{opposite, antonym, \dots}
-\item A head is chosen if one of its top-10 words is in the list on $\geq$10\% of prompts.
-\end{itemize}
-
-\vspace{0.4em}
-\textbf{What we found when re-running it}
-\begin{itemize}
-\item Reproduces: such heads exist for every task (counts within one head of theirs).
-\item But on the \textbf{bare} prompt, their heads bring in mostly the \emph{fact} tasks;
-      nothing on antonym, synonym, present--past, prev-item, translations.
-\item Their per-task curves reproduce only when the prompt \emph{already shows one example} that the model gets wrong ---
-      the setting of their released script. That is repairing, not bringing the task in.
-\end{itemize}
-\takeaway{Lexical heads exist, but chosen from a hand-written list they carry only some task types.}
-\end{frame}
-
-% =====================================================================
-\begin{frame}{Lexical task heads: the procedure}
+\begin{frame}{Method 1: lexical task heads (Yang et al., 2026)}
 \centering
 \begin{tikzpicture}[
   stp/.style={draw=gray!60,rounded corners=3pt,fill=soft,align=center,font=\footnotesize,
-               text width=3.1cm,minimum height=1.45cm},
+               text width=2.75cm,minimum height=1.3cm},
   arr/.style={-{Latex[length=2.2mm]},thick,accent}]
-\node[stp](s1){\textbf{1. Prompts}\\100 rule prompts the model answers correctly};
-\node[stp,right=0.45cm of s1](s2){\textbf{2. Read}\\each head's top-10 words at the last token};
-\node[stp,right=0.45cm of s2](s3){\textbf{3. Match}\\is any of them in the hand-written list?};
-\node[stp,right=0.45cm of s3,fill=acc!15](s4){\textbf{4. Count}\\matches on $\geq$10\% of prompts\\$\Rightarrow$ lexical task head};
+\node[stp](s1){\textbf{1. Prompts}\\100 rule prompts the model gets right};
+\node[stp,right=0.45cm of s1](s2){\textbf{2. Read}\\each head's top-10 words};
+\node[stp,right=0.45cm of s2](s3){\textbf{3. Match}\\against a \emph{hand-written} list};
+\node[stp,right=0.45cm of s3,fill=acc!15](s4){\textbf{4. Keep}\\heads that match on $\geq$10\% of prompts};
 \draw[arr](s1)--(s2); \draw[arr](s2)--(s3); \draw[arr](s3)--(s4);
 \end{tikzpicture}
 
-\vspace{0.7em}
-\raggedright\small
-\textbf{Example: antonym} \hfill {\scriptsize\color{gray}schematic heads and counts}\\[2pt]
-\footnotesize Prompt: \texttt{Output the antonym of the word in the question. Q: hot\textbackslash nA:}\\
-Hand-written list: \tok{cTask}{opposite}\,\tok{cTask}{reverse}\,\tok{cTask}{antonym}\,\tok{cTask}{opposing}\,\tok{cTask}{{\cjkfont 反}}
-
-\vspace{0.5em}
-\begin{tabular}{@{}l@{\hspace{0.6em}}l@{\hspace{1em}}c@{\hspace{1em}}l@{}}
-head A & \tok{cTask}{opposite}\,\tok{white}{cold}\,\tok{cTask}{reverse}\,\tok{white}{the}\,\dots & 41/100 prompts & $\Rightarrow$ \textbf{chosen} \\[3pt]
-head B & \tok{white}{\textbackslash n}\,\tok{white}{:}\,\tok{white}{the}\,\tok{white}{A}\,\dots & \phantom{0}3/100 prompts & $\Rightarrow$ not chosen \\
+\vspace{1.2em}
+\raggedright
+\textbf{Example: antonym}\\[4pt]
+\small
+\begin{tabular}{@{}l@{\hspace{0.8em}}l@{\hspace{1em}}l@{}}
+List & \tok{cTask}{opposite}\,\tok{cTask}{reverse}\,\tok{cTask}{antonym}\,\tok{cTask}{opposing}\,\tok{cTask}{{\cjkfont 反}} & \\[6pt]
+Head A & \tok{cTask}{opposite}\,\tok{white}{cold}\,\tok{cTask}{reverse}\,\tok{white}{the}\,\dots & 41/100 prompts $\Rightarrow$ \textbf{kept} \\[4pt]
+Head B & \tok{white}{\textbackslash n}\,\tok{white}{:}\,\tok{white}{the}\,\tok{white}{A}\,\dots & \phantom{0}3/100 prompts $\Rightarrow$ dropped \\
 \end{tabular}
-\takeaway{The set is every head that passes; its size varies by task (about 17 per task on average).
-Then it is tested by mean patching.}
+
+\vfill
+\gnote{Schematic heads and counts. The set size varies by task (about 17 heads on average).}
 \end{frame}
 
 % =====================================================================
-\begin{frame}{J-head finds more heads that carry the task}
+\begin{frame}{Lexical heads carry only some task types}
+\vspace{0.5em}
+\begin{itemize}\spaced
+\item \textbf{Reproduced:} such heads exist for every task\\
+      (counts within one head of theirs).
+\item \textbf{On the bare prompt} they bring in mostly the \emph{fact} tasks;\\
+      nothing on antonym, synonym, present--past, prev-item, translations.
+\item \textbf{Their curves} reproduce only if the prompt already shows one example
+      the model gets wrong (their released script).\\
+      That is \emph{repairing} the task, not bringing it in.
+\end{itemize}
+\end{frame}
+
+% =====================================================================
+\begin{frame}{J-head finds more task heads than the logit lens}
 \begin{columns}[c]
-\column{0.52\textwidth}
+\column{0.5\textwidth}
 \centering\small
 \begin{tabular}{@{}lcc@{}}
 \toprule
  & Logit-head & J-head \\
 \midrule
 \multicolumn{3}{@{}l}{\textit{Rule prompts}} \\
-\quad heads found (sum over tasks) & 240 & 370 \\
-\quad effect on bare prompt & 0.17 & 0.19 \\
+\quad heads found & 240 & 370 \\
+\quad effect & 0.17 & 0.19 \\
 \midrule
 \multicolumn{3}{@{}l}{\textit{Example prompts}} \\
-\quad heads found (sum over tasks) & 141 & 237 \\
-\quad effect on bare prompt & 0.22 & 0.32 \\
+\quad heads found & 141 & 237 \\
+\quad effect & 0.22 & 0.32 \\
 \bottomrule
 \end{tabular}
 
-\vspace{0.3em}
-\scriptsize Effect: best accuracy gain over $\alpha$, mean of 14 tasks (Yang et al.'s rule, items not held out).
+\vspace{0.4em}
+\gnote{Heads: sum over tasks. Effect: best accuracy gain\\ on the bare prompt, mean of 14 tasks (Yang et al.'s rule).}
 
 \column{0.46\textwidth}
-\begin{itemize}\small
-\item J-head finds \textbf{50--70\% more} lexical heads.
+\begin{itemize}\spaced
+\item \textbf{50--70\% more} heads.
 \item The extra ones sit in \textbf{layers 10--19}, where the logit lens sees little.
-\item The extra heads have causal effects of their own.
-\item The lead holds at \textbf{equal set size} (top 5, 10, 20 of each).
+\item They have causal effects of their own.
+\item The lead holds at \textbf{equal set size}.
 \end{itemize}
 \end{columns}
 \takeaway{From here on, every head is read with J-head.}
 \end{frame}
 
 % =====================================================================
-\begin{frame}{Method 2 --- causal score (Davidson et al., 2025)}
-\textbf{Idea:} test each head directly. Does it alone bring the task back?
-\begin{enumerate}
-\item Take a rule prompt and \textbf{replace the instruction with filler} of the same length
-      (random likely tokens, WikiText text, or another task's instruction).
-\item Put back \textbf{one head's} mean output.
-\item Score = how much the right answer's probability goes up.
-\item Average over filler kinds (and over tasks, for one shared ranking).
-\end{enumerate}
-
-\vspace{0.3em}
-Their intervention: \textbf{sum} the top heads' means into one vector (a ``function vector'')
-and add it after layer 11.
-
-\vspace{0.3em}
-\small\textbf{Cost:} one patched forward pass \emph{per head per prompt} --- 1{,}024 heads.
-\takeaway{The strongest reference, but the most expensive: it needs patching to choose the heads.}
-\end{frame}
-
-% =====================================================================
-\begin{frame}{Causal score: the procedure}
+\begin{frame}{Method 2: causal score (Davidson et al., 2025)}
 \centering
-\begin{tikzpicture}[font=\scriptsize,
+\scalebox{0.95}{\begin{tikzpicture}[font=\scriptsize,
   lab/.style={anchor=east,align=right,text width=1.3cm,font=\footnotesize},
   tk/.style={rounded corners=2pt,minimum height=0.5cm,inner sep=2.5pt,anchor=west},
   ins/.style={tk,text width=5.9cm,align=center},
@@ -314,95 +295,69 @@ and add it after layer 11.
 \node[outp] at (8.8,-1.9){P(\texttt{cold}) higher?};
 \draw[decorate,decoration={brace,amplitude=4pt},thick] (10.95,-0.75)--(10.95,-2.1)
   node[midway,right=4pt,align=left,font=\footnotesize]{\textbf{score($h$)}\\= gain};
-\end{tikzpicture}
+\end{tikzpicture}}
 
-\vspace{0.6em}
-\raggedright\small
+\vspace{0.8em}
+\raggedright
 \begin{itemize}
-\item Filler = text of the same length and likelihood: random likely tokens, WikiText text, or another task's instruction.
-\item Repeat for \textbf{each of the 1{,}024 heads}, on many prompts and all three fillers; average
-      (and over the 14 tasks, for one shared ranking). Take the top $N$.
-\item Use the top $N$ in two ways: \textbf{head by head} (each head's output replaced by its mean; our \textcolor{caus}{Causal} sets)
-      or \textbf{summed} into one vector added after layer 11 (their function vector).
+\item Repeat for \textbf{all 1{,}024 heads}, many prompts, three fillers; keep the top $N$.
+\item \textbf{Cost:} one patched forward pass per head per prompt.
+\item Theirs: \textbf{sum} the top heads' means into one vector after layer 11.\\
+      Ours (\Causal\ sets): patch them \textbf{head by head}.
 \end{itemize}
-\takeaway{A head scores high if, alone, it brings back the answer when the instruction is gone.}
+\vfill
+\gnote{Filler: random likely tokens, WikiText text, or another task's instruction. Shared ranking: also averaged over the 14 tasks.}
 \end{frame}
 
 % =====================================================================
-\begin{frame}{Generic heads: high causal score, but not about the task}
-\begin{itemize}
-\item Reading the causal top 30 with J-head, some heads decode \textbf{the same tokens on every task}
-      (line ends, colons) and attend to the answer slot.
-\item They all push \textbf{one large direction, shared by all tasks}.
-\item On all items, dropping six of them makes Davidson et al.'s vector at least as good on all 14 tasks
-      and lets it carry the translations; dropping six random heads does not help.
-\item In the comparison we mark them on the choosing half only: heads whose decoded tokens look alike across the 14 tasks
-      (8--9 of the top 30, e.g.\ L13H31, L15H5, L31H14), and test every causal set with and without them.
+\begin{frame}{Generic heads: high causal score, but no task}
+\vspace{0.5em}
+\begin{itemize}\spaced
+\item Some of the causal top 30 decode \textbf{the same tokens on every task}
+      (line ends, colons): one large push shared by all tasks.
+\item Dropping six of them makes Davidson et al.'s vector at least as good on all 14 tasks;
+      dropping six random heads does not.
+\item We mark them on the choosing half (8--9 of the top 30)\\
+      and test every causal set with and without them: \CausalG.
 \end{itemize}
-\takeaway{Some of the strongest causal heads carry no task at all, only a shared push.}
 \end{frame}
 
 % =====================================================================
 \section{Selection rules}
 
 \begin{frame}{A fair race between rules}
-\begin{itemize}
-\item \textbf{Same budget.} Every rule ranks all 1{,}024 heads; a set is its top $N$,
-      with $N$ = 20, 40, 60, 80, 100, 120. We only compare sets of the same size.
-\item \textbf{Two scopes.}
-  \begin{itemize}
-  \item \emph{Per task}: a different set for each task.
-  \item \emph{Shared}: one set for all 14 tasks (each task still patched with its own means).
-  \end{itemize}
-\item \textbf{Held-out items.} Each task's items are split in two halves.
-      Everything (word lists, rankings, means, $\alpha$) is chosen on one half
-      and tested on the other; then we swap and average.
-\item \textbf{Scoring.} A reply counts if it starts with the full answer, in words.
+\vspace{0.5em}
+\begin{itemize}\spaced
+\item \textbf{Same budget.} Every rule ranks all 1{,}024 heads; a set is its top $N$
+      ($N$ = 20, 40, \dots, 120). Only equal sizes are compared.
+\item \textbf{Two scopes.} \emph{Per task}: a set for each task.
+      \emph{Shared}: one set for all 14 tasks.
+\item \textbf{Held-out items.} Choose everything on one half of the items, test on the other;
+      then swap and average.
+\item \textbf{Scoring.} The reply must start with the full answer.
 \end{itemize}
-\takeaway{No rule sees the items it is scored on, and no set gets more heads than another.}
 \end{frame}
 
 % =====================================================================
-\begin{frame}{Our ingredient 1: a task-word list read off the heads}
-Instead of writing the word list by hand, we \textbf{let the heads tell us}:
-\begin{enumerate}\small
-\item Read every head's top-10 J-head words on the task's rule prompts.
-\item Count how often each word shows up.
-\item Drop the 50 words heads decode on \emph{any} text (WikiText): \emph{which, what, http, \dots}
-\item Keep the 30 most frequent words.
-\end{enumerate}
-
-\vspace{0.3em}
-\small
-\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{11cm}@{}}
-\toprule
-country--capital & city, cities, country, town, countries, answer, international, geography, downtown, capital, \dots \\
-antonym & opposite, word, instead, because, opposing, words, therefore, definition, reverse, synonyms, \dots \\
-next-item & next, january, july, september, november, october, february, sequence, because, \dots \\
-\bottomrule
-\end{tabular}
-\takeaway{The lists hold the task's own vocabulary, plus some noise (word pieces like \emph{oppos}, numbers).}
-\end{frame}
-
-% =====================================================================
-\begin{frame}{Task-word list: the procedure}
+\begin{frame}{Ingredient 1: a task-word list read off the heads}
 \centering
 \begin{tikzpicture}[
-  stp/.style={draw=gray!60,rounded corners=3pt,fill=soft,align=center,font=\scriptsize,
-               text width=1.85cm,minimum height=1.45cm},
-  arr/.style={-{Latex[length=2mm]},thick,accent}]
-\node[stp](a){\textbf{Rule prompts}\\(489 here)\\$\times$ 1{,}024 heads};
-\node[stp,right=0.25cm of a](b){\textbf{Read}\\top-10 J-head tokens of each head};
-\node[stp,right=0.25cm of b](c){\textbf{Keep words}\\letters/digits, not stop words, $\geq$3 letters};
-\node[stp,right=0.25cm of c](d){\textbf{Share}\\\% of (prompt, head) pairs that decode the word};
-\node[stp,right=0.25cm of d](e){\textbf{Drop generic}\\50 words heads decode on WikiText: \emph{which, what, http}};
-\node[stp,right=0.25cm of e,fill=acc!15](f){\textbf{Keep top 30}\\= the task list};
-\draw[arr](a)--(b); \draw[arr](b)--(c); \draw[arr](c)--(d); \draw[arr](d)--(e); \draw[arr](e)--(f);
+  stp/.style={draw=gray!60,rounded corners=3pt,fill=soft,align=center,font=\footnotesize,
+               text width=2.7cm,minimum height=1.25cm},
+  arr/.style={-{Latex[length=2.2mm]},thick,accent}]
+\node[stp](a){\textbf{1. Read}\\top-10 J-head words of every head};
+\node[stp,right=0.5cm of a](b){\textbf{2. Count}\\how often each word is decoded};
+\node[stp,right=0.5cm of b](c){\textbf{3. Drop}\\50 words heads decode on any text};
+\node[stp,right=0.5cm of c,fill=acc!15](d){\textbf{4. Keep}\\the top 30\\= the task list};
+\draw[arr](a)--(b); \draw[arr](b)--(c); \draw[arr](c)--(d);
 \end{tikzpicture}
 
-\vspace{0.6em}
-\begin{tikzpicture}[font=\footnotesize,x=2.4cm,y=-0.26cm]
-\node[anchor=west,font=\small\bfseries] at (-1.35,-1.4){country--capital, fold 1: the top 10 of the list};
+\vspace{0.8em}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\centering
+\begin{tikzpicture}[font=\footnotesize,x=1.7cm,y=-0.25cm]
+\node[anchor=west,font=\small\bfseries] at (-1.0,-1.4){country--capital};
 \foreach \w/\s [count=\i] in {city/2.31,cities/1.77,country/0.97,town/0.73,countries/0.73,
                               answer/0.67,international/0.63,geography/0.55,downtown/0.55,capital/0.48}{
   \node[anchor=east] at (0,\i){\w};
@@ -410,45 +365,43 @@ next-item & next, january, july, september, november, october, february, sequenc
   \node[anchor=west,font=\scriptsize] at (0.07+\s,\i){\s\%};
 }
 \end{tikzpicture}
+\column{0.46\textwidth}
+\small
+\textbf{antonym}\\ opposite, word, instead, because, opposing, \dots
 
-\vspace{0.2em}
-{\scriptsize\color{gray} Share: percentage of all (prompt, head) readings whose top 10 holds the word.}
-\takeaway{The list is what the heads themselves say about the task, with words heads say on any text removed.}
+\vspace{0.6em}
+\textbf{next-item}\\ next, january, july, september, \dots
+
+\vspace{0.6em}
+\gnote{Mostly the task's own words, plus some noise\\(word pieces, numbers).}
+\end{columns}
 \end{frame}
 
 % =====================================================================
-\begin{frame}{Our ingredient 2: where does a head look?}
-We split the prompt into \textbf{token types} (after Bai et al., 2026) and measure how much each head attends to each type, at the last token.
-\\[2pt]{\footnotesize\color{gray}Bai et al.\ (in-context learning): ``template and stopword tokens are the most performance-critical''.}
+\begin{frame}{Ingredient 2: where a head looks}
+Attention from the last token to each \textbf{token type} (after Bai et al., 2026):
 
-\vspace{0.6em}
+\vspace{0.8em}
 \centering
 \tok{cBOS}{<bos>}\,\tok{cStop}{What}\,\tok{cStop}{is}\,\tok{cStop}{the}\,\tok{cTask}{capital}\,\tok{cStop}{of}\,\tok{cStop}{the}\,\tok{cTask}{country}\,\tok{cStop}{?}\,\tok{cMark}{Q:}\,\tok{cQuery}{France}\,\tok{cMark}{\textbackslash nA}\,\tok{cLast}{:}
 
-\vspace{0.8em}
-\raggedright\small
-\begin{tabular}{@{}cl@{\hspace{2em}}cl@{}}
-\textbf{D} & decodes words of the task list & \tok{cTask}{T} & attends to the task words \\
-\tok{cBOS}{B} & attends \emph{little} to the first token & \tok{cMark}{M} & attends to the Q/A markers \\
-\tok{cLast}{L} & attends to the last token & \tok{cStop}{S} & attends to punctuation, stopwords \\
+\vspace{1.2em}
+\raggedright
+Seven filters, each ranks all heads:\\[4pt]
+\begin{tabular}{@{}cl@{\hspace{2.5em}}cl@{}}
+\textbf{D} & decodes words of the task list & \tok{cTask}{T} & attends to the task words \\[2pt]
+\tok{cBOS}{B} & attends \emph{little} to \texttt{<bos>} & \tok{cMark}{M} & attends to the Q/A markers \\[2pt]
+\tok{cLast}{L} & attends to the last token & \tok{cStop}{S} & attends to punctuation, stopwords \\[2pt]
  & & \textbf{N} & attends to the whole instruction \\
 \end{tabular}
-
-\vspace{0.4em}
-\textbf{Combining:} each filter ranks the heads; a combination (e.g.\ DBT) averages the ranks and takes the top $N$.
-\takeaway{Filters need only the lens and one ordinary forward pass per prompt --- no patching.}
+\takeaway{No patching: only the lens and one forward pass per prompt.}
 \end{frame}
 
 % =====================================================================
-\begin{frame}{Filters and combinations: the procedure}
-\raggedright\small
-{\scriptsize\color{gray}Schematic: four heads, made-up values.}
-
-\vspace{0.3em}
+\begin{frame}{Combining filters: average the ranks}
 \begin{columns}[T]
 \column{0.53\textwidth}
-\textbf{1. Where each head looks} \\
-\scriptsize attention from the last token, averaged over prompts\\[4pt]
+\textbf{1. Where each head looks}\\[4pt]
 \footnotesize\setlength{\tabcolsep}{3pt}
 \begin{tabular}{@{}lcccccc@{}}
  & \tok{cBOS}{BOS} & \tok{cTask}{task} & \tok{cQuery}{query} & \tok{cMark}{Q/A} & \tok{cStop}{p+s} & \tok{cLast}{last} \\[2pt]
@@ -458,12 +411,8 @@ head C & \cv{0.35} & \cv{0.05} & \cv{0.10} & \cv{0.30} & \cv{0.15} & \cv{0.05} \
 head D & \cv{0.40} & \cv{0.25} & \cv{0.15} & \cv{0.05} & \cv{0.10} & \cv{0.05} \\
 \end{tabular}
 
-\vspace{0.4em}
-\scriptsize Plus \textbf{D}: how often the head decodes a word of the task list.
-
-\column{0.45\textwidth}
-\textbf{2. Rank on each filter, average} \\
-\scriptsize 1 = best; B ranks \emph{low} BOS attention best\\[4pt]
+\column{0.43\textwidth}
+\textbf{2. Rank on each filter, average}\\[4pt]
 \footnotesize
 \begin{tabular}{@{}lccc|c@{}}
  & D & B & T & DBT \\
@@ -474,30 +423,352 @@ head C & 4 & 2 & 3 & 3.00 \\
 head D & 3 & 3 & 2 & \textbf{2.67} \\
 \end{tabular}
 
-\vspace{0.6em}
-\textbf{3. Take the top $N$} \\
+\vspace{0.8em}
+\normalsize\textbf{3. Keep the top $N$}\\[2pt]
 \footnotesize DBT, $N=2$: \textbf{heads B and D}.
 \end{columns}
 
-\vspace{0.6em}
+\vspace{1em}
 \small
-\textbf{One set for all tasks:} each filter's per-task ranks are first averaged over the 14 tasks.
-\takeaway{Head A decodes task words well but looks only at the first token, so its average rank keeps it out.}
+Head A decodes task words well but looks only at \texttt{<bos>}: its average rank keeps it out.\\[2pt]
+Shared set: each filter's ranks are first averaged over the 14 tasks.
+
+\vfill
+\gnote{Schematic: four heads, made-up values. Rank 1 = best; B ranks \emph{low} BOS attention best.}
 \end{frame}
 
 % =====================================================================
-\begin{frame}{Which sets each test covers}
-\textbf{Two families of filter combinations}
-\begin{enumerate}\footnotesize
-\item \textbf{Fixed in advance:} all combinations of D, B, T (D, B, T, DB, DT, BT, DBT), at every size.
-\item \textbf{Exploratory\opt:} all 79 combinations of the seven filters at 40 heads, then the 15 best at every size.
-      Best: \textbf{DBMN}, \textbf{DBTMS} (per task), \textbf{DBTLS}, DBTMS (shared). Always shown apart.
-\end{enumerate}
-{\footnotesize Reference and baselines: \textcolor{caus}{\textbf{Causal}} (Davidson et al.'s score, patched head by head),
-\textbf{Yang terms} (their hand-written list), \textbf{random} heads.}
+\begin{frame}{The contenders}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{Filter combinations}
+\begin{itemize}\spaced
+\item \textbf{Fixed in advance:} D, B, T and their combinations, DBT included.
+\item \textbf{Exploratory\opt:} best of all 79 combinations.\\
+      Per task: DBMN, DBTMS.\\ Shared: DBTLS, DBTMS.
+\end{itemize}
 
-\vspace{0.2em}
-\centering\scriptsize
+\column{0.46\textwidth}
+\textbf{References}
+\begin{itemize}\spaced
+\item \Causal: Davidson et al.'s score, head by head, with and without generic heads.
+\item \textbf{Yang terms}: their hand-written list.
+\item \textbf{Random} heads.
+\end{itemize}
+\end{columns}
+\takeaway{\opt\ Picked on the same held-out accuracy we report: optimistic, still need a fresh test.}
+\end{frame}
+
+% =====================================================================
+\section{Main comparison}
+
+\begin{frame}{The big picture: accuracy vs.\ set size}
+\centering
+\includegraphics[height=0.74\textheight]{e13_size}
+
+\gnote{Bare prompt, held-out items, mean of 14 tasks; no patching: 0.01. Top: fixed in advance. Bottom: exploratory\opt.}
+\end{frame}
+
+% =====================================================================
+\begin{frame}{One set per task: filters match or beat the causal score}
+\begin{columns}[c]
+\column{0.42\textwidth}
+\centering
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Per task & 40 & 80 \\
+\midrule
+DBT & \cv{0.55} & \cv{0.55} \\
+BT & \cv{0.54} & \cv{0.55} \\
+\CausalG & \cv{0.46} & \cv{0.51} \\
+\Causal & \cv{0.41} & \cv{0.53} \\
+Yang terms & \cv{0.19} & \cv{0.21} \\
+Random & \cv{0.01} & \cv{0.01} \\
+\midrule
+DBMN\opt & \cv{0.63} & \cv{0.65} \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.3em}
+\gnote{Columns: heads in the set.}
+
+\column{0.54\textwidth}
+\begin{itemize}\spaced
+\item DBT and BT lead the causal score from 20 to 60 heads, level at 80.
+\item They are \textbf{done by 40 heads}; the causal score keeps rising.
+\item Hand-written lists stay far below.
+\item Control means: $\leq$0.04.
+\end{itemize}
+\end{columns}
+\takeaway{Per task, \emph{what a head decodes} plus \emph{where it looks} finds the task heads, with no patching.}
+\end{frame}
+
+% =====================================================================
+\begin{frame}{One set for all tasks: the causal score wins}
+\begin{columns}[c]
+\column{0.42\textwidth}
+\centering
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Shared & 40 & 80 \\
+\midrule
+\CausalG & \cv{0.55} & \cv{0.69} \\
+\Causal & \cv{0.53} & \cv{0.65} \\
+DBT & \cv{0.46} & \cv{0.55} \\
+BT & \cv{0.45} & \cv{0.56} \\
+Yang terms & \cv{0.19} & \cv{0.24} \\
+Random & \cv{0.01} & \cv{0.01} \\
+\midrule
+DBMN\opt & \cv{0.58} & \cv{0.70} \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.3em}
+\gnote{Columns: heads in the set.}
+
+\column{0.54\textwidth}
+\begin{itemize}\spaced
+\item \CausalG\ is best at nearly every size (0.71 at 100 heads).
+\item DBT and BT stay below it.
+\item The explored filters\opt\ come level, but were picked on the test items.
+\end{itemize}
+\end{columns}
+\takeaway{The causal score works better shared; the filters work better per task.}
+\end{frame}
+
+% =====================================================================
+\begin{frame}{No rule wins every task type}
+\centering
+\includegraphics[height=0.6\textheight]{e13_types}
+
+\raggedright
+\begin{itemize}
+\item \textbf{Facts}: almost any rule. \textbf{Sequences}: no rule.
+\item \textbf{Translations}: per-task filters or a shared causal set.
+      \textbf{Morphology}: causal sets and the best filters.
+\end{itemize}
+\end{frame}
+
+% =====================================================================
+\begin{frame}{What each filter adds (40 heads)}
+\centering
+\includegraphics[width=0.9\textwidth]{e22_filters}
+
+\raggedright
+\begin{itemize}
+\item \textbf{Alone}: attention to the instruction ranks best (N per task, T shared).
+\item \textbf{Added to others}: decoding (D) adds most.
+\end{itemize}
+\takeaway{Good task heads both \emph{look at} the instruction and \emph{say} task words.}
+\end{frame}
+
+% =====================================================================
+\begin{frame}{Removing generic heads helps causal sets, not filter sets}
+\vspace{0.5em}
+\centering
+\begin{tabular}{@{}lcc@{}}
+\toprule
+ & with generic heads & without \\
+\midrule
+Shared \Causal, 20 heads & \cv{0.40} & \cv{0.50} \\
+Per-task \Causal, 40 heads & \cv{0.41} & \cv{0.46} \\
+Per-task DBT, 40 heads & \cv{0.55} & \cv{0.49} \\
+\bottomrule
+\end{tabular}
+
+\vspace{1.2em}
+\raggedright
+\begin{itemize}\spaced
+\item Causal sets: removing them helps in both scopes, at nearly every size.
+\item DBT holds only 2--5 of them, and removing those costs accuracy.
+\end{itemize}
+\end{frame}
+
+% =====================================================================
+\section{Summed vector}
+
+\begin{frame}{Summing the means into one vector loses accuracy}
+Davidson et al.\ add the heads' means as \textbf{one vector} after layer 11.
+Same sets, same means, both ways:
+
+\vspace{0.6em}
+\centering
+\begin{tabular}{@{}llccc@{}}
+\toprule
+Set & & 20 heads & 40 heads & 80 heads \\
+\midrule
+Shared \CausalG & head by head & \cv{0.50} & \cv{0.55} & \cv{0.69} \\
+ & summed & \cv{0.45} & \cv{0.46} & \cv{0.44} \\
+\midrule
+Shared \Causal & head by head & \cv{0.40} & \cv{0.53} & \cv{0.65} \\
+ & summed & \cv{0.19} & \cv{0.38} & \cv{0.37} \\
+\midrule
+Per-task DBT & head by head & \cv{0.43} & \cv{0.55} & \cv{0.55} \\
+ & summed & \cv{0.36} & \cv{0.43} & \cv{0.46} \\
+\bottomrule
+\end{tabular}
+
+\raggedright
+\vspace{0.6em}
+\small The loss grows with set size, and is largest with generic heads in the set.
+\takeaway{Patch head by head. For one vector: Shared \CausalG\ at 20 heads.}
+\end{frame}
+
+% =====================================================================
+\section{Beyond the five templates}
+
+\begin{frame}{Beyond the five templates}
+So far: every set chosen and tested on Yang et al.'s \textbf{five rule templates}.
+
+\vspace{0.8em}
+\textbf{Two new kinds of prompt}
+\begin{itemize}
+\item \textbf{30 other wordings} of each task,
+\item \textbf{example prompts} (5 shots): show the task instead of stating it.
+\end{itemize}
+
+\vspace{0.8em}
+\textbf{Three questions}
+\begin{enumerate}
+\item \textbf{Transfer:} do the sets still work with the new prompts' means?
+\item \textbf{Re-choosing:} do the rules, run on the new prompts, give better sets?
+\item \textbf{Overlap:} how many heads do the two choices share?
+\end{enumerate}
+\end{frame}
+
+% =====================================================================
+\begin{frame}{Other wordings: re-choosing the heads wins back the loss}
+\gnote{30 new templates per task, e.g.\\ \texttt{An antonym for \{x\} would be}\quad \texttt{Country: \{x\}\textbackslash nCapital city:}}
+
+\vspace{0.6em}
+\centering
+\begin{tabular}{@{}lccc@{}}
+\toprule
+ & Yang's 5 & Transfer & Re-chosen \\
+\midrule
+Per-task DBT, 40 & \cv{0.55} & \cv{0.50} & \cv{0.57} \\
+Per-task \CausalG, 40 & \cv{0.46} & \cv{0.40} & \cv{0.49} \\
+Shared DBT, 80 & \cv{0.55} & \cv{0.49} & \cv{0.57} \\
+Shared \CausalG, 80 & \cv{0.69} & \cv{0.61} & \cv{0.63} \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.3em}
+\gnote{Transfer: heads from Yang's 5, means from all 35 wordings. Re-chosen: heads and means from all 35.}
+
+\raggedright
+\vspace{0.4em}
+\begin{itemize}
+\item New wordings cost every set some accuracy; the order of the rules stays.
+\item About 3/4 of the DBT heads survive re-choosing; the causal sets change more.
+\end{itemize}
+\end{frame}
+
+% =====================================================================
+\begin{frame}{Example prompts: rule-chosen heads carry them, less well}
+Heads chosen on \textbf{rule} prompts, patched with \textbf{5-shot example} means.
+
+\vspace{0.4em}
+\centering
+\begin{tabular}{@{}llcc@{}}
+\toprule
+ & Set & rule means & example means \\
+\midrule
+Per task, 100 & DBTMS\opt & \cv{0.68} & \cv{0.64} \\
+ & \Causal & \cv{0.56} & \cv{0.44} \\
+ & Random & \cv{0.02} & \cv{0.03} \\
+\midrule
+Shared, 100 & \CausalG & \cv{0.71} & \cv{0.50} \\
+ & \Causal & \cv{0.68} & \cv{0.59} \\
+\bottomrule
+\end{tabular}
+
+\raggedright
+\vspace{0.6em}
+\begin{itemize}
+\item Accuracy kept: about half at 20 heads, four fifths from 60 on.
+\item Shared, the causal set does better \emph{with} its generic heads.
+\item Caution: random heads from the crowded layers 11--15 reach 0.33 here.
+\end{itemize}
+\end{frame}
+
+% =====================================================================
+\begin{frame}{Example prompts: build the set on examples}
+\begin{columns}[c]
+\column{0.6\textwidth}
+\centering
+\includegraphics[width=\textwidth]{e24_grid}
+\column{0.37\textwidth}
+\gnote{Hatched: built on 5-shot prompts. Filled: built on rule prompts. Blue: rule means. Orange: example means.}
+
+\vspace{0.8em}
+\begin{itemize}\spaced
+\item Each set works best with the means of the style it was built on.
+\item Decoding heads chosen on examples also carry stated tasks.
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% =====================================================================
+\begin{frame}{The two styles pick partly the same heads}
+\begin{columns}[c]
+\column{0.56\textwidth}
+\centering
+\includegraphics[width=\textwidth]{e24_overlap}
+
+\gnote{Share of heads in both the rule-built and the example-built set. Dotted: chance.}
+\column{0.4\textwidth}
+\begin{itemize}\spaced
+\item \textbf{2--7$\times$ chance} up to 40 heads, but \textbf{under half} the set at most sizes.
+\item Marker attention (DBMS) shares least: ``\texttt{Q:}'' and ``\texttt{;}'' are different tokens.
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% =====================================================================
+\section{Conclusions}
+
+\begin{frame}{Recipe: how to find a task head set}
+\begin{enumerate}\spaced
+\item \textbf{Read heads with J-head}, not the logit lens.
+\item \textbf{One set per task:} rank by D, B and attention to the instruction (T, or N + M\opt).
+      40--60 heads, no patching.
+\item \textbf{One set for all tasks:} causal score averaged over tasks, \textbf{minus generic heads}.
+      80--100 heads.
+\item \textbf{Choose on the prompts the set will serve}: many wordings; examples for example tasks.
+\item \textbf{Patch head by head}, not as one summed vector.
+\end{enumerate}
+\end{frame}
+
+% =====================================================================
+\begin{frame}{Caveats and next steps}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Caveats}
+\begin{itemize}\spaced
+\item One model, 14 simple tasks, single greedy runs: 1--2 point gaps are not established.
+\item Explored combinations\opt\ were picked on the test items.
+\item Only $\alpha$ = 1, 2 tried.
+\item New wordings checked by script only.
+\item Sequences remain unsolved.
+\end{itemize}
+\column{0.48\textwidth}
+\textbf{Next}
+\begin{itemize}\spaced
+\item Test the explored combinations on fresh items.
+\item Hold out wordings: choose on some, test on others.
+\item Choose on rule and example prompts together.
+\item Move to two-hop tasks (design ready).
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% =====================================================================
+\appendix
+\section{Backup}
+
+\begin{frame}{Backup: which sets each test covers}
+\centering\small
 \begin{tabular}{@{}l>{\raggedright\arraybackslash}p{7.6cm}l@{}}
 \toprule
 Test & Sets & Sizes \\
@@ -509,316 +780,11 @@ Example mean & Causal ($\pm$ generic), Yang terms, 17 combinations & 20--120 \\
 Built on example prompts & D, B, DB, DBMS & 40, 100 \\
 \bottomrule
 \end{tabular}
-\takeaway{\opt Exploratory combinations were picked on the same held-out accuracy we report: optimistic, still need a fresh test.}
-\end{frame}
 
-% =====================================================================
-\section{Main comparison}
-
-\begin{frame}{The big picture: accuracy vs.\ set size}
-\centering
-\includegraphics[height=0.64\textheight]{e13_size}
-
-\small Bare prompt, held-out items, mean of 14 tasks. Without patching: 0.01. Top: fixed in advance; bottom: exploratory\opt.
-\takeaway{Per task, filters beat the causal ranking; shared, the causal ranking (without generic heads) is best.}
-\end{frame}
-
-% =====================================================================
-\begin{frame}{One set per task: filters match or beat the causal score}
-\begin{columns}[c]
-\column{0.42\textwidth}
-\centering\small
-\begin{tabular}{@{}lcc@{}}
-\toprule
-Per task & 40 heads & 80 heads \\
-\midrule
-DBMN\opt & \cv{0.63} & \cv{0.65} \\
-DBT & \cv{0.55} & \cv{0.55} \\
-BT & \cv{0.54} & \cv{0.55} \\
-\textcolor{caus}{Causal $-$ generic} & \cv{0.46} & \cv{0.51} \\
-\textcolor{caus}{Causal} & \cv{0.41} & \cv{0.53} \\
-Yang terms & \cv{0.19} & \cv{0.21} \\
-Random & \cv{0.01} & \cv{0.01} \\
-\bottomrule
-\end{tabular}
-
-\vspace{0.2em}
-\scriptsize \opt picked on the test items.
-
-\column{0.55\textwidth}
-\begin{itemize}\small
-\item DBT and BT are above the causal ranking from 20 to 60 heads, level at 80.
-\item They are \textbf{done by 40 heads}; the causal ranking keeps rising with size.
-\item Adding attention to the rest of the instruction and the Q/A markers (DBMN\opt) goes higher still.
-\item The hand-written list (Yang terms) stays far below.
-\item Random heads: nothing. Control means: $\leq$0.04.
-\end{itemize}
-\end{columns}
-\takeaway{Per task, \emph{where a head looks} plus \emph{what it decodes} finds the task heads --- no patching needed.}
-\end{frame}
-
-% =====================================================================
-\begin{frame}{One set for all tasks: the causal score wins}
-\begin{columns}[c]
-\column{0.42\textwidth}
-\centering\small
-\begin{tabular}{@{}lcc@{}}
-\toprule
-Shared & 40 heads & 80 heads \\
-\midrule
-\textcolor{caus}{Causal $-$ generic} & \cv{0.55} & \cv{0.69} \\
-\textcolor{caus}{Causal} & \cv{0.53} & \cv{0.65} \\
-DBMN\opt & \cv{0.58} & \cv{0.70} \\
-DBT & \cv{0.46} & \cv{0.55} \\
-BT & \cv{0.45} & \cv{0.56} \\
-Yang terms & \cv{0.19} & \cv{0.24} \\
-Random & \cv{0.01} & \cv{0.01} \\
-\bottomrule
-\end{tabular}
-
-\column{0.55\textwidth}
-\begin{itemize}\small
-\item Among sets fixed in advance, \textbf{Shared Causal $-$ generic} is best at nearly every size
-      (0.71 at 100 heads).
-\item Shared DBT/BT reach the causal ranking \emph{with} generic heads only at 60 heads, and stay below the one without.
-\item The explored filters\opt\ come level with it, but were picked on the test items.
-\item The causal score works \emph{better} shared than per task; filters work better per task.
-\end{itemize}
-\end{columns}
-\takeaway{One set for every task still needs the causal score --- with the generic heads taken out.}
-\end{frame}
-
-% =====================================================================
-\begin{frame}{No rule wins every task type}
-\centering
-\includegraphics[width=0.68\textwidth]{e13_types}
-
+\vspace{1em}
 \raggedright
-\begin{itemize}\footnotesize
-\item \textbf{Facts}: almost any rule. \textbf{Sequences}: no rule carries them well.
-\item \textbf{Translations}: per-task filters or a shared causal set, not the per-task causal ranking. \textbf{Morphology}: causal rankings and the best filters.
-\end{itemize}
-\takeaway{Different task types rest on different heads.}
-\end{frame}
-
-% =====================================================================
-\begin{frame}{What each filter contributes (40 heads)}
-\centering
-\includegraphics[width=0.9\textwidth]{e22_filters}
-
-\raggedright\small
-\begin{itemize}
-\item \textbf{Alone}: attending to the instruction ranks heads best (N per task, T shared).
-\item \textbf{Added to others}: decoding (D) adds most. Attention to the last token or markers helps only next to D.
-\end{itemize}
-\takeaway{Good task heads both \emph{look at} the instruction and \emph{say} task words.}
-\end{frame}
-
-% =====================================================================
-\begin{frame}{Removing generic heads: it depends on the set}
-\centering\small
-\begin{tabular}{@{}lcc@{}}
-\toprule
- & with generic heads & without \\
-\midrule
-Shared causal, 20 heads & \cv{0.40} & \cv{0.50} \\
-Per-task causal, 40 heads & \cv{0.41} & \cv{0.46} \\
-Per-task DBT filter, 40 heads & \cv{0.55} & \cv{0.49} \\
-\bottomrule
-\end{tabular}
-
-\vspace{0.6em}
-\raggedright
-\begin{itemize}\small
-\item Causal sets: removing them helps in both scopes at nearly every size, and steadies the shared 20-head set across the two halves.
-\item DBT holds only two to five of them, and removing those costs accuracy.
-\end{itemize}
-\takeaway{Removing generic heads helps the causal sets, but not the filter sets: whether a generic head harms depends on its company.}
-\end{frame}
-
-% =====================================================================
-\section{Summed vector}
-
-\begin{frame}{Summed vector vs.\ patching head by head}
-Davidson et al.\ add the heads' means as \textbf{one summed vector} after layer 11. We run the main sets both ways,
-with the same five means.
-
-\vspace{0.5em}
-\centering\small
-\begin{tabular}{@{}llccc@{}}
-\toprule
-Set & & 20 heads & 40 heads & 80 heads \\
-\midrule
-\textcolor{caus}{Shared Causal $-$ generic} & head by head & \cv{0.50} & \cv{0.55} & \cv{0.69} \\
- & summed & \cv{0.45} & \cv{0.46} & \cv{0.44} \\
-\textcolor{caus}{Shared Causal} & head by head & \cv{0.40} & \cv{0.53} & \cv{0.65} \\
- & summed & \cv{0.19} & \cv{0.38} & \cv{0.37} \\
-Per-task DBT & head by head & \cv{0.43} & \cv{0.55} & \cv{0.55} \\
- & summed & \cv{0.36} & \cv{0.43} & \cv{0.46} \\
-\bottomrule
-\end{tabular}
-
-\raggedright
-\begin{itemize}\footnotesize
-\item Summing lowers every set except Yang terms; the loss grows with the set (summed sets stop gaining after 40--60 heads).
-\item The causal set with generic heads loses most; without them, 20 heads summed is close to head by head.
-\end{itemize}
-\takeaway{Patch head by head; if one vector is wanted, Shared Causal $-$ generic at 20 heads.}
-\end{frame}
-
-% =====================================================================
-\section{Beyond the five templates}
-
-\begin{frame}{Beyond the five templates: three questions}
-So far every set was chosen and tested on Yang et al.'s five rule templates. Two new kinds of prompt:
-\begin{itemize}
-\item \textbf{30 other wordings} of each task;
-\item \textbf{example prompts} (5 shots), which show the task instead of stating it.
-\end{itemize}
-
-\vspace{0.4em}
-For both we ask:
-\begin{enumerate}
-\item \textbf{Transfer:} do the sets, as chosen, still work with the new prompts' means?
-\item \textbf{Re-choosing:} do the same rules, run on the new prompts, give better sets?
-\item \textbf{Overlap:} how many heads do the two choices share?
-\end{enumerate}
-\takeaway{Same items, same held-out halves; only the prompts change.}
-\end{frame}
-
-% =====================================================================
-\begin{frame}{Does it survive other wordings of the task?}
-30 new templates per task (GPT-5.5, checked by script), e.g.\
-\texttt{\small An antonym for \{x\} would be}, \texttt{\small Country: \{x\}\textbackslash nCapital city:}
-
-\vspace{0.4em}
-\centering\small
-\begin{tabular}{@{}lccc@{\hspace{1.5em}}ccc@{}}
-\toprule
- & \multicolumn{3}{c}{Per task, 40 heads} & \multicolumn{3}{c}{Shared, 80 heads} \\
-\cmidrule(lr){2-4}\cmidrule(lr){5-7}
-Heads chosen on & Yang's 5 & Yang's 5 & all 35 & Yang's 5 & Yang's 5 & all 35 \\
-Tested with means of & Yang's 5 & all 35 & all 35 & Yang's 5 & all 35 & all 35 \\
-\midrule
-DBT & \cv{0.55} & \cv{0.50} & \cv{0.57} & \cv{0.55} & \cv{0.49} & \cv{0.57} \\
-\textcolor{caus}{Causal $-$ generic} & \cv{0.46} & \cv{0.40} & \cv{0.49} & \cv{0.69} & \cv{0.61} & \cv{0.63} \\
-\bottomrule
-\end{tabular}
-
-\raggedright
-\begin{itemize}\small
-\item \textbf{Transfer:} new wordings cost every set some accuracy; the order of the rules stays.
-\item \textbf{Re-choosing on all 35 wordings wins it back} (and helps on Yang's 5 too).
-\item \textbf{Overlap:} about 3/4 of the DBT heads stay; the causal sets change more.
-\item Hardest: cloze wordings that do not name the task.
-\end{itemize}
-\takeaway{Choose heads on many wordings; per task DBT and shared Causal $-$ generic stay the best rules.}
-\end{frame}
-
-% =====================================================================
-\begin{frame}{Examples, transfer: do rule-chosen heads carry the example mean?}
-Heads chosen on \textbf{rule} prompts, patched with means from \textbf{5-shot example} prompts.
-
-\vspace{0.2em}
-\centering\footnotesize
-\begin{tabular}{@{}llcc@{}}
-\toprule
-Scope, size & Set (chosen on rule prompts) & rule means & example means \\
-\midrule
-Per task, 40 & DBTMS\opt & \cv{0.61} & \cv{0.44} \\
-\midrule
-Per task, 100 & DBTMS\opt & \cv{0.68} & \cv{0.64} \\
- & \textcolor{caus}{Causal} & \cv{0.56} & \cv{0.44} \\
- & Random, outside the set & \cv{0.02} & \cv{0.03} \\
-\midrule
-Shared, 100 & \textcolor{caus}{Causal $-$ generic} & \cv{0.71} & \cv{0.50} \\
- & \textcolor{caus}{Causal} & \cv{0.68} & \cv{0.59} \\
-\bottomrule
-\end{tabular}
-
-\raggedright
-\begin{itemize}\scriptsize
-\item Every set also carries the example-given task, \textbf{with less accuracy}: about half at 20 heads, four fifths from 60 on.
-\item Per task the rules that lead with rule means mostly lead here too (DBTMS from 80 heads); shared, the order changes,
-      and the causal set does better \emph{with} its generic heads.
-\item Caution: random heads from the crowded layers 11--15 carry 0.33 with example means (0.01 with rule means).
-\end{itemize}
-\takeaway{The task heads are partly shared between ``told'' and ``shown'' tasks.}
-\end{frame}
-
-% =====================================================================
-\begin{frame}{Examples, re-choosing: rules built on example prompts}
-\begin{columns}[c]
-\column{0.58\textwidth}
-\centering
-\includegraphics[width=\textwidth]{e24_grid}
-\column{0.40\textwidth}
-\begin{itemize}\footnotesize
-\item D, B, DB, DBMS built on 5-shot prompts (hatched) or rule prompts (filled), patched with rule means (blue) or the example mean (orange).
-\item Each set works best with the means of the style it was built on; example-built with the example mean is highest.
-\item Decoding heads chosen on examples also carry stated tasks; attention-chosen ones transfer less.
-\end{itemize}
-\end{columns}
-\takeaway{To serve example prompts, build the set on example prompts.}
-\end{frame}
-
-% =====================================================================
-\begin{frame}{Examples, overlap: do the rules pick the same heads?}
-\begin{columns}[c]
-\column{0.55\textwidth}
-\centering
-\includegraphics[width=\textwidth]{e24_overlap}
-
-\scriptsize Share of heads in both the rule-built and example-built set. Dotted: chance.
-\column{0.43\textwidth}
-\begin{itemize}\footnotesize
-\item Shared heads: \textbf{2--7$\times$ chance} up to 40 heads, but \textbf{less than half} of the set at most sizes.
-\item Attention to markers (DBMS) shares least: ``\texttt{Q:}'' and ``\texttt{;}'' are different tokens.
-\item The two word lists share a quarter to a half of their 30 words.
-\end{itemize}
-\end{columns}
-\takeaway{The rules pick partly the same heads in both styles; attention to markers picks the most different ones.}
-\end{frame}
-
-% =====================================================================
-\section{Conclusions}
-
-\begin{frame}{Recipe: how to find a task head set}
-\begin{enumerate}
-\item \textbf{Read heads with J-head}, not the logit lens.
-\item \textbf{One set for each task, no patching:} rank heads by what they decode (D),
-      low attention to the first token (B) and attention to the instruction (T, or N + M\opt).
-      40--60 heads are enough.
-\item \textbf{One set for all tasks:} Davidson et al.'s causal score averaged over tasks,
-      \textbf{minus the generic heads}; 80--100 heads.
-\item \textbf{Choose on the prompts the set will serve:} many wordings, not five; example prompts for example-given tasks.
-\item \textbf{Patch head by head}, not as one summed vector.
-\item \textbf{Avoid:} hand-written word lists, D or B alone.
-\end{enumerate}
-\takeaway{Reading and attention are enough to find a task's heads; one set for all tasks still needs the causal score.}
-\end{frame}
-
-% =====================================================================
-\begin{frame}{Caveats and next steps}
-\begin{columns}[T]
-\column{0.5\textwidth}
-\textbf{Caveats}
-\begin{itemize}\small
-\item One model, 14 simple tasks, single greedy runs: differences of 1--2 points are not established.
-\item Best explored combinations\opt\ were picked on the test items.
-\item Only $\alpha$ = 1, 2 tried.
-\item New wordings were checked by script, not by hand.
-\item Sequences remain unsolved.
-\end{itemize}
-\column{0.5\textwidth}
-\textbf{Next}
-\begin{itemize}\small
-\item Test the explored combinations on fresh items.
-\item Hold out wordings: choose on some, test on the others.
-\item Choose on rule and example prompts together.
-\item Move to two-hop tasks (design ready).
-\end{itemize}
-\end{columns}
+\gnote{Fixed in advance: D, B, T, DB, DT, BT, DBT at every size.
+Exploratory\opt: all 79 combinations of the seven filters at 40 heads, then the 15 best at every size.}
 \end{frame}
 
 \end{document}
