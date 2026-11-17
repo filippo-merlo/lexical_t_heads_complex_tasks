@@ -27,6 +27,8 @@ from __future__ import annotations
 import functools
 import json
 
+import numpy as np
+
 from lth import MATERIALS, YANG
 
 TASKS =("antonym", "synonym", "singular-plural", "present-past", "country-capital",
@@ -117,6 +119,43 @@ def e4b_templates() -> dict[str, dict[str, str]]:
 def wording_group(wording: str) -> str:
     """``yang`` for Yang's templates, else the E4b cell (``cloze-named``, ...)."""
     return wording[len(E4B_PREFIX):].rsplit("-", 1)[0] if wording.startswith(E4B_PREFIX) else "yang"
+
+
+# ---- Rebuilt design (paper/head-sets-simple-design.tex): example formats and prompt split -----
+# A shot is q_bos + x + qa_delimiter + a_bos + y + delimiter and the query q_bos + x + qa_delimiter,
+# as in create_few_shot_prompts; F1 is Yang et al.'s format, F2 Todd et al.'s.
+EXAMPLE_FORMATS = {  # (q_bos, qa_delimiter, a_bos, delimiter)
+    "F1": (" ", ":", " ", ";"),
+    "F2": ("Q: ", "\nA:", " ", "\n\n"),
+    "F3": ("", " ->", " ", "\n"),
+    "F4": ("Input: ", "\nOutput:", " ", "\n\n"),
+    "F5": (" ", " =", " ", ","),
+    "F6": ("", " |", " ", "\n"),
+}
+N_SHOT = 5
+
+
+def demo_items(task: str, item: int, pool: list[int], n_shot: int = N_SHOT, seed: int = 0) -> list[int]:
+    """The demonstrations of ``item``: ``n_shot`` other items of its half (``pool``), drawn at random.
+
+    Seeded by task and item, so every format shows the same demonstrations in the same order."""
+    rng = np.random.default_rng([seed, TASKS.index(task), item])
+    others = [j for j in pool if j != item]
+    return [int(j) for j in rng.choice(others, size=n_shot, replace=False)]
+
+
+def example_prompt(data: list[dict], fmt: str, demos: list[int], query: int) -> tuple[str, str]:
+    """``(prompt, answer)`` of ``query`` in format ``fmt`` with the given demonstrations."""
+    q_bos, qa, a_bos, delim = EXAMPLE_FORMATS[fmt]
+    shots = "".join(f"{q_bos}{data[j]['input']}{qa}{a_bos}{data[j]['output']}{delim}" for j in demos)
+    return shots + f"{q_bos}{data[query]['input']}{qa}", a_bos + data[query]["output"]
+
+
+@functools.cache
+def prompt_split() -> dict:
+    """The choosing (P) and test (Q) parts of the 30 further wordings and of the example formats
+    (``materials/simple/prompt_split.json``, written by ``scripts/rebuild_prompt_split.py``)."""
+    return json.loads((MATERIALS / "simple" / "prompt_split.json").read_text())
 
 
 # ---- copied from Yang et al., src/Shared_utils/prompt_utils.py ---------------------------
