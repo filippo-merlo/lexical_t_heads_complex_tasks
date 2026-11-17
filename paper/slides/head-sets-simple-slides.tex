@@ -4,7 +4,8 @@
 %  Focus on the main comparison (every rule at every size, five templates,
 %  head by head). Tests that cover only some sets or sizes (filter breakdown,
 %  summed vector, other wordings, example prompts) are in the backup section.
-%  Plot coordinates are copied from paper/tables/e13_main.tex (as in the short deck).
+%  Plot coordinates are copied from paper/tables/e13_main.tex (as in the short deck)
+%  and, for the task-type panels, paper/tables/e13_groups.tex.
 %  Numbers are copied from paper/tables/{e13_main,e14_main,
 %  e24_sizes_*,e26_shared,e26_task,synth_readouts}.tex; figures are paper/figures/*.pdf.
 %  Compile with Tectonic from this folder:  tectonic head-sets-simple-slides.tex
@@ -25,6 +26,7 @@
 \usetikzlibrary{positioning,arrows.meta,calc,decorations.pathreplacing}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
+\usepgfplotslibrary{groupplots}
 \pgfplotsset{
   mainaxis/.style={width=8.1cm,height=5.6cm,
     xmin=15,xmax=125,ymin=0,ymax=0.78,xtick={20,40,60,80,100,120},
@@ -34,6 +36,13 @@
     legend columns=3,legend cell align=left,
     legend style={font=\scriptsize,draw=none,at={(0.5,-0.3)},anchor=north,
       /tikz/every even column/.append style={column sep=8pt}}},
+  typesaxis/.style={width=3.75cm,height=3.0cm,xmin=12,xmax=128,ymin=0,ymax=1,
+    xtick={20,60,100},ytick={0,0.5,1},grid=major,grid style={gray!20},
+    tick label style={font=\tiny},label style={font=\scriptsize},
+    title style={font=\scriptsize\bfseries,yshift=-4pt},
+    every axis plot/.append style={mark size=0.9pt},
+    legend columns=5,legend cell align=left,
+    legend style={font=\scriptsize,draw=none,/tikz/every even column/.append style={column sep=8pt}}},
   sFilt/.style={filt,very thick,mark=*,mark size=1.4pt},
   sFiltB/.style={filt,thick,dashed,mark=o,mark size=1.4pt},
   sCaus/.style={caus,very thick,mark=square*,mark size=1.3pt},
@@ -545,14 +554,82 @@ $N$ = 20 to 120 heads, per task and shared.
 % =====================================================================
 \begin{frame}{No rule wins every task type}
 \centering
-\includegraphics[height=0.6\textheight]{e13_types}
+\vspace{0.2em}
+\pgfplotslegendfromname{typeslg}\\[2pt]
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=5 by 2,horizontal sep=9pt,vertical sep=7pt},typesaxis]
+\nextgroupplot[title={Word relations (2)},ylabel={per task},xticklabels={}]
+\addplot[sExp] coordinates {(20,0.33)(40,0.58)(60,0.60)(80,0.65)(100,0.69)(120,0.68)};
+\addplot[sYang] coordinates {(20,0.05)(40,0.08)(60,0.04)(80,0.01)};
+\addplot[sFilt] coordinates {(20,0.24)(40,0.36)(60,0.40)(80,0.40)(100,0.41)(120,0.38)};
+\addplot[sCaus] coordinates {(20,0.10)(40,0.26)(60,0.35)(80,0.44)(100,0.48)(120,0.53)};
+\addplot[sCausB] coordinates {(20,0.30)(40,0.47)(60,0.46)(80,0.46)(100,0.45)(120,0.47)};
+\nextgroupplot[title={Morphology (2)},yticklabels={},xticklabels={}]
+\addplot[sExp] coordinates {(20,0.39)(40,0.69)(60,0.79)(80,0.79)(100,0.84)(120,0.81)};
+\addplot[sYang] coordinates {(20,0.01)(40,0.01)(60,0.04)(80,0.04)};
+\addplot[sFilt] coordinates {(20,0.48)(40,0.64)(60,0.72)(80,0.72)(100,0.60)(120,0.45)};
+\addplot[sCaus] coordinates {(20,0.54)(40,0.65)(60,0.58)(80,0.73)(100,0.83)(120,0.89)};
+\addplot[sCausB] coordinates {(20,0.61)(40,0.78)(60,0.76)(80,0.64)(100,0.71)(120,0.85)};
+\nextgroupplot[title={Facts (5)},yticklabels={},xticklabels={}]
+\addplot[sExp] coordinates {(20,0.60)(40,0.83)(60,0.84)(80,0.87)(100,0.86)(120,0.86)};
+\addplot[sYang] coordinates {(20,0.46)(40,0.47)(60,0.51)(80,0.48)};
+\addplot[sFilt] coordinates {(20,0.71)(40,0.80)(60,0.82)(80,0.78)(100,0.69)(120,0.61)};
+\addplot[sCaus] coordinates {(20,0.65)(40,0.73)(60,0.78)(80,0.81)(100,0.82)(120,0.82)};
+\addplot[sCausB] coordinates {(20,0.70)(40,0.75)(60,0.79)(80,0.81)(100,0.81)(120,0.81)};
+\nextgroupplot[title={Sequences (2)},yticklabels={},xticklabels={}]
+\addplot[sExp] coordinates {(20,0.04)(40,0.11)(60,0.16)(80,0.19)(100,0.17)(120,0.16)};
+\addplot[sYang] coordinates {(20,0.01)(40,0.05)(60,0.11)(80,0.20)};
+\addplot[sFilt] coordinates {(20,0.04)(40,0.19)(60,0.11)(80,0.12)(100,0.07)(120,0.07)};
+\addplot[sCaus] coordinates {(20,0.01)(40,0.09)(60,0.19)(80,0.35)(100,0.38)(120,0.43)};
+\addplot[sCausB] coordinates {(20,0.00)(40,0.09)(60,0.22)(80,0.28)(100,0.31)(120,0.35)};
+\nextgroupplot[title={Translations (3)},yticklabels={},xticklabels={}]
+\addplot[sExp] coordinates {(20,0.17)(40,0.55)(60,0.61)(80,0.60)(100,0.62)(120,0.62)};
+\addplot[sYang] coordinates {(20,0.00)(40,0.02)(60,0.01)(80,0.02)};
+\addplot[sFilt] coordinates {(20,0.33)(40,0.45)(60,0.46)(80,0.45)(100,0.37)(120,0.31)};
+\addplot[sCaus] coordinates {(20,0.00)(40,0.02)(60,0.08)(80,0.13)(100,0.14)(120,0.26)};
+\addplot[sCausB] coordinates {(20,0.00)(40,0.01)(60,0.07)(80,0.10)(100,0.13)(120,0.21)};
+\nextgroupplot[ylabel={shared},legend to name=typeslg]
+\addplot[sExp] coordinates {(20,0.34)(40,0.45)(60,0.47)(80,0.48)(100,0.55)(120,0.62)};
+\addplot[sYang] coordinates {(20,0.00)(40,0.00)(60,0.00)(80,0.00)(100,0.01)(120,0.00)};
+\addplot[sFilt] coordinates {(20,0.07)(40,0.18)(60,0.28)(80,0.23)(100,0.22)(120,0.25)};
+\addplot[sCaus] coordinates {(20,0.17)(40,0.24)(60,0.32)(80,0.45)(100,0.53)(120,0.51)};
+\addplot[sCausB] coordinates {(20,0.33)(40,0.35)(60,0.45)(80,0.55)(100,0.59)(120,0.51)};
+\legend{exploratory DBTMS\opt,Yang terms,DBT,Causal,Causal $-$ generic}
+\nextgroupplot[yticklabels={}]
+\addplot[sExp] coordinates {(20,0.45)(40,0.77)(60,0.83)(80,0.72)(100,0.82)(120,0.89)};
+\addplot[sYang] coordinates {(20,0.00)(40,0.02)(60,0.00)(80,0.00)(100,0.01)(120,0.01)};
+\addplot[sFilt] coordinates {(20,0.43)(40,0.53)(60,0.74)(80,0.66)(100,0.58)(120,0.61)};
+\addplot[sCaus] coordinates {(20,0.66)(40,0.73)(60,0.83)(80,0.90)(100,0.95)(120,0.95)};
+\addplot[sCausB] coordinates {(20,0.74)(40,0.81)(60,0.88)(80,0.92)(100,0.88)(120,0.83)};
+\nextgroupplot[yticklabels={},xlabel={heads in the set ($N$)}]
+\addplot[sExp] coordinates {(20,0.52)(40,0.71)(60,0.86)(80,0.86)(100,0.89)(120,0.89)};
+\addplot[sYang] coordinates {(20,0.27)(40,0.50)(60,0.61)(80,0.66)(100,0.65)(120,0.58)};
+\addplot[sFilt] coordinates {(20,0.70)(40,0.87)(60,0.89)(80,0.84)(100,0.81)(120,0.79)};
+\addplot[sCaus] coordinates {(20,0.72)(40,0.79)(60,0.82)(80,0.83)(100,0.86)(120,0.86)};
+\addplot[sCausB] coordinates {(20,0.81)(40,0.84)(60,0.86)(80,0.86)(100,0.86)(120,0.85)};
+\nextgroupplot[yticklabels={}]
+\addplot[sExp] coordinates {(20,0.03)(40,0.13)(60,0.17)(80,0.26)(100,0.24)(120,0.25)};
+\addplot[sYang] coordinates {(20,0.00)(40,0.04)(60,0.04)(80,0.04)(100,0.05)(120,0.04)};
+\addplot[sFilt] coordinates {(20,0.00)(40,0.16)(60,0.26)(80,0.31)(100,0.25)(120,0.20)};
+\addplot[sCaus] coordinates {(20,0.06)(40,0.12)(60,0.17)(80,0.23)(100,0.20)(120,0.23)};
+\addplot[sCausB] coordinates {(20,0.09)(40,0.17)(60,0.29)(80,0.36)(100,0.41)(120,0.44)};
+\nextgroupplot[yticklabels={}]
+\addplot[sExp] coordinates {(20,0.12)(40,0.40)(60,0.64)(80,0.64)(100,0.58)(120,0.65)};
+\addplot[sYang] coordinates {(20,0.00)(40,0.00)(60,0.00)(80,0.00)(100,0.00)(120,0.02)};
+\addplot[sFilt] coordinates {(20,0.03)(40,0.14)(60,0.49)(80,0.36)(100,0.33)(120,0.43)};
+\addplot[sCaus] coordinates {(20,0.09)(40,0.44)(60,0.54)(80,0.58)(100,0.64)(120,0.66)};
+\addplot[sCausB] coordinates {(20,0.19)(40,0.25)(60,0.47)(80,0.58)(100,0.63)(120,0.64)};
+\end{groupplot}
+\end{tikzpicture}
 
-\raggedright
-\begin{itemize}
-\item \textbf{Facts}: almost any rule. \textbf{Sequences}: no rule.
-\item \textbf{Translations}: per-task filters or a shared causal set.
-      \textbf{Morphology}: causal sets and the best filters.
-\end{itemize}
+\vspace{0.3em}
+\raggedright\small
+\textbf{Facts}: almost any rule.\quad \textbf{Sequences}: low under every rule.\quad
+\textbf{Morphology}: best with the shared causal sets.\\
+\textbf{Translations}: per-task filters or a shared causal set, but not a per-task causal set.
+
+\vfill
+\gnote{Mean over each type's tasks (number in brackets). Per-task Yang terms: only up to 80 heads.}
 \end{frame}
 
 % =====================================================================
