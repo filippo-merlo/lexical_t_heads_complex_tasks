@@ -1,0 +1,243 @@
+% =====================================================================
+%  Design of the rebuilt head-sets-simple study: one shared design for every
+%  condition (reproductions -> our additions -> the selected rule in other
+%  scenarios). Status: DESIGN ONLY (17 November 2026). No run has been made under
+%  this design; every result is a placeholder (\pending). It replaces the
+%  condition-by-condition design of head-sets-simple.tex (E13, E14, E22--E27).
+%  Compile with Tectonic (XeTeX).
+% =====================================================================
+\documentclass[10pt,a4paper]{article}
+
+\usepackage{fontspec}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,tabularx,array}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage[round,authoryear]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=green!40!black,urlcolor=blue!60!black]{hyperref}
+
+\setlist{nosep,leftmargin=*}
+\captionsetup{font=small,labelfont=bf}
+\renewcommand{\arraystretch}{1.12}
+\setlength{\emergencystretch}{3em}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcommand{\pending}[1]{\par\noindent{\color{orange!70!black}\textbf{Pending.} #1}\par}
+\newcommand{\nl}{\textbackslash n}
+\newcommand{\p}[1]{``\texttt{#1}''}
+
+\title{Small Head Sets for Simple Tasks: Design\\[2pt]
+\large One shared design for reproducing, extending and testing head selection rules in Llama-3.1-8B-Instruct}
+\author{Filippo Merlo}
+\date{17 November 2026 (design, no runs yet)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This document fixes, before any run, one design that every condition of the simple-task study shares. We look for small sets of attention heads whose mean output, written into a prompt that does not state the task, makes Llama-3.1-8B-Instruct perform it, on the 14 simple tasks shared by \citet{yang2026shared} and \citet{davidson2025different}. The study has three stages. First, both published ways of choosing heads, by the words a head decodes and by its causal effect, are reproduced under the shared design. Second, our additions are introduced one change at a time: the Head-JLens readout, word lists taken from the data, attention to each segment of the prompt, and every combination of these, the best chosen without looking at the items it is tested on. Third, the selected rule and the references are tested in other scenarios: wordings of the task never used to choose, prompts that give the task by examples, and the summed function vector in place of head-by-head patching. Every quantity that depends on items, wordings or example formats is chosen on material the test does not use.
+\end{abstract}
+
+% =====================================================================
+\section{Why a new design}
+
+The current study (\texttt{head-sets-simple}) grew one experiment at a time, and its conditions no longer line up. Each test runs a different list of rules and sizes; the filter combinations that lead were chosen on the accuracy they are reported on; the sets chosen on all 35 wordings are tested on the same 35; the attention filters are an uneven set (one ranks heads by low attention to the first token, two overlap, the query has none); generic heads are defined through the causal ranking and removed from one filter rule as well; and the two prompt styles are chosen on different numbers of prompts and means. The design below replaces all of these with one frame. It keeps what the current study showed to work (held-out items, rules compared at equal size, per-task and shared sets, cross-fitted scaling, the control mean) and is re-run from the start.
+
+\paragraph{Questions.}
+\begin{enumerate}
+\item Do the two published selection methods reproduce under one common evaluation?
+\item Which of our changes to them help, taken one at a time?
+\item Which parts of the prompt do the heads that carry a task attend to, and which combination of decoding and attention picks the best sets?
+\item Does the selected rule carry the task when it is worded differently, when it is given by examples, and when the set is written in as one summed vector?
+\end{enumerate}
+
+% =====================================================================
+\section{Shared base}\label{sec:base}
+
+Every condition of every stage uses the settings of this section; a stage states only what it changes.
+
+\paragraph{Model and tasks.} Llama-3.1-8B-Instruct in bfloat16. The 14 simple tasks in both source studies, with the datasets of \citet{todd2024function} as released by \citet{yang2026shared}: antonym, synonym, singular--plural, present--past, country--capital, country--currency, landmark--country, park--country, product--company, next-item, prev-item, English--French, English--German, English--Spanish. Yang et al.'s three further tasks (person--instrument, --occupation, --sport) and Davidson et al.'s 36 further tasks are not used.
+
+\paragraph{Reading a head.} For head $h$ of layer $l$, $z_{l,h}$ is its output at the last prompt token before the output projection. Logit-head scores token $v$ by $q_v^\top W_O^{(h)} z_{l,h}$ and J-head by $q_v^\top J_{l,h} z_{l,h}$, with $q_v$ the unembedding row of $v$ scaled by the final norm's gain and $J_{l,h}$ the head's part of the Head-JLens map \citep{merlo2026headjlens}. A head \emph{decodes} a word on a prompt when one of the word's token forms is among its 10 highest-scoring tokens.
+
+\paragraph{Test.} The zero-shot prompt \p{ x:}, which states no task, of items the model answers correctly with one shot; up to 100 items per task and fold. Each head of a set has its output at the last token replaced by $\alpha$ times its mean (head by head, the default), and the reply is generated greedily, up to a newline, the example delimiter or 16 tokens. A reply is correct when it begins with the whole reference answer as words, ignoring case, accents, punctuation and a leading article.
+
+\paragraph{Items.} Each task's items are shuffled once (seed 0) and cut into halves $A$ and $B$. Fold~1 chooses on $A$ and tests on $B$, fold~2 the reverse; reported numbers are means of the two folds. ``Chosen'' covers every quantity that depends on items: the prompts whose heads are read, the word lists, attention, causal scores, generic heads, and the task and control means.
+
+\paragraph{Prompts.} Three kinds, each split once into a part that may be used to choose (P) and a part that is only ever patched (Q):
+\begin{itemize}
+\item \textbf{Yang's five templates} (the cloze \p{The antonym of \{x\} is} and four \p{<instruction> Q: \{x\}\nl A:}): used to choose and to patch in Stages~1 and~2.
+\item \textbf{30 other wordings} of each task, six groups of five (cloze, question--answer and label form $\times$ whether the wording names the task). Not used before Stage~3. P and Q hold 15 each, three and two of every group in turn.
+\item \textbf{Six example formats} at five shots (Table~\ref{tab:formats}), three in P and three in Q, each half with one labelled, one arrow-like and one plain separator format.
+\end{itemize}
+
+\begin{table}[tbp]
+\centering\small
+\begin{tabularx}{\textwidth}{@{}clLc@{}}
+\toprule
+ & Format & 5-shot prompt (two shots shown) & Half \\
+\midrule
+F1 & Yang et al. & \p{ hot: cold; tall: short; wet:} & P \\
+F2 & Todd et al., Davidson et al. & \p{Q: hot\nl A: cold\nl\nl Q: tall\nl A: short\nl\nl Q: wet\nl A:} & P \\
+F3 & arrow & \p{hot -> cold\nl tall -> short\nl wet ->} & P \\
+F4 & labels & \p{Input: hot\nl Output: cold\nl\nl Input: wet\nl Output:} & Q \\
+F5 & equals & \p{hot = cold, tall = short, wet =} & Q \\
+F6 & bar & \p{hot | cold\nl tall | short\nl wet |} & Q \\
+\bottomrule
+\end{tabularx}
+\caption{Example formats. Demonstrations are drawn at random among the choosing half's other items. Formats to be checked by the user before any run (gate~G1).}
+\label{tab:formats}
+\end{table}
+
+\paragraph{Choosing budget.} Every choosing pool uses up to 300 correctly answered prompts per task, spread evenly over its templates or formats, so that the two prompt styles are chosen on the same amount of material. The causal score keeps Davidson et al.'s counts (100 prompts for the means, 25 per kind of uninformative text for the score).
+
+\paragraph{Means.} One mean per template or format, over its first 100 correctly answered prompts on the choosing half, leaving out the patched items. An item is patched with each mean of the test prompts in turn, and accuracy is averaged over them. A template or format with no correctly answered prompt on a half gives no mean there.
+
+\paragraph{Set sizes and scopes.} A rule ranks the 1{,}024 heads and the set is its top $N$, $N\in\{10,20,40,60,80,100,120\}$; ties go to the lower layer, then head. \emph{Per task}: heads ranked on the task's own scores. \emph{Shared}: one set for all 14 tasks, from each head's within-task ranks averaged over the tasks, for every rule; each task is still patched with its own means. Sets are compared only at equal $N$. A rule that cannot fill $N$ heads is not run at that size and is shown as ``--''.
+
+\paragraph{Scaling.} $\alpha\in\{1,2\}$. For each fold, $\alpha$ is the value that was better on the other fold for the same task and set (cross-fitting), so it is never chosen on the items it is scored on.
+
+\paragraph{Controls.} The \emph{control mean}: the same heads patched with the mean of a related task (Yang et al.'s pairing), for every non-random set; a set carries its task when its own mean helps and the control mean does not. \emph{Random sets}: for every rule, scope and $N$, three sets with as many heads in each layer as the rule's set, drawn from all heads of those layers (their overlap with the rule's set is reported), at the rule's $\alpha$.
+
+\paragraph{Reporting.} Accuracies only, without intervals; one greedy run per condition. Every patched reply is saved with its expected answer, and runs in which one answer covers more than half of the items are listed.
+
+% =====================================================================
+\section{Stage 1: the two source methods under the shared design}\label{sec:repro}
+
+Each method is run in its own form and as a ranking that the later stages compare at every size.
+
+\paragraph{Lexical task heads \citep{yang2026shared}.} \emph{Own form}: a head is in a task's set if, on at least 10\% of the first 100 correctly answered prompts of the task's most accurate template, a token of Yang et al.'s term list is among its 10 highest Logit-head tokens; per task; patched head by head. \emph{Ranking}: \textbf{Yang terms}, heads ranked by that share, at every $N$ and in both scopes; heads that never decode a term are not used.
+
+\paragraph{Instruction function vectors \citep{davidson2025different}.} Each head's causal indirect effect: the gain in probability of the answer's first token when that head alone is set to its mean output, on prompts whose instruction is replaced by uninformative text of matched length and log-probability (sampled token sequences, WikiText-103 prefixes, other tasks' instructions), on the question--answer templates. \emph{Own form}: the 20 heads with the largest effect averaged over tasks, their means summed into one vector and added to the residual stream after layer 11. \emph{Ranking}: \textbf{Causal}, heads ranked by the effect, at every $N$ and in both scopes, head by head.
+
+\paragraph{Fidelity.} The settings of the two studies' own code and papers (Yang et al.'s unmasked padding, first-token score, repair check on wrongly answered 1-shot prompts and 15 values of $\alpha$, on all items) are kept from the existing reproduction runs and reported in an appendix; they do not depend on the shared design.
+
+\pending{Own-form and ranking accuracies of both methods; fidelity tables.}
+
+% =====================================================================
+\section{Stage 2: our additions, one change at a time}\label{sec:additions}
+
+Each step changes one thing with respect to the step before (Table~\ref{tab:ladder}). The rules of the ladder are run at every $N$ and in both scopes, with their random sets and control means.
+
+\begin{table}[tbp]
+\centering\small
+\begin{tabularx}{\textwidth}{@{}clLl@{}}
+\toprule
+Step & Change & Motivation & Rule \\
+\midrule
+2.1 & Logit-head $\to$ J-head & reads heads through the layers that follow them, finding heads in middle layers that the logit lens misses & Yang terms (J) \\
+2.2 & hand-written list $\to$ list from the data & the hand-written lists were the weak point of the lexical method & D \\
+2.3 & where a head attends, segment by segment & which parts of the prompt the heads that carry the task read from \citep{bai2026performance} & one per segment ($N=40$) \\
+2.4 & every combination of decoding and attention & the best rule, chosen without the items it is tested on & Selected \\
+2.5 & generic heads removed from the causal ranking & a few heads decode the same tokens on every task and add one shared direction & Causal $-$ generic \\
+\bottomrule
+\end{tabularx}
+\caption{The ladder of Stage~2.}
+\label{tab:ladder}
+\end{table}
+
+\paragraph{Task-word lists (D).} One list per task and fold, from the choosing half: every head's 10 highest J-head tokens at the last token of the choosing prompts; a token counts as a word if, trimmed and lower-cased, it is letters or digits only, not one of 18 stop words, and at least three characters long when Latin; a word's share is the fraction of (prompt, head) pairs whose top 10 holds it; the 50 words with the largest share on 1{,}000 WikiText-103 passages are removed; the task's list is its 30 remaining words with the largest share. \textbf{D} ranks heads by the share of prompts whose top 10 holds a word of the list.
+
+\paragraph{Prompt segments.} Every token of a choosing prompt belongs to exactly one segment, assigned by script in this order: the first token (BOS); task words (instruction tokens, outside the query, matching a word of the list); the query; the last token; the question--answer markers (\p{ Q:} before the query, \p{\nl A} after it); punctuation (tokens without a letter or digit); stopwords (NLTK's English list); other instruction words. A head's score on a segment is the attention mass its last-token row puts on the segment, averaged over prompts; templates in which a segment is empty do not count for it. Together with D this gives nine features (Table~\ref{tab:features}). All rank heads by high values.
+
+\begin{table}[tbp]
+\centering\small
+\begin{tabularx}{\textwidth}{@{}lLL@{}}
+\toprule
+Feature & Instruction prompts (Stage~2, 3.2) & Example prompts (3.4) \\
+\midrule
+D & decodes a word of the task's list & same \\
+non-BOS & attention to every token but the first & same \\
+task words & instruction tokens matching the list & -- \\
+other words & other content words of the instruction & -- \\
+stopwords & NLTK English stopwords of the instruction & -- \\
+punctuation & tokens without a letter or digit & -- \\
+markers & \p{ Q:}, \p{\nl A} & -- \\
+demo inputs & -- & the demonstrations' inputs \\
+demo outputs & -- & the demonstrations' outputs \\
+separators & -- & the tokens between and around demonstrations (\p{:}, \p{;}, \p{Q:}, \p{A:}, \p{->}, \p{=}, \p{|}, newlines) \\
+query & the query $x$ & same \\
+last token & the read-out position & same \\
+\midrule
+Features & 9 & 7 \\
+Combinations & 511 (255 without D) & 127 (63 without D) \\
+\bottomrule
+\end{tabularx}
+\caption{Features from which the rules are built. A combination ranks heads by the mean of its features' within-task ranks.}
+\label{tab:features}
+\end{table}
+
+\paragraph{The combination screen.} Every non-empty subset of the nine features is a candidate rule (511 per scope): D alone, every attention segment alone, every combination of segments without D, and every combination with D. A combination ranks heads by the mean of its features' within-task ranks; shared sets as in Sec.~\ref{sec:base}. Each candidate is built at $N=40$ and patched in both folds with the task means only; candidates that give the same 40 heads are patched once. The control mean is not needed to choose and is run only for the selected rule.
+
+\paragraph{Selected.} For fold~1, \textbf{Selected} is the candidate with the highest accuracy on fold~2 (the better of $\alpha=1$ and $2$), and for fold~2 the reverse, separately per scope. The folds may select different combinations; both are reported. Selected is then run at every $N$. The screen also gives each feature's accuracy alone and its effect when added to every combination that lacks it, which are reported as a description.
+
+\paragraph{Generic heads.} Each head's J-head generic score is the cosine between the 14 tasks' counts of its top-10 tokens, averaged over task pairs. Among the 30 heads of the shared causal ranking, the sorted scores are cut into a high and a low group with the least spread within each; the high group are the generic heads, unless it holds more than 15. \textbf{Causal $-$ generic} removes them from the causal ranking before the top $N$ is taken. They are removed from no other rule.
+
+\pending{The ladder at every $N$, by task type; the screen (each feature alone and added); the selected combinations; overlap of Selected with Causal.}
+
+% =====================================================================
+\section{Stage 3: the selected rule in other scenarios}\label{sec:scenarios}
+
+Five rules go on: Yang terms (J), D, Selected, Causal and Causal $-$ generic, with their random sets and control means, at every $N$ and in both scopes. The patched prompt is always \p{ x:}. Each scenario changes one thing with respect to Stage~2: the prompts the means come from, the prompts the heads are chosen on, or how the set is written in (Table~\ref{tab:scenarios}).
+
+\begin{table}[tbp]
+\centering\small
+\begin{tabularx}{\textwidth}{@{}lLLl@{}}
+\toprule
+ & Heads chosen on & Means from & Changed \\
+\midrule
+Stage 2 & Yang's 5 templates & Yang's 5 templates & -- \\
+3.1 & Yang's 5 templates & 15 Q wordings & means \\
+3.2 & Yang's 5 + 15 P wordings & 15 Q wordings & choosing prompts \\
+3.3 & Yang's 5 templates & 3 Q example formats & means (style) \\
+3.4 & 3 P example formats & 3 Q example formats & choosing prompts (style) \\
+3.5 & as Stage 2 and 3.4 & as Stage 2 and 3.4 & intervention \\
+\bottomrule
+\end{tabularx}
+\caption{The scenarios of Stage~3.}
+\label{tab:scenarios}
+\end{table}
+
+\paragraph{3.1 Other wordings: transfer.} The Stage~2 sets, patched with the means of the 15 Q wordings, which played no part in choosing anything. Does a set carry the task however it is worded, or only in the wordings it was chosen on? Reported overall and by group (form $\times$ whether the wording names the task).
+
+\paragraph{3.2 Other wordings: re-choosing.} The same rules re-run on Yang's five templates and the 15 P wordings (lists, attention, causal scores on the question--answer templates, generic heads and the combination screen all recomputed), tested with the same Q means as 3.1. Do heads chosen on more varied wordings carry wordings they have never seen better? The overlap between the sets of 3.1 and 3.2 is reported.
+
+\paragraph{3.3 Example prompts: transfer.} The Stage~2 sets, patched with the means of the three Q example formats. Do heads chosen when the task is stated in words carry it when it is shown by examples, as \citet{yang2026shared} claim for lexical task heads?
+
+\paragraph{3.4 Example prompts: re-choosing and overlap.} Every rule rebuilt on 5-shot prompts of the three P formats, with the example features of Table~\ref{tab:features} and a combination screen of 127 candidates, run as in Stage~2. The causal score is the one \citet{davidson2025different} use for demonstrations, that of \citet{todd2024function}: a head's effect when the demonstrations' answers are shuffled among them. Tested with the same Q means as 3.3. Do heads chosen on examples carry example means better than heads chosen on instructions? And how many heads do the two choices share, for the same rule, scope and $N$, against random sets with the same number of heads in each layer? \citet{davidson2025different} find few shared heads for the causal score, \citet{yang2026shared} most for lexical task heads.
+
+\paragraph{3.5 Function vector against heads.} The sets of Stage~2 (with Yang's five means) and of 3.4 (with the Q example means), written in as one vector: each head's mean through its output projection, summed, and $\alpha$ times the sum added to the residual stream after layer 11 at the last token, against head-by-head patching with the same means and $\alpha$. Does the task depend on where each head writes, or only on the direction the set writes as a whole?
+
+\pending{Every scenario, per $N$ and scope, with control means and random sets.}
+
+% =====================================================================
+\section{Order of work}
+
+\begin{enumerate}
+\item This document, reviewed by the user.
+\item \textbf{G1.} The six example formats and the P/Q split of the 30 wordings, checked by the user.
+\item \textbf{G2.} Unpatched accuracy of every template and format on each half and the counts of correctly answered prompts; the user confirms which templates, formats and tasks are kept.
+\item Readings, attention and causal scores on every choosing pool; sets built without a GPU. \textbf{G3}: the user sees the sets and the segments of a few prompts before any patching.
+\item Stage~1, then Stage~2. \textbf{G4}: the user sees the selected combinations before Stage~3. The wall time of Stage~1 is measured and the cost of Stages~2 and~3 estimated from it before they are launched.
+\item Stage~3; then \texttt{head-sets-simple} is rewritten from these results and the current version archived.
+\end{enumerate}
+
+% =====================================================================
+\section{Choices fixed here}
+
+\begin{itemize}
+\item Segments rank heads by high attention only; stopwords and punctuation are separate segments; no feature ranks by low attention to the first token, which non-BOS covers.
+\item One selected rule per scope and fold, chosen at 40 heads among all combinations.
+\item Davidson et al.'s own form at 20 heads only; their score at other sizes appears as the Causal ranking.
+\item The summed vector only where the choosing and the patched prompts are of the same style.
+\item No pool that mixes instructions and examples, since the features differ between the two styles.
+\item Only $\alpha$ 1 and 2, which may underrate sets that peak higher.
+\end{itemize}
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}
