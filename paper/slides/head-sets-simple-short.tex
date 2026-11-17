@@ -1,7 +1,7 @@
 % =====================================================================
 %  Short talk (6 slides) cut from head-sets-simple-slides.tex:
-%  background, main idea, main comparison (incl. the two best exploratory
-%  combinations DBMN, DBTMS, marked \dagger). Left out on purpose:
+%  background, main idea, main comparison (incl. the three best exploratory
+%  combinations DBMN, DBTMS, DBTLS, marked \dagger). Left out on purpose:
 %  the other exploratory combinations, per-type and per-filter
 %  breakdowns, the summed vector, other wordings, example prompts.
 %  Numbers are copied from paper/tables/e13_main.tex and e13_control.tex.
@@ -34,6 +34,7 @@
 \definecolor{cStop}{HTML}{CFE8C4}
 \definecolor{cLast}{HTML}{F08A80}
 \definecolor{acc}{HTML}{1AA37A}
+\definecolor{expl}{HTML}{7A4FB0}    % third exploratory line
 
 \setbeamercolor{frametitle}{fg=ink}
 \setbeamercolor{normal text}{fg=ink}
@@ -62,107 +63,89 @@
 
 % =====================================================================
 \begin{frame}{Background: a task held in a few heads}
-\begin{columns}[T]
-\column{0.47\textwidth}
-\begin{itemize}\small
-\item Asked \texttt{What is the capital of the country? Q: France A:}, the model holds the idea
-      ``\emph{capital} task''.
-\item Earlier studies place this idea in a \textbf{small set of attention heads}.
-\item \textbf{14 simple tasks} (Yang et al., 2026): word relations, morphology, facts, sequences, translations.
+\begin{columns}[c]
+\column{0.46\textwidth}
+\begin{itemize}
+\item Earlier work: a task the prompt states lives in a \textbf{small set of attention heads}.
+\item[] 
+\item \textbf{Goal:} find that set
+  \begin{itemize}\small
+  \item small,
+  \item cheap: no per-head patching,
+  \item ideally one set for all tasks.
+  \end{itemize}
+\item[] 
+\item \textbf{14 simple tasks} (Yang et al., 2026), Llama-3.1-8B.
 \end{itemize}
 
-\vspace{0.3em}
-\small\textbf{We want a head set that is}
-\begin{itemize}\small
-\item \textbf{small}: few heads,
-\item \textbf{cheap to find}: no per-head patching,
-\item ideally \textbf{shared}: one set for all tasks.
-\end{itemize}
-
-\column{0.51\textwidth}
+\column{0.5\textwidth}
 \centering
-\textbf{\small How we test a set}\\[4pt]
+\textbf{How we test a set}\\[6pt]
 \begin{tikzpicture}[
-  box/.style={draw=gray!60,rounded corners=3pt,fill=soft,align=left,font=\footnotesize,inner sep=4pt,text width=5.9cm},
+  box/.style={draw=gray!60,rounded corners=3pt,fill=soft,align=left,font=\small,inner sep=5pt,text width=5.6cm},
   arr/.style={-{Latex[length=2.2mm]},thick,accent}]
-\node[box](a){\textbf{1.} Run \textbf{rule prompts} that state the task;\\
-  store each chosen head's \emph{mean} output.};
-\node[box,below=0.35cm of a](b){\textbf{2.} Take a \textbf{bare prompt} with no task: \texttt{\ Japan:}\\
-  unpatched accuracy $\approx$ 0.01.};
-\node[box,below=0.35cm of b,fill=acc!15](c){\textbf{3.} Replace the heads' outputs by their means.\\
-  Does it now answer \texttt{Tokyo}?};
+\node[box](a){\textbf{1.} Rule prompts: store each head's \emph{mean} output};
+\node[box,below=0.4cm of a](b){\textbf{2.} Bare prompt, no task: \texttt{Japan:}};
+\node[box,below=0.4cm of b,fill=acc!15](c){\textbf{3.} Patch in the means: \texttt{Tokyo}?};
 \draw[arr](a)--(b); \draw[arr](b)--(c);
 \end{tikzpicture}
-
-\vspace{0.3em}
-\scriptsize Checks: random heads, and the means of a \emph{related} task, should do nothing.
 \end{columns}
-\takeaway{A set \emph{carries} the task if its means make the bare prompt answer correctly.}
+\takeaway{A set \emph{carries} the task if its means make the bare prompt answer.}
 \end{frame}
 
 % =====================================================================
-\begin{frame}{Background: two published ways to choose the heads}
+\begin{frame}{Background: two published ways to choose heads}
 \begin{columns}[T]
-\column{0.48\textwidth}
-\textbf{Lexical task heads} {\small(Yang et al., 2026)}
-\begin{itemize}\small
-\item Read each head's top words; keep heads whose words hit a \textbf{hand-written list}
-      (antonym: \emph{opposite, reverse, \dots}).
-\item Cheap: one ordinary forward pass per prompt.
-\item But on the bare prompt their heads bring in mostly the \emph{fact} tasks.
+\column{0.47\textwidth}
+\textbf{Lexical task heads}\\{\small Yang et al., 2026}
+\begin{itemize}
+\item Keep heads whose decoded words hit a \textbf{hand-written} list.
+\item Cheap, but carries mostly the fact tasks.
 \end{itemize}
 
-\column{0.48\textwidth}
-\textbf{Causal score} {\small(Davidson et al., 2025)}
-\begin{itemize}\small
-\item Replace the instruction with filler, put back \textbf{one head's} mean,
-      measure how much the right answer gains.
-\item Strongest reference, but one patched pass \textbf{per head per prompt} (1{,}024 heads).
-\item Some top heads are \textbf{generic}: they say the same tokens on every task.
-      We test causal sets with and without them.
+\column{0.47\textwidth}
+\textbf{Causal score}\\{\small Davidson et al., 2025}
+\begin{itemize}
+\item Patch \textbf{one head at a time} into a prompt without its instruction.
+\item Strong, but costly: 1{,}024 heads $\times$ every prompt.
+\item Some top heads are \textbf{generic} (same push on every task); we also drop them.
 \end{itemize}
 \end{columns}
+
+\vspace{1.4em}
+\small We read heads with \textbf{J-head} (Head-JLens): 50--70\% more lexical heads than the logit lens.
+\takeaway{Reading heads is cheap but misses tasks; patching works but is costly.}
+\end{frame}
+
+% =====================================================================
+\begin{frame}{Main idea: what a head says + where it looks}
+\textbf{D} --- decodes task words. The list is \emph{read off the heads}, not hand-written.\\
+{\footnotesize\color{gray}country--capital: city, cities, country, town, \dots, capital}
 
 \vspace{0.8em}
-\small Reading heads: we use \textbf{Head-JLens} (``J-head''), which follows a head's output through the
-later layers instead of sending it straight to the output (logit lens). It finds 50--70\% more lexical heads, mostly in layers 10--19.
-\takeaway{Reading heads is cheap but a hand-written list misses most tasks; patching works but is costly.}
-\end{frame}
-
-% =====================================================================
-\begin{frame}{Main idea: let the heads tell us, then add where they look}
-\textbf{D: decodes task words.} Word list \emph{read off the heads}, not hand-written:
-the 30 words they decode most often (J-head) on rule prompts, minus words decoded on any text.\\
-{\footnotesize country--capital: \emph{city, cities, country, town, countries, answer, \dots, capital}}
-
-\vspace{0.4em}
-\textbf{Attention at the last token}, measured on the same prompts:\\[4pt]
+\textbf{Attention} from the last token:\\[5pt]
 \centering
 \tok{cBOS}{<bos>}\,\tok{cStop}{What}\,\tok{cStop}{is}\,\tok{cStop}{the}\,\tok{cTask}{capital}\,\tok{cStop}{of}\,\tok{cStop}{the}\,\tok{cTask}{country}\,\tok{cStop}{?}\,\tok{cMark}{Q:}\,\tok{cQuery}{France}\,\tok{cMark}{\textbackslash nA}\,\tok{cLast}{:}
 
-\vspace{0.4em}
-\raggedright\small
-\tok{cBOS}{B} attends \emph{little} to the first token \qquad
-\tok{cTask}{T} attends to the task words \qquad
-\tok{cMark}{M} the Q/A markers \qquad
-\tok{cStop}{S} punctuation, stopwords \qquad
-\textbf{N} the whole instruction
+\vspace{0.6em}
+\small
+\begin{tabular}{@{}l@{\hspace{0.5em}}l@{\hspace{2.5em}}l@{\hspace{0.5em}}l@{\hspace{2.5em}}l@{\hspace{0.5em}}l@{}}
+\tok{cBOS}{B} & \emph{little} to \texttt{<bos>} & \tok{cMark}{M} & Q/A markers & \tok{cLast}{L} & last token \\[3pt]
+\tok{cTask}{T} & task words & \tok{cStop}{S} & punctuation, stopwords & \textbf{N} & whole instruction \\
+\end{tabular}
 
-\vspace{0.5em}
-\textbf{Combining} (e.g.\ DBT): rank all 1{,}024 heads on each filter; average the ranks; take the top $N$.\\
-{\footnotesize DBT fixed in advance; all 79 combinations also tried, best kept: DBMN\opt, DBTMS\opt\ (\opt picked on the test items).}
-
-\vspace{0.4em}
-\footnotesize\textbf{Fair race.} Every rule gives sets of the same sizes ($N$ = 20--120); one set \emph{per task} or one \emph{shared} by all 14;
-items split in halves: everything is chosen on one half and scored on the other.
-\takeaway{Needs only the lens and one ordinary forward pass per prompt: no patching.}
+\vspace{0.8em}
+\raggedright
+\textbf{Combine:} average each head's rank over the filters, keep the top $N$.\\
+\footnotesize DBT fixed in advance. DBMN, DBTMS, DBTLS\opt: best of all 79 combinations.
+\takeaway{No patching: the lens plus one forward pass per prompt.}
 \end{frame}
 
 % =====================================================================
 \begin{frame}{Main result: accuracy on the bare prompt}
 \centering
 \pgfplotsset{
-  every axis/.style={width=6.9cm,height=4.15cm,
+  every axis/.style={width=7.0cm,height=4.45cm,
     xmin=15,xmax=125,ymin=0,ymax=0.78,xtick={20,40,60,80,100,120},
     ytick={0,0.2,0.4,0.6},grid=major,grid style={gray!20},
     tick label style={font=\scriptsize},label style={font=\footnotesize},
@@ -172,9 +155,9 @@ items split in halves: everything is chosen on one half and scored on the other.
   sCaus/.style={caus,very thick,mark=square*,mark size=1.2pt},
   sCausB/.style={caus,thick,dashed,mark=square,mark size=1.2pt},
   sYang/.style={gray,thick,mark=triangle*,mark size=1.5pt},
-  sRnd/.style={gray!60,thick,dotted},
   sExp/.style={accent,very thick,mark=diamond*,mark size=1.6pt},
-  sExpB/.style={accent,thick,dashed,mark=diamond,mark size=1.6pt}}
+  sExpB/.style={accent,thick,dashed,mark=diamond,mark size=1.6pt},
+  sExpC/.style={expl,thick,mark=pentagon*,mark size=1.4pt}}
 \pgfplotslegendfromname{lg}\\[2pt]
 \begin{tikzpicture}
 \begin{axis}[title={One set per task},ylabel={accuracy}]
@@ -183,9 +166,9 @@ items split in halves: everything is chosen on one half and scored on the other.
 \addplot[sCaus]  coordinates {(20,0.33)(40,0.41)(60,0.46)(80,0.53)(100,0.56)(120,0.61)};
 \addplot[sCausB] coordinates {(20,0.38)(40,0.46)(60,0.50)(80,0.51)(100,0.53)(120,0.58)};
 \addplot[sYang]  coordinates {(20,0.18)(40,0.19)(60,0.21)(80,0.21)};
-\addplot[sRnd]   coordinates {(20,0.01)(40,0.01)(60,0.01)(80,0.01)(100,0.01)(120,0.01)};
 \addplot[sExp]   coordinates {(20,0.36)(40,0.63)(60,0.66)(80,0.65)(100,0.65)(120,0.62)};
 \addplot[sExpB]  coordinates {(20,0.36)(40,0.61)(60,0.65)(80,0.67)(100,0.68)(120,0.68)};
+\addplot[sExpC]  coordinates {(20,0.43)(40,0.56)(60,0.66)(80,0.67)(100,0.66)(120,0.65)};
 \end{axis}
 \end{tikzpicture}\hspace{0.3cm}%
 \begin{tikzpicture}
@@ -198,38 +181,37 @@ items split in halves: everything is chosen on one half and scored on the other.
 \addplot[sCaus]  coordinates {(20,0.40)(40,0.53)(60,0.60)(80,0.65)(100,0.68)(120,0.69)};
 \addplot[sCausB] coordinates {(20,0.50)(40,0.55)(60,0.64)(80,0.69)(100,0.71)(120,0.69)};
 \addplot[sYang]  coordinates {(20,0.10)(40,0.19)(60,0.23)(80,0.24)(100,0.24)(120,0.22)};
-\addplot[sRnd]   coordinates {(20,0.01)(40,0.01)(60,0.00)(80,0.01)(100,0.01)(120,0.01)};
 \addplot[sExp]   coordinates {(20,0.35)(40,0.58)(60,0.64)(80,0.70)(100,0.68)(120,0.68)};
 \addplot[sExpB]  coordinates {(20,0.33)(40,0.53)(60,0.65)(80,0.66)(100,0.67)(120,0.71)};
-\legend{DBT,BT,Causal,Causal $-$ generic,Yang terms,Random,DBMN\opt,DBTMS\opt}
+\addplot[sExpC]  coordinates {(20,0.41)(40,0.60)(60,0.62)(80,0.67)(100,0.64)(120,0.65)};
+\legend{DBT,BT,Causal,Causal $-$ generic,Yang terms,DBMN\opt,DBTMS\opt,DBTLS\opt}
 \end{axis}
 \end{tikzpicture}
 
-\vspace{0.1em}
-\raggedright\footnotesize
-Held-out items, mean of 14 tasks. Unpatched: 0.01; related-task means: $\leq$0.05. \opt\ picked on the test items.
-\takeaway{\textbf{Per task}, filters beat the causal score: DBT 0.55, DBMN\opt\ 0.63 at 40 heads.
-\textbf{Shared}, Causal $-$ generic leads the fixed rules (0.69 at 80); DBMN\opt\ is level (0.70).}
+\vspace{0.2em}
+\raggedright\footnotesize\color{gray}
+Held-out items, mean of 14 tasks. Random heads: 0.01. \opt\ picked on the test items (optimistic).
+\takeaway{\textbf{Per task:} filters beat the causal score.\quad
+\textbf{Shared:} Causal $-$ generic $\approx$ best filters\opt\ ($\approx$0.70).}
 \end{frame}
 
 % =====================================================================
 \begin{frame}{Take-home}
 \begin{enumerate}
-\item \textbf{Read heads with J-head}, not the logit lens.
-\item \textbf{One set per task, no patching:} rank heads by what they decode (D),
-      low attention to the first token (B) and attention to the task words (T).
-      About \textbf{40 heads} reach 0.55, above the causal score at that size;
-      adding attention to the Q/A markers and the whole instruction (DBMN\opt) reaches 0.63.
-\item \textbf{One set for all tasks:} the causal score averaged over tasks,
-      \textbf{minus the generic heads}; 80--100 heads reach about 0.70.
-\item A \textbf{hand-written} word list finds heads that carry little (about 0.2).
+\item Read heads with \textbf{J-head}.
+\item[] 
+\item \textbf{Per task:} what a head decodes + where it looks beats the causal score,
+      with no patching. About 40 heads are enough.
+\item[] 
+\item \textbf{Shared:} the causal score minus generic heads (80--100 heads);
+      the best filters\opt\ match it.
+\item[] 
+\item Hand-written word lists carry little.
 \end{enumerate}
 
-\vspace{0.6em}
-\small\textbf{Caveats:} one model, 14 simple tasks, single greedy runs (1--2 point differences are not established);
-no rule carries the sequence tasks well; \opt\ combinations were picked on the test items and need fresh items.
-\takeaway{What a head says plus where it looks is enough to find a task's heads;
-for one set for all tasks the causal score is the safe choice until DBMN\opt\ holds on fresh items.}
+\vfill
+\footnotesize\color{gray} Caveats: one model, 14 simple tasks; \opt\ combinations need fresh items; sequence tasks unsolved.
+\takeaway{What a head says and where it looks is enough to find a task's heads.}
 \end{frame}
 
 \end{document}
