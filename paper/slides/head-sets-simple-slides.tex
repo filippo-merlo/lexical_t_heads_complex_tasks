@@ -416,6 +416,12 @@ Seven filters, each ranks all heads:\\[4pt]
 \tok{cLast}{L} & attends to the last token & \tok{cStop}{S} & attends to punctuation, stopwords \\[2pt]
  & & \textbf{N} & attends to the whole instruction \\
 \end{tabular}
+
+\vspace{0.8em}
+\small
+\tok{cTask}{Task words}: instruction tokens (not the query) that match a word of the task's
+\textbf{lens-made list} (ingredient 1), whole word, any case. Here: \emph{capital}, \emph{country}.\\
+T is N restricted to the words of the list.
 \takeaway{No patching: only the lens and one forward pass per prompt.}
 \end{frame}
 
