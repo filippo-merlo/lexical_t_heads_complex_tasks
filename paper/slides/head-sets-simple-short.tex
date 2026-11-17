@@ -1,0 +1,222 @@
+% =====================================================================
+%  Short talk (6 slides) cut from head-sets-simple-slides.tex:
+%  background, main idea, main comparison only. Left out on purpose:
+%  exploratory filter combinations (L, M, S, N), per-type and per-filter
+%  breakdowns, the summed vector, other wordings, example prompts.
+%  Numbers are copied from paper/tables/e13_main.tex and e13_control.tex.
+%  Compile with Tectonic from this folder:  tectonic head-sets-simple-short.tex
+% =====================================================================
+\documentclass[aspectratio=169,11pt,xcolor=table]{beamer}
+
+\usetheme{default}
+\usefonttheme{professionalfonts}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{\hfill\scriptsize\color{gray}\insertframenumber\hspace{1.2em}\vspace{0.6em}}
+\setbeamertemplate{itemize items}{\textbullet}
+
+\usepackage{booktabs,array,amsmath,amssymb}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,calc}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% ---- colours (same as the long deck) ----------------------------------
+\definecolor{ink}{HTML}{222222}
+\definecolor{accent}{HTML}{1F6FB2}
+\definecolor{filt}{HTML}{1AA37A}     % filter rules
+\definecolor{caus}{HTML}{E8693A}     % causal rules
+\definecolor{soft}{HTML}{F2F4F7}
+\definecolor{cBOS}{HTML}{B8B8B8}
+\definecolor{cTask}{HTML}{F4B942}
+\definecolor{cQuery}{HTML}{9CC3E6}
+\definecolor{cMark}{HTML}{C79BD8}
+\definecolor{cStop}{HTML}{CFE8C4}
+\definecolor{cLast}{HTML}{F08A80}
+\definecolor{acc}{HTML}{1AA37A}
+
+\setbeamercolor{frametitle}{fg=ink}
+\setbeamercolor{normal text}{fg=ink}
+\setbeamercolor{structure}{fg=accent}
+\setbeamerfont{frametitle}{series=\bfseries,size=\Large}
+
+\newcommand{\takeaway}[1]{\vfill
+  \begin{beamercolorbox}[wd=\textwidth,sep=6pt]{takeaway}\small #1\end{beamercolorbox}}
+\setbeamercolor{takeaway}{bg=soft,fg=ink}
+
+\newcommand{\tok}[2]{\tikz[baseline=(t.base)]\node[fill=#1,rounded corners=2pt,inner sep=2.5pt,font=\ttfamily\small](t){\strut #2};}
+
+\title{Head Sets for Simple Tasks}
+\subtitle{Which attention heads carry a task, and how to find them cheaply\\
+\small Llama-3.1-8B-Instruct, 14 tasks}
+\author{Filippo Merlo}
+\date{November 2026}
+
+\begin{document}
+
+% =====================================================================
+\begin{frame}
+\titlepage
+\end{frame}
+
+% =====================================================================
+\begin{frame}{Background: a task held in a few heads}
+\begin{columns}[T]
+\column{0.47\textwidth}
+\begin{itemize}\small
+\item Asked \texttt{What is the capital of the country? Q: France A:}, the model holds the idea
+      ``\emph{capital} task''.
+\item Earlier studies place this idea in a \textbf{small set of attention heads}.
+\item \textbf{14 simple tasks} (Yang et al., 2026): word relations, morphology, facts, sequences, translations.
+\end{itemize}
+
+\vspace{0.3em}
+\small\textbf{We want a head set that is}
+\begin{itemize}\small
+\item \textbf{small}: few heads,
+\item \textbf{cheap to find}: no per-head patching,
+\item ideally \textbf{shared}: one set for all tasks.
+\end{itemize}
+
+\column{0.51\textwidth}
+\centering
+\textbf{\small How we test a set}\\[4pt]
+\begin{tikzpicture}[
+  box/.style={draw=gray!60,rounded corners=3pt,fill=soft,align=left,font=\footnotesize,inner sep=4pt,text width=5.9cm},
+  arr/.style={-{Latex[length=2.2mm]},thick,accent}]
+\node[box](a){\textbf{1.} Run \textbf{rule prompts} that state the task;\\
+  store each chosen head's \emph{mean} output.};
+\node[box,below=0.35cm of a](b){\textbf{2.} Take a \textbf{bare prompt} with no task: \texttt{\ Japan:}\\
+  unpatched accuracy $\approx$ 0.01.};
+\node[box,below=0.35cm of b,fill=acc!15](c){\textbf{3.} Replace the heads' outputs by their means.\\
+  Does it now answer \texttt{Tokyo}?};
+\draw[arr](a)--(b); \draw[arr](b)--(c);
+\end{tikzpicture}
+
+\vspace{0.3em}
+\scriptsize Checks: random heads, and the means of a \emph{related} task, should do nothing.
+\end{columns}
+\takeaway{A set \emph{carries} the task if its means make the bare prompt answer correctly.}
+\end{frame}
+
+% =====================================================================
+\begin{frame}{Background: two published ways to choose the heads}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Lexical task heads} {\small(Yang et al., 2026)}
+\begin{itemize}\small
+\item Read each head's top words; keep heads whose words hit a \textbf{hand-written list}
+      (antonym: \emph{opposite, reverse, \dots}).
+\item Cheap: one ordinary forward pass per prompt.
+\item But on the bare prompt their heads bring in mostly the \emph{fact} tasks.
+\end{itemize}
+
+\column{0.48\textwidth}
+\textbf{Causal score} {\small(Davidson et al., 2025)}
+\begin{itemize}\small
+\item Replace the instruction with filler, put back \textbf{one head's} mean,
+      measure how much the right answer gains.
+\item Strongest reference, but one patched pass \textbf{per head per prompt} (1{,}024 heads).
+\item Some top heads are \textbf{generic}: they say the same tokens on every task.
+      We test causal sets with and without them.
+\end{itemize}
+\end{columns}
+
+\vspace{0.8em}
+\small Reading heads: we use \textbf{Head-JLens} (``J-head''), which follows a head's output through the
+later layers instead of sending it straight to the output (logit lens). It finds 50--70\% more lexical heads, mostly in layers 10--19.
+\takeaway{Reading heads is cheap but a hand-written list misses most tasks; patching works but is costly.}
+\end{frame}
+
+% =====================================================================
+\begin{frame}{Main idea: let the heads tell us, then add where they look}
+\textbf{D: decodes task words.} Word list \emph{read off the heads}, not written by hand:
+the 30 words the heads (read with J-head) decode most often on the task's rule prompts, minus words they decode on any text.\\
+{\footnotesize country--capital: \emph{city, cities, country, town, countries, answer, \dots, capital}}
+
+\vspace{0.6em}
+\textbf{Attention at the last token}, measured on the same prompts:\\[4pt]
+\centering
+\tok{cBOS}{<bos>}\,\tok{cStop}{What}\,\tok{cStop}{is}\,\tok{cStop}{the}\,\tok{cTask}{capital}\,\tok{cStop}{of}\,\tok{cStop}{the}\,\tok{cTask}{country}\,\tok{cStop}{?}\,\tok{cMark}{Q:}\,\tok{cQuery}{France}\,\tok{cMark}{\textbackslash nA}\,\tok{cLast}{:}
+
+\vspace{0.4em}
+\raggedright\small
+\tok{cBOS}{B} attends \emph{little} to the first token \qquad
+\tok{cTask}{T} attends to the task words
+
+\vspace{0.5em}
+\textbf{DBT:} rank all 1{,}024 heads on each of D, B, T; average the ranks; take the top $N$.
+
+\vspace{0.4em}
+\footnotesize\textbf{Fair race.} Every rule gives sets of the same sizes ($N$ = 20--120); one set \emph{per task} or one \emph{shared} by all 14;
+items split in halves: everything is chosen on one half and scored on the other.
+\takeaway{Needs only the lens and one ordinary forward pass per prompt: no patching.}
+\end{frame}
+
+% =====================================================================
+\begin{frame}{Main result: accuracy on the bare prompt}
+\centering
+\pgfplotsset{
+  every axis/.style={width=6.9cm,height=4.55cm,
+    xmin=15,xmax=125,ymin=0,ymax=0.75,xtick={20,40,60,80,100,120},
+    ytick={0,0.2,0.4,0.6},grid=major,grid style={gray!20},
+    tick label style={font=\scriptsize},label style={font=\footnotesize},
+    title style={font=\small\bfseries},xlabel={heads in the set ($N$)}},
+  sFilt/.style={filt,very thick,mark=*,mark size=1.3pt},
+  sFiltB/.style={filt,thick,dashed,mark=o,mark size=1.3pt},
+  sCaus/.style={caus,very thick,mark=square*,mark size=1.2pt},
+  sCausB/.style={caus,thick,dashed,mark=square,mark size=1.2pt},
+  sYang/.style={gray,thick,mark=triangle*,mark size=1.5pt},
+  sRnd/.style={gray!60,thick,dotted}}
+\pgfplotslegendfromname{lg}\\[2pt]
+\begin{tikzpicture}
+\begin{axis}[title={One set per task},ylabel={accuracy}]
+\addplot[sFilt]  coordinates {(20,0.43)(40,0.55)(60,0.57)(80,0.55)(100,0.48)(120,0.41)};
+\addplot[sFiltB] coordinates {(20,0.42)(40,0.54)(60,0.58)(80,0.55)(100,0.57)(120,0.57)};
+\addplot[sCaus]  coordinates {(20,0.33)(40,0.41)(60,0.46)(80,0.53)(100,0.56)(120,0.61)};
+\addplot[sCausB] coordinates {(20,0.38)(40,0.46)(60,0.50)(80,0.51)(100,0.53)(120,0.58)};
+\addplot[sYang]  coordinates {(20,0.18)(40,0.19)(60,0.21)(80,0.21)};
+\addplot[sRnd]   coordinates {(20,0.01)(40,0.01)(60,0.01)(80,0.01)(100,0.01)(120,0.01)};
+\end{axis}
+\end{tikzpicture}\hspace{0.3cm}%
+\begin{tikzpicture}
+\begin{axis}[title={One set for all 14 tasks},yticklabels={},
+  legend to name=lg,legend columns=6,
+  legend style={font=\scriptsize,draw=none,/tikz/every even column/.append style={column sep=8pt}}]
+\addplot[sFilt]  coordinates {(20,0.33)(40,0.46)(60,0.61)(80,0.55)(100,0.51)(120,0.53)};
+\addplot[sFiltB] coordinates {(20,0.35)(40,0.45)(60,0.60)(80,0.56)(100,0.58)(120,0.63)};
+\addplot[sCaus]  coordinates {(20,0.40)(40,0.53)(60,0.60)(80,0.65)(100,0.68)(120,0.69)};
+\addplot[sCausB] coordinates {(20,0.50)(40,0.55)(60,0.64)(80,0.69)(100,0.71)(120,0.69)};
+\addplot[sYang]  coordinates {(20,0.10)(40,0.19)(60,0.23)(80,0.24)(100,0.24)(120,0.22)};
+\addplot[sRnd]   coordinates {(20,0.01)(40,0.01)(60,0.00)(80,0.01)(100,0.01)(120,0.01)};
+\legend{DBT,BT,Causal,Causal $-$ generic,Yang terms,Random}
+\end{axis}
+\end{tikzpicture}
+
+\vspace{0.1em}
+\raggedright\footnotesize
+Held-out items, mean of 14 tasks; $\alpha$ (1 or 2) chosen on the choosing half. Without patching: 0.01.
+Related-task means stay at 0.05 or below for every set.
+\takeaway{\textbf{Per task}, DBT/BT beat the causal score up to 60 heads and are done by 40.
+\textbf{Shared}, the causal score without generic heads is best (0.69 at 80 heads).}
+\end{frame}
+
+% =====================================================================
+\begin{frame}{Take-home}
+\begin{enumerate}
+\item \textbf{Read heads with J-head}, not the logit lens.
+\item \textbf{One set per task, no patching:} rank heads by what they decode (D),
+      low attention to the first token (B) and attention to the task words (T).
+      About \textbf{40 heads} reach 0.55, above the causal score at that size.
+\item \textbf{One set for all tasks:} the causal score averaged over tasks,
+      \textbf{minus the generic heads}; 80--100 heads reach about 0.70.
+\item A \textbf{hand-written} word list finds heads that carry little (about 0.2).
+\end{enumerate}
+
+\vspace{0.6em}
+\small\textbf{Caveats:} one model, 14 simple tasks, single greedy runs (1--2 point differences are not established);
+no rule carries the sequence tasks well.
+\takeaway{What a head says plus where it looks is enough to find a task's heads;
+one set for all tasks still needs the causal score.}
+\end{frame}
+
+\end{document}
