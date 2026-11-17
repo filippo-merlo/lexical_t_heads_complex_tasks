@@ -39,7 +39,9 @@
   sCaus/.style={caus,very thick,mark=square*,mark size=1.3pt},
   sCausB/.style={caus,thick,dashed,mark=square,mark size=1.3pt},
   sYang/.style={gray,thick,mark=triangle*,mark size=1.6pt},
-  sExp/.style={accent!35,thick,mark=none}}
+  sExp/.style={accent,very thick,mark=diamond*,mark size=1.6pt},
+  sExpB/.style={accent,thick,dashed,mark=diamond,mark size=1.6pt},
+  sExpC/.style={expl,thick,mark=pentagon*,mark size=1.4pt}}
 \graphicspath{{../figures/}}
 
 % ---- colours ------------------------------------------------------------
@@ -55,6 +57,7 @@
 \definecolor{cStop}{HTML}{CFE8C4}
 \definecolor{cLast}{HTML}{F08A80}
 \definecolor{acc}{HTML}{1AA37A}
+\definecolor{expl}{HTML}{7A4FB0}     % third exploratory line
 
 \setbeamercolor{frametitle}{fg=ink}
 \setbeamercolor{normal text}{fg=ink}
@@ -481,7 +484,7 @@ $N$ = 20 to 120 heads, per task and shared.
 \item \textbf{Random} heads.
 \end{itemize}
 \end{columns}
-\takeaway{\opt\ Picked on the same held-out accuracy we report: optimistic, so drawn light in the plots.}
+\takeaway{\opt\ Picked on the same held-out accuracy we report: optimistic, still need a fresh test.}
 \end{frame}
 
 % =====================================================================
@@ -497,9 +500,9 @@ $N$ = 20 to 120 heads, per task and shared.
 \addplot[sCausB] coordinates {(20,0.38)(40,0.46)(60,0.50)(80,0.51)(100,0.53)(120,0.58)};
 \addplot[sYang]  coordinates {(20,0.18)(40,0.19)(60,0.21)(80,0.21)};
 \addplot[sExp]   coordinates {(20,0.36)(40,0.63)(60,0.66)(80,0.65)(100,0.65)(120,0.62)};
-\addplot[sExp]   coordinates {(20,0.36)(40,0.61)(60,0.65)(80,0.67)(100,0.68)(120,0.68)};
-\addplot[sExp]   coordinates {(20,0.43)(40,0.56)(60,0.66)(80,0.67)(100,0.66)(120,0.65)};
-\legend{DBT,BT,Causal,Causal $-$ generic,Yang terms,exploratory\opt}
+\addplot[sExpB]  coordinates {(20,0.36)(40,0.61)(60,0.65)(80,0.67)(100,0.68)(120,0.68)};
+\addplot[sExpC]  coordinates {(20,0.43)(40,0.56)(60,0.66)(80,0.67)(100,0.66)(120,0.65)};
+\legend{DBT,BT,Causal,Causal $-$ generic,Yang terms,DBMN\opt,DBTMS\opt,DBTLS\opt}
 \end{axis}
 \end{tikzpicture}
 
@@ -526,9 +529,9 @@ $N$ = 20 to 120 heads, per task and shared.
 \addplot[sCausB] coordinates {(20,0.50)(40,0.55)(60,0.64)(80,0.69)(100,0.71)(120,0.69)};
 \addplot[sYang]  coordinates {(20,0.10)(40,0.19)(60,0.23)(80,0.24)(100,0.24)(120,0.22)};
 \addplot[sExp]   coordinates {(20,0.35)(40,0.58)(60,0.64)(80,0.70)(100,0.68)(120,0.68)};
-\addplot[sExp]   coordinates {(20,0.33)(40,0.53)(60,0.65)(80,0.66)(100,0.67)(120,0.71)};
-\addplot[sExp]   coordinates {(20,0.41)(40,0.60)(60,0.62)(80,0.67)(100,0.64)(120,0.65)};
-\legend{DBT,BT,Causal,Causal $-$ generic,Yang terms,exploratory\opt}
+\addplot[sExpB]  coordinates {(20,0.33)(40,0.53)(60,0.65)(80,0.66)(100,0.67)(120,0.71)};
+\addplot[sExpC]  coordinates {(20,0.41)(40,0.60)(60,0.62)(80,0.67)(100,0.64)(120,0.65)};
+\legend{DBT,BT,Causal,Causal $-$ generic,Yang terms,DBMN\opt,DBTMS\opt,DBTLS\opt}
 \end{axis}
 \end{tikzpicture}
 
@@ -536,7 +539,7 @@ $N$ = 20 to 120 heads, per task and shared.
 \begin{itemize}\spaced
 \item \CausalG\ is best at nearly every size (0.71 at 100 heads).
 \item DBT and BT stay below it at every size.
-\item The explored filters\opt\ come level, but were picked on the test items.
+\item DBMN\opt\ and DBTMS\opt\ come level, but were picked on the test items.
 \item The causal score works better shared; the filters work better per task.
 \end{itemize}
 \end{columns}
@@ -599,7 +602,7 @@ Per-task DBT, 40 heads & \cv{0.55} & \cv{0.49} \\
 \textbf{Caveats}
 \begin{itemize}\spaced
 \item One model, 14 simple tasks, single greedy runs: 1--2 point gaps are not established.
-\item Explored combinations\opt\ were picked on the test items.
+\item DBMN, DBTMS, DBTLS\opt\ were picked on the test items.
 \item Only $\alpha$ = 1, 2 tried.
 \item Sequences remain unsolved.
 \end{itemize}
