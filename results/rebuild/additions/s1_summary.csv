@@ -1,0 +1,29 @@
+set,scope,n,task,control,random,tasks_folds
+causal10,per task,10,0.249,0.043,0.018,28
+causal100,per task,100,0.564,0.047,0.101,28
+causal120,per task,120,0.614,0.054,0.088,28
+causal20,per task,20,0.325,0.035,0.019,28
+causal40,per task,40,0.409,0.038,0.055,28
+causal60,per task,60,0.455,0.036,0.063,28
+causal80,per task,80,0.534,0.043,0.048,28
+shared_causal10,shared,10,0.123,0.032,0.02,28
+shared_causal100,shared,100,0.653,0.039,0.042,28
+shared_causal120,shared,120,0.681,0.035,0.089,28
+shared_causal20,shared,20,0.317,0.036,0.01,28
+shared_causal40,shared,40,0.504,0.05,0.044,28
+shared_causal60,shared,60,0.548,0.043,0.05,28
+shared_causal80,shared,80,0.623,0.034,0.1,28
+shared_davidson_own,shared,,0.295,0.062,0.01,28
+shared_yangL10,shared,10,0.017,0.011,0.008,28
+shared_yangL100,shared,100,0.033,0.001,0.008,28
+shared_yangL120,shared,120,0.031,0.002,0.013,28
+shared_yangL20,shared,20,0.045,0.019,0.028,28
+shared_yangL40,shared,40,0.115,0.018,0.015,28
+shared_yangL60,shared,60,0.123,0.008,0.032,28
+shared_yangL80,shared,80,0.029,0.002,0.027,28
+yangL10,per task,10,0.108,0.014,0.015,28
+yangL20,per task,20,--,--,--,24
+yangL40,per task,40,--,--,--,18
+yangL60,per task,60,--,--,--,8
+yangL80,per task,80,--,--,--,2
+yang_own,per task,,0.135,0.024,0.012,28
