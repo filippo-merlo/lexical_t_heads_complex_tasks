@@ -43,47 +43,53 @@ def main() -> None:
     args = parser.parse_args()
     gpu.pin(args.gpu)
 
-    from run_outputs import SIMPLE_MAX_TOKENS, simple_answer, stop_reason
-
-    from lth import evaluation
     from lth.model import LM
-    from lth.store import done, outputs_path, readings_dir, save, save_outputs
 
     lm = LM.load()
     for task in args.tasks:
-        data = simple.dataset(task)
-        items = items_of(task)
-        for wording in simple.E4B_WORDINGS:
-            path = outputs_path("simple", task, wording)
-            directory = readings_dir("simple", task)
-            if path.exists() and done(directory, wording):
-                continue
-            start = time.time()
-            prompts, answers = simple.prompts(task, wording)
-            ids = simple.token_ids(lm.tokenizer, [prompts[i] for i in items])
-            rows = []
-            for b in range(0, len(ids), simple.BATCH):
-                replies = lm.generate_batch(ids[b:b + simple.BATCH], SIMPLE_MAX_TOKENS,
-                                            stop=lambda text: simple_answer(text) != text)
-                for i, reply in zip(items[b:b + simple.BATCH], replies):
-                    text = lm.tokenizer.decode(reply, skip_special_tokens=True)
-                    answer = simple_answer(text)
-                    rows.append({"item": str(i), "prompt": prompts[i], "input": data[i]["input"],
-                                 "reference": answers[i], "reply_ids": reply, "reply_text": text,
-                                 "answer_text": answer, "n_tokens": len(reply),
-                                 "stop": stop_reason(reply, SIMPLE_MAX_TOKENS, answer != text)})
-            save_outputs(path, rows)
-            scored = [{"item": r["item"], **evaluation.strict_simple(r), "flexible": evaluation.flexible_simple(r)}
-                      for r in rows]
-            for s in scored:
-                s["study_strict"] = s["strict"]
-            save_outputs(path.with_name(f"{wording}.scored.jsonl.gz"), scored)
-            records = [{"item": r["item"], "correct": bool(s["flexible"]), "first_token": bool(s["strict"]),
-                        "answer": r["answer_text"]} for r, s in zip(rows, scored)]
-            save(directory, wording, records, [], [], fixed=[])
-            accuracy = sum(r["correct"] for r in records) / len(records)
-            print(f"simple {task} {wording}: {len(rows)} replies, flexible {accuracy:.3f}, "
-                  f"limit {sum(r['stop'] == 'limit' for r in rows)} ({time.time() - start:.0f} s)", flush=True)
+        run_wordings(lm, task, simple.E4B_WORDINGS)
+
+
+def run_wordings(lm, task: str, wordings) -> None:
+    """Generate, score and record ``wordings`` of ``task`` on the first ``N_PER_HALF`` items of each half."""
+    from run_outputs import SIMPLE_MAX_TOKENS, simple_answer, stop_reason
+
+    from lth import evaluation
+    from lth.store import done, outputs_path, readings_dir, save, save_outputs
+
+    data = simple.dataset(task)
+    items = items_of(task)
+    for wording in wordings:
+        path = outputs_path("simple", task, wording)
+        directory = readings_dir("simple", task)
+        if path.exists() and done(directory, wording):
+            continue
+        start = time.time()
+        prompts, answers = simple.prompts(task, wording)
+        ids = simple.token_ids(lm.tokenizer, [prompts[i] for i in items])
+        rows = []
+        for b in range(0, len(ids), simple.BATCH):
+            replies = lm.generate_batch(ids[b:b + simple.BATCH], SIMPLE_MAX_TOKENS,
+                                        stop=lambda text: simple_answer(text) != text)
+            for i, reply in zip(items[b:b + simple.BATCH], replies):
+                text = lm.tokenizer.decode(reply, skip_special_tokens=True)
+                answer = simple_answer(text)
+                rows.append({"item": str(i), "prompt": prompts[i], "input": data[i]["input"],
+                             "reference": answers[i], "reply_ids": reply, "reply_text": text,
+                             "answer_text": answer, "n_tokens": len(reply),
+                             "stop": stop_reason(reply, SIMPLE_MAX_TOKENS, answer != text)})
+        save_outputs(path, rows)
+        scored = [{"item": r["item"], **evaluation.strict_simple(r), "flexible": evaluation.flexible_simple(r)}
+                  for r in rows]
+        for s in scored:
+            s["study_strict"] = s["strict"]
+        save_outputs(path.with_name(f"{wording}.scored.jsonl.gz"), scored)
+        records = [{"item": r["item"], "correct": bool(s["flexible"]), "first_token": bool(s["strict"]),
+                    "answer": r["answer_text"]} for r, s in zip(rows, scored)]
+        save(directory, wording, records, [], [], fixed=[])
+        accuracy = sum(r["correct"] for r in records) / len(records)
+        print(f"simple {task} {wording}: {len(rows)} replies, flexible {accuracy:.3f}, "
+              f"limit {sum(r['stop'] == 'limit' for r in rows)} ({time.time() - start:.0f} s)", flush=True)
 
 
 if __name__ == "__main__":

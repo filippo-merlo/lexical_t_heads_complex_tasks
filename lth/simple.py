@@ -29,7 +29,7 @@ import json
 
 import numpy as np
 
-from lth import MATERIALS, YANG
+from lth import MATERIALS, RESULTS, YANG
 
 TASKS =("antonym", "synonym", "singular-plural", "present-past", "country-capital",
          "country-currency", "landmark-country", "park-country", "product-company",
@@ -98,6 +98,10 @@ def prompts(task: str, wording: str) -> tuple[list[str], list[str]]:
         return create_instruction_prompts(data, instruction_dict()[task][wording[4:]])
     if wording.startswith(E4B_PREFIX):
         return create_instruction_prompts(data, e4b_templates()[task][wording])
+    if wording.startswith(FORMAT_PREFIX):
+        fmt, halves = wording[len(FORMAT_PREFIX):], item_halves(task)
+        pairs = [example_prompt(data, fmt, demo_items(task, i, halves[i]), i) for i in range(len(data))]
+        return [p for p, _ in pairs], [a for _, a in pairs]
     raise ValueError(wording)
 
 
@@ -117,7 +121,9 @@ def e4b_templates() -> dict[str, dict[str, str]]:
 
 
 def wording_group(wording: str) -> str:
-    """``yang`` for Yang's templates, else the E4b cell (``cloze-named``, ...)."""
+    """``yang`` for Yang's templates, ``format`` for the example formats, else the E4b cell."""
+    if wording.startswith(FORMAT_PREFIX):
+        return "format"
     return wording[len(E4B_PREFIX):].rsplit("-", 1)[0] if wording.startswith(E4B_PREFIX) else "yang"
 
 
@@ -129,10 +135,19 @@ EXAMPLE_FORMATS = {  # (q_bos, qa_delimiter, a_bos, delimiter)
     "F2": ("Q: ", "\nA:", " ", "\n\n"),
     "F3": ("", " ->", " ", "\n"),
     "F4": ("Input: ", "\nOutput:", " ", "\n\n"),
-    "F5": (" ", " =", " ", ","),
+    "F5": ("", " =", " ", "\n"),
     "F6": ("", " |", " ", "\n"),
 }
 N_SHOT = 5
+FORMAT_PREFIX = "fmt-"
+FORMAT_WORDINGS = tuple(f"{FORMAT_PREFIX}{f}" for f in EXAMPLE_FORMATS)  # wording ids fmt-F1 .. fmt-F6
+
+
+@functools.cache
+def item_halves(task: str) -> dict[int, list[int]]:
+    """item -> the items of its half (``results/heldout/split.json``)."""
+    split = json.loads((RESULTS / "heldout" / "split.json").read_text())[task]
+    return {i: split[h] for h in ("A", "B") for i in split[h]}
 
 
 def demo_items(task: str, item: int, pool: list[int], n_shot: int = N_SHOT, seed: int = 0) -> list[int]:

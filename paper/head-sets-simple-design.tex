@@ -133,6 +133,7 @@ All prompts are raw text without the chat template, and decoding is greedy. Ther
 \item \textbf{Six example formats} at five shots (Table~\ref{tab:formats}), likewise split into three choosing formats P and three test formats Q, so that each part holds one labelled format, one arrow-like format and one with a plain separator. Demonstrations are drawn at random among the other items of the same half.
 \item \textbf{The test prompt} is the zero-shot prompt \p{ x:}. It contains the query and nothing that states the task.
 \end{itemize}
+Table~\ref{tab:unpatched} (App.~\ref{app:unpatched}) gives the model's accuracy on every family without a patch.
 
 \begin{table}[tbp]
 \centering\small
@@ -144,7 +145,7 @@ F1 & colon and semicolon \citep[Table~1]{yang2026shared} & \p{ hot: cold; tall: 
 F2 & question--answer \citep[App.~L]{todd2024function} & \p{Q: hot\nl A: cold\nl\nl Q: tall\nl A: short\nl\nl Q: wet\nl A:} & P \\
 F3 & arrow & \p{hot -> cold\nl tall -> short\nl wet ->} & P \\
 F4 & input--output labels & \p{Input: hot\nl Output: cold\nl\nl Input: wet\nl Output:} & Q \\
-F5 & equals & \p{hot = cold, tall = short, wet =} & Q \\
+F5 & equals & \p{hot = cold\nl tall = short\nl wet =} & Q \\
 F6 & bar & \p{hot | cold\nl tall | short\nl wet |} & Q \\
 \bottomrule
 \end{tabularx}
@@ -459,6 +460,15 @@ label, does not name it & \p{Word: \{x\}\nl Contrary word:} \\
 \end{table}
 
 \paragraph{Control pairs.} Antonym and synonym with each other; singular--plural and present--past with each other; next-item and prev-item with each other; English--French and English--German with each other, English--Spanish with English--German; country--capital, country--currency and product--company with park--country; park--country with country--currency; landmark--country with product--company.
+
+\section{Unpatched accuracy}\label{app:unpatched}
+
+\begin{table}[H]
+\centering\footnotesize\setlength{\tabcolsep}{3.5pt}
+\input{tables/design_unpatched}
+\caption{Accuracy without a patch, mean of the two halves, on the first 500 items of each half (all of a half's items on the smaller tasks). Patched items: test prompts \p{ x:} of items answered correctly with one example, at most 100 per half (smaller half shown), and their accuracy without a patch. Instruction wordings: mean over the five templates of \citet{yang2026shared} and over the 15 P and 15 Q further wordings. $<$30: wordings (of 35, over both halves) with fewer than 30 correctly answered prompts on a half; their means rest on fewer prompts. Example formats: five shots, demonstrations from the item's own half.}
+\label{tab:unpatched}
+\end{table}
 
 \section{Split of the further wordings}\label{app:split}
 
