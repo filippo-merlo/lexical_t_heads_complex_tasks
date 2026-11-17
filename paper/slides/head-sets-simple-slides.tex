@@ -1,8 +1,10 @@
 % =====================================================================
 %  Talk version of paper/head-sets-simple.tex: one message per slide,
 %  the message in the title, at most a few short bullets.
-%  Same order as the paper (rules, main comparison, summed vector, beyond the
-%  five templates); the coverage table is in the backup slide at the end.
+%  Focus on the main comparison (every rule at every size, five templates,
+%  head by head). Tests that cover only some sets or sizes (filter breakdown,
+%  summed vector, other wordings, example prompts) are in the backup section.
+%  Plot coordinates are copied from paper/tables/e13_main.tex (as in the short deck).
 %  Numbers are copied from paper/tables/{e13_main,e14_main,
 %  e24_sizes_*,e26_shared,e26_task,synth_readouts}.tex; figures are paper/figures/*.pdf.
 %  Compile with Tectonic from this folder:  tectonic head-sets-simple-slides.tex
@@ -21,6 +23,23 @@
 \newfontfamily\cjkfont{FandolSong-Regular.otf}
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows.meta,calc,decorations.pathreplacing}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\pgfplotsset{
+  mainaxis/.style={width=8.1cm,height=5.6cm,
+    xmin=15,xmax=125,ymin=0,ymax=0.78,xtick={20,40,60,80,100,120},
+    ytick={0,0.2,0.4,0.6},grid=major,grid style={gray!20},
+    tick label style={font=\scriptsize},label style={font=\footnotesize},
+    title style={font=\small\bfseries},xlabel={heads in the set ($N$)},ylabel={accuracy},
+    legend columns=3,legend cell align=left,
+    legend style={font=\scriptsize,draw=none,at={(0.5,-0.3)},anchor=north,
+      /tikz/every even column/.append style={column sep=8pt}}},
+  sFilt/.style={filt,very thick,mark=*,mark size=1.4pt},
+  sFiltB/.style={filt,thick,dashed,mark=o,mark size=1.4pt},
+  sCaus/.style={caus,very thick,mark=square*,mark size=1.3pt},
+  sCausB/.style={caus,thick,dashed,mark=square,mark size=1.3pt},
+  sYang/.style={gray,thick,mark=triangle*,mark size=1.6pt},
+  sExp/.style={accent!35,thick,mark=none}}
 \graphicspath{{../figures/}}
 
 % ---- colours ------------------------------------------------------------
@@ -438,7 +457,13 @@ Shared set: each filter's ranks are first averaged over the 14 tasks.
 \end{frame}
 
 % =====================================================================
-\begin{frame}{The contenders}
+\section{Main comparison}
+
+\begin{frame}{The main comparison: every rule at every size}
+Yang et al.'s five rule templates, held-out items, patched head by head;
+$N$ = 20 to 120 heads, per task and shared.
+
+\vspace{0.8em}
 \begin{columns}[T]
 \column{0.5\textwidth}
 \textbf{Filter combinations}
@@ -456,84 +481,65 @@ Shared set: each filter's ranks are first averaged over the 14 tasks.
 \item \textbf{Random} heads.
 \end{itemize}
 \end{columns}
-\takeaway{\opt\ Picked on the same held-out accuracy we report: optimistic, still need a fresh test.}
+\takeaway{\opt\ Picked on the same held-out accuracy we report: optimistic, so drawn light in the plots.}
 \end{frame}
 
 % =====================================================================
-\section{Main comparison}
-
-\begin{frame}{The big picture: accuracy vs.\ set size}
-\centering
-\includegraphics[height=0.74\textheight]{e13_size}
-
-\gnote{Bare prompt, held-out items, mean of 14 tasks; no patching: 0.01. Top: fixed in advance. Bottom: exploratory\opt.}
-\end{frame}
-
-% =====================================================================
-\begin{frame}{One set per task: filters match or beat the causal score}
+\begin{frame}{One set per task: filters win with fewer heads}
 \begin{columns}[c]
-\column{0.42\textwidth}
+\column{0.6\textwidth}
 \centering
-\begin{tabular}{@{}lcc@{}}
-\toprule
-Per task & 40 & 80 \\
-\midrule
-DBT & \cv{0.55} & \cv{0.55} \\
-BT & \cv{0.54} & \cv{0.55} \\
-\CausalG & \cv{0.46} & \cv{0.51} \\
-\Causal & \cv{0.41} & \cv{0.53} \\
-Yang terms & \cv{0.19} & \cv{0.21} \\
-Random & \cv{0.01} & \cv{0.01} \\
-\midrule
-DBMN\opt & \cv{0.63} & \cv{0.65} \\
-\bottomrule
-\end{tabular}
+\begin{tikzpicture}
+\begin{axis}[mainaxis]
+\addplot[sFilt]  coordinates {(20,0.43)(40,0.55)(60,0.57)(80,0.55)(100,0.48)(120,0.41)};
+\addplot[sFiltB] coordinates {(20,0.42)(40,0.54)(60,0.58)(80,0.55)(100,0.57)(120,0.57)};
+\addplot[sCaus]  coordinates {(20,0.33)(40,0.41)(60,0.46)(80,0.53)(100,0.56)(120,0.61)};
+\addplot[sCausB] coordinates {(20,0.38)(40,0.46)(60,0.50)(80,0.51)(100,0.53)(120,0.58)};
+\addplot[sYang]  coordinates {(20,0.18)(40,0.19)(60,0.21)(80,0.21)};
+\addplot[sExp]   coordinates {(20,0.36)(40,0.63)(60,0.66)(80,0.65)(100,0.65)(120,0.62)};
+\addplot[sExp]   coordinates {(20,0.36)(40,0.61)(60,0.65)(80,0.67)(100,0.68)(120,0.68)};
+\addplot[sExp]   coordinates {(20,0.43)(40,0.56)(60,0.66)(80,0.67)(100,0.66)(120,0.65)};
+\legend{DBT,BT,Causal,Causal $-$ generic,Yang terms,exploratory\opt}
+\end{axis}
+\end{tikzpicture}
 
-\vspace{0.3em}
-\gnote{Columns: heads in the set.}
-
-\column{0.54\textwidth}
+\column{0.38\textwidth}
 \begin{itemize}\spaced
-\item DBT and BT lead the causal score from 20 to 60 heads, level at 80.
-\item They are \textbf{done by 40 heads}; the causal score keeps rising.
+\item At 40 heads: DBT \textbf{0.55}, \Causal\ 0.41.
+\item DBT and BT are \textbf{done by 40 heads}; the causal score needs 120 to reach 0.61.
 \item Hand-written lists stay far below.
-\item Control means: $\leq$0.04.
+\item Random heads $\leq$0.01; control means $\leq$0.04.
 \end{itemize}
 \end{columns}
-\takeaway{Per task, \emph{what a head decodes} plus \emph{where it looks} finds the task heads, with no patching.}
 \end{frame}
 
 % =====================================================================
 \begin{frame}{One set for all tasks: the causal score wins}
 \begin{columns}[c]
-\column{0.42\textwidth}
+\column{0.6\textwidth}
 \centering
-\begin{tabular}{@{}lcc@{}}
-\toprule
-Shared & 40 & 80 \\
-\midrule
-\CausalG & \cv{0.55} & \cv{0.69} \\
-\Causal & \cv{0.53} & \cv{0.65} \\
-DBT & \cv{0.46} & \cv{0.55} \\
-BT & \cv{0.45} & \cv{0.56} \\
-Yang terms & \cv{0.19} & \cv{0.24} \\
-Random & \cv{0.01} & \cv{0.01} \\
-\midrule
-DBMN\opt & \cv{0.58} & \cv{0.70} \\
-\bottomrule
-\end{tabular}
+\begin{tikzpicture}
+\begin{axis}[mainaxis]
+\addplot[sFilt]  coordinates {(20,0.33)(40,0.46)(60,0.61)(80,0.55)(100,0.51)(120,0.53)};
+\addplot[sFiltB] coordinates {(20,0.35)(40,0.45)(60,0.60)(80,0.56)(100,0.58)(120,0.63)};
+\addplot[sCaus]  coordinates {(20,0.40)(40,0.53)(60,0.60)(80,0.65)(100,0.68)(120,0.69)};
+\addplot[sCausB] coordinates {(20,0.50)(40,0.55)(60,0.64)(80,0.69)(100,0.71)(120,0.69)};
+\addplot[sYang]  coordinates {(20,0.10)(40,0.19)(60,0.23)(80,0.24)(100,0.24)(120,0.22)};
+\addplot[sExp]   coordinates {(20,0.35)(40,0.58)(60,0.64)(80,0.70)(100,0.68)(120,0.68)};
+\addplot[sExp]   coordinates {(20,0.33)(40,0.53)(60,0.65)(80,0.66)(100,0.67)(120,0.71)};
+\addplot[sExp]   coordinates {(20,0.41)(40,0.60)(60,0.62)(80,0.67)(100,0.64)(120,0.65)};
+\legend{DBT,BT,Causal,Causal $-$ generic,Yang terms,exploratory\opt}
+\end{axis}
+\end{tikzpicture}
 
-\vspace{0.3em}
-\gnote{Columns: heads in the set.}
-
-\column{0.54\textwidth}
+\column{0.38\textwidth}
 \begin{itemize}\spaced
 \item \CausalG\ is best at nearly every size (0.71 at 100 heads).
-\item DBT and BT stay below it.
+\item DBT and BT stay below it at every size.
 \item The explored filters\opt\ come level, but were picked on the test items.
+\item The causal score works better shared; the filters work better per task.
 \end{itemize}
 \end{columns}
-\takeaway{The causal score works better shared; the filters work better per task.}
 \end{frame}
 
 % =====================================================================
@@ -547,19 +553,6 @@ DBMN\opt & \cv{0.58} & \cv{0.70} \\
 \item \textbf{Translations}: per-task filters or a shared causal set.
       \textbf{Morphology}: causal sets and the best filters.
 \end{itemize}
-\end{frame}
-
-% =====================================================================
-\begin{frame}{What each filter adds (40 heads)}
-\centering
-\includegraphics[width=0.9\textwidth]{e22_filters}
-
-\raggedright
-\begin{itemize}
-\item \textbf{Alone}: attention to the instruction ranks best (N per task, T shared).
-\item \textbf{Added to others}: decoding (D) adds most.
-\end{itemize}
-\takeaway{Good task heads both \emph{look at} the instruction and \emph{say} task words.}
 \end{frame}
 
 % =====================================================================
@@ -585,8 +578,84 @@ Per-task DBT, 40 heads & \cv{0.55} & \cv{0.49} \\
 \end{frame}
 
 % =====================================================================
-\section{Summed vector}
+\section{Conclusions}
 
+\begin{frame}{Take-home}
+\begin{enumerate}\spaced
+\item \textbf{Read heads with J-head}, not the logit lens.
+\item \textbf{One set per task:} rank heads by what they decode (D), little attention to \texttt{<bos>} (B)
+      and attention to the task words (T).
+      About 40 heads, no patching.
+\item \textbf{One set for all tasks:} the causal score averaged over tasks, \textbf{minus generic heads}.
+      80--100 heads.
+\item \textbf{Hand-written word lists} carry little.
+\end{enumerate}
+\end{frame}
+
+% =====================================================================
+\begin{frame}{Caveats and next steps}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Caveats}
+\begin{itemize}\spaced
+\item One model, 14 simple tasks, single greedy runs: 1--2 point gaps are not established.
+\item Explored combinations\opt\ were picked on the test items.
+\item Only $\alpha$ = 1, 2 tried.
+\item Sequences remain unsolved.
+\end{itemize}
+\column{0.48\textwidth}
+\textbf{Next}
+\begin{itemize}\spaced
+\item Test the explored combinations on fresh items.
+\item Other wordings and example prompts: run every rule at every size, as in the main comparison.
+\item Move to two-hop tasks (design ready).
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% =====================================================================
+\appendix
+\setbeamertemplate{footline}{\hfill\scriptsize\color{gray}backup\ \ \insertframenumber\hspace{1.2em}\vspace{0.6em}}
+\section{Backup}
+
+\begin{frame}{Backup: partial comparisons}
+The tests below cover \textbf{only some sets or sizes}, so they do not rank the rules.
+
+\vspace{0.8em}
+\centering\small
+\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{7.2cm}l@{}}
+\toprule
+Test & Sets & Sizes \\
+\midrule
+Main comparison & every rule & 20--120 \\
+\midrule
+Summed vector & BT, DBT, best exploratory, Causal ($\pm$ generic), Yang terms & 20--120 \\
+30 other wordings & DBT, Causal ($\pm$ generic), chosen on 5 or on all 35 templates & 40--120 \\
+Example mean & Causal ($\pm$ generic), Yang terms, 17 combinations & 20--120 \\
+Built on example prompts & D, B, DB, DBMS & 40, 100 \\
+\bottomrule
+\end{tabular}
+
+\vspace{1em}
+\raggedright
+\gnote{Fixed in advance: D, B, T, DB, DT, BT, DBT at every size.
+Exploratory\opt: all 79 combinations of the seven filters at 40 heads, then the 15 best at every size.}
+\end{frame}
+
+% =====================================================================
+\begin{frame}{What each filter adds (40 heads)}
+\centering
+\includegraphics[width=0.9\textwidth]{e22_filters}
+
+\raggedright
+\begin{itemize}
+\item \textbf{Alone}: attention to the instruction ranks best (N per task, T shared).
+\item \textbf{Added to others}: decoding (D) adds most.
+\end{itemize}
+\takeaway{Good task heads both \emph{look at} the instruction and \emph{say} task words.}
+\end{frame}
+
+% =====================================================================
 \begin{frame}{Summing the means into one vector loses accuracy}
 Davidson et al.\ add the heads' means as \textbf{one vector} after layer 11.
 Same sets, same means, both ways:
@@ -615,8 +684,6 @@ Per-task DBT & head by head & \cv{0.43} & \cv{0.55} & \cv{0.55} \\
 \end{frame}
 
 % =====================================================================
-\section{Beyond the five templates}
-
 \begin{frame}{Beyond the five templates}
 So far: every set chosen and tested on Yang et al.'s \textbf{five rule templates}.
 
@@ -723,68 +790,6 @@ Shared, 100 & \CausalG & \cv{0.71} & \cv{0.50} \\
 \item Marker attention (DBMS) shares least: ``\texttt{Q:}'' and ``\texttt{;}'' are different tokens.
 \end{itemize}
 \end{columns}
-\end{frame}
-
-% =====================================================================
-\section{Conclusions}
-
-\begin{frame}{Recipe: how to find a task head set}
-\begin{enumerate}\spaced
-\item \textbf{Read heads with J-head}, not the logit lens.
-\item \textbf{One set per task:} rank by D, B and attention to the instruction (T, or N + M\opt).
-      40--60 heads, no patching.
-\item \textbf{One set for all tasks:} causal score averaged over tasks, \textbf{minus generic heads}.
-      80--100 heads.
-\item \textbf{Choose on the prompts the set will serve}: many wordings; examples for example tasks.
-\item \textbf{Patch head by head}, not as one summed vector.
-\end{enumerate}
-\end{frame}
-
-% =====================================================================
-\begin{frame}{Caveats and next steps}
-\begin{columns}[T]
-\column{0.48\textwidth}
-\textbf{Caveats}
-\begin{itemize}\spaced
-\item One model, 14 simple tasks, single greedy runs: 1--2 point gaps are not established.
-\item Explored combinations\opt\ were picked on the test items.
-\item Only $\alpha$ = 1, 2 tried.
-\item New wordings checked by script only.
-\item Sequences remain unsolved.
-\end{itemize}
-\column{0.48\textwidth}
-\textbf{Next}
-\begin{itemize}\spaced
-\item Test the explored combinations on fresh items.
-\item Hold out wordings: choose on some, test on others.
-\item Choose on rule and example prompts together.
-\item Move to two-hop tasks (design ready).
-\end{itemize}
-\end{columns}
-\end{frame}
-
-% =====================================================================
-\appendix
-\section{Backup}
-
-\begin{frame}{Backup: which sets each test covers}
-\centering\small
-\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{7.6cm}l@{}}
-\toprule
-Test & Sets & Sizes \\
-\midrule
-Five templates, head by head & every rule & 20--120 \\
-Summed vector & BT, DBT, best exploratory, Causal ($\pm$ generic), Yang terms & 20--120 \\
-30 other wordings & DBT, Causal ($\pm$ generic), chosen on 5 or on all 35 templates & 40--120 \\
-Example mean & Causal ($\pm$ generic), Yang terms, 17 combinations & 20--120 \\
-Built on example prompts & D, B, DB, DBMS & 40, 100 \\
-\bottomrule
-\end{tabular}
-
-\vspace{1em}
-\raggedright
-\gnote{Fixed in advance: D, B, T, DB, DT, BT, DBT at every size.
-Exploratory\opt: all 79 combinations of the seven filters at 40 heads, then the 15 best at every size.}
 \end{frame}
 
 \end{document}
