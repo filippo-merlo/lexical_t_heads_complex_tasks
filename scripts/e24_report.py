@@ -303,19 +303,27 @@ def figure_overlap() -> None:
     o = o.assign(share=o.shared / o.n, chance=o.chance_layer / o.n)
     m = o.groupby(["scope", "combo", "n"], as_index=False)[["share", "chance"]].mean()
     colour = {"D": rt.BLUE, "B": rt.GREY, "DB": rt.AQUA, "DBMS": rt.ORANGE}
-    fig, axes = plt.subplots(1, 2, figsize=(6.6, 2.6), sharey=True)
+    c = pd.read_csv(RESULTS / "e27_demo_cie" / "overlap.csv")
+    c = c[c.split.isin(("A", "B"))].assign(scope=lambda d: np.where(d.scope == "pooled", "shared", "task"))
+    causal = (c.assign(share=c.shared / c.n, chance=c.chance_layer / c.n)
+              .groupby(["scope", "n"], as_index=False)[["share", "chance"]].mean())
+    fig, axes = plt.subplots(1, 2, figsize=(6.6, 2.9), sharey=True)
     for ax, (scope, title) in zip(axes, (("task", "(a) Per task"), ("shared", "(b) Shared"))):
         for c in COMBOS:
             x = m[(m.scope == scope) & (m.combo == c)]
             ax.plot(x.n, x.share, "o-", color=colour[c], ms=3.5, lw=1.2, label=c)
             ax.plot(x.n, x.chance, ls=rt.CONTROL_STYLE, color=colour[c], lw=1.0)
+        # E27: the causal ranking on instructions vs on shuffled 10-shot demonstrations (the halves).
+        x = causal[causal.scope == scope]
+        ax.plot(x.n, x.share, "s-", color="black", ms=3.5, lw=1.2, label="Causal")
+        ax.plot(x.n, x.chance, ls=rt.CONTROL_STYLE, color="black", lw=1.0)
         ax.set_title(title, loc="left")
         ax.set_xticks(sorted(m.n.unique()))
         ax.set_xlabel("heads in the set ($N$)")
         ax.set_ylim(0, 0.7)
     axes[0].set_ylabel("share of heads in both sets")
-    axes[1].legend(frameon=False, fontsize=7, ncol=2, loc="lower right")
-    fig.tight_layout()
+    fig.legend(*axes[0].get_legend_handles_labels(), frameon=False, fontsize=7, ncol=5, loc="lower center")
+    fig.tight_layout(rect=(0, 0.08, 1, 1))
     fig.savefig(rt.FIGURES / "e24_overlap.pdf")
     plt.close(fig)
 
