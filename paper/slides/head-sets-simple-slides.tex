@@ -261,24 +261,28 @@ Head B & \tok{white}{\textbackslash n}\,\tok{white}{:}\,\tok{white}{the}\,\tok{w
 \multicolumn{3}{@{}l}{\textit{Rule prompts}} \\
 \quad heads found & 240 & 370 \\
 \quad effect & 0.17 & 0.19 \\
+\quad effect, J-only heads & -- & 0.10 \\
 \midrule
 \multicolumn{3}{@{}l}{\textit{Example prompts}} \\
 \quad heads found & 141 & 237 \\
 \quad effect & 0.22 & 0.32 \\
+\quad effect, J-only heads & -- & 0.24 \\
 \bottomrule
 \end{tabular}
-
-\vspace{0.4em}
-\gnote{Heads: sum over tasks. Effect: best accuracy gain\\ on the bare prompt, mean of 14 tasks (Yang et al.'s rule).}
 
 \column{0.46\textwidth}
 \begin{itemize}\spaced
 \item \textbf{50--70\% more} heads.
 \item The extra ones sit in \textbf{layers 10--19}, where the logit lens sees little.
-\item They have causal effects of their own.
+\item They have causal effects of their own (J-only rows).
 \item The lead holds at \textbf{equal set size}.
 \end{itemize}
 \end{columns}
+
+\vspace{0.6em}
+\gnote{Heads: Yang et al.'s rule, summed over the 14 tasks. Effect: accuracy gain on the bare prompt over no patching,
+best of 15 $\alpha$, mean of 14 tasks; items not held out, so not comparable with the main comparison.
+J-only: the heads J-head finds and the logit lens does not.}
 \takeaway{From here on, every head is read with J-head.}
 \end{frame}
 
