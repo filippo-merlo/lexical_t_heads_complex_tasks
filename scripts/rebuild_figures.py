@@ -1,0 +1,518 @@
+"""Rebuilt design (paper/head-sets-simple-design.tex, Secs. 4-5): figures and tables of stages 1 and 2.
+
+Reads the cross-fitted accuracies of ``scripts/rebuild_report.py`` (``results/rebuild/additions/
+s1_per_task.csv``, ``s2_per_task.csv``), the sets (``fold{1,2}/heads.json``), the selection
+(``selected.json``, and the screen scores of ``scripts/rebuild_select.py``) and the generic heads
+(``fold{1,2}/generic.json``). A mean over tasks is given only where every task and both folds have the
+set (``--`` otherwise); random sets are averaged over their three draws first. Writes
+``paper/figures/design_*.pdf`` and ``paper/tables/design_*.tex``.
+
+    .venv/bin/python scripts/rebuild_figures.py
+"""
+
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import results_tex as rt  # noqa: E402  (palette, rcParams, task names, table helpers)
+from matplotlib import pyplot as plt  # noqa: E402
+from matplotlib.colors import LinearSegmentedColormap  # noqa: E402
+from matplotlib.lines import Line2D  # noqa: E402
+
+from lth import simple  # noqa: E402
+from rebuild_select import screen_scores  # noqa: E402
+from rebuild_sets import FEATURES, SCREEN_N, SIZES  # noqa: E402
+
+DIR = rt.RESULTS / "rebuild" / "additions"
+N_HEADS, N_LAYERS = 32, 32
+TYPES = {"word relations": ("antonym", "synonym"), "morphology": ("singular-plural", "present-past"),
+         "facts": ("country-capital", "country-currency", "landmark-country", "park-country", "product-company"),
+         "sequences": ("next_item", "prev_item"), "translations": ("english-french", "english-german", "english-spanish")}
+# Rule -> (label, colour, marker). Colours: the validated categorical order (dataviz validator, light:
+# all adjacent pairs pass), lexical blue and causal orange as in the project's earlier figures.
+RULES = {"yangL": ("Yang terms (Logit)", rt.BLUE, "o"), "causal": ("Causal", rt.ORANGE, "v"),
+         "selected": ("Selected", rt.AQUA, "D"), "yangJ": ("Yang terms (J)", rt.YELLOW, "s"),
+         "D": ("D", rt.MAGENTA, "^"), "causalnogen": ("Causal $-$ generic", rt.GREEN, "P")}
+LADDER = ("yangL", "yangJ", "D", "selected", "causal", "causalnogen")  # order of Table 3
+SCOPES = {"per task": "", "shared": "shared_"}
+FEATURE_NAMES = {c: name for c, (name, _) in FEATURES.items()}
+CONTROL_STYLE = rt.CONTROL_STYLE
+
+
+def plot_label(rule: str) -> str:
+    return RULES[rule][0].replace("$-$", "−")
+
+
+# ------------------------------------------------------------------ data
+
+
+def cells() -> pd.Series:
+    """accuracy[(set, kind, fold, task)]; kind task / control / random (random: mean of the draws)."""
+    pt = pd.concat([pd.read_csv(DIR / f"{s}_per_task.csv") for s in ("s1", "s2")], ignore_index=True)
+    is_random = pt.set.str.match(r"^random_.+_\d+$")
+    pt["base"] = pt.set.where(~is_random, pt.set.str.replace(r"^random_(.+)_\d+$", r"\1", regex=True))
+    pt["kind"] = np.where(is_random, "random", pt.source)
+    return pt.groupby(["base", "kind", "fold", "task"]).accuracy.mean()
+
+
+ACC = cells()
+
+
+def mean_over(name: str, kind: str = "task", tasks=simple.TASKS):
+    """Mean over tasks and folds, or None unless every task of ``tasks`` has the set in both folds."""
+    try:
+        s = ACC.loc[(name, kind)]
+    except KeyError:
+        return None
+    s = s[s.index.get_level_values("task").isin(tasks)]
+    return float(s.mean()) if len(s) == 2 * len(tasks) else None
+
+
+def per_task(name: str, task: str, kind: str = "task"):
+    try:
+        s = ACC.loc[(name, kind)]
+    except KeyError:
+        return None
+    s = s[s.index.get_level_values("task") == task]
+    return float(s.mean()) if len(s) == 2 else None
+
+
+def heads() -> dict[int, dict[str, dict[str, set]]]:
+    """sets[fold][task][name] = set of (layer, head)."""
+    out = {}
+    for fold in (1, 2):
+        h = json.loads((DIR / f"fold{fold}" / "heads.json").read_text())["simple"]
+        out[fold] = {t: {n: set(map(tuple, hs)) for _, n, hs in h[t]["sets"]} for t in simple.TASKS}
+    return out
+
+
+SETS = heads()
+
+
+def per_layer(s: set) -> np.ndarray:
+    c = np.zeros(N_LAYERS)
+    for l, _ in s:
+        c[l] += 1
+    return c
+
+
+def chance_overlap(a: set, b: set) -> float:
+    """Expected shared heads of two random sets with these numbers of heads per layer."""
+    return float((per_layer(a) * per_layer(b)).sum() / N_HEADS)
+
+
+def set_stat(rule: str, scope: str, n: int, fn):
+    """Mean of fn(sets of the task-fold) over tasks and folds (shared: the one set per fold); fn may
+    return a number or an array."""
+    name = f"{SCOPES[scope]}{rule}{n}"
+    vals = []
+    tasks = simple.TASKS[:1] if scope == "shared" else simple.TASKS
+    for fold in (1, 2):
+        for t in tasks:
+            sets = SETS[fold][t]
+            if name not in sets:
+                return None
+            vals.append(fn(sets, name))
+    m = np.mean(vals, axis=0)
+    return float(m) if np.ndim(m) == 0 else m
+
+
+# ------------------------------------------------------------------ tables
+
+
+def write(name: str, text: str) -> None:
+    (rt.TABLES / f"{name}.tex").write_text(f"% Generated by scripts/rebuild_figures.py.\n{text}")
+
+
+def table_own() -> None:
+    yang = [len(SETS[f][t]["yang_own"]) for f in (1, 2) for t in simple.TASKS]
+    rows = [
+        f"Lexical task heads & per task & {min(yang)}--{max(yang)} (median {int(np.median(yang))}) & head by head, "
+        f"$\\alpha$ cross-fitted & {rt.num(mean_over('yang_own'))} & {rt.num(mean_over('yang_own', 'control'))} & "
+        f"{rt.num(mean_over('yang_own', 'random'))} \\\\",
+        f"Instruction function vector & shared & 20 & summed after layer 11, $\\alpha=1$ & "
+        f"{rt.num(mean_over('shared_davidson_own'))} & {rt.num(mean_over('shared_davidson_own', 'control'))} & "
+        f"{rt.num(mean_over('shared_davidson_own', 'random'))} \\\\"]
+    write("design_own", rt.tabular("@{}llllrrr@{}", ["Method & Scope & Heads & Intervention & Task & Control & Random \\\\"],
+                                   rows))
+
+
+def table_ladder() -> None:
+    """Task-mean accuracy of every rule at every size, both scopes."""
+    header = ["$N$ & " + " & ".join(RULES[r][0] for r in LADDER) + " \\\\"]
+    rows = []
+    for scope, prefix in SCOPES.items():
+        rows.append(f"\\multicolumn{{{len(LADDER) + 1}}}{{@{{}}l}}{{\\textit{{{scope.capitalize()}}}}} \\\\")
+        for n in SIZES:
+            vals = [mean_over(f"{prefix}{r}{n}") for r in LADDER]
+            best = max(v for v in vals if v is not None)
+            cells_ = [("\\textbf{" + rt.num(v) + "}") if v is not None and v == best else rt.num(v) for v in vals]
+            rows.append(f"{n} & " + " & ".join(cells_) + " \\\\")
+        if scope == "per task":
+            rows.append("\\midrule")
+    write("design_ladder", rt.tabular("@{}r" + "r" * len(LADDER) + "@{}", header, rows))
+
+
+def table_controls() -> None:
+    """Random sets and control means of every rule at every size."""
+    header = ["& & " + " & ".join(f"\\multicolumn{{2}}{{c}}{{{RULES[r][0]}}}" for r in LADDER) + " \\\\",
+              " ".join(f"\\cmidrule(lr){{{3 + 2 * i}-{4 + 2 * i}}}" for i in range(len(LADDER))),
+              "Scope & $N$ & " + " & ".join("rand. & ctrl." for _ in LADDER) + " \\\\"]
+    rows = []
+    for scope, prefix in SCOPES.items():
+        for n in SIZES:
+            vals = []
+            for r in LADDER:
+                vals += [rt.num(mean_over(f"{prefix}{r}{n}", "random")), rt.num(mean_over(f"{prefix}{r}{n}", "control"))]
+            rows.append(f"{scope if n == SIZES[0] else ''} & {n} & " + " & ".join(vals) + " \\\\")
+        if scope == "per task":
+            rows.append("\\midrule")
+    write("design_controls", rt.tabular("@{}lr" + "rr" * len(LADDER) + "@{}", header, rows))
+
+
+def table_types(n: int = SCREEN_N) -> None:
+    header = ["Rule & " + " & ".join(TYPES) + " & all \\\\"]
+    rows = []
+    for scope, prefix in SCOPES.items():
+        rows.append(f"\\multicolumn{{{len(TYPES) + 2}}}{{@{{}}l}}{{\\textit{{{scope.capitalize()}}}}} \\\\")
+        for r in LADDER:
+            name = f"{prefix}{r}{n}"
+            rows.append(f"{RULES[r][0]} & " + " & ".join(rt.num(mean_over(name, tasks=ts)) for ts in TYPES.values())
+                        + f" & {rt.num(mean_over(name))} \\\\")
+        if scope == "per task":
+            rows.append("\\midrule")
+    write("design_types", rt.tabular("@{}l" + "r" * (len(TYPES) + 1) + "@{}", header, rows))
+
+
+def table_overlap() -> None:
+    """Share of heads in common with Causal of the same scope and size, and layer-matched chance;
+    share of a rule's heads in its random sets."""
+    sizes = (20, 40, 80, 120)
+    header = ["& & \\multicolumn{4}{c}{with Causal (chance)} & \\multicolumn{4}{c}{with its random sets} \\\\",
+              "\\cmidrule(lr){3-6} \\cmidrule(lr){7-10}",
+              "Scope & Rule & " + " & ".join(f"$N={n}$" for n in sizes) + " & " + " & ".join(f"{n}" for n in sizes) + " \\\\"]
+    rows = []
+    for scope, prefix in SCOPES.items():
+        for r in LADDER:
+            with_causal, with_random = [], []
+            for n in sizes:
+                ref = f"{prefix}causal{n}"
+                if r == "causal":
+                    with_causal.append("--")
+                else:
+                    ov = set_stat(r, scope, n, lambda s, nm: len(s[nm] & s[ref]) / n)
+                    ch = set_stat(r, scope, n, lambda s, nm: chance_overlap(s[nm], s[ref]) / n)
+                    with_causal.append("--" if ov is None else f"{rt.num(ov)} ({rt.num(ch)})")
+                rv = set_stat(r, scope, n, lambda s, nm: np.mean([len(s[nm] & s[f'random_{nm}_{i}']) for i in range(3)]) / n)
+                with_random.append(rt.num(rv))
+            rows.append(f"{scope if r == LADDER[0] else ''} & {RULES[r][0]} & " + " & ".join(with_causal + with_random) + " \\\\")
+        if scope == "per task":
+            rows.append("\\midrule")
+    write("design_overlap", rt.tabular("@{}ll" + "r" * 8 + "@{}", header, rows))
+
+
+def table_yang_tasks() -> None:
+    """Per-task accuracy of Yang terms (Logit and J) where both folds fill the size; tasks that fill."""
+    header = ["& \\multicolumn{" + str(len(SIZES)) + "}{c}{Yang terms (Logit)} & \\multicolumn{" + str(len(SIZES))
+              + "}{c}{Yang terms (J)} \\\\",
+              f"\\cmidrule(lr){{2-{1 + len(SIZES)}}} \\cmidrule(lr){{{2 + len(SIZES)}-{1 + 2 * len(SIZES)}}}",
+              "Task & " + " & ".join(str(n) for n in SIZES) + " & " + " & ".join(str(n) for n in SIZES) + " \\\\"]
+    rows = []
+    for t in simple.TASKS:
+        vals = [rt.num(per_task(f"yang{rd}{n}", t)) for rd in "LJ" for n in SIZES]
+        rows.append(f"{rt.tex_name('simple', t)} & " + " & ".join(vals) + " \\\\")
+    rows.append("\\midrule")
+    fills = [str(sum(per_task(f"yang{rd}{n}", t) is not None for t in simple.TASKS)) for rd in "LJ" for n in SIZES]
+    rows.append("tasks filled & " + " & ".join(fills) + " \\\\")
+    write("design_yang_tasks", rt.tabular("@{}l" + "r" * 2 * len(SIZES) + "@{}", header, rows))
+
+
+def table_selected(scores) -> None:
+    sel = json.loads((DIR / "selected.json").read_text())
+    header = ["Scope & Fold & Rank & Combination & Features & Other fold & Own fold \\\\"]
+    rows = []
+    for scope in SCOPES:
+        for fold in (1, 2):
+            other = 3 - fold
+            ranked = sorted(scores[other][scope], key=lambda c: (-scores[other][scope][c], len(c)))[:5]
+            for k, c in enumerate(ranked, 1):
+                mark = (lambda x: f"\\textbf{{{x}}}") if c == sel[str(fold)][scope]["combo"] else (lambda x: x)
+                names = ", ".join(FEATURE_NAMES[f] if f != "D" else "D" for f in c)
+                rows.append(f"{scope if fold == 1 and k == 1 else ''} & {fold if k == 1 else ''} & {k} & {mark(c)} & {names} & "
+                            f"{rt.num(scores[other][scope][c])} & {rt.num(scores[fold][scope][c])} \\\\")
+            if not (scope == "shared" and fold == 2):
+                rows.append("\\midrule" if fold == 2 else "\\addlinespace")
+    write("design_selected", rt.tabular("@{}lrrl>{\\raggedright\\arraybackslash}p{5.6cm}rr@{}", header, rows))
+
+
+# ------------------------------------------------------------------ figures
+
+
+def axes_style(ax, ylabel=True) -> None:
+    ax.set_xticks(SIZES)
+    ax.set_xlim(4, 126)
+    ax.set_ylim(0, 0.75)
+    ax.set_xlabel("heads in the set ($N$)")
+    if ylabel:
+        ax.set_ylabel("accuracy")
+    ax.spines[["top", "right"]].set_visible(False)
+
+
+def curve(ax, name_of, kind="task", **kw) -> None:
+    xs, ys = [], []
+    for n in SIZES:
+        v = mean_over(name_of(n), kind)
+        if v is not None:
+            xs.append(n)
+            ys.append(v)
+    if xs:
+        ax.plot(xs, ys, **kw)
+
+
+def fig_published() -> None:
+    fig, axes = plt.subplots(1, 2, figsize=(6.5, 2.9), sharey=True)
+    for ax, (scope, prefix) in zip(axes, SCOPES.items()):
+        for r in ("yangL", "causal"):
+            label, col, mk = RULES[r]
+            curve(ax, lambda n: f"{prefix}{r}{n}", color=col, marker=mk, ms=4, label=plot_label(r))
+            curve(ax, lambda n: f"{prefix}{r}{n}", "random", color=col, alpha=0.45, lw=0.9, marker=mk, ms=3.5,
+                  mfc="none", label=f"{plot_label(r)}, random sets")
+            curve(ax, lambda n: f"{prefix}{r}{n}", "control", color=col, alpha=0.45, lw=0.9, ls=CONTROL_STYLE,
+                  label=f"{plot_label(r)}, control mean")
+        ax.set_title(f"({'ab'[list(SCOPES).index(scope)]}) {'One set per task' if scope == 'per task' else 'One set for all 14 tasks'}",
+                     loc="left")
+        axes_style(ax, ylabel=ax is axes[0])
+    handles, labels = axes[1].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="lower center", ncol=2, bbox_to_anchor=(0.5, -0.01), handlelength=2.2)
+    fig.tight_layout(rect=(0, 0.13, 1, 1))
+    fig.savefig(rt.FIGURES / "design_published.pdf")
+    plt.close(fig)
+
+
+def fig_ladder() -> None:
+    fig, axes = plt.subplots(1, 2, figsize=(6.5, 2.7), sharey=True)
+    for ax, (scope, prefix) in zip(axes, SCOPES.items()):
+        for r in LADDER:
+            label, col, mk = RULES[r]
+            curve(ax, lambda n: f"{prefix}{r}{n}", color=col, marker=mk, ms=4, label=plot_label(r),
+                  lw=1.8 if r == "selected" else 1.2, zorder=3 if r == "selected" else 2)
+        ax.set_title(f"({'ab'[list(SCOPES).index(scope)]}) {'One set per task' if scope == 'per task' else 'One set for all 14 tasks'}",
+                     loc="left")
+        axes_style(ax, ylabel=ax is axes[0])
+    handles, labels = axes[1].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="lower center", ncol=6, bbox_to_anchor=(0.5, -0.01), handlelength=1.8,
+               columnspacing=1.2)
+    fig.tight_layout(rect=(0, 0.08, 1, 1))
+    fig.savefig(rt.FIGURES / "design_ladder.pdf")
+    plt.close(fig)
+
+
+def fig_controls() -> None:
+    rules = ("yangJ", "D", "selected", "causalnogen")
+    fig, axes = plt.subplots(2, len(rules), figsize=(6.5, 3.6), sharex=True, sharey=True)
+    for i, (scope, prefix) in enumerate(SCOPES.items()):
+        for j, r in enumerate(rules):
+            ax = axes[i, j]
+            label, col, mk = RULES[r]
+            curve(ax, lambda n: f"{prefix}{r}{n}", color=col, marker=mk, ms=3.5, label="own task means")
+            curve(ax, lambda n: f"{prefix}{r}{n}", "random", color=rt.GREY, marker=mk, ms=3.5, mfc="none", lw=1.0,
+                  label="random sets, same layers")
+            curve(ax, lambda n: f"{prefix}{r}{n}", "control", color=rt.GREY, lw=1.0, ls=CONTROL_STYLE,
+                  label="control means")
+            axes_style(ax, ylabel=j == 0)
+            ax.set_xticks((10, 40, 80, 120))
+            if i == 0:
+                ax.set_title(plot_label(r), loc="left")
+                ax.set_xlabel("")
+            if j == 0:
+                ax.set_ylabel(f"{scope}\naccuracy")
+    handles = [Line2D([], [], color=rt.INK_2, marker="o", ms=3.5, label="set, own task means"),
+               Line2D([], [], color=rt.GREY, marker="o", mfc="none", ms=3.5, label="random sets, same layers"),
+               Line2D([], [], color=rt.GREY, ls=CONTROL_STYLE, label="set, control means")]
+    fig.legend(handles=handles, loc="lower center", ncol=3, bbox_to_anchor=(0.5, -0.01))
+    fig.tight_layout(rect=(0, 0.06, 1, 1))
+    fig.savefig(rt.FIGURES / "design_controls.pdf")
+    plt.close(fig)
+
+
+def feature_effects():
+    """Accuracy of each feature alone at 40 heads, and the mean change when it is added to a combination
+    that lacks it (mean over tasks and folds, cross-fitted alpha)."""
+    from rebuild_sets import COMBOS
+    order = list(FEATURES)
+    out = {}
+    for scope, prefix in SCOPES.items():
+        acc = {c: mean_over(f"{prefix}screen_{c}") for c in COMBOS}
+        alone = {f: acc[f] for f in order}
+        added = {}
+        for f in order:
+            d = [acc["".join(sorted(c + f, key=order.index))] - acc[c] for c in COMBOS if f not in c]
+            added[f] = (float(np.mean(d)), float(np.mean([x > 0 for x in d])))
+        out[scope] = (alone, added)
+    return out
+
+
+def fig_features(effects) -> None:
+    sel = json.loads((DIR / "selected.json").read_text())
+    order = list(FEATURES)
+    fig, axes = plt.subplots(2, 2, figsize=(6.5, 4.0), sharey=True)
+    y = np.arange(len(order))[::-1]
+    for j, scope in enumerate(SCOPES):
+        alone, added = effects[scope]
+        chosen = set(sel["1"][scope]["combo"]) | set(sel["2"][scope]["combo"])
+        cols = [rt.AQUA if f in chosen else rt.GREY for f in order]
+        ax = axes[0, j]
+        ax.barh(y, [alone[f] for f in order], color=cols, height=0.62)
+        ax.set_xlim(0, 0.5)
+        ax.set_title(f"({'ab'[j]}) {scope}: feature alone, $N={SCREEN_N}$", loc="left")
+        ax.set_xlabel("accuracy")
+        ax = axes[1, j]
+        ax.barh(y, [added[f][0] for f in order], color=cols, height=0.62)
+        ax.axvline(0, color=rt.AXIS_LINE, lw=0.8)
+        ax.set_xlim(-0.2, 0.32)
+        ax.set_title(f"({'cd'[j]}) {scope}: feature added", loc="left")
+        ax.set_xlabel("mean change in accuracy")
+        for a in axes[:, j]:
+            a.set_yticks(y)
+            a.set_yticklabels([f"{f}  {FEATURE_NAMES[f]}" if f != "D" else "D  decodes a list word" for f in order])
+            a.grid(axis="y", visible=False)
+            a.spines[["top", "right"]].set_visible(False)
+    handles = [plt.Rectangle((0, 0), 1, 1, color=rt.AQUA, label="feature of the selected combination"),
+               plt.Rectangle((0, 0), 1, 1, color=rt.GREY, label="other feature")]
+    fig.legend(handles=handles, loc="lower center", ncol=2, bbox_to_anchor=(0.5, -0.01))
+    fig.tight_layout(rect=(0, 0.05, 1, 1))
+    fig.savefig(rt.FIGURES / "design_features.pdf")
+    plt.close(fig)
+
+
+def fig_screen(scores) -> tuple[float, float]:
+    sel = json.loads((DIR / "selected.json").read_text())
+    fig, axes = plt.subplots(1, 2, figsize=(6.5, 3.0), sharex=True, sharey=True)
+    corr = []
+    for ax, scope in zip(axes, SCOPES):
+        combos = sorted(scores[1][scope])
+        x = np.array([scores[1][scope][c] for c in combos])
+        y = np.array([scores[2][scope][c] for c in combos])
+        has_d = np.array(["D" in c for c in combos])
+        corr.append(float(np.corrcoef(x, y)[0, 1]))
+        ax.plot([0, 0.7], [0, 0.7], color=rt.AXIS_LINE, lw=0.8, zorder=1)
+        ax.scatter(x[~has_d], y[~has_d], s=9, color=rt.GREY, alpha=0.6, lw=0, label="without D", zorder=2)
+        ax.scatter(x[has_d], y[has_d], s=9, color=rt.MAGENTA, alpha=0.6, lw=0, label="with D", zorder=2)
+        for c in {sel["1"][scope]["combo"], sel["2"][scope]["combo"]}:
+            ax.scatter([scores[1][scope][c]], [scores[2][scope][c]], s=46, facecolor="none", edgecolor=rt.AQUA, lw=1.6,
+                       zorder=4)
+            ax.annotate(f"Selected: {c}", (scores[1][scope][c], scores[2][scope][c]), xytext=(-8, 8),
+                        textcoords="offset points", ha="right", fontsize=7, color=rt.INK)
+        ax.set_title(f"({'ab'[list(SCOPES).index(scope)]}) {scope}, all 511 combinations at $N={SCREEN_N}$", loc="left")
+        ax.set_xlabel("fold 1 (tested on half B)")
+        ax.set_xlim(0, 0.7)
+        ax.set_ylim(0, 0.7)
+        ax.set_aspect("equal")
+        ax.spines[["top", "right"]].set_visible(False)
+    axes[0].set_ylabel("fold 2 (tested on half A)")
+    axes[0].legend(loc="upper left", markerscale=1.6)
+    fig.tight_layout()
+    fig.savefig(rt.FIGURES / "design_screen.pdf")
+    plt.close(fig)
+    return tuple(corr)
+
+
+def fig_layers(n: int = SCREEN_N) -> None:
+    cmap = LinearSegmentedColormap.from_list("blue", [rt.SURFACE, "#cde2fb", "#86b6ef", "#3987e5", "#1c5cab", "#0d366b"])
+    fig, axes = plt.subplots(2, 1, figsize=(6.5, 3.6), sharex=True, gridspec_kw={"hspace": 0.45})
+    vmax = 0
+    grids = {}
+    for scope, prefix in SCOPES.items():
+        g = np.full((len(LADDER), N_LAYERS), np.nan)
+        for i, r in enumerate(LADDER):
+            v = set_stat(r, scope, n, lambda s, nm: per_layer(s[nm]))
+            if v is not None:
+                g[i] = v
+        grids[scope] = g
+        vmax = max(vmax, np.nanmax(g))
+    for ax, scope in zip(axes, SCOPES):
+        g = grids[scope]
+        im = ax.imshow(np.nan_to_num(g, nan=0), aspect="auto", cmap=cmap, vmin=0, vmax=vmax, interpolation="nearest")
+        for i in np.flatnonzero(np.isnan(g).all(1)):
+            ax.text(N_LAYERS / 2, i, "does not fill the set on every task", ha="center", va="center", fontsize=6.5,
+                    color=rt.INK_2)
+        ax.set_yticks(range(len(LADDER)))
+        ax.set_yticklabels([plot_label(r) for r in LADDER])
+        ax.set_title(f"({'ab'[list(SCOPES).index(scope)]}) {scope}, $N={n}$: heads per layer"
+                     + (" (mean over tasks and folds)" if scope == "per task" else " (mean over folds)"), loc="left")
+        ax.grid(False)
+        ax.set_xticks(range(0, N_LAYERS, 2))
+    axes[1].set_xlabel("layer")
+    cb = fig.colorbar(im, ax=axes, fraction=0.025, pad=0.01)
+    cb.set_label("heads")
+    cb.outline.set_visible(False)
+    fig.savefig(rt.FIGURES / "design_layers.pdf", bbox_inches="tight")
+    plt.close(fig)
+
+
+def fig_types() -> None:
+    fig, axes = plt.subplots(2, len(TYPES), figsize=(6.5, 3.4), sharex=True, sharey=True)
+    for i, (scope, prefix) in enumerate(SCOPES.items()):
+        for j, (tname, ts) in enumerate(TYPES.items()):
+            ax = axes[i, j]
+            for r in LADDER:
+                label, col, mk = RULES[r]
+                xs, ys = [], []
+                for n in SIZES:
+                    v = mean_over(f"{prefix}{r}{n}", tasks=ts)
+                    if v is not None:
+                        xs.append(n)
+                        ys.append(v)
+                ax.plot(xs, ys, color=col, marker=mk, ms=2.8, lw=1.0, label=plot_label(r))
+            ax.set_xticks((10, 60, 120))
+            ax.set_ylim(0, 1)
+            ax.spines[["top", "right"]].set_visible(False)
+            if i == 0:
+                ax.set_title(tname, loc="left")
+            if j == 0:
+                ax.set_ylabel(f"{scope}\naccuracy")
+            if i == 1:
+                ax.set_xlabel("$N$")
+    handles, labels = axes[0, 0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="lower center", ncol=6, bbox_to_anchor=(0.5, -0.01), handlelength=1.6,
+               columnspacing=1.0)
+    fig.tight_layout(rect=(0, 0.07, 1, 1))
+    fig.savefig(rt.FIGURES / "design_types.pdf")
+    plt.close(fig)
+
+
+def main() -> None:
+    scores = {fold: screen_scores(fold) for fold in (1, 2)}
+    table_own()
+    table_ladder()
+    table_controls()
+    table_types()
+    table_overlap()
+    table_yang_tasks()
+    table_selected(scores)
+    fig_published()
+    fig_ladder()
+    fig_controls()
+    effects = feature_effects()
+    fig_features(effects)
+    corr = fig_screen(scores)
+    fig_layers()
+    fig_types()
+    print("screen fold-1 vs fold-2 correlation: per task %.2f, shared %.2f" % corr)
+    for scope, (alone, added) in effects.items():
+        print(scope, "alone:", {f: round(v, 3) for f, v in alone.items()})
+        print(scope, "added:", {f: (round(m, 3), round(s, 2)) for f, (m, s) in added.items()})
+    gen = {f: json.loads((DIR / f"fold{f}" / "generic.json").read_text())["generic"] for f in (1, 2)}
+    print("generic heads:", gen, "common:", sorted(set(gen[1]) & set(gen[2])))
+
+
+if __name__ == "__main__":
+    main()
