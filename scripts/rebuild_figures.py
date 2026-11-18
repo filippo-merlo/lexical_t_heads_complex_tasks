@@ -393,6 +393,83 @@ def fig_features(effects) -> None:
     plt.close(fig)
 
 
+def task_best(top_k: int = 10):
+    """Per scope and task: the best of the 511 combinations at 40 heads (accuracy on the test half with
+    cross-fitted alpha, mean over the two folds; ties to fewer features), the share of the task's
+    ``top_k`` best combinations that contain each feature, and the accuracies of the best and of Selected.
+    Descriptive: the best is chosen on the accuracies it is shown with, so it is not held out."""
+    from rebuild_sets import COMBOS
+    sel = json.loads((DIR / "selected.json").read_text())
+    out = {}
+    for scope, prefix in SCOPES.items():
+        rows = {}
+        for t in simple.TASKS:
+            acc = {c: per_task(f"{prefix}screen_{c}", t) for c in COMBOS}
+            ranked = sorted(COMBOS, key=lambda c: (-acc[c], len(c), COMBOS.index(c)))
+            share = {f: np.mean([f in c for c in ranked[:top_k]]) for f in FEATURES}
+            rows[t] = dict(best=ranked[0], acc=acc[ranked[0]], share=share,
+                           selected=per_task(f"{prefix}selected{SCREEN_N}", t))
+        out[scope] = dict(tasks=rows, selected=sel["1"][scope]["combo"], selected_folds=sel["2"][scope]["combo"])
+    return out
+
+
+def fig_task_best(best, top_k: int = 10) -> None:
+    cmap = LinearSegmentedColormap.from_list("blue", [rt.SURFACE, "#cde2fb", "#86b6ef", "#3987e5", "#1c5cab", "#0d366b"])
+    order = list(FEATURES)
+    tasks = [t for ts in TYPES.values() for t in ts]
+    breaks = np.cumsum([len(ts) for ts in TYPES.values()])[:-1]  # rows after which a new task type starts
+    fig, axes = plt.subplots(1, 2, figsize=(6.5, 5.0), sharey=True)
+    for j, (ax, scope) in enumerate(zip(axes, SCOPES)):
+        b = best[scope]
+        assert b["selected"] == b["selected_folds"], "both folds must select the same combination"
+        grid = np.array([[b["tasks"][t]["share"][f] for f in order] for t in tasks])
+        im = ax.imshow(grid, cmap=cmap, vmin=0, vmax=1, aspect="auto", interpolation="nearest",
+                       extent=(-0.5, len(order) - 0.5, len(tasks) - 0.5, -0.5))
+        for i, t in enumerate(tasks):
+            xs = [k for k, f in enumerate(order) if f in b["tasks"][t]["best"]]
+            ax.scatter(xs, [i] * len(xs), s=22, color=rt.INK, edgecolor=rt.SURFACE, lw=1.0, zorder=3)
+            ax.text(len(order) - 0.1, i, f"{b['tasks'][t]['acc']:.2f}", va="center", ha="left", fontsize=6.8,
+                    color=rt.INK)
+            ax.text(len(order) + 1.05, i, f"{b['tasks'][t]['selected']:.2f}", va="center", ha="left",
+                    fontsize=6.8, color=rt.INK_2)
+        # Selected: one combination for every task, below the tasks
+        ys = len(tasks) + 0.4
+        xs = [k for k, f in enumerate(order) if f in b["selected"]]
+        ax.scatter(xs, [ys] * len(xs), s=22, color=rt.INK, edgecolor=rt.SURFACE, lw=1.0, zorder=3, clip_on=False)
+        ax.text(len(order) - 0.1, ys, b["selected"], va="center", ha="left", fontsize=6.8, color=rt.INK_2)
+        for y in breaks:
+            ax.axhline(y - 0.5, color=rt.SURFACE, lw=2.2)
+        ax.axhline(len(tasks) - 0.5, color=rt.AXIS_LINE, lw=0.8)
+        ax.set_xlim(-0.5, len(order) - 0.5)
+        ax.set_ylim(ys + 0.6, -0.5)
+        ax.set_xticks(range(len(order)))
+        ax.set_xticklabels([f"{f} {FEATURE_NAMES[f]}" if f != "D" else "D decodes a list word" for f in order],
+                           rotation=60, ha="left", rotation_mode="anchor")
+        ax.xaxis.tick_top()
+        ax.tick_params(axis="x", length=0, pad=2)
+        ax.set_yticks(list(range(len(tasks))) + [ys])
+        ax.set_yticklabels([rt.plot_name("simple", t) for t in tasks] + ["Selected"])
+        ax.tick_params(axis="y", length=0)
+        ax.grid(False)
+        ax.spines[:].set_visible(False)
+        ax.text(len(order) - 0.1, -0.85, "best", ha="left", va="bottom", fontsize=6.8, color=rt.INK)
+        ax.text(len(order) + 1.05, -0.85, "Sel.", ha="left", va="bottom", fontsize=6.8, color=rt.INK_2)
+        ax.set_title(f"({'ab'[j]}) {'One set per task' if scope == 'per task' else 'One set for all 14 tasks'}, "
+                     f"$N={SCREEN_N}$", loc="left", pad=86)
+    handles = [Line2D([], [], ls="", marker="o", ms=4.5, color=rt.INK, mec=rt.SURFACE,
+                      label="feature of the task's best combination")]
+    fig.legend(handles=handles, loc="lower left", bbox_to_anchor=(0.01, 0.0))
+    cax = fig.add_axes((0.56, 0.035, 0.3, 0.016))
+    cb = fig.colorbar(im, cax=cax, orientation="horizontal")
+    cb.set_label(f"share of the task's {top_k} best combinations with the feature", fontsize=7)
+    cax.xaxis.set_label_position("top")
+    cb.outline.set_visible(False)
+    cb.ax.tick_params(labelsize=6.5, length=0)
+    fig.subplots_adjust(left=0.155, right=0.875, top=0.735, bottom=0.12, wspace=0.62)
+    fig.savefig(rt.FIGURES / "design_task_best.pdf")
+    plt.close(fig)
+
+
 def fig_screen(scores) -> tuple[float, float]:
     sel = json.loads((DIR / "selected.json").read_text())
     fig, axes = plt.subplots(1, 2, figsize=(6.5, 3.0), sharex=True, sharey=True)
@@ -506,6 +583,10 @@ def main() -> None:
     corr = fig_screen(scores)
     fig_layers()
     fig_types()
+    best = task_best()
+    fig_task_best(best)
+    for scope, b in best.items():
+        print(scope, "best per task:", {t: (r["best"], round(r["acc"], 3)) for t, r in b["tasks"].items()})
     print("screen fold-1 vs fold-2 correlation: per task %.2f, shared %.2f" % corr)
     for scope, (alone, added) in effects.items():
         print(scope, "alone:", {f: round(v, 3) for f, v in alone.items()})
