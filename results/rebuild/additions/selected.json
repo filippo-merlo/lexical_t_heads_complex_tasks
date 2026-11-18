@@ -1,0 +1,218 @@
+{
+ "1": {
+  "per task": {
+   "combo": "DBP",
+   "features": [
+    "decodes a list word",
+    "non-first",
+    "punctuation"
+   ],
+   "score_other_fold": 0.631,
+   "score_own_fold": 0.6212,
+   "top10_other_fold": [
+    [
+     "DBP",
+     0.631
+    ],
+    [
+     "DBTM",
+     0.603
+    ],
+    [
+     "DBTPM",
+     0.5983
+    ],
+    [
+     "DBTSM",
+     0.5889
+    ],
+    [
+     "DBS",
+     0.5819
+    ],
+    [
+     "DBTP",
+     0.5721
+    ],
+    [
+     "DBTOSPL",
+     0.5661
+    ],
+    [
+     "DBTOSP",
+     0.5659
+    ],
+    [
+     "DBTS",
+     0.5648
+    ],
+    [
+     "DBTSPM",
+     0.5639
+    ]
+   ]
+  },
+  "shared": {
+   "combo": "DBTML",
+   "features": [
+    "decodes a list word",
+    "non-first",
+    "task words",
+    "markers",
+    "last token"
+   ],
+   "score_other_fold": 0.6012,
+   "score_own_fold": 0.5914,
+   "top10_other_fold": [
+    [
+     "DBTML",
+     0.6012
+    ],
+    [
+     "DBSM",
+     0.594
+    ],
+    [
+     "DBPM",
+     0.5776
+    ],
+    [
+     "DBOML",
+     0.5718
+    ],
+    [
+     "DBTM",
+     0.5712
+    ],
+    [
+     "DBTPL",
+     0.5618
+    ],
+    [
+     "DBM",
+     0.5611
+    ],
+    [
+     "DBTOL",
+     0.5601
+    ],
+    [
+     "DBPL",
+     0.5582
+    ],
+    [
+     "DBSP",
+     0.5572
+    ]
+   ]
+  }
+ },
+ "2": {
+  "per task": {
+   "combo": "DBP",
+   "features": [
+    "decodes a list word",
+    "non-first",
+    "punctuation"
+   ],
+   "score_other_fold": 0.6212,
+   "score_own_fold": 0.631,
+   "top10_other_fold": [
+    [
+     "DBP",
+     0.6212
+    ],
+    [
+     "DBTM",
+     0.6071
+    ],
+    [
+     "DBTSM",
+     0.597
+    ],
+    [
+     "DBS",
+     0.5904
+    ],
+    [
+     "DBTPM",
+     0.5853
+    ],
+    [
+     "DBSP",
+     0.5803
+    ],
+    [
+     "DBTS",
+     0.5713
+    ],
+    [
+     "DBTSPM",
+     0.5684
+    ],
+    [
+     "DBSPM",
+     0.5643
+    ],
+    [
+     "DBTSP",
+     0.5625
+    ]
+   ]
+  },
+  "shared": {
+   "combo": "DBTML",
+   "features": [
+    "decodes a list word",
+    "non-first",
+    "task words",
+    "markers",
+    "last token"
+   ],
+   "score_other_fold": 0.5914,
+   "score_own_fold": 0.6012,
+   "top10_other_fold": [
+    [
+     "DBTML",
+     0.5914
+    ],
+    [
+     "DTOSPL",
+     0.573
+    ],
+    [
+     "DBTPL",
+     0.5655
+    ],
+    [
+     "DTML",
+     0.5655
+    ],
+    [
+     "DBM",
+     0.563
+    ],
+    [
+     "DBPML",
+     0.5607
+    ],
+    [
+     "DBTPML",
+     0.555
+    ],
+    [
+     "DBSM",
+     0.5547
+    ],
+    [
+     "DBSP",
+     0.554
+    ],
+    [
+     "DBPM",
+     0.5525
+    ]
+   ]
+  }
+ }
+}
