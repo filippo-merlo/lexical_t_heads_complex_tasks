@@ -173,6 +173,16 @@ def prompt_split() -> dict:
     return json.loads((MATERIALS / "simple" / "prompt_split.json").read_text())
 
 
+def split_wordings(task: str, part: str) -> tuple[str, ...]:
+    """The task's further wordings of part ``P`` (choosing) or ``Q`` (test)."""
+    return tuple(prompt_split()["wordings"][task][part])
+
+
+def split_formats(part: str) -> tuple[str, ...]:
+    """The example formats (wording ids ``fmt-F*``) of part ``P`` or ``Q``."""
+    return tuple(FORMAT_PREFIX + f for f in prompt_split()["formats"][part])
+
+
 # ---- copied from Yang et al., src/Shared_utils/prompt_utils.py ---------------------------
 
 def create_few_shot_prompts(data, n_shot, delimiter, q_bos, a_bos, qa_delimiter):

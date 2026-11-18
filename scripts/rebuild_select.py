@@ -15,11 +15,22 @@ written into ``heads.json`` as ``selected<N>`` / ``shared_selected<N>`` (earlier
 replaced). Writes ``selected.json`` (the combinations, their scores, the ten best candidates per scope
 and fold).
 
+Stage 3 (Secs. 6.1-6.2): ``--pool wordings`` or ``--pool examples`` does the same for the rules re-chosen
+on those pools (``scripts/rebuild_sets_s3.py``), from their screens (``results/rebuild/<pool>/fold{1,2}/
+patching_simple.part-s3<w|e>-screen-*.csv``, patched with the pool's own means).
+
     .venv/bin/python scripts/rebuild_select.py
+    .venv/bin/python scripts/rebuild_select.py --pool examples
+    .venv/bin/python scripts/rebuild_select.py --pool wordings --candidates 5
+
+``--candidates K`` (stage 3.2, user 2026-11-18): instead of all combinations, fold f chooses among the K
+best stage-2 combinations of its scope (``results/rebuild/additions/selected.json``, ranked on the other
+fold, so Selected first); the screen then needs only the union of both folds' candidates.
 """
 
 from __future__ import annotations
 
+import argparse
 import csv
 import json
 import sys
@@ -35,20 +46,31 @@ from lth import simple  # noqa: E402
 from rebuild_sets import (COMBOS, FEATURES, FOLDS, OUT, SCREEN_N, SIZES, order_of, random_sets,  # noqa: E402
                           rankdata, ranks, top)
 
+POOLS = {"additions": ("patching_simple.part-s2-*.csv", ""), "wordings": ("patching_simple.part-s3w-screen-*.csv", "wordings/"),
+         "examples": ("patching_simple.part-s3e-screen-*.csv", "examples/")}  # screen files, random-set key prefix
+
+
+def features_combos(pool: str):
+    if pool == "examples":
+        from rebuild_sets_s3 import EX_FEATURES, combos
+        return EX_FEATURES, combos(EX_FEATURES)
+    return FEATURES, COMBOS
+
 SCOPES = {"per task": "screen_", "shared": "shared_screen_"}
 
 
-def screen_scores(fold: int) -> dict[str, dict[str, float]]:
+def screen_scores(fold: int, pool: str = "additions") -> dict[str, dict[str, float]]:
     """score[scope][combo] on ``fold``: per task best alpha of the template-mean accuracy, mean over tasks."""
+    _, combos_ = features_combos(pool)
     cells = defaultdict(lambda: defaultdict(list))  # (task, set) -> alpha -> accuracies of template means
-    for path in sorted((OUT / f"fold{fold}").glob("patching_simple.part-s2-*.csv")):
+    for path in sorted((OUT.parent / pool / f"fold{fold}").glob(POOLS[pool][0])):
         for r in csv.DictReader(path.open()):
             if r["source"] == "task" and "screen_" in r["heads"]:
                 cells[(r["task"], r["heads"])][float(r["alpha"])].append(float(r["accuracy"]))
     out = {}
     for scope, prefix in SCOPES.items():
         out[scope] = {}
-        for combo in COMBOS:
+        for combo in combos_:
             per_task = []
             for t in simple.TASKS:
                 by_alpha = cells.get((t, prefix + combo))
@@ -60,37 +82,52 @@ def screen_scores(fold: int) -> dict[str, dict[str, float]]:
     return out
 
 
-def best(scores: dict[str, float]) -> str:
-    return min(scores, key=lambda c: (-scores[c], len(c), COMBOS.index(c)))
+def best(scores: dict[str, float], combos_: list[str]) -> str:
+    return min(scores, key=lambda c: (-scores[c], len(c), combos_.index(c)))
 
 
 def main() -> None:
-    scores = {fold: screen_scores(fold) for fold in FOLDS}
+    parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    parser.add_argument("--pool", choices=tuple(POOLS), default="additions")
+    parser.add_argument("--candidates", type=int, default=None,
+                        help="choose among the K best stage-2 combinations of each fold and scope (default: all)")
+    args = parser.parse_args()
+    stage2 = json.loads((OUT / "selected.json").read_text()) if args.candidates else None
+
+    def candidates(fold: int, scope: str) -> list[str]:
+        if stage2 is None:
+            return combos_
+        return [c for c, _ in stage2[str(fold)][scope]["top10_other_fold"][:args.candidates]]
+    features, combos_ = features_combos(args.pool)
+    base = OUT.parent / args.pool
+    scores = {fold: screen_scores(fold, args.pool) for fold in FOLDS}
     for fold in FOLDS:
         for scope in SCOPES:
-            missing = len(COMBOS) - len(scores[fold][scope])
-            assert missing == 0, f"fold {fold} {scope}: {missing} combinations without all 14 tasks"
+            missing = [c for f in FOLDS for c in candidates(f, scope) if c not in scores[fold][scope]]
+            assert not missing, f"fold {fold} {scope}: {missing} without all 14 tasks"
     report = {}
     for fold in FOLDS:
         other = 3 - fold
-        chosen = {scope: best(scores[other][scope]) for scope in SCOPES}
+        pick = {scope: {c: scores[other][scope][c] for c in candidates(fold, scope)} for scope in SCOPES}
+        chosen = {scope: best(pick[scope], combos_) for scope in SCOPES}
         report[fold] = {scope: dict(
-            combo=chosen[scope], features=[FEATURES[c][0] for c in chosen[scope]],
+            combo=chosen[scope], features=[features[c][0] for c in chosen[scope]],
             score_other_fold=round(scores[other][scope][chosen[scope]], 4),
             score_own_fold=round(scores[fold][scope][chosen[scope]], 4),
             top10_other_fold=[[c, round(scores[other][scope][c], 4)]
-                              for c in sorted(scores[other][scope], key=lambda c: (-scores[other][scope][c], len(c)))[:10]])
+                              for c in sorted(pick[scope], key=lambda c: (-pick[scope][c], len(c)))[:10]],
+            **({"candidates": candidates(fold, scope)} if args.candidates else {}))
             for scope in SCOPES}
 
-        out = OUT / f"fold{fold}"
+        out = base / f"fold{fold}"
         z = np.load(out / "features.npz")
-        single = {t: {c: ranks(z[f"{t}/{c}"]) for c in FEATURES} for t in simple.TASKS}
-        shared_single = {c: rankdata(np.mean([single[t][c] for t in simple.TASKS], axis=0)) for c in FEATURES}
+        single = {t: {c: ranks(z[f"{t}/{c}"]) for c in features} for t in simple.TASKS}
+        shared_single = {c: rankdata(np.mean([single[t][c] for t in simple.TASKS], axis=0)) for c in features}
         heads = json.loads((out / "heads.json").read_text())
 
         def entries(label: str, sets: list[list[int]], key: str) -> list:
             return [["rule", label, sets]] + [["rule", f"random_{label}_{i}", r]
-                                               for i, r in enumerate(random_sets(sets, f"{fold}/{key}/{label}"))]
+                                               for i, r in enumerate(random_sets(sets, f"{POOLS[args.pool][1]}{fold}/{key}/{label}"))]
 
         shared_entries = []
         r = np.mean([shared_single[c] for c in chosen["shared"]], axis=0)
@@ -111,7 +148,7 @@ def main() -> None:
         print(f"fold {fold}: " + "; ".join(f"{scope} {report[fold][scope]['combo']} "
                                            f"(fold {other} {report[fold][scope]['score_other_fold']})"
                                            for scope in SCOPES), flush=True)
-    (OUT / "selected.json").write_text(json.dumps(report, indent=1))
+    (base / "selected.json").write_text(json.dumps(report, indent=1))
 
 
 if __name__ == "__main__":

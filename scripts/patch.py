@@ -160,6 +160,10 @@ def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple", s
     (``simple.ALL_RULE``: Yang et al.'s five and the 30 new ones), each patched on its own; a
     template with no correct prompt on the choosing half gives no mean.
 
+    Rebuilt design, stage 3: ``mean_wordings`` ``"Q"`` (the task's Q wordings), ``"pool"`` (Yang et al.'s
+    five and the task's P wordings), ``"fmtP"`` or ``"fmtQ"`` (the P or Q example formats) take the rule
+    style's means from those prompts instead, so that the sets (style ``rule``) are patched with them.
+
     E24: ``example_wordings``, the example wordings whose means are patched (default: all five
     shot counts; E24 uses ``("shot5",)``, the prompts Yang et al. identify example heads on).
 
@@ -212,7 +216,12 @@ def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple", s
         # control: the control task's 1-shot prompts at all its items correct under the
         # mean style's wording 1.
         means = []  # (mean style, source, wording, items, mean)
-        styles = dict(simple.WORDINGS, **({"rule": simple.ALL_RULE} if mean_wordings == "all" else {}),
+        rule_means = {"rule": simple.WORDINGS["rule"], "all": simple.ALL_RULE,
+                      "Q": simple.split_wordings(task, "Q") if mean_wordings == "Q" else (),
+                      "pool": simple.WORDINGS["rule"] + simple.split_wordings(task, "P") if mean_wordings == "pool" else (),
+                      "fmtP": simple.split_formats("P") if mean_wordings == "fmtP" else (),
+                      "fmtQ": simple.split_formats("Q") if mean_wordings == "fmtQ" else ()}[mean_wordings]
+        styles = dict(simple.WORDINGS, **({"rule": rule_means} if mean_wordings != "rule" else {}),
                       **({"example": tuple(example_wordings)} if example_wordings else {}))
         for mean_style, wordings in styles.items():
             if mean_styles and mean_style not in mean_styles:
@@ -401,8 +410,10 @@ def main() -> None:
     parser.add_argument("--set-alphas", type=Path, default=None,
                         help="E4: JSON {task: {set: [alphas]}} replacing --alphas for those sets")
     parser.add_argument("--names", nargs="+", default=None, help="E4: names or wildcard patterns of the listed sets to patch")
-    parser.add_argument("--mean-wordings", choices=("rule", "all"), default="rule",
-                        help="E14: 'all' takes the rule means from all 35 rule templates (Yang's five and the 30 new)")
+    parser.add_argument("--mean-wordings", choices=("rule", "all", "Q", "pool", "fmtP", "fmtQ"), default="rule",
+                        help="E14: 'all' takes the rule means from all 35 rule templates (Yang's five and the 30 new); "
+                             "rebuild: 'Q' the task's Q wordings, 'pool' Yang's five and the task's P wordings, "
+                             "'fmtP' / 'fmtQ' the P / Q example formats, each in place of the rule means")
     parser.add_argument("--example-wordings", nargs="+", choices=simple.WORDINGS["example"], default=None,
                         help="E24: the example wordings whose means are patched (default: all five)")
     parser.add_argument("--mean-styles", nargs="+", choices=tuple(simple.WORDINGS), default=None,

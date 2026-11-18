@@ -36,6 +36,11 @@ run's CIE, which does not depend on it. Writes ``results/davidson_fv/`` (or ``--
 ``fv.npz`` (task and control FVs), ``patching_simple.csv`` and
 ``answers/patching_simple.jsonl.gz`` (same columns as ``patch.py``'s).
 
+Rebuilt design, stage 3 (paper/head-sets-simple-design.tex, Sec. 6.1): ``--instructions p`` takes
+inst1-inst4 and the task's P wordings of the question-answer form, and spreads Davidson et al.'s
+totals evenly over those with at least ten correct prompts on the choosing half: 100 prompts for the
+mean and 20 per kind for the CIE; the other tasks' P question-answer wordings join the other-task pool.
+
     .venv/bin/python scripts/davidson_fv.py --gpu 0
 """
 
@@ -70,6 +75,7 @@ WIKI_LINES = 20_000  # WikiText-103 lines sampled for candidate prefixes
 WIKI_POOL = 100  # N: candidates of about the instruction's length
 OTHER_POOL = 20  # candidates of about the instruction's length among other tasks' instructions
 SEED = 0
+P_MEAN, P_CIE, P_MIN_CORRECT = 100, 20, 10  # stage 3 (--instructions p): totals and the minimum per instruction
 
 
 def instruction(task: str, wording: str) -> str:
@@ -174,14 +180,18 @@ def wiki_prefixes(lm, rng) -> dict[int, list[list[int]]]:
 def uninformative(lm, task: str, rng, wiki, wordings=INSTRUCTIONS, new_others: bool = False) -> dict:
     """For each instruction of ``task`` in ``wordings``: its tokens, log-probability, and ``N_CIE``
     uninformative instructions of each kind (token ids). ``new_others`` (E14): the other tasks'
-    new question-answer instructions join the pool of the ``other_task`` kind."""
+    new question-answer instructions join the pool of the ``other_task`` kind; ``"p"`` (stage 3) their P
+    question-answer wordings only."""
     own = {instruction(task, w) for w in wordings}
     others = []
     for other, templates in simple.instruction_dict().items():
         if other == task:
             continue
-        for template in list(templates.values()) + ([simple.e4b_templates()[other][w] for w in E4B_QA]
-                                                     if new_others and other in simple.e4b_templates() else []):
+        extra = (E4B_QA if new_others is True else
+                 tuple(w for w in simple.split_wordings(other, "P") if w in E4B_QA)
+                 if new_others == "p" and other in simple.prompt_split()["wordings"] else ())
+        for template in list(templates.values()) + ([simple.e4b_templates()[other][w] for w in extra]
+                                                     if extra and other in simple.e4b_templates() else []):
             if template.endswith(QUERY) and template[: -len(QUERY)] not in own:
                 others.append(template[: -len(QUERY)])
     others = [lm.tokenizer(t, add_special_tokens=False).input_ids for t in dict.fromkeys(others)]
@@ -308,12 +318,15 @@ def main() -> None:
     parser.add_argument("--half", choices=("A", "B"), default=None,
                         help="E4 fold (results/heldout/split.json): means, CIE and control items from this "
                              "half, check-1 items from the other")
-    parser.add_argument("--instructions", choices=("yang", "all"), default="yang",
+    parser.add_argument("--instructions", choices=("yang", "all", "p"), default="yang",
                         help="E14: 'all' adds the 10 new question-answer templates per task to Yang et al.'s "
                              "inst1-inst4 (an instruction with fewer than N_CIE + 1 correct prompts is left out)")
     args = parser.parse_args()
     tasks = list(simple.TASKS) if args.tasks == ["all"] else args.tasks
-    instructions = INSTRUCTIONS + (E4B_QA if args.instructions == "all" else ())
+    def instructions_of(task):
+        if args.instructions == "p":
+            return INSTRUCTIONS + tuple(w for w in simple.split_wordings(task, "P") if w in E4B_QA)
+        return INSTRUCTIONS + (E4B_QA if args.instructions == "all" else ())
     halves = json.loads((RESULTS / "heldout" / "split.json").read_text()) if args.half else None
 
     def chosen(task, items):  # the items of the choosing half, in order
@@ -349,7 +362,19 @@ def main() -> None:
         fixed = tested(task, simple.correct_items(records(task, simple.FIXING)))[: simple.CAP]
         per = {}
         parts = []
-        for wording in instructions:
+        if args.instructions == "p":  # Davidson et al.'s totals spread over the usable instructions
+            free_of = {w: [i for i in chosen(task, simple.correct_items(records(task, w))) if i not in set(fixed)]
+                       for w in instructions_of(task)}
+            usable = [w for w in instructions_of(task) if len(free_of[w]) >= P_MIN_CORRECT]
+            n_mean = {w: P_MEAN // len(usable) + (k < P_MEAN % len(usable)) for k, w in enumerate(usable)}
+            n_cie = {w: P_CIE // len(usable) + (k < P_CIE % len(usable)) for k, w in enumerate(usable)}
+            for w in usable:
+                free = free_of[w]
+                per[w] = (dict(mean=free[:n_mean[w]], cie=free[n_mean[w]:n_mean[w] + n_cie[w]])
+                          if len(free) >= n_mean[w] + n_cie[w] else dict(mean=free[:-n_cie[w]], cie=free[-n_cie[w]:]))
+                ids = simple.token_ids(lm.tokenizer, simple.prompts(task, w)[0])
+                parts.append((simple_mean(lm, ids, per[w]["mean"]), len(per[w]["mean"])))
+        for wording in instructions_of(task) if args.instructions != "p" else ():
             free = [i for i in chosen(task, simple.correct_items(records(task, wording))) if i not in set(fixed)]
             if len(free) <= N_CIE:
                 print(f"{task} {wording}: only {len(free)} correct prompts, left out", flush=True)
@@ -364,7 +389,8 @@ def main() -> None:
         plan[task] = dict(fixed=fixed, items=per)
         means[task] = sum(m * n for m, n in parts) / sum(n for _, n in parts)  # over all mean prompts
         if not reuse:
-            corrupt[task] = uninformative(lm, task, rng, wiki, list(per), args.instructions == "all")
+            corrupt[task] = uninformative(lm, task, rng, wiki, list(per),
+                                          {"yang": False, "all": True, "p": "p"}[args.instructions])
         print(f"{task}: mean ready", flush=True)
     (out / "items.json").write_text(json.dumps(plan, indent=1))
 
