@@ -174,7 +174,7 @@ def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple", s
     correctly answered prompts is not formed."""
     from run_outputs import SIMPLE_MAX_TOKENS, simple_answer
 
-    from lth.evaluation import flexible_simple
+    from lth.evaluation import flexible_simple_for
     from lth.store import done, load, readings_dir
 
     def records(task, wording):
@@ -282,7 +282,7 @@ def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple", s
                         reply = replies[p, alpha]
                         text = lm.tokenizer.decode(reply, skip_special_tokens=True)
                         answer = simple_answer(text)
-                        correct = flexible_simple({"answer_text": answer, "reference": answers[i]})
+                        correct = flexible_simple_for(task, {"answer_text": answer, "reference": answers[i]})
                         first_token = reply[:1] == [first[p]]
                         hits += correct
                         tokens += first_token

@@ -56,7 +56,7 @@ def units(family: str, tasks, levels, variant_names):
 def score_unit(family, key, wording, mode, rules):
     rows = load_outputs(outputs_path(family, key, wording))
     if family == "simple":
-        strict = {r["item"]: {**evaluation.strict_simple(r), "flexible": evaluation.flexible_simple(r)}
+        strict = {r["item"]: {**evaluation.strict_simple(r), "flexible": evaluation.flexible_simple_for(key, r)}
                   for r in rows}
     else:
         strict = evaluation.strict_complex(key, wording, mode, rules, rows)

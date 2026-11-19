@@ -81,6 +81,32 @@ def flexible_simple(row: dict) -> bool:
     return any(reply == ref or reply.startswith(ref + " ") for ref in references)
 
 
+# Tasks whose answer differs from the input only in letter case (user 2026-11-19, head-sets-simple-design
+# unseen tasks): ignoring case would count a copy of the input as correct, so their flexible score keeps case.
+CASE_SENSITIVE_TASKS = frozenset({"capitalize"})
+
+
+def normalise_cased(text: str) -> str:
+    """:func:`normalise` without lower-casing (a leading article is then removed only in lower case)."""
+    text = _ARTICLE.sub("", _LEADING.sub("", text))
+    text = _JOINER.sub("", _POSSESSIVE.sub("", text))
+    text = "".join(" " if unicodedata.category(c)[0] == "P" else c for c in unicodedata.normalize("NFD", text)
+                   if unicodedata.category(c)[0] != "M" and unicodedata.category(c) != "Lm")
+    return " ".join(text.split())
+
+
+def flexible_simple_cased(row: dict) -> bool:
+    """:func:`flexible_simple` with letter case kept."""
+    reply = normalise_cased(row["answer_text"])
+    references = {normalise_cased(row["reference"]), normalise_cased(_PARENTHESIS.sub(" ", row["reference"]))} - {""}
+    return any(reply == ref or reply.startswith(ref + " ") for ref in references)
+
+
+def flexible_simple_for(task: str, row: dict) -> bool:
+    """The flexible score of a simple task: :func:`flexible_simple`, case kept for ``CASE_SENSITIVE_TASKS``."""
+    return flexible_simple_cased(row) if task in CASE_SENSITIVE_TASKS else flexible_simple(row)
+
+
 def strict_complex(key: str, name: str, mode: str, rules: str | None, rows: list[dict]) -> dict[str, dict]:
     """Item -> strict scores, by Fu's runner over the stored replies (cut and whole)."""
     level = fu.TASK_LEVELS[key]

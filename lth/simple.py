@@ -57,7 +57,14 @@ CONTROL = {"country-capital": "park-country", "product-company": "park-country",
            "singular-plural": "present-past", "present-past": "singular-plural",
            "next_item": "prev_item", "prev_item": "next_item",
            "english-french": "english-german", "english-german": "english-french",
-           "english-spanish": "english-german"}
+           "english-spanish": "english-german",
+           # unseen tasks (head-sets-simple-design, user 2026-11-19): Yang et al.'s pairs for the person
+           # tasks; capitalize is not in their map, singular-plural chosen with the user
+           "person-occupation": "person-sport", "person-sport": "person-occupation",
+           "person-instrument": "person-sport", "capitalize": "singular-plural"}
+# Tasks of Todd et al.'s datasets with Yang et al.'s templates that are not among the 14: unseen by every head
+# set of the rebuilt design (scripts/rebuild_newtask_sets.py).
+UNSEEN_TASKS = ("person-occupation", "person-sport", "person-instrument", "capitalize")
 
 
 def dataset(task: str) -> list[dict]:
