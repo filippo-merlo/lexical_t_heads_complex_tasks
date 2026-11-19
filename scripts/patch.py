@@ -146,7 +146,7 @@ def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple", s
     sets of ``head_sets`` to patch. ``set_list``: patch instead the sets listed under each
     task's ``sets`` key, ``[style, name, heads]`` (``scripts/rank_heads.py``); a set that equals
     an earlier one of the same style is not patched again, its rows and answers are copied
-    under its own name. ``same_style``: patch each set with the means of its own style only.
+    under its own name (unless the earlier one had task means only and this one also needs control means). ``same_style``: patch each set with the means of its own style only.
     ``alphas``: the scaling factors.
 
     E4 options (paper/e4_heldout.tex), all off by default: ``half``, the choosing half of
@@ -254,8 +254,12 @@ def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple", s
                           for name, heads in head_sets(heads_json["simple"][task][style]).items()
                           if heads and name in sets]
         first_of = {}  # (style, heads) -> name of the first set patched with these heads
+        only = lambda n: bool(task_only) and n.startswith(tuple(task_only))  # noqa: E731
         for style, name, heads in candidates:
             same = first_of.setdefault((style, frozenset(heads)), name) if set_list else name
+            if same != name and only(same) and not only(name):
+                # the earlier set had task means only and this one needs its control means too: patch it
+                first_of[(style, frozenset(heads))] = same = name
             if same != name:
                 rows += [{**r, "heads": name} for r in rows if r["task"] == task and r["family"] == family
                          and r["style"] == style and r["heads"] == same]

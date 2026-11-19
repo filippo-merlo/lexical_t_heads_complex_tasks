@@ -29,7 +29,7 @@ import json
 
 import numpy as np
 
-from lth import MATERIALS, RESULTS, YANG
+from lth import MATERIALS, RESULTS, ROOT, YANG
 
 TASKS =("antonym", "synonym", "singular-plural", "present-past", "country-capital",
          "country-currency", "landmark-country", "park-country", "product-company",
@@ -146,7 +146,8 @@ FORMAT_WORDINGS = tuple(f"{FORMAT_PREFIX}{f}" for f in EXAMPLE_FORMATS)  # wordi
 @functools.cache
 def item_halves(task: str) -> dict[int, list[int]]:
     """item -> the items of its half (``results/heldout/split.json``)."""
-    split = json.loads((RESULTS / "heldout" / "split.json").read_text())[task]
+    # the repository's split, also when LTH_RESULTS points a run elsewhere
+    split = json.loads((ROOT / "results" / "heldout" / "split.json").read_text())[task]
     return {i: split[h] for h in ("A", "B") for i in split[h]}
 
 

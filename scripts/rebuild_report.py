@@ -13,6 +13,7 @@ and ``<stage>_summary.csv`` (set, scope, size, task / control / random accuracy 
 tasks), and prints the summary.
 
     .venv/bin/python scripts/rebuild_report.py --stage s1
+    .venv/bin/python scripts/rebuild_report.py --stage s3wt --dir scenarios/wordings_transfer   # stage 3
 """
 
 from __future__ import annotations
@@ -66,7 +67,10 @@ def size_of(name: str):
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--stage", required=True, help="part prefix, e.g. s1")
+    parser.add_argument("--dir", default="additions", help="folder under results/rebuild (default: additions)")
     args = parser.parse_args()
+    global DIR
+    DIR = RESULTS / "rebuild" / args.dir
     cf = crossfit(load(args.stage))
     with (DIR / f"{args.stage}_per_task.csv").open("w", newline="") as f:
         w = csv.writer(f)
