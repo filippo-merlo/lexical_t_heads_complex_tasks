@@ -1,0 +1,393 @@
+scheme,alpha,fold,task,unit,combo,accuracy
+all14,1.0,1,antonym,all,DBT,0.212
+all14,1.0,1,synonym,all,DBT,0.172
+all14,1.0,1,singular-plural,all,DBT,0.6857
+all14,1.0,1,present-past,all,DBT,0.11
+all14,1.0,1,country-capital,all,DBT,0.95
+all14,1.0,1,country-currency,all,DBT,0.2776
+all14,1.0,1,landmark-country,all,DBT,0.734
+all14,1.0,1,park-country,all,DBT,0.6
+all14,1.0,1,product-company,all,DBT,0.768
+all14,1.0,1,next_item,all,DBT,0.0172
+all14,1.0,1,prev_item,all,DBT,0.0226
+all14,1.0,1,english-french,all,DBT,0.138
+all14,1.0,1,english-german,all,DBT,0.08
+all14,1.0,1,english-spanish,all,DBT,0.29
+all14,1.0,2,antonym,all,DBT,0.162
+all14,1.0,2,synonym,all,DBT,0.208
+all14,1.0,2,singular-plural,all,DBT,0.6614
+all14,1.0,2,present-past,all,DBT,0.126
+all14,1.0,2,country-capital,all,DBT,0.9326
+all14,1.0,2,country-currency,all,DBT,0.2215
+all14,1.0,2,landmark-country,all,DBT,0.716
+all14,1.0,2,park-country,all,DBT,0.606
+all14,1.0,2,product-company,all,DBT,0.766
+all14,1.0,2,next_item,all,DBT,0.0
+all14,1.0,2,prev_item,all,DBT,0.032
+all14,1.0,2,english-french,all,DBT,0.106
+all14,1.0,2,english-german,all,DBT,0.066
+all14,1.0,2,english-spanish,all,DBT,0.246
+all14,2.0,1,antonym,all,DBP,0.698
+all14,2.0,1,synonym,all,DBP,0.368
+all14,2.0,1,singular-plural,all,DBP,0.8396
+all14,2.0,1,present-past,all,DBP,0.678
+all14,2.0,1,country-capital,all,DBP,0.9619
+all14,2.0,1,country-currency,all,DBP,0.6239
+all14,2.0,1,landmark-country,all,DBP,0.928
+all14,2.0,1,park-country,all,DBP,0.798
+all14,2.0,1,product-company,all,DBP,0.878
+all14,2.0,1,next_item,all,DBP,0.0828
+all14,2.0,1,prev_item,all,DBP,0.0868
+all14,2.0,1,english-french,all,DBP,0.574
+all14,2.0,1,english-german,all,DBP,0.584
+all14,2.0,1,english-spanish,all,DBP,0.596
+all14,2.0,2,antonym,all,DBP,0.66
+all14,2.0,2,synonym,all,DBP,0.442
+all14,2.0,2,singular-plural,all,DBP,0.8568
+all14,2.0,2,present-past,all,DBP,0.622
+all14,2.0,2,country-capital,all,DBP,0.9535
+all14,2.0,2,country-currency,all,DBP,0.7169
+all14,2.0,2,landmark-country,all,DBP,0.916
+all14,2.0,2,park-country,all,DBP,0.742
+all14,2.0,2,product-company,all,DBP,0.824
+all14,2.0,2,next_item,all,DBP,0.0286
+all14,2.0,2,prev_item,all,DBP,0.092
+all14,2.0,2,english-french,all,DBP,0.622
+all14,2.0,2,english-german,all,DBP,0.598
+all14,2.0,2,english-spanish,all,DBP,0.76
+loto,1.0,1,antonym,antonym,DBT,0.212
+loto,1.0,1,synonym,synonym,DBT,0.172
+loto,1.0,1,singular-plural,singular-plural,DBT,0.6857
+loto,1.0,1,present-past,present-past,DBT,0.11
+loto,1.0,1,country-capital,country-capital,DBT,0.95
+loto,1.0,1,country-currency,country-currency,DBT,0.2776
+loto,1.0,1,landmark-country,landmark-country,DBT,0.734
+loto,1.0,1,park-country,park-country,DBT,0.6
+loto,1.0,1,product-company,product-company,DBT,0.768
+loto,1.0,1,next_item,next_item,DBT,0.0172
+loto,1.0,1,prev_item,prev_item,DBT,0.0226
+loto,1.0,1,english-french,english-french,DBT,0.138
+loto,1.0,1,english-german,english-german,DBT,0.08
+loto,1.0,1,english-spanish,english-spanish,DBT,0.29
+loto,1.0,2,antonym,antonym,DBT,0.162
+loto,1.0,2,synonym,synonym,DBT,0.208
+loto,1.0,2,singular-plural,singular-plural,DBT,0.6614
+loto,1.0,2,present-past,present-past,DBT,0.126
+loto,1.0,2,country-capital,country-capital,DBT,0.9326
+loto,1.0,2,country-currency,country-currency,DBT,0.2215
+loto,1.0,2,landmark-country,landmark-country,DBT,0.716
+loto,1.0,2,park-country,park-country,DBT,0.606
+loto,1.0,2,product-company,product-company,DBT,0.766
+loto,1.0,2,next_item,next_item,DBT,0.0
+loto,1.0,2,prev_item,prev_item,DBT,0.032
+loto,1.0,2,english-french,english-french,DBT,0.106
+loto,1.0,2,english-german,english-german,DBT,0.066
+loto,1.0,2,english-spanish,english-spanish,DBT,0.246
+loto,2.0,1,antonym,antonym,DBP,0.698
+loto,2.0,1,synonym,synonym,DBP,0.368
+loto,2.0,1,singular-plural,singular-plural,DBP,0.8396
+loto,2.0,1,present-past,present-past,DBP,0.678
+loto,2.0,1,country-capital,country-capital,DBP,0.9619
+loto,2.0,1,country-currency,country-currency,DBP,0.6239
+loto,2.0,1,landmark-country,landmark-country,DBP,0.928
+loto,2.0,1,park-country,park-country,DBP,0.798
+loto,2.0,1,product-company,product-company,DBP,0.878
+loto,2.0,1,next_item,next_item,DBP,0.0828
+loto,2.0,1,prev_item,prev_item,DBP,0.0868
+loto,2.0,1,english-french,english-french,DBP,0.574
+loto,2.0,1,english-german,english-german,DBP,0.584
+loto,2.0,1,english-spanish,english-spanish,DBP,0.596
+loto,2.0,2,antonym,antonym,DBP,0.66
+loto,2.0,2,synonym,synonym,DBP,0.442
+loto,2.0,2,singular-plural,singular-plural,DBP,0.8568
+loto,2.0,2,present-past,present-past,DBP,0.622
+loto,2.0,2,country-capital,country-capital,DBP,0.9535
+loto,2.0,2,country-currency,country-currency,DBP,0.7169
+loto,2.0,2,landmark-country,landmark-country,DBP,0.916
+loto,2.0,2,park-country,park-country,DBP,0.742
+loto,2.0,2,product-company,product-company,DBP,0.824
+loto,2.0,2,next_item,next_item,DBP,0.0286
+loto,2.0,2,prev_item,prev_item,DBP,0.092
+loto,2.0,2,english-french,english-french,DBP,0.622
+loto,2.0,2,english-german,english-german,DBP,0.598
+loto,2.0,2,english-spanish,english-spanish,DBP,0.76
+loty,1.0,1,antonym,word relations,DBT,0.212
+loty,1.0,1,synonym,word relations,DBT,0.172
+loty,1.0,1,singular-plural,morphology,DBP,0.6396
+loty,1.0,1,present-past,morphology,DBP,0.118
+loty,1.0,1,country-capital,facts,DBP,0.8333
+loty,1.0,1,country-currency,facts,DBP,0.2716
+loty,1.0,1,landmark-country,facts,DBP,0.632
+loty,1.0,1,park-country,facts,DBP,0.55
+loty,1.0,1,product-company,facts,DBP,0.736
+loty,1.0,1,next_item,sequences,DBT,0.0172
+loty,1.0,1,prev_item,sequences,DBT,0.0226
+loty,1.0,1,english-french,translations,DBT,0.138
+loty,1.0,1,english-german,translations,DBT,0.08
+loty,1.0,1,english-spanish,translations,DBT,0.29
+loty,1.0,2,antonym,word relations,DBT,0.162
+loty,1.0,2,synonym,word relations,DBT,0.208
+loty,1.0,2,singular-plural,morphology,DBT,0.6614
+loty,1.0,2,present-past,morphology,DBT,0.126
+loty,1.0,2,country-capital,facts,DBP,0.8465
+loty,1.0,2,country-currency,facts,DBP,0.2369
+loty,1.0,2,landmark-country,facts,DBP,0.622
+loty,1.0,2,park-country,facts,DBP,0.524
+loty,1.0,2,product-company,facts,DBP,0.734
+loty,1.0,2,next_item,sequences,DBT,0.0
+loty,1.0,2,prev_item,sequences,DBT,0.032
+loty,1.0,2,english-french,translations,DBT,0.106
+loty,1.0,2,english-german,translations,DBT,0.066
+loty,1.0,2,english-spanish,translations,DBT,0.246
+loty,2.0,1,antonym,word relations,DBP,0.698
+loty,2.0,1,synonym,word relations,DBP,0.368
+loty,2.0,1,singular-plural,morphology,DBP,0.8396
+loty,2.0,1,present-past,morphology,DBP,0.678
+loty,2.0,1,country-capital,facts,DBP,0.9619
+loty,2.0,1,country-currency,facts,DBP,0.6239
+loty,2.0,1,landmark-country,facts,DBP,0.928
+loty,2.0,1,park-country,facts,DBP,0.798
+loty,2.0,1,product-company,facts,DBP,0.878
+loty,2.0,1,next_item,sequences,DBP,0.0828
+loty,2.0,1,prev_item,sequences,DBP,0.0868
+loty,2.0,1,english-french,translations,DBTSPML,0.084
+loty,2.0,1,english-german,translations,DBTSPML,0.054
+loty,2.0,1,english-spanish,translations,DBTSPML,0.354
+loty,2.0,2,antonym,word relations,DBP,0.66
+loty,2.0,2,synonym,word relations,DBP,0.442
+loty,2.0,2,singular-plural,morphology,DBP,0.8568
+loty,2.0,2,present-past,morphology,DBP,0.622
+loty,2.0,2,country-capital,facts,DBP,0.9535
+loty,2.0,2,country-currency,facts,DBP,0.7169
+loty,2.0,2,landmark-country,facts,DBP,0.916
+loty,2.0,2,park-country,facts,DBP,0.742
+loty,2.0,2,product-company,facts,DBP,0.824
+loty,2.0,2,next_item,sequences,DBP,0.0286
+loty,2.0,2,prev_item,sequences,DBP,0.092
+loty,2.0,2,english-french,translations,DBSL,0.088
+loty,2.0,2,english-german,translations,DBSL,0.152
+loty,2.0,2,english-spanish,translations,DBSL,0.31
+"Selected (all 14, best alpha)",1.0,1,antonym,,,0.384
+"Selected (all 14, best alpha)",1.0,1,synonym,,,0.204
+"Selected (all 14, best alpha)",1.0,1,singular-plural,,,0.6396
+"Selected (all 14, best alpha)",1.0,1,present-past,,,0.118
+"Selected (all 14, best alpha)",1.0,1,country-capital,,,0.8333
+"Selected (all 14, best alpha)",1.0,1,country-currency,,,0.2716
+"Selected (all 14, best alpha)",1.0,1,landmark-country,,,0.632
+"Selected (all 14, best alpha)",1.0,1,park-country,,,0.55
+"Selected (all 14, best alpha)",1.0,1,product-company,,,0.736
+"Selected (all 14, best alpha)",1.0,1,next_item,,,0.0034
+"Selected (all 14, best alpha)",1.0,1,prev_item,,,0.0075
+"Selected (all 14, best alpha)",1.0,1,english-french,,,0.146
+"Selected (all 14, best alpha)",1.0,1,english-german,,,0.094
+"Selected (all 14, best alpha)",1.0,1,english-spanish,,,0.236
+"Selected (all 14, best alpha)",1.0,2,antonym,,,0.296
+"Selected (all 14, best alpha)",1.0,2,synonym,,,0.314
+"Selected (all 14, best alpha)",1.0,2,singular-plural,,,0.5955
+"Selected (all 14, best alpha)",1.0,2,present-past,,,0.064
+"Selected (all 14, best alpha)",1.0,2,country-capital,,,0.8465
+"Selected (all 14, best alpha)",1.0,2,country-currency,,,0.2369
+"Selected (all 14, best alpha)",1.0,2,landmark-country,,,0.622
+"Selected (all 14, best alpha)",1.0,2,park-country,,,0.524
+"Selected (all 14, best alpha)",1.0,2,product-company,,,0.734
+"Selected (all 14, best alpha)",1.0,2,next_item,,,0.0
+"Selected (all 14, best alpha)",1.0,2,prev_item,,,0.0
+"Selected (all 14, best alpha)",1.0,2,english-french,,,0.104
+"Selected (all 14, best alpha)",1.0,2,english-german,,,0.124
+"Selected (all 14, best alpha)",1.0,2,english-spanish,,,0.282
+"Selected (all 14, best alpha)",2.0,1,antonym,,,0.698
+"Selected (all 14, best alpha)",2.0,1,synonym,,,0.368
+"Selected (all 14, best alpha)",2.0,1,singular-plural,,,0.8396
+"Selected (all 14, best alpha)",2.0,1,present-past,,,0.678
+"Selected (all 14, best alpha)",2.0,1,country-capital,,,0.9619
+"Selected (all 14, best alpha)",2.0,1,country-currency,,,0.6239
+"Selected (all 14, best alpha)",2.0,1,landmark-country,,,0.928
+"Selected (all 14, best alpha)",2.0,1,park-country,,,0.798
+"Selected (all 14, best alpha)",2.0,1,product-company,,,0.878
+"Selected (all 14, best alpha)",2.0,1,next_item,,,0.0828
+"Selected (all 14, best alpha)",2.0,1,prev_item,,,0.0868
+"Selected (all 14, best alpha)",2.0,1,english-french,,,0.574
+"Selected (all 14, best alpha)",2.0,1,english-german,,,0.584
+"Selected (all 14, best alpha)",2.0,1,english-spanish,,,0.596
+"Selected (all 14, best alpha)",2.0,2,antonym,,,0.66
+"Selected (all 14, best alpha)",2.0,2,synonym,,,0.442
+"Selected (all 14, best alpha)",2.0,2,singular-plural,,,0.8568
+"Selected (all 14, best alpha)",2.0,2,present-past,,,0.622
+"Selected (all 14, best alpha)",2.0,2,country-capital,,,0.9535
+"Selected (all 14, best alpha)",2.0,2,country-currency,,,0.7169
+"Selected (all 14, best alpha)",2.0,2,landmark-country,,,0.916
+"Selected (all 14, best alpha)",2.0,2,park-country,,,0.742
+"Selected (all 14, best alpha)",2.0,2,product-company,,,0.824
+"Selected (all 14, best alpha)",2.0,2,next_item,,,0.0286
+"Selected (all 14, best alpha)",2.0,2,prev_item,,,0.092
+"Selected (all 14, best alpha)",2.0,2,english-french,,,0.622
+"Selected (all 14, best alpha)",2.0,2,english-german,,,0.598
+"Selected (all 14, best alpha)",2.0,2,english-spanish,,,0.76
+Causal,1.0,1,antonym,,,0.2
+Causal,1.0,1,synonym,,,0.286
+Causal,1.0,1,singular-plural,,,0.7077
+Causal,1.0,1,present-past,,,0.164
+Causal,1.0,1,country-capital,,,0.9286
+Causal,1.0,1,country-currency,,,0.006
+Causal,1.0,1,landmark-country,,,0.916
+Causal,1.0,1,park-country,,,0.728
+Causal,1.0,1,product-company,,,0.786
+Causal,1.0,1,next_item,,,0.0207
+Causal,1.0,1,prev_item,,,0.0113
+Causal,1.0,1,english-french,,,0.01
+Causal,1.0,1,english-german,,,0.0
+Causal,1.0,1,english-spanish,,,0.028
+Causal,1.0,2,antonym,,,0.326
+Causal,1.0,2,synonym,,,0.282
+Causal,1.0,2,singular-plural,,,0.55
+Causal,1.0,2,present-past,,,0.24
+Causal,1.0,2,country-capital,,,0.9093
+Causal,1.0,2,country-currency,,,0.0031
+Causal,1.0,2,landmark-country,,,0.802
+Causal,1.0,2,park-country,,,0.77
+Causal,1.0,2,product-company,,,0.756
+Causal,1.0,2,next_item,,,0.0254
+Causal,1.0,2,prev_item,,,0.0
+Causal,1.0,2,english-french,,,0.004
+Causal,1.0,2,english-german,,,0.0
+Causal,1.0,2,english-spanish,,,0.0
+Causal,2.0,1,antonym,,,0.282
+Causal,2.0,1,synonym,,,0.12
+Causal,2.0,1,singular-plural,,,0.9033
+Causal,2.0,1,present-past,,,0.654
+Causal,2.0,1,country-capital,,,0.919
+Causal,2.0,1,country-currency,,,0.1851
+Causal,2.0,1,landmark-country,,,0.966
+Causal,2.0,1,park-country,,,0.892
+Causal,2.0,1,product-company,,,0.718
+Causal,2.0,1,next_item,,,0.169
+Causal,2.0,1,prev_item,,,0.0264
+Causal,2.0,1,english-french,,,0.046
+Causal,2.0,1,english-german,,,0.0
+Causal,2.0,1,english-spanish,,,0.026
+Causal,2.0,2,antonym,,,0.268
+Causal,2.0,2,synonym,,,0.168
+Causal,2.0,2,singular-plural,,,0.5227
+Causal,2.0,2,present-past,,,0.714
+Causal,2.0,2,country-capital,,,0.8884
+Causal,2.0,2,country-currency,,,0.08
+Causal,2.0,2,landmark-country,,,0.952
+Causal,2.0,2,park-country,,,0.88
+Causal,2.0,2,product-company,,,0.71
+Causal,2.0,2,next_item,,,0.1238
+Causal,2.0,2,prev_item,,,0.032
+Causal,2.0,2,english-french,,,0.066
+Causal,2.0,2,english-german,,,0.154
+Causal,2.0,2,english-spanish,,,0.08
+Causal - generic (not held out),1.0,1,antonym,,,0.188
+Causal - generic (not held out),1.0,1,synonym,,,0.292
+Causal - generic (not held out),1.0,1,singular-plural,,,0.6835
+Causal - generic (not held out),1.0,1,present-past,,,0.164
+Causal - generic (not held out),1.0,1,country-capital,,,0.9429
+Causal - generic (not held out),1.0,1,country-currency,,,0.003
+Causal - generic (not held out),1.0,1,landmark-country,,,0.89
+Causal - generic (not held out),1.0,1,park-country,,,0.71
+Causal - generic (not held out),1.0,1,product-company,,,0.776
+Causal - generic (not held out),1.0,1,next_item,,,0.0034
+Causal - generic (not held out),1.0,1,prev_item,,,0.0075
+Causal - generic (not held out),1.0,1,english-french,,,0.01
+Causal - generic (not held out),1.0,1,english-german,,,0.0
+Causal - generic (not held out),1.0,1,english-spanish,,,0.026
+Causal - generic (not held out),1.0,2,antonym,,,0.276
+Causal - generic (not held out),1.0,2,synonym,,,0.252
+Causal - generic (not held out),1.0,2,singular-plural,,,0.4114
+Causal - generic (not held out),1.0,2,present-past,,,0.162
+Causal - generic (not held out),1.0,2,country-capital,,,0.893
+Causal - generic (not held out),1.0,2,country-currency,,,0.0
+Causal - generic (not held out),1.0,2,landmark-country,,,0.716
+Causal - generic (not held out),1.0,2,park-country,,,0.67
+Causal - generic (not held out),1.0,2,product-company,,,0.728
+Causal - generic (not held out),1.0,2,next_item,,,0.0127
+Causal - generic (not held out),1.0,2,prev_item,,,0.0
+Causal - generic (not held out),1.0,2,english-french,,,0.004
+Causal - generic (not held out),1.0,2,english-german,,,0.0
+Causal - generic (not held out),1.0,2,english-spanish,,,0.0
+Causal - generic (not held out),2.0,1,antonym,,,0.538
+Causal - generic (not held out),2.0,1,synonym,,,0.54
+Causal - generic (not held out),2.0,1,singular-plural,,,0.8945
+Causal - generic (not held out),2.0,1,present-past,,,0.654
+Causal - generic (not held out),2.0,1,country-capital,,,0.9762
+Causal - generic (not held out),2.0,1,country-currency,,,0.1224
+Causal - generic (not held out),2.0,1,landmark-country,,,0.956
+Causal - generic (not held out),2.0,1,park-country,,,0.896
+Causal - generic (not held out),2.0,1,product-company,,,0.92
+Causal - generic (not held out),2.0,1,next_item,,,0.1138
+Causal - generic (not held out),2.0,1,prev_item,,,0.0415
+Causal - generic (not held out),2.0,1,english-french,,,0.046
+Causal - generic (not held out),2.0,1,english-german,,,0.0
+Causal - generic (not held out),2.0,1,english-spanish,,,0.04
+Causal - generic (not held out),2.0,2,antonym,,,0.576
+Causal - generic (not held out),2.0,2,synonym,,,0.466
+Causal - generic (not held out),2.0,2,singular-plural,,,0.75
+Causal - generic (not held out),2.0,2,present-past,,,0.886
+Causal - generic (not held out),2.0,2,country-capital,,,0.9744
+Causal - generic (not held out),2.0,2,country-currency,,,0.0862
+Causal - generic (not held out),2.0,2,landmark-country,,,0.938
+Causal - generic (not held out),2.0,2,park-country,,,0.848
+Causal - generic (not held out),2.0,2,product-company,,,0.878
+Causal - generic (not held out),2.0,2,next_item,,,0.0413
+Causal - generic (not held out),2.0,2,prev_item,,,0.236
+Causal - generic (not held out),2.0,2,english-french,,,0.024
+Causal - generic (not held out),2.0,2,english-german,,,0.064
+Causal - generic (not held out),2.0,2,english-spanish,,,0.024
+D,1.0,1,antonym,,,0.048
+D,1.0,1,synonym,,,0.116
+D,1.0,1,singular-plural,,,0.1495
+D,1.0,1,present-past,,,0.0
+D,1.0,1,country-capital,,,0.8119
+D,1.0,1,country-currency,,,0.0627
+D,1.0,1,landmark-country,,,0.792
+D,1.0,1,park-country,,,0.312
+D,1.0,1,product-company,,,0.346
+D,1.0,1,next_item,,,0.0
+D,1.0,1,prev_item,,,0.0
+D,1.0,1,english-french,,,0.002
+D,1.0,1,english-german,,,0.006
+D,1.0,1,english-spanish,,,0.024
+D,1.0,2,antonym,,,0.054
+D,1.0,2,synonym,,,0.116
+D,1.0,2,singular-plural,,,0.0523
+D,1.0,2,present-past,,,0.002
+D,1.0,2,country-capital,,,0.8047
+D,1.0,2,country-currency,,,0.0154
+D,1.0,2,landmark-country,,,0.752
+D,1.0,2,park-country,,,0.436
+D,1.0,2,product-company,,,0.534
+D,1.0,2,next_item,,,0.0
+D,1.0,2,prev_item,,,0.0
+D,1.0,2,english-french,,,0.006
+D,1.0,2,english-german,,,0.0
+D,1.0,2,english-spanish,,,0.008
+D,2.0,1,antonym,,,0.24
+D,2.0,1,synonym,,,0.284
+D,2.0,1,singular-plural,,,0.7055
+D,2.0,1,present-past,,,0.258
+D,2.0,1,country-capital,,,0.9429
+D,2.0,1,country-currency,,,0.2179
+D,2.0,1,landmark-country,,,0.964
+D,2.0,1,park-country,,,0.608
+D,2.0,1,product-company,,,0.696
+D,2.0,1,next_item,,,0.0
+D,2.0,1,prev_item,,,0.0113
+D,2.0,1,english-french,,,0.09
+D,2.0,1,english-german,,,0.044
+D,2.0,1,english-spanish,,,0.204
+D,2.0,2,antonym,,,0.234
+D,2.0,2,synonym,,,0.342
+D,2.0,2,singular-plural,,,0.5636
+D,2.0,2,present-past,,,0.232
+D,2.0,2,country-capital,,,0.9558
+D,2.0,2,country-currency,,,0.1785
+D,2.0,2,landmark-country,,,0.962
+D,2.0,2,park-country,,,0.706
+D,2.0,2,product-company,,,0.772
+D,2.0,2,next_item,,,0.0
+D,2.0,2,prev_item,,,0.02
+D,2.0,2,english-french,,,0.012
+D,2.0,2,english-german,,,0.022
+D,2.0,2,english-spanish,,,0.106

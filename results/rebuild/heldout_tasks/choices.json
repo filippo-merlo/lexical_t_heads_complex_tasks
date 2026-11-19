@@ -1,0 +1,1532 @@
+{
+ "all14": {
+  "1.0": {
+   "1": {
+    "all": {
+     "combo": "DBT",
+     "id_score": 0.3464,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    }
+   },
+   "2": {
+    "all": {
+     "combo": "DBT",
+     "id_score": 0.3612,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    }
+   }
+  },
+  "2.0": {
+   "1": {
+    "all": {
+     "combo": "DBP",
+     "id_score": 0.631,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    }
+   },
+   "2": {
+    "all": {
+     "combo": "DBP",
+     "id_score": 0.6212,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    }
+   }
+  }
+ },
+ "loto": {
+  "1.0": {
+   "1": {
+    "antonym": {
+     "combo": "DBT",
+     "id_score": 0.3606,
+     "id_tasks": [
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "synonym": {
+     "combo": "DBT",
+     "id_score": 0.357,
+     "id_tasks": [
+      "antonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "singular-plural": {
+     "combo": "DBT",
+     "id_score": 0.3222,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "present-past": {
+     "combo": "DBT",
+     "id_score": 0.3633,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "country-capital": {
+     "combo": "DBT",
+     "id_score": 0.3013,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "country-currency": {
+     "combo": "DBT",
+     "id_score": 0.356,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "landmark-country": {
+     "combo": "DBT",
+     "id_score": 0.318,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "park-country": {
+     "combo": "DBT",
+     "id_score": 0.3264,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "product-company": {
+     "combo": "DBT",
+     "id_score": 0.3141,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "next_item": {
+     "combo": "DBT",
+     "id_score": 0.373,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "prev_item": {
+     "combo": "DBT",
+     "id_score": 0.3706,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "english-french": {
+     "combo": "DBT",
+     "id_score": 0.3649,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "english-german": {
+     "combo": "DBT",
+     "id_score": 0.368,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-spanish"
+     ]
+    },
+    "english-spanish": {
+     "combo": "DBT",
+     "id_score": 0.3541,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german"
+     ]
+    }
+   },
+   "2": {
+    "antonym": {
+     "combo": "DBT",
+     "id_score": 0.3727,
+     "id_tasks": [
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "synonym": {
+     "combo": "DBT",
+     "id_score": 0.3758,
+     "id_tasks": [
+      "antonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "singular-plural": {
+     "combo": "DBT",
+     "id_score": 0.3363,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "present-past": {
+     "combo": "DBT",
+     "id_score": 0.3806,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "country-capital": {
+     "combo": "DBT",
+     "id_score": 0.3159,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "country-currency": {
+     "combo": "DBT",
+     "id_score": 0.3677,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "landmark-country": {
+     "combo": "DBT",
+     "id_score": 0.3326,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "park-country": {
+     "combo": "DBT",
+     "id_score": 0.3429,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "product-company": {
+     "combo": "DBT",
+     "id_score": 0.3299,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "next_item": {
+     "combo": "DBT",
+     "id_score": 0.3877,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "prev_item": {
+     "combo": "DBT",
+     "id_score": 0.3873,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "english-french": {
+     "combo": "DBT",
+     "id_score": 0.3784,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "english-german": {
+     "combo": "DBT",
+     "id_score": 0.3829,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-spanish"
+     ]
+    },
+    "english-spanish": {
+     "combo": "DBT",
+     "id_score": 0.3667,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german"
+     ]
+    }
+   }
+  },
+  "2.0": {
+   "1": {
+    "antonym": {
+     "combo": "DBP",
+     "id_score": 0.6288,
+     "id_tasks": [
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "synonym": {
+     "combo": "DBP",
+     "id_score": 0.6455,
+     "id_tasks": [
+      "antonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "singular-plural": {
+     "combo": "DBP",
+     "id_score": 0.6136,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "present-past": {
+     "combo": "DBP",
+     "id_score": 0.6317,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "country-capital": {
+     "combo": "DBP",
+     "id_score": 0.6062,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "country-currency": {
+     "combo": "DBP",
+     "id_score": 0.6244,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "landmark-country": {
+     "combo": "DBP",
+     "id_score": 0.6091,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "park-country": {
+     "combo": "DBP",
+     "id_score": 0.6224,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "product-company": {
+     "combo": "DBP",
+     "id_score": 0.6161,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "next_item": {
+     "combo": "DBP",
+     "id_score": 0.6773,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "prev_item": {
+     "combo": "DBP",
+     "id_score": 0.6724,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "english-french": {
+     "combo": "DBP",
+     "id_score": 0.6317,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "english-german": {
+     "combo": "DBP",
+     "id_score": 0.6335,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-spanish"
+     ]
+    },
+    "english-spanish": {
+     "combo": "DBP",
+     "id_score": 0.6211,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german"
+     ]
+    }
+   },
+   "2": {
+    "antonym": {
+     "combo": "DBP",
+     "id_score": 0.6153,
+     "id_tasks": [
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "synonym": {
+     "combo": "DBP",
+     "id_score": 0.6407,
+     "id_tasks": [
+      "antonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "singular-plural": {
+     "combo": "DBP",
+     "id_score": 0.6044,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "present-past": {
+     "combo": "DBP",
+     "id_score": 0.6168,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "country-capital": {
+     "combo": "DBP",
+     "id_score": 0.595,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "country-currency": {
+     "combo": "DBP",
+     "id_score": 0.621,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "landmark-country": {
+     "combo": "DBP",
+     "id_score": 0.5976,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "park-country": {
+     "combo": "DBP",
+     "id_score": 0.6076,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "product-company": {
+     "combo": "DBP",
+     "id_score": 0.6015,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "next_item": {
+     "combo": "DBP",
+     "id_score": 0.6626,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "prev_item": {
+     "combo": "DBP",
+     "id_score": 0.6623,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "english-french": {
+     "combo": "DBP",
+     "id_score": 0.6248,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "english-german": {
+     "combo": "DBP",
+     "id_score": 0.6241,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-spanish"
+     ]
+    },
+    "english-spanish": {
+     "combo": "DBP",
+     "id_score": 0.6231,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german"
+     ]
+    }
+   }
+  }
+ },
+ "loty": {
+  "1.0": {
+   "1": {
+    "word relations": {
+     "combo": "DBT",
+     "id_score": 0.3733,
+     "id_tasks": [
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "morphology": {
+     "combo": "DBP",
+     "id_score": 0.3403,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "facts": {
+     "combo": "DBP",
+     "id_score": 0.1977,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "sequences": {
+     "combo": "DBT",
+     "id_score": 0.4015,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "translations": {
+     "combo": "DBT",
+     "id_score": 0.4029,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item"
+     ]
+    }
+   },
+   "2": {
+    "word relations": {
+     "combo": "DBT",
+     "id_score": 0.3894,
+     "id_tasks": [
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "morphology": {
+     "combo": "DBT",
+     "id_score": 0.3551,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "facts": {
+     "combo": "DBP",
+     "id_score": 0.2036,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "sequences": {
+     "combo": "DBT",
+     "id_score": 0.4181,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "translations": {
+     "combo": "DBT",
+     "id_score": 0.4136,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item"
+     ]
+    }
+   }
+  },
+  "2.0": {
+   "1": {
+    "word relations": {
+     "combo": "DBP",
+     "id_score": 0.6443,
+     "id_tasks": [
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "morphology": {
+     "combo": "DBP",
+     "id_score": 0.6129,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "facts": {
+     "combo": "DBP",
+     "id_score": 0.5202,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "sequences": {
+     "combo": "DBP",
+     "id_score": 0.7261,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "translations": {
+     "combo": "DBTSPML",
+     "id_score": 0.6364,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item"
+     ]
+    }
+   },
+   "2": {
+    "word relations": {
+     "combo": "DBP",
+     "id_score": 0.6359,
+     "id_tasks": [
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "morphology": {
+     "combo": "DBP",
+     "id_score": 0.5983,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "facts": {
+     "combo": "DBP",
+     "id_score": 0.5008,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "next_item",
+      "prev_item",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "sequences": {
+     "combo": "DBP",
+     "id_score": 0.7106,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "english-french",
+      "english-german",
+      "english-spanish"
+     ]
+    },
+    "translations": {
+     "combo": "DBSL",
+     "id_score": 0.6471,
+     "id_tasks": [
+      "antonym",
+      "synonym",
+      "singular-plural",
+      "present-past",
+      "country-capital",
+      "country-currency",
+      "landmark-country",
+      "park-country",
+      "product-company",
+      "next_item",
+      "prev_item"
+     ]
+    }
+   }
+  }
+ }
+}
