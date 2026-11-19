@@ -33,7 +33,7 @@
 \title{Small Attention-Head Sets That Carry Simple Tasks\\[3pt]
 \large Choosing heads by what they decode, where they attend and what they cause}
 \author{Filippo Merlo}
-\date{18 November 2026 --- results of Sections~4 and~5; Section~6 pending}
+\date{19 November 2026 --- results of Sections~4 and~5, and of Section~6 for unseen wordings (transfer) and the summed vector; the rest of Section~6 pending}
 
 \begin{document}
 \maketitle
@@ -479,14 +479,61 @@ Summed vector & as above & as above & intervention \\
 
 The sets of Sec.~\ref{sec:rules}, with the means of the five templates, and the sets re-chosen on example prompts, with the Q format means, are written in as one summed vector (Sec.~\ref{sec:patching}) and compared with head-by-head patching at the same sizes, means and scaling. If the task were carried only by the direction a set writes, the two interventions would give similar accuracy; if it depends on where each head writes, head by head should be better, and increasingly so for larger sets, which span more layers.
 
-\pending{Each test at every size and in both scopes, with control means and random sets; accuracy by wording group and by task type; overlap between sets chosen on instructions and on examples.}
+\subsection{Results}\label{sec:beyond-results}
+
+Two tests are complete: the sets of Sec.~\ref{sec:rules} with the means of the unseen wordings, and the same sets written in as one summed vector. The rules re-chosen on wordings and on examples follow below once their runs are done. As in Sec.~\ref{sec:rules}, every accuracy is on the test half with cross-fitted $\alpha$, a mean over the 14 tasks and the two folds; the controls of both tests are in App.~\ref{app:s3}.
+
+\paragraph{Unseen wordings.} Every rule keeps most of its accuracy with the means of wordings it was not chosen on: in both scopes it loses mostly a tenth to a fifth of it (Fig.~\ref{fig:wordings-transfer}, Table~\ref{tab:wordings-transfer}). The order of the rules is mostly that of Sec.~\ref{sec:rules}. At ten heads, Causal $-$ generic is the best rule in both scopes. Per task, Selected is the best rule from 20 heads on, now also at 120. With one set for all tasks, Selected leads from 20 to 60 heads and Causal $-$ generic from 80. Selected loses less than both causal rankings at most sizes, so that with one set for all tasks it now stays above Causal up to 100 heads. The losses are spread over the task types, and the types each rule carries are those of Sec.~\ref{sec:rules} (Table~\ref{tab:wordings-types}, App.~\ref{app:s3}); per task, Selected is still the only rule that carries the translations.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\textwidth]{figures/design_wordings_transfer.pdf}
+\caption{The sets of Sec.~\ref{sec:rules}, unchanged, patched with the means of the 15 unseen Q wordings (markers), and with the means of Yang et al.'s five templates as in Fig.~\ref{fig:ladder} (thin lines). The numbers are in Table~\ref{tab:wordings-transfer}.}
+\label{fig:wordings-transfer}
+\end{figure}
+
+\begin{table}[tbp]
+\centering\small
+\input{tables/design_wordings_transfer}
+\caption{Accuracy of every rule with the means of the 15 unseen Q wordings (Fig.~\ref{fig:wordings-transfer}); the best rule of each row in bold. --: the rule does not fill the size on every task. Random sets and control means are in Table~\ref{tab:s3-controls}.}
+\label{tab:wordings-transfer}
+\end{table}
+
+\paragraph{By form of the wording.} The loss depends on the form of the wording more than on its being new (Fig.~\ref{fig:wordings-groups}). Unseen question--answer wordings that name the task do as well as Yang et al.'s four question--answer templates, or slightly better, for every rule. Each rule does worse with cloze wordings, and with a wording that does not name the task in every form; cloze wordings that do not name the task give the lowest accuracy of all groups for every rule. The same holds in Sec.~\ref{sec:rules}: Yang et al.'s cloze template gives lower accuracy than their question--answer templates for every rule, and the unseen cloze wordings that name the task do about as well as it or better. The causal ranking with one set for all tasks depends most on the form: it does two to four times better with question--answer wordings than with cloze wordings, and on label wordings it falls between the two. Its score is computed on question--answer templates only (Sec.~\ref{sec:davidson}). On label wordings, Selected does about as well as on question--answer ones, with or without the task's name, while both causal rankings do worse there.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\textwidth]{figures/design_wordings_groups.pdf}
+\caption{Accuracy at 40 heads by the form of the wording whose means are patched. Shaded rows: Yang et al.'s cloze template and their four question--answer templates, the means of Sec.~\ref{sec:rules}. Other rows: the groups of unseen Q wordings, two or three per task, by whether the wording names the task. Mean over the wordings of the group, then over 13 tasks and the two folds: country--currency is left out, since neither of its two Q label wordings without the task's name is answered correctly on ten prompts of a choosing half, so neither gives a mean. Yang terms per task does not fill 40 heads on every task. The numbers are in Table~\ref{tab:wordings-groups}.}
+\label{fig:wordings-groups}
+\end{figure}
+
+\paragraph{One summed vector.} For the causal rankings and Selected, the summed vector carries the task less well than the same heads written in one by one (Fig.~\ref{fig:summed}, Table~\ref{tab:summed}). At ten heads the two interventions are close, except for Causal with one set for all tasks. The gap opens from about 20 heads. It keeps growing with the size of the set for Causal, whose summed vector stays level from 20 or 40 heads while head by head keeps rising, and it stays about constant from 40 or 60 heads on for Selected and Causal $-$ generic. For D and Yang terms (J), the summed vector does about as well as head by head or better. These are the rules that carry mostly the fact tasks, and the fact tasks keep most of their accuracy under the summed vector with every rule; morphology, word relations and the translations lose most (Table~\ref{tab:summed-types}, App.~\ref{app:s3}). Per task, Selected carries the translations head by head, but as one summed vector only about a third as well. The two interventions also differ in their scaling. Head by head, three-quarters of the task-folds take $\alpha=2$, the better value on the other fold, against under half for the summed vector, which gives no sign of needing a larger scaling than head by head. For the rules that carry more than the fact tasks, a set's heads thus carry the task better written in at their own layers than as one direction added after layer 11.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\textwidth]{figures/design_summed.pdf}
+\caption{The sets of Sec.~\ref{sec:rules} written in head by head (filled markers, Fig.~\ref{fig:ladder}) and as one vector, the sum of the heads' outputs added after layer 11 (open markers, dashed), with the means of Yang et al.'s five templates; $\alpha\in\{1,2\}$ cross-fitted for each intervention. The numbers are in Table~\ref{tab:summed}.}
+\label{fig:summed}
+\end{figure}
+
+\begin{table}[tbp]
+\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\input{tables/design_summed}
+\caption{Accuracy of every rule written in head by head (heads; Table~\ref{tab:ladder-acc}) and as one summed vector (sum), with the means of Yang et al.'s five templates (Fig.~\ref{fig:summed}). --: the rule does not fill the size on every task. Random sets and control means are in Table~\ref{tab:s3-controls}.}
+\label{tab:summed}
+\end{table}
+
+\paragraph{Controls.} With the related task's means, every set stays below a tenth of the items correct in both tests, at every size (Table~\ref{tab:s3-controls}). Random sets with the same heads per layer behave as in Sec.~\ref{sec:rules}: with the unseen wordings' means they stay low at small sizes and rise with more heads for the rules whose sets crowd few layers, most for Selected. As one summed vector, they stay below a tenth at every size.
+
+\pending{Wordings, re-chosen (Sec.~\ref{sec:wordings}); examples, transfer and re-chosen, with the overlap between sets chosen on instructions and on examples (Sec.~\ref{sec:examples}); the summed vector of the sets chosen on examples (Sec.~\ref{sec:summed}).}
 
 % =====================================================================
 \section{Limitations}\label{sec:limitations}
 
 \paragraph{Scope.} One model and 14 simple tasks whose answers are single words or short phrases. Every condition is one greedy run, and accuracies are reported without intervals, so differences of a point or two between sets are not established.
 
-\paragraph{Scaling.} Only $\alpha\in\{1,2\}$ is compared, which may underrate sets whose best scaling is higher, in particular summed vectors.
+\paragraph{Scaling.} Only $\alpha\in\{1,2\}$ is compared, which may underrate sets whose best scaling is higher.
 
 \paragraph{Prompt material.} The 30 further wordings were generated by a language model and checked by script, not by hand. Segments are assigned by script, and the task-word segment depends on the task's list, so it is empty in templates that use none of its words. Example prompts have one format per mean, and their separators differ between formats.
 
@@ -619,5 +666,35 @@ label, does not name it & \p{Word: \{x\}\nl Contrary word:} \\
 \caption{Accuracy of every rule by task type and size, mean over the tasks of the type and the two folds. A rule is shown at sizes it fills on every task of the type.}
 \label{fig:types}
 \end{figure}
+
+\section{Stage 3: controls, task types and wording groups}\label{app:s3}
+
+\begin{table}[H]
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\input{tables/design_s3_controls}
+\caption{Random sets (rand.) and control means (ctrl.) of every rule in the two complete tests of Sec.~\ref{sec:beyond}, at every size: the sets of Sec.~\ref{sec:rules} with the means of the unseen Q wordings, and written in as one summed vector with the means of Yang et al.'s five templates. Mean over the 14 tasks and the two folds; random sets averaged over their three draws first. --: the rule does not fill the size on every task.}
+\label{tab:s3-controls}
+\end{table}
+
+\begin{table}[H]
+\centering\small
+\input{tables/design_wordings_types}
+\caption{Accuracy by task type at 40 heads with the means of the unseen Q wordings, mean over the tasks of the type and the two folds (as Table~\ref{tab:types}). --: the rule does not fill 40 heads on every task of the type.}
+\label{tab:wordings-types}
+\end{table}
+
+\begin{table}[H]
+\centering\small
+\input{tables/design_summed_types}
+\caption{Accuracy by task type at 40 heads, the sets written in as one summed vector with the means of Yang et al.'s five templates (as Table~\ref{tab:types}).}
+\label{tab:summed-types}
+\end{table}
+
+\begin{table}[H]
+\centering\footnotesize
+\input{tables/design_wordings_groups}
+\caption{Accuracy at 40 heads by the form of the wording whose means are patched (Fig.~\ref{fig:wordings-groups}). Yang: Yang et al.'s cloze template and their four question--answer templates (Sec.~\ref{sec:rules}); named, not: unseen Q wordings that name the task or do not. Mean over the wordings of the group, then over 13 tasks (country--currency left out) and the two folds.}
+\label{tab:wordings-groups}
+\end{table}
 
 \end{document}

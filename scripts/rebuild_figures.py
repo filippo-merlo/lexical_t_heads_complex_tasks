@@ -1,10 +1,12 @@
-"""Rebuilt design (paper/head-sets-simple-design.tex, Secs. 4-5): figures and tables of stages 1 and 2.
+"""Rebuilt design (paper/head-sets-simple-design.tex, Secs. 4-6): figures and tables of stages 1-3.
 
 Reads the cross-fitted accuracies of ``scripts/rebuild_report.py`` (``results/rebuild/additions/
 s1_per_task.csv``, ``s2_per_task.csv``), the sets (``fold{1,2}/heads.json``), the selection
 (``selected.json``, and the screen scores of ``scripts/rebuild_select.py``) and the generic heads
 (``fold{1,2}/generic.json``). A mean over tasks is given only where every task and both folds have the
-set (``--`` otherwise); random sets are averaged over their three draws first. Writes
+set (``--`` otherwise); random sets are averaged over their three draws first. Stage 3 (Sec. 6) reads the
+same reports of its tests under ``results/rebuild/scenarios/`` and, for the wording groups, the patching
+files themselves (each fold and task at its cross-fitted alpha). Writes
 ``paper/figures/design_*.pdf`` and ``paper/tables/design_*.tex``.
 
     .venv/bin/python scripts/rebuild_figures.py
@@ -54,22 +56,27 @@ def plot_label(rule: str) -> str:
 # ------------------------------------------------------------------ data
 
 
-def cells() -> pd.Series:
+def cells(paths) -> pd.Series:
     """accuracy[(set, kind, fold, task)]; kind task / control / random (random: mean of the draws)."""
-    pt = pd.concat([pd.read_csv(DIR / f"{s}_per_task.csv") for s in ("s1", "s2")], ignore_index=True)
+    pt = pd.concat([pd.read_csv(p) for p in paths], ignore_index=True)
     is_random = pt.set.str.match(r"^random_.+_\d+$")
     pt["base"] = pt.set.where(~is_random, pt.set.str.replace(r"^random_(.+)_\d+$", r"\1", regex=True))
     pt["kind"] = np.where(is_random, "random", pt.source)
     return pt.groupby(["base", "kind", "fold", "task"]).accuracy.mean()
 
 
-ACC = cells()
+ACC = cells([DIR / f"{s}_per_task.csv" for s in ("s1", "s2")])
+# Stage 3 (Sec. 6): test -> (results folder, report stage); a test enters once scripts/rebuild_report.py has run.
+SCEN = rt.RESULTS / "rebuild" / "scenarios"
+S3 = {"wt": (SCEN / "wordings_transfer", "s3wt"), "sum": (SCEN / "summed", "s3sum")}
+ACC3 = {k: cells([d / f"{st}_per_task.csv"]) for k, (d, st) in S3.items() if (d / f"{st}_per_task.csv").exists()}
+S3_RULES = ("yangJ", "D", "selected", "causal", "causalnogen")  # the rules carried into Sec. 6
 
 
-def mean_over(name: str, kind: str = "task", tasks=simple.TASKS):
+def mean_over(name: str, kind: str = "task", tasks=simple.TASKS, acc=None):
     """Mean over tasks and folds, or None unless every task of ``tasks`` has the set in both folds."""
     try:
-        s = ACC.loc[(name, kind)]
+        s = (ACC if acc is None else acc).loc[(name, kind)]
     except KeyError:
         return None
     s = s[s.index.get_level_values("task").isin(tasks)]
@@ -266,10 +273,10 @@ def axes_style(ax, ylabel=True) -> None:
     ax.spines[["top", "right"]].set_visible(False)
 
 
-def curve(ax, name_of, kind="task", **kw) -> None:
+def curve(ax, name_of, kind="task", acc=None, **kw) -> None:
     xs, ys = [], []
     for n in SIZES:
-        v = mean_over(name_of(n), kind)
+        v = mean_over(name_of(n), kind, acc=acc)
         if v is not None:
             xs.append(n)
             ys.append(v)
@@ -566,6 +573,268 @@ def fig_types() -> None:
     plt.close(fig)
 
 
+# ------------------------------------------------------------------ stage 3 (Sec. 6)
+
+S3_SCENARIO = {"wt": "Unseen wordings, transfer", "sum": "Summed vector"}
+# Wording groups (Sec. 6.1): Yang et al.'s cloze template and four question-answer templates (Sec. 5), and the
+# six groups of Q wordings, ordered by form.
+GROUP_FORMS = (("cloze", ("yang-cloze", "cloze-named", "cloze-unnamed")),
+               ("question–answer", ("yang-qa", "qa-named", "qa-unnamed")),
+               ("label", ("label-named", "label-unnamed")))
+GROUP_LABEL = {"yang-cloze": "Yang's template (Sec. 5)", "yang-qa": "Yang's four templates (Sec. 5)",
+               "cloze-named": "names the task", "cloze-unnamed": "does not", "qa-named": "names the task",
+               "qa-unnamed": "does not", "label-named": "names the task", "label-unnamed": "does not"}
+GROUPS = tuple(g for _, gs in GROUP_FORMS for g in gs)
+
+
+def template_rows(folder: Path, parts: str, report: list[Path], n: int, skip: str | None = None) -> pd.DataFrame:
+    """Task-mean rows (one per template mean) of the S3 rules at ``n`` heads, at each fold and task's
+    cross-fitted alpha (from the report). Rows repeated by a later run of the same set are dropped."""
+    names = rf"^(shared_)?({'|'.join(S3_RULES)}){n}$"
+    raw = pd.concat([pd.read_csv(p).assign(fold=f) for f in (1, 2) for p in sorted((folder / f"fold{f}").glob(parts))
+                     if skip is None or skip not in p.name], ignore_index=True)
+    raw = raw[(raw.source == "task") & raw.heads.str.match(names)]
+    alpha = pd.concat([pd.read_csv(p) for p in report])
+    alpha = alpha[alpha.source == "task"][["fold", "task", "set", "alpha"]].rename(columns={"set": "heads"}).drop_duplicates()
+    x = raw.merge(alpha, on=["fold", "task", "heads", "alpha"])
+    return x.drop_duplicates(["fold", "task", "heads", "alpha", "mean_wording"])
+
+
+def by_group(n: int = SCREEN_N) -> tuple[dict[str, dict[str, float]], list[str]]:
+    """acc[set][group]: mean over the group's wordings, then over tasks and folds, on the tasks that have a mean
+    of every group in both folds (a Q wording gives no mean without 10 correct prompts); and the tasks left out."""
+    s5 = template_rows(DIR, "patching_simple.part-s*.csv", [DIR / f"{s}_per_task.csv" for s in ("s1", "s2")], n, skip="s1sum")
+    s5["group"] = np.where(s5.mean_wording == "inst0", "yang-cloze", "yang-qa")
+    d, st = S3["wt"]
+    q = template_rows(d, f"patching_simple.part-{st}-*.csv", [d / f"{st}_per_task.csv"], n, skip="sel40")
+    q["group"] = q.mean_wording.map(simple.wording_group)
+    x = pd.concat([s5, q])
+    cell = x.groupby(["heads", "group", "fold", "task"]).accuracy.mean()
+    have = cell.groupby(["fold", "task"]).apply(lambda c: c.index.get_level_values("group").nunique())
+    left_out = sorted({t for (f, t), k in have.items() if k < len(GROUPS)})
+    cell = cell[~cell.index.get_level_values("task").isin(left_out)]
+    n_tasks = len(simple.TASKS) - len(left_out)
+    g = cell.groupby(["heads", "group"])
+    full = g.size() == 2 * n_tasks
+    return {h: {grp: (float(v) if full[(h, grp)] else None) for (h2, grp), v in g.mean().items() if h2 == h}
+            for h in x.heads.unique()}, left_out
+
+
+def table_s3_acc(key: str, name: str) -> None:
+    """Task-mean accuracy of the S3 rules at every size in one test, both scopes (as Table design_ladder)."""
+    acc = ACC3[key]
+    header = ["$N$ & " + " & ".join(RULES[r][0] for r in S3_RULES) + " \\\\"]
+    rows = []
+    for scope, prefix in SCOPES.items():
+        rows.append(f"\\multicolumn{{{len(S3_RULES) + 1}}}{{@{{}}l}}{{\\textit{{{scope.capitalize()}}}}} \\\\")
+        for n in SIZES:
+            vals = [mean_over(f"{prefix}{r}{n}", acc=acc) for r in S3_RULES]
+            best = max(v for v in vals if v is not None)
+            rows.append(f"{n} & " + " & ".join(("\\textbf{" + rt.num(v) + "}") if v is not None and v == best else rt.num(v)
+                                              for v in vals) + " \\\\")
+        if scope == "per task":
+            rows.append("\\midrule")
+    write(name, rt.tabular("@{}r" + "r" * len(S3_RULES) + "@{}", header, rows))
+
+
+def short_label(rule: str) -> str:
+    """Header of a rule spanning two narrow columns."""
+    return "Causal $-$ gen." if rule == "causalnogen" else RULES[rule][0]
+
+
+def table_summed() -> None:
+    """Head by head (Sec. 5) against the summed vector, same sets and template means, every size."""
+    header = ["& " + " & ".join(f"\\multicolumn{{2}}{{c}}{{{short_label(r)}}}" for r in S3_RULES) + " \\\\",
+              " ".join(f"\\cmidrule(lr){{{2 + 2 * i}-{3 + 2 * i}}}" for i in range(len(S3_RULES))),
+              "$N$ & " + " & ".join("heads & sum" for _ in S3_RULES) + " \\\\"]
+    rows = []
+    for scope, prefix in SCOPES.items():
+        rows.append(f"\\multicolumn{{{2 * len(S3_RULES) + 1}}}{{@{{}}l}}{{\\textit{{{scope.capitalize()}}}}} \\\\")
+        for n in SIZES:
+            vals = []
+            for r in S3_RULES:
+                vals += [rt.num(mean_over(f"{prefix}{r}{n}")), rt.num(mean_over(f"{prefix}{r}{n}", acc=ACC3["sum"]))]
+            rows.append(f"{n} & " + " & ".join(vals) + " \\\\")
+        if scope == "per task":
+            rows.append("\\midrule")
+    write("design_summed", rt.tabular("@{}r" + "rr" * len(S3_RULES) + "@{}", header, rows))
+
+
+def table_s3_controls() -> None:
+    """Random sets and control means of the S3 rules in every stage-3 test, every size."""
+    header = ["& & " + " & ".join(f"\\multicolumn{{2}}{{c}}{{{short_label(r)}}}" for r in S3_RULES) + " \\\\",
+              " ".join(f"\\cmidrule(lr){{{3 + 2 * i}-{4 + 2 * i}}}" for i in range(len(S3_RULES))),
+              "Scope & $N$ & " + " & ".join("rand. & ctrl." for _ in S3_RULES) + " \\\\"]
+    rows = []
+    keys = [k for k in S3_SCENARIO if k in ACC3]
+    for i, key in enumerate(keys):
+        rows.append(f"\\multicolumn{{{2 * len(S3_RULES) + 2}}}{{@{{}}l}}{{\\textit{{{S3_SCENARIO[key]}}}}} \\\\")
+        for scope, prefix in SCOPES.items():
+            for n in SIZES:
+                vals = []
+                for r in S3_RULES:
+                    vals += [rt.num(mean_over(f"{prefix}{r}{n}", "random", acc=ACC3[key])),
+                             rt.num(mean_over(f"{prefix}{r}{n}", "control", acc=ACC3[key]))]
+                rows.append(f"{scope if n == SIZES[0] else ''} & {n} & " + " & ".join(vals) + " \\\\")
+            if scope == "per task":
+                rows.append("\\addlinespace")
+        if i < len(keys) - 1:
+            rows.append("\\midrule")
+    write("design_s3_controls", rt.tabular("@{}lr" + "rr" * len(S3_RULES) + "@{}", header, rows))
+
+
+def table_s3_types(key: str, name: str, n: int = SCREEN_N) -> None:
+    header = ["Rule & " + " & ".join(TYPES) + " & all \\\\"]
+    rows = []
+    for scope, prefix in SCOPES.items():
+        rows.append(f"\\multicolumn{{{len(TYPES) + 2}}}{{@{{}}l}}{{\\textit{{{scope.capitalize()}}}}} \\\\")
+        for r in S3_RULES:
+            nm = f"{prefix}{r}{n}"
+            rows.append(f"{RULES[r][0]} & " + " & ".join(rt.num(mean_over(nm, tasks=ts, acc=ACC3[key])) for ts in TYPES.values())
+                        + f" & {rt.num(mean_over(nm, acc=ACC3[key]))} \\\\")
+        if scope == "per task":
+            rows.append("\\midrule")
+    write(name, rt.tabular("@{}l" + "r" * (len(TYPES) + 1) + "@{}", header, rows))
+
+
+def table_groups(groups, n: int = SCREEN_N) -> None:
+    header = ["& & " + " & ".join(f"\\multicolumn{{{len(gs)}}}{{c}}{{{form.replace('–', '--')}}}" for form, gs in GROUP_FORMS) + " \\\\",
+              " ".join(f"\\cmidrule(lr){{{3 + a}-{2 + a + len(gs)}}}"
+                       for a, (_, gs) in zip(np.cumsum([0] + [len(gs) for _, gs in GROUP_FORMS]), GROUP_FORMS)),
+              "Scope & Rule & " + " & ".join({"yang-cloze": "Yang", "yang-qa": "Yang"}.get(g, "named" if g.endswith("-named") else "not")
+                                             for g in GROUPS) + " \\\\"]
+    rows = []
+    for scope, prefix in SCOPES.items():
+        for r in S3_RULES:
+            v = groups.get(f"{prefix}{r}{n}", {})
+            rows.append(f"{scope if r == S3_RULES[0] else ''} & {RULES[r][0]} & " + " & ".join(rt.num(v.get(g)) for g in GROUPS) + " \\\\")
+        if scope == "per task":
+            rows.append("\\midrule")
+    write("design_wordings_groups", rt.tabular("@{}ll" + "r" * len(GROUPS) + "@{}", header, rows))
+
+
+def panel_title(scope: str) -> str:
+    return f"({'ab'[list(SCOPES).index(scope)]}) {'One set per task' if scope == 'per task' else 'One set for all 14 tasks'}"
+
+
+def fig_wordings_transfer() -> None:
+    fig, axes = plt.subplots(1, 2, figsize=(6.5, 2.9), sharey=True)
+    for ax, (scope, prefix) in zip(axes, SCOPES.items()):
+        for r in S3_RULES:
+            label, col, mk = RULES[r]
+            curve(ax, lambda n: f"{prefix}{r}{n}", color=col, lw=0.9, alpha=0.4, zorder=1)
+            curve(ax, lambda n: f"{prefix}{r}{n}", acc=ACC3["wt"], color=col, marker=mk, ms=4, label=plot_label(r),
+                  lw=1.8 if r == "selected" else 1.2, zorder=3 if r == "selected" else 2)
+        ax.set_title(panel_title(scope), loc="left")
+        axes_style(ax, ylabel=ax is axes[0])
+    handles, labels = axes[1].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="lower center", ncol=5, bbox_to_anchor=(0.5, 0.055), handlelength=1.8, columnspacing=1.2)
+    fig.legend([Line2D([], [], color=rt.INK_2, marker="o", ms=3.5, lw=1.2), Line2D([], [], color=rt.INK_2, lw=0.9, alpha=0.4)],
+               ["means of the 15 unseen Q wordings", "means of Yang's five templates (Sec. 5)"],
+               loc="lower center", ncol=2, bbox_to_anchor=(0.5, -0.01), handlelength=1.8, columnspacing=1.6)
+    fig.tight_layout(rect=(0, 0.14, 1, 1))
+    fig.savefig(rt.FIGURES / "design_wordings_transfer.pdf")
+    plt.close(fig)
+
+
+def fig_groups(groups, n: int = SCREEN_N) -> None:
+    fig, axes = plt.subplots(1, 2, figsize=(6.5, 3.3), sharey=True)
+    ys, labels, y = [], [], 0.0
+    form_y = []
+    for form, gs in GROUP_FORMS:
+        form_y.append((form, y))
+        for g in gs:
+            ys.append(y)
+            labels.append(GROUP_LABEL[g])
+            y += 1
+        y += 0.6
+    ypos = dict(zip(GROUPS, ys))
+    for ax, (scope, prefix) in zip(axes, SCOPES.items()):
+        for i, r in enumerate(S3_RULES):
+            label, col, mk = RULES[r]
+            v = groups.get(f"{prefix}{r}{n}", {})
+            pts = [(v[g], ypos[g] + (i - 2) * 0.13) for g in GROUPS if v.get(g) is not None]
+            if pts:
+                ax.scatter(*zip(*pts), color=col, marker=mk, s=16, zorder=3, label=plot_label(r), lw=0)
+        for g in ("yang-cloze", "yang-qa"):
+            ax.axhspan(ypos[g] - 0.45, ypos[g] + 0.45, color=rt.GRIDLINE, alpha=0.6, lw=0, zorder=0)
+        ax.set_yticks(ys)
+        ax.set_yticklabels(labels)
+        ax.set_ylim(ys[-1] + 0.6, -0.6 - 0.9)
+        for form, fy in form_y if ax is axes[0] else ():
+            ax.text(-0.01, fy - 0.75, form, transform=ax.get_yaxis_transform(), ha="right", va="center",
+                    fontsize=7.5, color=rt.INK, fontweight="bold")
+        ax.set_xlim(0, 0.75)
+        ax.set_xlabel("accuracy")
+        ax.grid(axis="y", visible=False)
+        ax.spines[["top", "right"]].set_visible(False)
+        ax.set_title(panel_title(scope) + f", $N={n}$", loc="left")
+    handles, hl = axes[1].get_legend_handles_labels()
+    fig.legend(handles, hl, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.01), handletextpad=0.3, columnspacing=1.4)
+    fig.tight_layout(rect=(0, 0.06, 1, 1))
+    fig.savefig(rt.FIGURES / "design_wordings_groups.pdf")
+    plt.close(fig)
+
+
+def fig_summed() -> None:
+    fig, axes = plt.subplots(2, len(S3_RULES), figsize=(6.5, 3.6), sharex=True, sharey=True)
+    for i, (scope, prefix) in enumerate(SCOPES.items()):
+        for j, r in enumerate(S3_RULES):
+            ax = axes[i, j]
+            label, col, mk = RULES[r]
+            curve(ax, lambda n: f"{prefix}{r}{n}", color=col, marker=mk, ms=3.5)
+            curve(ax, lambda n: f"{prefix}{r}{n}", acc=ACC3["sum"], color=col, marker=mk, ms=3.5, mfc="none", ls=(0, (4, 2)),
+                  lw=1.0)
+            axes_style(ax, ylabel=j == 0)
+            ax.set_xticks((10, 40, 80, 120))
+            ax.set_xlabel("" if i == 0 else "heads ($N$)")
+            if i == 0:
+                ax.set_title(plot_label(r), loc="left")
+            if j == 0:
+                ax.set_ylabel(f"{scope}\naccuracy")
+            if r == "yangJ" and scope == "per task":
+                ax.text(0.5, 0.55, "fills 10 and 20\nheads only", transform=ax.transAxes, ha="center", fontsize=6.5,
+                        color=rt.INK_2)
+    handles = [Line2D([], [], color=rt.INK_2, marker="o", ms=3.5, label="head by head"),
+               Line2D([], [], color=rt.INK_2, marker="o", mfc="none", ms=3.5, ls=(0, (4, 2)), lw=1.0,
+                      label="summed after layer 11")]
+    fig.legend(handles=handles, loc="lower center", ncol=2, bbox_to_anchor=(0.5, -0.01))
+    fig.tight_layout(rect=(0, 0.06, 1, 1))
+    fig.savefig(rt.FIGURES / "design_summed.pdf")
+    plt.close(fig)
+
+
+def alpha2_share() -> dict[str, float]:
+    """Share of task-folds whose cross-fitted alpha is 2, over the S3 rules' sets (task means)."""
+    out = {}
+    for key, paths in {"Sec. 5": [DIR / f"{s}_per_task.csv" for s in ("s1", "s2")],
+                       **{k: [d / f"{st}_per_task.csv"] for k, (d, st) in S3.items()}}.items():
+        if not all(p.exists() for p in paths):
+            continue
+        pt = pd.concat([pd.read_csv(p) for p in paths])
+        q = pt[(pt.source == "task") & pt.set.str.match(rf"^(shared_)?({'|'.join(S3_RULES)})\d+$")].drop_duplicates(["fold", "task", "set"])
+        out[key] = round(float((q.alpha == 2).mean()), 2)
+    return out
+
+
+def stage3() -> None:
+    if "wt" in ACC3:
+        table_s3_acc("wt", "design_wordings_transfer")
+        table_s3_types("wt", "design_wordings_types")
+        groups, left_out = by_group()
+        print("wording groups: tasks left out", left_out)
+        table_groups(groups)
+        fig_wordings_transfer()
+        fig_groups(groups)
+    if "sum" in ACC3:
+        table_summed()
+        table_s3_types("sum", "design_summed_types")
+        fig_summed()
+    if ACC3:
+        table_s3_controls()
+        print("alpha = 2 share:", alpha2_share())
+
+
 def main() -> None:
     scores = {fold: screen_scores(fold) for fold in (1, 2)}
     table_own()
@@ -585,6 +854,7 @@ def main() -> None:
     fig_types()
     best = task_best()
     fig_task_best(best)
+    stage3()
     for scope, b in best.items():
         print(scope, "best per task:", {t: (r["best"], round(r["acc"], 3)) for t, r in b["tasks"].items()})
     print("screen fold-1 vs fold-2 correlation: per task %.2f, shared %.2f" % corr)

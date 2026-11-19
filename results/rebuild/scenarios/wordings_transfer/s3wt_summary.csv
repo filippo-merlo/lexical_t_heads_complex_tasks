@@ -1,0 +1,98 @@
+set,scope,n,task,control,random,tasks_folds
+D10,per task,10,0.158,0.03,0.018,28
+D100,per task,100,0.421,0.017,0.055,28
+D120,per task,120,0.391,0.015,0.089,28
+D20,per task,20,0.217,0.034,0.011,28
+D40,per task,40,0.33,0.029,0.032,28
+D60,per task,60,0.388,0.023,0.051,28
+D80,per task,80,0.434,0.02,0.031,28
+causal10,per task,10,0.196,0.029,0.015,28
+causal100,per task,100,0.442,0.047,0.082,28
+causal120,per task,120,0.504,0.052,0.069,28
+causal20,per task,20,0.274,0.034,0.014,28
+causal40,per task,40,0.364,0.04,0.042,28
+causal60,per task,60,0.375,0.04,0.046,28
+causal80,per task,80,0.416,0.043,0.038,28
+causalnogen10,per task,10,0.24,0.036,0.017,28
+causalnogen100,per task,100,0.46,0.034,0.111,28
+causalnogen120,per task,120,0.479,0.035,0.166,28
+causalnogen20,per task,20,0.33,0.036,0.02,28
+causalnogen40,per task,40,0.419,0.037,0.055,28
+causalnogen60,per task,60,0.433,0.036,0.052,28
+causalnogen80,per task,80,0.456,0.033,0.073,28
+screen_DBP,per task,,0.546,--,--,28
+screen_DBS,per task,,0.534,--,--,28
+screen_DBSP,per task,,0.507,--,--,28
+screen_DBSPM,per task,,0.483,--,--,28
+screen_DBTM,per task,,0.537,--,--,28
+screen_DBTOSP,per task,,0.503,--,--,28
+screen_DBTOSPL,per task,,0.506,--,--,28
+screen_DBTP,per task,,0.5,--,--,28
+screen_DBTPM,per task,,0.495,--,--,28
+screen_DBTS,per task,,0.511,--,--,28
+screen_DBTSM,per task,,0.518,--,--,28
+screen_DBTSP,per task,,0.493,--,--,28
+screen_DBTSPM,per task,,0.488,--,--,28
+selected10,per task,10,0.177,0.028,0.015,28
+selected100,per task,100,0.563,0.019,0.142,28
+selected120,per task,120,0.541,0.018,0.174,28
+selected20,per task,20,0.364,0.038,0.018,28
+selected40,per task,40,0.546,0.026,0.05,28
+selected60,per task,60,0.589,0.027,0.098,28
+selected80,per task,80,0.59,0.02,0.119,28
+shared_D10,shared,10,0.152,0.03,0.009,28
+shared_D100,shared,100,0.158,0.008,0.168,28
+shared_D120,shared,120,0.151,0.008,0.11,28
+shared_D20,shared,20,0.223,0.031,0.011,28
+shared_D40,shared,40,0.227,0.014,0.084,28
+shared_D60,shared,60,0.251,0.011,0.036,28
+shared_D80,shared,80,0.252,0.012,0.045,28
+shared_causal10,shared,10,0.091,0.023,0.016,28
+shared_causal100,shared,100,0.544,0.037,0.037,28
+shared_causal120,shared,120,0.573,0.04,0.063,28
+shared_causal20,shared,20,0.217,0.029,0.01,28
+shared_causal40,shared,40,0.398,0.032,0.035,28
+shared_causal60,shared,60,0.459,0.041,0.036,28
+shared_causal80,shared,80,0.51,0.035,0.079,28
+shared_causalnogen10,shared,10,0.163,0.025,0.01,28
+shared_causalnogen100,shared,100,0.604,0.022,0.09,28
+shared_causalnogen120,shared,120,0.618,0.021,0.082,28
+shared_causalnogen20,shared,20,0.297,0.037,0.021,28
+shared_causalnogen40,shared,40,0.471,0.035,0.063,28
+shared_causalnogen60,shared,60,0.535,0.031,0.065,28
+shared_causalnogen80,shared,80,0.599,0.024,0.088,28
+shared_screen_DBM,shared,,0.501,--,--,28
+shared_screen_DBOML,shared,,0.458,--,--,28
+shared_screen_DBPL,shared,,0.488,--,--,28
+shared_screen_DBPM,shared,,0.524,--,--,28
+shared_screen_DBPML,shared,,0.502,--,--,28
+shared_screen_DBSM,shared,,0.528,--,--,28
+shared_screen_DBSP,shared,,0.499,--,--,28
+shared_screen_DBTM,shared,,0.511,--,--,28
+shared_screen_DBTML,shared,,0.529,--,--,28
+shared_screen_DBTOL,shared,,0.457,--,--,28
+shared_screen_DBTPL,shared,,0.509,--,--,28
+shared_screen_DBTPML,shared,,0.492,--,--,28
+shared_screen_DTML,shared,,0.497,--,--,28
+shared_screen_DTOSPL,shared,,0.481,--,--,28
+shared_selected10,shared,10,0.117,0.054,0.011,28
+shared_selected100,shared,100,0.565,0.026,0.154,28
+shared_selected120,shared,120,0.558,0.019,0.222,28
+shared_selected20,shared,20,0.422,0.061,0.017,28
+shared_selected40,shared,40,0.529,0.048,0.045,28
+shared_selected60,shared,60,0.548,0.03,0.037,28
+shared_selected80,shared,80,0.522,0.032,0.198,28
+shared_yangJ10,shared,10,0.017,0.01,0.01,28
+shared_yangJ100,shared,100,0.202,0.007,0.055,28
+shared_yangJ120,shared,120,0.13,0.005,0.043,28
+shared_yangJ20,shared,20,0.089,0.024,0.019,28
+shared_yangJ40,shared,40,0.155,0.033,0.01,28
+shared_yangJ60,shared,60,0.188,0.018,0.044,28
+shared_yangJ80,shared,80,0.203,0.011,0.049,28
+yangJ10,per task,10,0.105,0.018,0.01,28
+yangJ100,per task,100,--,--,--,6
+yangJ120,per task,120,--,--,--,2
+yangJ20,per task,20,0.137,0.022,0.009,28
+yangJ40,per task,40,--,--,--,26
+yangJ60,per task,60,--,--,--,22
+yangJ80,per task,80,--,--,--,14
