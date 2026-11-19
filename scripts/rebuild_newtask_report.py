@@ -65,31 +65,33 @@ def main() -> None:
                     task = acc[(fold, t, nm, "task")][alpha]
                     control = acc[(fold, t, nm, "control")][alpha]
                     random = float(np.mean([acc[(fold, t, f"random_{nm}_{i}", "task")][alpha] for i in range(N_RANDOM)]))
-                    rows.append(dict(rule=label, set=nm, alpha=alpha, fold=fold, task=t, accuracy=round(task, 4),
-                                     control=round(control, 4), random=round(random, 4)))
+                    rows.append(dict(rule=label, set=nm, alpha=alpha, fold=fold, task=t, accuracy=task,
+                                     control=control, random=random))
+    rounded = lambda d, k: {a: round(v, k) if isinstance(v, float) else v for a, v in d.items()}  # noqa: E731
     with (DIR / "per_task.csv").open("w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0]))
         w.writeheader()
-        w.writerows(rows)
+        w.writerows(rounded(r, 4) for r in rows)
 
-    summary = []
+    summary = []  # unrounded; rounded only when written
     for label, nm in rules().items():
         for alpha in ALPHAS:
             sel = [r for r in rows if r["rule"] == label and r["alpha"] == alpha]
+            assert len(sel) == len(FOLDS) * len(tasks)
             line = dict(rule=label, alpha=alpha)
             for t in tasks:
-                line[t] = round(float(np.mean([r["accuracy"] for r in sel if r["task"] == t])), 3)
-            line["unseen mean"] = round(float(np.mean([r["accuracy"] for r in sel])), 3)
-            line["control"] = round(float(np.mean([r["control"] for r in sel])), 3)
-            line["random"] = round(float(np.mean([r["random"] for r in sel])), 3)
+                line[t] = float(np.mean([r["accuracy"] for r in sel if r["task"] == t]))
+            line["unseen mean"] = float(np.mean([r["accuracy"] for r in sel]))
+            line["control"] = float(np.mean([r["control"] for r in sel]))
+            line["random"] = float(np.mean([r["random"] for r in sel]))
             seen = [ref[(fold, t, nm, "task")][alpha] for fold in FOLDS for t in simple.TASKS]
             assert len(seen) == 2 * len(simple.TASKS)
-            line["14 tasks (identified on)"] = round(float(np.mean(seen)), 3)
+            line["14 tasks (identified on)"] = float(np.mean(seen))
             summary.append(line)
     with (DIR / "summary.csv").open("w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(summary[0]))
         w.writeheader()
-        w.writerows(summary)
+        w.writerows(rounded(s, 3) for s in summary)
 
     # Unpatched baseline, majority label, repeated replies.
     repeated, base = [], []
@@ -100,8 +102,8 @@ def main() -> None:
             none = [x for x in lines if x["source"] == "none"]
             expected = Counter(x["expected"] for x in none)
             label, count = expected.most_common(1)[0]
-            base.append(dict(fold=fold, task=t, items=len(none), unpatched=round(np.mean([x["correct"] for x in none]), 3),
-                             majority_label=label, majority_rate=round(count / len(none), 3)))
+            base.append(dict(fold=fold, task=t, items=len(none), unpatched=float(np.mean([x["correct"] for x in none])),
+                             majority_label=label, majority_rate=count / len(none)))
             groups = defaultdict(list)
             for x in lines:
                 if x["source"] != "none":
@@ -128,6 +130,50 @@ def main() -> None:
     n_task = sum(r["source"] == "task" and not r["set"].startswith("random_") for r in repeated)
     print(f"\nconditions with one reply >= {REPEATED:.0%} of replies: {len(repeated)} "
           f"({n_task} with task means on a rule's own set); see repeated.csv")
+    tables(summary, base)
+
+
+def tables(summary: list[dict], base: list[dict]) -> None:
+    """paper/tables/design_unseen.tex: the rules of Sec. 5 and the combinations that do better than Selected on
+    the unseen tasks at both alphas; design_unseen_combos.tex: the other combinations."""
+    import results_tex as rt
+
+    tasks = simple.UNSEEN_TASKS
+    by = {(s["rule"], s["alpha"]): s for s in summary}
+    selected = f"Selected ({SELECTED})"
+    combos = [c for c in combos_used() if c != SELECTED]
+    better = [c for c in combos if all(by[(c, a)]["unseen mean"] > by[(selected, a)]["unseen mean"] for a in ALPHAS)]
+    others = [c for c in combos if c not in better]
+    print(f"combinations above Selected on the unseen tasks at both alphas: {better}")
+    short = {"person-occupation": "occupation", "person-sport": "sport", "person-instrument": "instrument",
+             "capitalize": "capitalize"}
+    label = lambda r: r.replace(" - ", " $-$ ")  # noqa: E731
+    header = [" & & \\multicolumn{4}{c}{Unseen task} & & & & \\\\", "\\cmidrule(lr){3-6}",
+              "& Rule & " + " & ".join(short[t] for t in tasks) + " & Mean & Control & Random & 14 tasks \\\\"]
+
+    def block(names: list[str]) -> list[str]:
+        out = []
+        for alpha in ALPHAS:
+            for i, r in enumerate(names):
+                s = by[(r, alpha)]
+                out.append((f"$\\alpha={alpha:.0f}$" if i == 0 else "") + f" & {label(r)} & "
+                           + " & ".join(rt.num(s[t]) for t in tasks)
+                           + f" & {rt.num(s['unseen mean'])} & {rt.num(s['control'])} & {rt.num(s['random'])}"
+                           + f" & {rt.num(s['14 tasks (identified on)'])} \\\\")
+            if alpha != ALPHAS[-1]:
+                out.append("\\midrule")
+        return out
+
+    mean_base = lambda key, t: float(np.mean([b[key] for b in base if b["task"] == t]))  # noqa: E731
+    top = [" & No patch & " + " & ".join(rt.num(mean_base("unpatched", t)) for t in tasks) + " & & & & \\\\",
+           " & Most common answer & " + " & ".join(rt.num(mean_base("majority_rate", t)) for t in tasks) + " & & & & \\\\",
+           "\\midrule"]
+    main_rules = [selected, *better, "Causal", "Causal - generic", "D"]
+    spec = "@{}ll" + "r" * (len(tasks) + 4) + "@{}"
+    note = "% Generated by scripts/rebuild_newtask_report.py.\n"
+    (rt.TABLES / "design_unseen.tex").write_text(note + rt.tabular(spec, header, top + block(main_rules)))
+    (rt.TABLES / "design_unseen_combos.tex").write_text(note + rt.tabular(spec, header, block(others)))
+    print(f"wrote {rt.TABLES / 'design_unseen.tex'} and design_unseen_combos.tex (others: {others})")
 
 
 if __name__ == "__main__":

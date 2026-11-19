@@ -33,13 +33,13 @@
 \title{Small Attention-Head Sets That Trigger Simple Tasks\\[3pt]
 \large Identifying heads by what they decode, where they attend and what they cause}
 \author{Filippo Merlo}
-\date{19 November 2026 --- results of Sections~4 and~5, and of Section~6 for unseen wordings (transfer) and the summed vector; the rest of Section~6 pending}
+\date{19 November 2026 --- results of Sections~4 and~5, and of Section~6 for unseen wordings (transfer), the summed vector and unseen tasks; the rest of Section~6 pending}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-Prior work has proposed that language models form internal representations of the tasks their prompts specify, and that part of such a task representation can be found in the outputs of a small number of attention heads: averaged over prompts of a task and patched into a zero-shot prompt, these outputs can trigger the task. Two recent studies that compare tasks given by instructions and by examples identify such heads in different ways. One ranks heads by their causal indirect effect on the answer, which takes a patched forward pass for every head and prompt. The other decodes head outputs in the vocabulary and keeps lexical task heads, whose top tokens match predefined task-descriptive terms. We follow this line of work and ask whether heads that trigger a task can be identified from unpatched forward passes about as well as by their causal effect. Our method reads each head through the layers that follow it with Head-JLens, takes the task words from what the heads decode rather than from a predefined list, and adds where the last token attends in the prompt, combining these features as chosen on held-out items. On 14 simple tasks in Llama-3.1-8B-Instruct, with sets of equal size identified and tested on separate items, lexical task heads trigger the task on few items. Our method does better than the causal ranking at most sizes with one set per task, and up to medium sizes with one set for all tasks, also on wordings never used to identify heads. Summed into one vector, as in a function vector, the sets of both methods trigger the task less well than patched head by head from about 20 heads on. On these tasks, heads that trigger a task can thus be identified about as well from what they decode and where they attend as from their causal effect, and far more cheaply once the combination of features is fixed.
+Prior work has proposed that language models form internal representations of the tasks their prompts specify, and that part of such a task representation can be found in the outputs of a small number of attention heads: averaged over prompts of a task and patched into a zero-shot prompt, these outputs can trigger the task. Two recent studies that compare tasks given by instructions and by examples identify such heads in different ways. One ranks heads by their causal indirect effect on the answer, which takes a patched forward pass for every head and prompt. The other decodes head outputs in the vocabulary and keeps lexical task heads, whose top tokens match predefined task-descriptive terms. We follow this line of work and ask whether heads that trigger a task can be identified from unpatched forward passes about as well as by their causal effect. Our method reads each head through the layers that follow it with Head-JLens, takes the task words from what the heads decode rather than from a predefined list, and adds where the last token attends in the prompt, combining these features as chosen on held-out items. On 14 simple tasks in Llama-3.1-8B-Instruct, with sets of equal size identified and tested on separate items, lexical task heads trigger the task on few items. Our method does better than the causal ranking at most sizes with one set per task, and up to medium sizes with one set for all tasks, also on wordings never used to identify heads. One set of heads that our method identifies on the 14 tasks also triggers four tasks outside them about as well as it triggers the 14. Summed into one vector, as in a function vector, the sets of both methods trigger the task less well than patched head by head from about 20 heads on. On these tasks, heads that trigger a task can thus be identified about as well from what they decode and where they attend as from their causal effect, and far more cheaply once the combination of features is fixed.
 \end{abstract}
 
 % =====================================================================
@@ -53,9 +53,9 @@ The two procedures differ in cost and in what they depend on. The causal score m
 
 We take up the same problem, identifying the heads that transport a representation of a task given by instructions, and ask whether heads that trigger the task can be identified from unpatched forward passes about as well as by their causal score. We start from the lexical procedure and change it in three ways. We read each head with Head-JLens \citep{merlo2026headjlens}, which maps the head's output through the computation of the layers that follow it. We take the task words from what heads decode on the task's prompts rather than from a predefined list. And we rank heads by the attention the last token pays to each segment of the prompt, following evidence that in in-context learning template and stopword tokens are the most performance-critical and aggregate information from the content tokens \citep{bai2026performance}. Which combination of these features to use is chosen by patching the sets of every candidate combination on items that the test does not use. Once the combination is fixed, the rule needs one unpatched forward pass per identification prompt, at most 300 per task here; the Head-JLens maps and the generic words removed from the task lists are computed once per model, independently of the task. The causal score needs one patched forward pass per head and prompt, about 61{,}000 per task here. On the causal side, we also remove from the ranking generic heads, which help every task in the same way.
 
-Each way of identifying heads is a rule that ranks all heads, and every rule is evaluated under one design. Sets of the same size are compared, from 10 to 120 heads, both as one set per task and as one set for all tasks. Everything a rule uses is computed on one half of each task's items and tested on the other. We first reproduce the lexical task heads of \citet{yang2026shared} and the instruction function vectors of \citet{davidson2025different} in this design (Sec.~\ref{sec:published}). We then change the lexical procedure one step at a time, so that the contribution of each change is measured at equal size (Sec.~\ref{sec:rules}). Finally, we test the rules beyond the prompts on which heads were identified (Sec.~\ref{sec:beyond}): with wordings of each task never used to identify heads, with example-based prompts, and with the set's outputs summed into a single vector as in a function vector.
+Each way of identifying heads is a rule that ranks all heads, and every rule is evaluated under one design. Sets of the same size are compared, from 10 to 120 heads, both as one set per task and as one set for all tasks. Everything a rule uses is computed on one half of each task's items and tested on the other. We first reproduce the lexical task heads of \citet{yang2026shared} and the instruction function vectors of \citet{davidson2025different} in this design (Sec.~\ref{sec:published}). We then change the lexical procedure one step at a time, so that the contribution of each change is measured at equal size (Sec.~\ref{sec:rules}). Finally, we test the rules beyond the prompts on which heads were identified (Sec.~\ref{sec:beyond}): with wordings of each task never used to identify heads, with example-based prompts, with the set's outputs summed into a single vector as in a function vector, and on four tasks that took no part in identifying the heads.
 
-In this design, lexical task heads trigger the task on few items, almost only on fact tasks, while heads ranked by causal effect trigger it at every size. The rule that combines our features, Selected, does better than the causal ranking from 20 to 100 heads with one set per task, and from 10 to 60 heads with one set for all tasks; with larger shared sets it does slightly worse. Removing generic heads improves the causal ranking at most sizes, and with one set for all tasks it is then the best rule from 60 heads on. The comparison holds with the unseen wordings. Summed into one vector, the sets of Selected and of the causal ranking trigger the task less well than patched head by head. Results with example-based prompts are pending.
+In this design, lexical task heads trigger the task on few items, almost only on fact tasks, while heads ranked by causal effect trigger it at every size. The rule that combines our features, Selected, does better than the causal ranking from 20 to 100 heads with one set per task, and from 10 to 60 heads with one set for all tasks; with larger shared sets it does slightly worse. Removing generic heads improves the causal ranking at most sizes, and with one set for all tasks it is then the best rule from 60 heads on. The comparison holds with the unseen wordings. Summed into one vector, the sets of Selected and of the causal ranking trigger the task less well than patched head by head. The shared Selected set also triggers four tasks outside the 14, from the datasets of \citet{todd2024function}, about as well as it triggers the 14, and two other combinations of our features do better still on them. Results with example-based prompts are pending.
 
 % =====================================================================
 \section{Background}\label{sec:background}
@@ -432,7 +432,7 @@ where $n_t(l,h)$ counts how often each token is among the head's ten highest J-h
 % =====================================================================
 \section{Beyond the prompts the heads were identified on}\label{sec:beyond}
 
-The rules of Sec.~\ref{sec:rules} identify heads on the same five instruction templates whose means they are tested with. We test five of them further: Yang terms (J), D, Selected, Causal and Causal $-$ generic, with their control means and random sets, at every size and in both scopes. The zero-shot prompt stays \p{ x:}; each test changes one thing with respect to Sec.~\ref{sec:rules}: the prompts the means come from, the prompts the heads are identified on, or the intervention (Table~\ref{tab:scenarios}).
+The rules of Sec.~\ref{sec:rules} identify heads on the same five instruction templates whose means they are tested with. We test five of them further: Yang terms (J), D, Selected, Causal and Causal $-$ generic, with their control means and random sets, at every size and in both scopes. The zero-shot prompt stays \p{ x:}; each test changes one thing with respect to Sec.~\ref{sec:rules}: the prompts the means come from, the prompts the heads are identified on, the intervention, or the tasks (Table~\ref{tab:scenarios}). The test on unseen tasks uses the shared sets at 40 heads only (Sec.~\ref{sec:unseen}).
 
 \begin{table}[tbp]
 \centering\small
@@ -446,6 +446,7 @@ Wordings, re-identified & five templates + 15 P wordings & 15 Q wordings & ident
 Examples, transfer & five instruction templates & 3 Q formats & prompting style of the means \\
 Examples, re-identified & 3 P formats & 3 Q formats & prompting style of the identification \\
 Summed vector & as above & as above & intervention \\
+Unseen tasks & the 14 tasks & five templates of each unseen task & tasks \\
 \bottomrule
 \end{tabularx}
 \caption{Tests beyond the identification prompts.}
@@ -470,9 +471,17 @@ Summed vector & as above & as above & intervention \\
 
 The sets of Sec.~\ref{sec:rules}, with the means of the five templates, and the sets re-identified on example-based prompts, with the Q format means, are added as one summed vector (Sec.~\ref{sec:patching}) and compared with head-by-head patching at the same sizes, means and scaling. If the task information lay only in the direction a set writes, the two interventions would give similar accuracy; if it depends on where each head writes, head by head should be better, and increasingly so for larger sets, which span more layers.
 
+\subsection{Unseen tasks}\label{sec:unseen}
+
+The shared sets of Sec.~\ref{sec:rules} are identified on the 14 tasks. Patched into a task that took no part in identifying them, with that task's own means, a set that represents tasks in general rather than these 14 should still trigger it. Such a task would also need no identification at all, only its means (Sec.~\ref{sec:intro}).
+
+We take the four datasets of \citet{todd2024function}, as released by \citet{yang2026shared}, that have instruction templates of the form of Sec.~\ref{sec:prompts} and are not among the 14: person--occupation, person--sport and person--instrument, which map a person to an attribute, and capitalize, which returns the input word with its first letter capitalised. Their items are split, their five templates used and their means computed as for the 14 tasks (Secs.~\ref{sec:prompts}--\ref{sec:patching}). The question--answer templates of person--instrument, and two of those of person--sport, list the answer labels (for instance guitar, piano, violin and trumpet). Control means: person--occupation and person--sport with each other, person--instrument with person--sport, capitalize with singular--plural. Since the answer of capitalize differs from its input only in letter case, its replies are scored with case kept; every other task is scored as in Sec.~\ref{sec:evaluation}.
+
+The sets are the shared 40-head sets of Selected, Causal, Causal $-$ generic and D, unchanged, and those of the other combinations among the five best of each fold (Table~\ref{tab:selected}), with their random sets. Since none of them depends on the unseen tasks, nothing of an unseen task enters the choice of heads or of the combination. Each set is reported at $\alpha=1$ and at $\alpha=2$.
+
 \subsection{Results}\label{sec:beyond-results}
 
-Two tests are complete: the sets of Sec.~\ref{sec:rules} with the means of the unseen wordings, and the same sets added as one summed vector. The rules re-identified on wordings and on example-based prompts follow below once their runs are done. As in Sec.~\ref{sec:rules}, every accuracy is on the test half with cross-fitted $\alpha$, a mean over the 14 tasks and the two folds; the controls of both tests are in App.~\ref{app:s3}.
+Three tests are complete: the sets of Sec.~\ref{sec:rules} with the means of the unseen wordings, the same sets added as one summed vector, and the shared sets on unseen tasks. The rules re-identified on wordings and on example-based prompts follow below once their runs are done. In the first two tests, as in Sec.~\ref{sec:rules}, every accuracy is on the test half with cross-fitted $\alpha$, a mean over the 14 tasks and the two folds, and their controls are in App.~\ref{app:s3}; the unseen tasks are reported at fixed $\alpha$ (Sec.~\ref{sec:unseen}).
 
 \paragraph{Unseen wordings.} Every rule keeps most of its accuracy with the means of wordings it was not identified on: in both scopes it loses mostly a tenth to a fifth of it (Fig.~\ref{fig:wordings-transfer}, Table~\ref{tab:wordings-transfer}). The order of the rules is mostly that of Sec.~\ref{sec:rules}. At ten heads, Causal $-$ generic is the best rule in both scopes. Per task, Selected is the best rule from 20 heads on, now also at 120. With one set for all tasks, Selected leads from 20 to 60 heads and Causal $-$ generic from 80. Selected loses less than both causal rankings at most sizes, so that with one set for all tasks it now stays above Causal up to 100 heads. The losses are spread over the task types, and the types each rule triggers are those of Sec.~\ref{sec:rules} (Table~\ref{tab:wordings-types}, App.~\ref{app:s3}); per task, Selected is still the only rule that triggers the translations.
 
@@ -515,7 +524,23 @@ Two tests are complete: the sets of Sec.~\ref{sec:rules} with the means of the u
 \label{tab:summed}
 \end{table}
 
-\paragraph{Controls.} With the related task's means, every set stays below a tenth of the items correct in both tests, at every size (Table~\ref{tab:s3-controls}). Random sets with the same heads per layer behave as in Sec.~\ref{sec:rules}: with the unseen wordings' means they stay low at small sizes and rise with more heads for the rules whose sets crowd few layers, most for Selected. As one summed vector, they stay below a tenth at every size.
+\paragraph{Controls.} With the related task's means, every set stays below a tenth of the items correct in the first two tests, at every size (Table~\ref{tab:s3-controls}). Random sets with the same heads per layer behave as in Sec.~\ref{sec:rules}: with the unseen wordings' means they stay low at small sizes and rise with more heads for the rules whose sets crowd few layers, most for Selected. As one summed vector, they stay below a tenth at every size.
+
+\paragraph{Unseen tasks.} At $\alpha=2$, the shared Selected set triggers the four unseen tasks about as well as the 14 tasks it was identified on (Table~\ref{tab:unseen}). The causal ranking triggers them less well than the 14; Causal $-$ generic and D trigger them better. Two of the other combinations trigger the unseen tasks better than Selected at both scalings, although on the 14 tasks they are slightly below it: D with attention to the task words, the other words, the stopwords, the punctuation and the last token (DTOSPL), and D with attention to every token but the first, the task words, the punctuation and the last token (DBTPL). They are the only two of the eight other combinations without attention to the markers, which Selected has; the six with it all stay below Selected on the unseen tasks (Table~\ref{tab:unseen-combos}, App.~\ref{app:s3}). Their gain over Selected is largest on person--instrument, and at $\alpha=1$ on person--sport, and their random sets also do better than those of Selected on the three person tasks. At $\alpha=1$ every rule is weaker; DBTPL does best, followed by the two causal rankings. The tasks differ in how clearly they show this.
+\begin{itemize}
+\item \emph{Capitalize} is the cleanest test: neither the control mean nor a repeated answer accounts for any of its accuracy, and at $\alpha=2$ every rule but D triggers it on most items.
+\item \emph{Person--sport} is triggered on most items at $\alpha=2$ by every rule but Causal. Its control mean also raises accuracy, most for DTOSPL, because the related task's means make the model answer the athlete's occupation, such as \emph{baseball player}, which the score counts as the sport.
+\item On \emph{person--occupation} at $\alpha=2$, most sets answer \emph{actor}, its most common answer, on at least half of the items. On the items whose answer is another occupation, the sets still trigger the task on between a fifth (D, DBTPL) and two-fifths (DTOSPL) of them, against almost none without a patch.
+\item \emph{Person--instrument} is triggered least by Selected, little above its random sets; Causal $-$ generic, D, DTOSPL and DBTPL trigger it on about two-fifths of the items, about the share of its most common answer, although no reply makes up half of the replies.
+\end{itemize}
+Selected remains the combination chosen in Sec.~\ref{sec:select}: DTOSPL and DBTPL are shown because they do better here, and choosing them on these results would choose on the test tasks. A shared set identified on the 14 tasks thus triggers tasks outside them, most clearly on capitalize, a kind of task that none of the 14 resembles.
+
+\begin{table}[tbp]
+\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\input{tables/design_unseen}
+\caption{Unseen tasks: the shared 40-head sets identified on the 14 tasks, patched with each unseen task's own means; accuracy on the test half, mean of the two folds. No patch: the patched items without a patch. Most common answer: the share of the patched items whose answer is the most frequent one (actor; baseball or hockey; piano). Mean, Control (the related task's means) and Random (random sets with as many heads in each layer, three draws): means over the four unseen tasks. 14 tasks: the same set on the tasks it was identified on, at the same fixed $\alpha$, which differs slightly from the cross-fitted values of Table~\ref{tab:ladder-acc}. DTOSPL and DBTPL are the two other combinations that do better than Selected on the unseen tasks at both scalings; the other six are in Table~\ref{tab:unseen-combos}.}
+\label{tab:unseen}
+\end{table}
 
 \pending{Wordings, re-identified (Sec.~\ref{sec:wordings}); example-based prompts, transfer and re-identified, with the overlap between sets identified on instruction-based and on example-based prompts (Sec.~\ref{sec:examples}); the summed vector of the sets identified on example-based prompts (Sec.~\ref{sec:summed}).}
 
@@ -530,7 +555,9 @@ Two tests are complete: the sets of Sec.~\ref{sec:rules} with the means of the u
 
 \paragraph{Selection.} Selected is the best of many candidates on the other fold. Cross-fitting keeps the test items out of the choice, but with two folds the choice rests on half of the items, and the folds may select different combinations.
 
-\paragraph{Held-out tasks.} Selected's combination of features is chosen on the same 14 tasks it is tested on, as are the shared sets of every rule, so whether they serve a task that was not used to choose them is not tested. \citet[Sec.~2.2, App.~E]{davidson2025different} likewise identify their heads over all their tasks and evaluate them on held-out items of the same tasks.
+\paragraph{Held-out tasks.} Selected's combination of features is chosen on the same 14 tasks it is tested on in Secs.~\ref{sec:rules}--\ref{sec:summed}, as are the shared sets of every rule. \citet[Sec.~2.2, App.~E]{davidson2025different} likewise identify their heads over all their tasks and evaluate them on held-out items of the same tasks. Sec.~\ref{sec:unseen} tests the shared sets on tasks outside the 14, but only on four tasks, and the per-task sets, which an unseen task would build from its own prompts, are not tested on them.
+
+\paragraph{Unseen tasks.} Three of the four unseen tasks map a person to an attribute, close to the fact tasks among the 14, and their templates partly list the answer labels. The control of person--sport is not independent of it (Sec.~\ref{sec:beyond-results}), and capitalize is scored with case kept, unlike every other task.
 
 \paragraph{Cost of the screen.} The cost of a rule built from decoding and attention is that of applying it once its combination of features is fixed (Sec.~\ref{sec:intro}). Choosing the combination patched every candidate set at 40 heads on the items of both folds, far more patched runs than the causal score takes.
 
@@ -538,7 +565,7 @@ Two tests are complete: the sets of Sec.~\ref{sec:rules} with the means of the u
 
 \paragraph{Random sets.} Random sets keep the number of heads in each layer. When a rule fills a few layers densely, as Selected does around layer 13, its random sets are drawn largely from the same heads and share up to a third of them with it at 120 heads. At large sizes they test the choice of heads within those layers less strictly than at small ones.
 
-\paragraph{Repeated replies.} In a few conditions, mostly at $\alpha=2$, one reply makes up at least half of the answers. These replies are wrong (the name of the task, or an answer of the related task under the control mean), except \emph{Apple} on product--company, the correct answer for about a fifth of its items; it raises the mean over tasks of D and Yang terms (J) at 100--120 heads by at most 0.003.
+\paragraph{Repeated replies.} In a few conditions, mostly at $\alpha=2$, one reply makes up at least half of the answers. These replies are wrong (the name of the task, or an answer of the related task under the control mean), except \emph{Apple} on product--company, the correct answer for about a fifth of its items; it raises the mean over tasks of D and Yang terms (J) at 100--120 heads by at most 0.003. On the unseen tasks, \emph{actor} on person--occupation is such a reply, and correct for about a third of its items (Sec.~\ref{sec:beyond-results}).
 
 % =====================================================================
 \section*{Data and code availability}
@@ -662,7 +689,7 @@ label, does not name it & \p{Word: \{x\}\nl Contrary word:} \\
 \label{fig:types}
 \end{figure}
 
-\section{Tests beyond the identification prompts: controls, task types and wording groups}\label{app:s3}
+\section{Tests beyond the identification prompts: controls, task types, wording groups and unseen tasks}\label{app:s3}
 
 \begin{table}[H]
 \centering\footnotesize\setlength{\tabcolsep}{3pt}
@@ -690,6 +717,13 @@ label, does not name it & \p{Word: \{x\}\nl Contrary word:} \\
 \input{tables/design_wordings_groups}
 \caption{Accuracy at 40 heads by the form of the wording whose means are patched (Fig.~\ref{fig:wordings-groups}). Yang: Yang et al.'s cloze template and their four question--answer templates (Sec.~\ref{sec:rules}); named, not: unseen Q wordings that name the task or do not. Mean over the wordings of the group, then over 13 tasks (country--currency left out) and the two folds.}
 \label{tab:wordings-groups}
+\end{table}
+
+\begin{table}[H]
+\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\input{tables/design_unseen_combos}
+\caption{Unseen tasks: the other six combinations among the five best shared ones of each fold (Table~\ref{tab:selected}), as in Table~\ref{tab:unseen}.}
+\label{tab:unseen-combos}
 \end{table}
 
 \end{document}
