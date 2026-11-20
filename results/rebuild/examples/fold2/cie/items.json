@@ -1,0 +1,7632 @@
+{
+ "antonym": {
+  "fmt-F1": {
+   "mean": [
+    0,
+    6,
+    10,
+    11,
+    16,
+    23,
+    24,
+    27,
+    29,
+    33,
+    40,
+    43,
+    51,
+    57,
+    58,
+    59,
+    62,
+    64,
+    73,
+    74,
+    75,
+    78,
+    86,
+    89,
+    92,
+    93,
+    97,
+    100,
+    105,
+    110,
+    111,
+    112,
+    115,
+    116
+   ],
+   "cie": [
+    {
+     "query": 121,
+     "demos": [
+      252,
+      1198,
+      1924,
+      990,
+      2325
+     ],
+     "shuffled_outputs": [
+      "lose",
+      "work",
+      "comfort",
+      "conclude",
+      "complimentary"
+     ]
+    },
+    {
+     "query": 125,
+     "demos": [
+      2251,
+      1458,
+      852,
+      349,
+      1558
+     ],
+     "shuffled_outputs": [
+      "freeze",
+      "clear-minded",
+      "watery",
+      "uniform",
+      "pessimistic"
+     ]
+    },
+    {
+     "query": 127,
+     "demos": [
+      233,
+      1466,
+      1472,
+      893,
+      1984
+     ],
+     "shuffled_outputs": [
+      "diligence",
+      "complete",
+      "adulthood",
+      "asleep",
+      "rational"
+     ]
+    },
+    {
+     "query": 128,
+     "demos": [
+      1508,
+      927,
+      1167,
+      1002,
+      1029
+     ],
+     "shuffled_outputs": [
+      "past",
+      "defend",
+      "weakening",
+      "plain",
+      "disable"
+     ]
+    },
+    {
+     "query": 129,
+     "demos": [
+      1918,
+      1008,
+      2011,
+      119,
+      105
+     ],
+     "shuffled_outputs": [
+      "discard",
+      "depress",
+      "theoretical",
+      "abandon",
+      "algebra"
+     ]
+    },
+    {
+     "query": 132,
+     "demos": [
+      2007,
+      2286,
+      1450,
+      2212,
+      2183
+     ],
+     "shuffled_outputs": [
+      "safe",
+      "downstairs",
+      "antagonist",
+      "condemn",
+      "quit"
+     ]
+    },
+    {
+     "query": 133,
+     "demos": [
+      2205,
+      1402,
+      815,
+      807,
+      189
+     ],
+     "shuffled_outputs": [
+      "create",
+      "unintelligent",
+      "follow",
+      "unintellectual",
+      "startup"
+     ]
+    },
+    {
+     "query": 136,
+     "demos": [
+      1600,
+      2078,
+      140,
+      349,
+      1870
+     ],
+     "shuffled_outputs": [
+      "southwest",
+      "background",
+      "destination",
+      "uniform",
+      "mean"
+     ]
+    },
+    {
+     "query": 138,
+     "demos": [
+      644,
+      1428,
+      1960,
+      401,
+      1132
+     ],
+     "shuffled_outputs": [
+      "harm",
+      "have",
+      "genius",
+      "gather",
+      "sane"
+     ]
+    }
+   ]
+  },
+  "fmt-F2": {
+   "mean": [
+    6,
+    9,
+    11,
+    23,
+    24,
+    27,
+    29,
+    33,
+    40,
+    43,
+    51,
+    57,
+    58,
+    59,
+    62,
+    64,
+    71,
+    73,
+    74,
+    75,
+    78,
+    84,
+    86,
+    89,
+    92,
+    93,
+    97,
+    100,
+    105,
+    106,
+    110,
+    111,
+    112
+   ],
+   "cie": [
+    {
+     "query": 115,
+     "demos": [
+      1902,
+      263,
+      914,
+      1699,
+      568
+     ],
+     "shuffled_outputs": [
+      "destructive",
+      "stand out",
+      "improve",
+      "resist",
+      "prominence"
+     ]
+    },
+    {
+     "query": 116,
+     "demos": [
+      1433,
+      1070,
+      678,
+      211,
+      51
+     ],
+     "shuffled_outputs": [
+      "alkaline",
+      "perpendicular",
+      "approve",
+      "arrival",
+      "real"
+     ]
+    },
+    {
+     "query": 125,
+     "demos": [
+      2251,
+      1458,
+      852,
+      349,
+      1558
+     ],
+     "shuffled_outputs": [
+      "freeze",
+      "watery",
+      "uniform",
+      "pessimistic",
+      "clear-minded"
+     ]
+    },
+    {
+     "query": 127,
+     "demos": [
+      233,
+      1466,
+      1472,
+      893,
+      1984
+     ],
+     "shuffled_outputs": [
+      "complete",
+      "rational",
+      "asleep",
+      "adulthood",
+      "diligence"
+     ]
+    },
+    {
+     "query": 128,
+     "demos": [
+      1508,
+      927,
+      1167,
+      1002,
+      1029
+     ],
+     "shuffled_outputs": [
+      "past",
+      "plain",
+      "defend",
+      "weakening",
+      "disable"
+     ]
+    },
+    {
+     "query": 129,
+     "demos": [
+      1918,
+      1008,
+      2011,
+      119,
+      105
+     ],
+     "shuffled_outputs": [
+      "algebra",
+      "abandon",
+      "depress",
+      "theoretical",
+      "discard"
+     ]
+    },
+    {
+     "query": 132,
+     "demos": [
+      2007,
+      2286,
+      1450,
+      2212,
+      2183
+     ],
+     "shuffled_outputs": [
+      "downstairs",
+      "safe",
+      "quit",
+      "condemn",
+      "antagonist"
+     ]
+    },
+    {
+     "query": 133,
+     "demos": [
+      2205,
+      1402,
+      815,
+      807,
+      189
+     ],
+     "shuffled_outputs": [
+      "unintelligent",
+      "follow",
+      "unintellectual",
+      "create",
+      "startup"
+     ]
+    }
+   ]
+  },
+  "fmt-F3": {
+   "mean": [
+    6,
+    10,
+    18,
+    23,
+    24,
+    27,
+    29,
+    33,
+    40,
+    43,
+    45,
+    51,
+    57,
+    58,
+    59,
+    62,
+    64,
+    71,
+    73,
+    74,
+    75,
+    78,
+    86,
+    89,
+    92,
+    97,
+    100,
+    105,
+    110,
+    111,
+    112,
+    115,
+    116
+   ],
+   "cie": [
+    {
+     "query": 125,
+     "demos": [
+      2251,
+      1458,
+      852,
+      349,
+      1558
+     ],
+     "shuffled_outputs": [
+      "pessimistic",
+      "watery",
+      "freeze",
+      "clear-minded",
+      "uniform"
+     ]
+    },
+    {
+     "query": 127,
+     "demos": [
+      233,
+      1466,
+      1472,
+      893,
+      1984
+     ],
+     "shuffled_outputs": [
+      "rational",
+      "asleep",
+      "adulthood",
+      "diligence",
+      "complete"
+     ]
+    },
+    {
+     "query": 128,
+     "demos": [
+      1508,
+      927,
+      1167,
+      1002,
+      1029
+     ],
+     "shuffled_outputs": [
+      "weakening",
+      "plain",
+      "disable",
+      "past",
+      "defend"
+     ]
+    },
+    {
+     "query": 129,
+     "demos": [
+      1918,
+      1008,
+      2011,
+      119,
+      105
+     ],
+     "shuffled_outputs": [
+      "discard",
+      "depress",
+      "algebra",
+      "theoretical",
+      "abandon"
+     ]
+    },
+    {
+     "query": 133,
+     "demos": [
+      2205,
+      1402,
+      815,
+      807,
+      189
+     ],
+     "shuffled_outputs": [
+      "startup",
+      "unintellectual",
+      "unintelligent",
+      "create",
+      "follow"
+     ]
+    },
+    {
+     "query": 136,
+     "demos": [
+      1600,
+      2078,
+      140,
+      349,
+      1870
+     ],
+     "shuffled_outputs": [
+      "uniform",
+      "mean",
+      "background",
+      "destination",
+      "southwest"
+     ]
+    },
+    {
+     "query": 138,
+     "demos": [
+      644,
+      1428,
+      1960,
+      401,
+      1132
+     ],
+     "shuffled_outputs": [
+      "harm",
+      "have",
+      "genius",
+      "sane",
+      "gather"
+     ]
+    },
+    {
+     "query": 140,
+     "demos": [
+      1285,
+      1105,
+      1353,
+      1033,
+      2222
+     ],
+     "shuffled_outputs": [
+      "flexible",
+      "loss",
+      "unlock",
+      "extrajudicial",
+      "sober"
+     ]
+    }
+   ]
+  }
+ },
+ "synonym": {
+  "fmt-F1": {
+   "mean": [
+    0,
+    3,
+    5,
+    8,
+    14,
+    15,
+    19,
+    21,
+    22,
+    25,
+    29,
+    33,
+    34,
+    37,
+    39,
+    40,
+    47,
+    55,
+    62,
+    64,
+    66,
+    71,
+    73,
+    74,
+    84,
+    89,
+    93,
+    105,
+    111,
+    112,
+    115,
+    119,
+    120,
+    127
+   ],
+   "cie": [
+    {
+     "query": 136,
+     "demos": [
+      1408,
+      1711,
+      2867,
+      1097,
+      2588
+     ],
+     "shuffled_outputs": [
+      "eject",
+      "earthly",
+      "doubtful",
+      "functional",
+      "situation"
+     ]
+    },
+    {
+     "query": 139,
+     "demos": [
+      914,
+      2418,
+      0,
+      2670,
+      663
+     ],
+     "shuffled_outputs": [
+      "equine",
+      "man",
+      "progressive",
+      "change",
+      "swear"
+     ]
+    },
+    {
+     "query": 142,
+     "demos": [
+      603,
+      1070,
+      2817,
+      2082,
+      24
+     ],
+     "shuffled_outputs": [
+      "remarkable",
+      "oppression",
+      "journey",
+      "pampered",
+      "mail"
+     ]
+    },
+    {
+     "query": 148,
+     "demos": [
+      1918,
+      27,
+      729,
+      1893,
+      682
+     ],
+     "shuffled_outputs": [
+      "frozen water",
+      "flavor",
+      "kin",
+      "celestial body",
+      "deploy"
+     ]
+    },
+    {
+     "query": 151,
+     "demos": [
+      1660,
+      2730,
+      542,
+      2657,
+      1324
+     ],
+     "shuffled_outputs": [
+      "unrestricted",
+      "reiteration",
+      "uncertain",
+      "different",
+      "weaponized"
+     ]
+    },
+    {
+     "query": 176,
+     "demos": [
+      2679,
+      906,
+      795,
+      1654,
+      2680
+     ],
+     "shuffled_outputs": [
+      "inspection",
+      "collective",
+      "dominate",
+      "understand",
+      "grape juice"
+     ]
+    },
+    {
+     "query": 181,
+     "demos": [
+      1730,
+      253,
+      2109,
+      757,
+      1560
+     ],
+     "shuffled_outputs": [
+      "harmful",
+      "incursion",
+      "car",
+      "ludicrous",
+      "appoint"
+     ]
+    },
+    {
+     "query": 189,
+     "demos": [
+      2861,
+      1372,
+      2081,
+      2827,
+      157
+     ],
+     "shuffled_outputs": [
+      "extraordinary",
+      "begin",
+      "risk",
+      "amuse",
+      "war"
+     ]
+    },
+    {
+     "query": 192,
+     "demos": [
+      1515,
+      1059,
+      379,
+      278,
+      1411
+     ],
+     "shuffled_outputs": [
+      "dominant",
+      "personality",
+      "fame",
+      "powerful",
+      "daring"
+     ]
+    }
+   ]
+  },
+  "fmt-F2": {
+   "mean": [
+    0,
+    3,
+    5,
+    8,
+    14,
+    15,
+    19,
+    21,
+    22,
+    25,
+    29,
+    33,
+    37,
+    39,
+    40,
+    55,
+    62,
+    64,
+    66,
+    71,
+    74,
+    78,
+    84,
+    89,
+    93,
+    97,
+    105,
+    106,
+    110,
+    112,
+    115,
+    116,
+    119
+   ],
+   "cie": [
+    {
+     "query": 120,
+     "demos": [
+      9,
+      192,
+      2238,
+      1986,
+      1669
+     ],
+     "shuffled_outputs": [
+      "glossy",
+      "shimmering",
+      "outstanding",
+      "noisy",
+      "valuable"
+     ]
+    },
+    {
+     "query": 125,
+     "demos": [
+      2866,
+      1811,
+      1940,
+      231,
+      697
+     ],
+     "shuffled_outputs": [
+      "offense",
+      "position",
+      "plan",
+      "bizarre",
+      "edge"
+     ]
+    },
+    {
+     "query": 127,
+     "demos": [
+      85,
+      1338,
+      825,
+      133,
+      2437
+     ],
+     "shuffled_outputs": [
+      "wealthy",
+      "latest",
+      "expertise",
+      "proceed",
+      "change"
+     ]
+    },
+    {
+     "query": 128,
+     "demos": [
+      2596,
+      294,
+      1675,
+      1727,
+      1049
+     ],
+     "shuffled_outputs": [
+      "post",
+      "traditional",
+      "chase",
+      "outfield",
+      "unstable"
+     ]
+    },
+    {
+     "query": 136,
+     "demos": [
+      1408,
+      1711,
+      2867,
+      1097,
+      2588
+     ],
+     "shuffled_outputs": [
+      "doubtful",
+      "eject",
+      "earthly",
+      "functional",
+      "situation"
+     ]
+    },
+    {
+     "query": 139,
+     "demos": [
+      914,
+      2418,
+      0,
+      2670,
+      663
+     ],
+     "shuffled_outputs": [
+      "equine",
+      "man",
+      "swear",
+      "change",
+      "progressive"
+     ]
+    },
+    {
+     "query": 142,
+     "demos": [
+      603,
+      1070,
+      2817,
+      2082,
+      24
+     ],
+     "shuffled_outputs": [
+      "remarkable",
+      "journey",
+      "oppression",
+      "pampered",
+      "mail"
+     ]
+    },
+    {
+     "query": 148,
+     "demos": [
+      1918,
+      27,
+      729,
+      1893,
+      682
+     ],
+     "shuffled_outputs": [
+      "deploy",
+      "flavor",
+      "kin",
+      "celestial body",
+      "frozen water"
+     ]
+    }
+   ]
+  },
+  "fmt-F3": {
+   "mean": [
+    3,
+    5,
+    8,
+    14,
+    15,
+    19,
+    21,
+    22,
+    23,
+    25,
+    29,
+    33,
+    39,
+    40,
+    47,
+    52,
+    55,
+    64,
+    66,
+    71,
+    73,
+    74,
+    84,
+    89,
+    93,
+    105,
+    106,
+    112,
+    113,
+    116,
+    119,
+    120,
+    125
+   ],
+   "cie": [
+    {
+     "query": 127,
+     "demos": [
+      85,
+      1338,
+      825,
+      133,
+      2437
+     ],
+     "shuffled_outputs": [
+      "proceed",
+      "wealthy",
+      "expertise",
+      "change",
+      "latest"
+     ]
+    },
+    {
+     "query": 128,
+     "demos": [
+      2596,
+      294,
+      1675,
+      1727,
+      1049
+     ],
+     "shuffled_outputs": [
+      "chase",
+      "outfield",
+      "unstable",
+      "traditional",
+      "post"
+     ]
+    },
+    {
+     "query": 136,
+     "demos": [
+      1408,
+      1711,
+      2867,
+      1097,
+      2588
+     ],
+     "shuffled_outputs": [
+      "eject",
+      "earthly",
+      "doubtful",
+      "situation",
+      "functional"
+     ]
+    },
+    {
+     "query": 139,
+     "demos": [
+      914,
+      2418,
+      0,
+      2670,
+      663
+     ],
+     "shuffled_outputs": [
+      "progressive",
+      "equine",
+      "swear",
+      "change",
+      "man"
+     ]
+    },
+    {
+     "query": 142,
+     "demos": [
+      603,
+      1070,
+      2817,
+      2082,
+      24
+     ],
+     "shuffled_outputs": [
+      "journey",
+      "mail",
+      "remarkable",
+      "oppression",
+      "pampered"
+     ]
+    },
+    {
+     "query": 148,
+     "demos": [
+      1918,
+      27,
+      729,
+      1893,
+      682
+     ],
+     "shuffled_outputs": [
+      "flavor",
+      "frozen water",
+      "kin",
+      "deploy",
+      "celestial body"
+     ]
+    },
+    {
+     "query": 151,
+     "demos": [
+      1660,
+      2730,
+      542,
+      2657,
+      1324
+     ],
+     "shuffled_outputs": [
+      "different",
+      "unrestricted",
+      "reiteration",
+      "uncertain",
+      "weaponized"
+     ]
+    },
+    {
+     "query": 155,
+     "demos": [
+      2498,
+      293,
+      1704,
+      1870,
+      1397
+     ],
+     "shuffled_outputs": [
+      "wild",
+      "dormant",
+      "prediction",
+      "indicator",
+      "halt"
+     ]
+    }
+   ]
+  }
+ },
+ "singular-plural": {
+  "fmt-F1": {
+   "mean": [
+    3,
+    4,
+    7,
+    9,
+    11,
+    12,
+    14,
+    15,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    26,
+    27,
+    29,
+    31,
+    32,
+    33,
+    34,
+    37,
+    38,
+    40,
+    45,
+    46,
+    48,
+    49,
+    50,
+    51,
+    52,
+    55,
+    56,
+    57
+   ],
+   "cie": [
+    {
+     "query": 58,
+     "demos": [
+      130,
+      168,
+      32,
+      178,
+      190
+     ],
+     "shuffled_outputs": [
+      "balls",
+      "mugs",
+      "spoons",
+      "bottles",
+      "forks"
+     ]
+    },
+    {
+     "query": 59,
+     "demos": [
+      149,
+      169,
+      150,
+      63,
+      19
+     ],
+     "shuffled_outputs": [
+      "calendars",
+      "ties",
+      "bicycles",
+      "desks",
+      "screws"
+     ]
+    },
+    {
+     "query": 61,
+     "demos": [
+      186,
+      22,
+      108,
+      38,
+      24
+     ],
+     "shuffled_outputs": [
+      "keyboards",
+      "hairdryers",
+      "vacuums",
+      "glues",
+      "backpacks"
+     ]
+    },
+    {
+     "query": 62,
+     "demos": [
+      55,
+      37,
+      167,
+      121,
+      49
+     ],
+     "shuffled_outputs": [
+      "drills",
+      "bags",
+      "doors",
+      "saws",
+      "eyeshadows"
+     ]
+    },
+    {
+     "query": 63,
+     "demos": [
+      110,
+      166,
+      34,
+      121,
+      31
+     ],
+     "shuffled_outputs": [
+      "suitcases",
+      "drills",
+      "graters",
+      "nuts",
+      "razors"
+     ]
+    },
+    {
+     "query": 66,
+     "demos": [
+      20,
+      63,
+      58,
+      38,
+      195
+     ],
+     "shuffled_outputs": [
+      "flowers",
+      "toys",
+      "keyboards",
+      "dolls",
+      "desks"
+     ]
+    },
+    {
+     "query": 67,
+     "demos": [
+      110,
+      49,
+      186,
+      182,
+      14
+     ],
+     "shuffled_outputs": [
+      "glues",
+      "dryers",
+      "paintbrushes",
+      "nuts",
+      "doors"
+     ]
+    },
+    {
+     "query": 69,
+     "demos": [
+      52,
+      168,
+      131,
+      204,
+      199
+     ],
+     "shuffled_outputs": [
+      "washers",
+      "magazines",
+      "boxes",
+      "games",
+      "forks"
+     ]
+    },
+    {
+     "query": 73,
+     "demos": [
+      85,
+      146,
+      110,
+      190,
+      107
+     ],
+     "shuffled_outputs": [
+      "sockss",
+      "staplers",
+      "nuts",
+      "matches",
+      "spoons"
+     ]
+    }
+   ]
+  },
+  "fmt-F2": {
+   "mean": [
+    3,
+    4,
+    7,
+    9,
+    11,
+    12,
+    14,
+    15,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    26,
+    27,
+    29,
+    31,
+    32,
+    33,
+    34,
+    37,
+    38,
+    40,
+    45,
+    46,
+    48,
+    49,
+    50,
+    51,
+    52,
+    55,
+    56
+   ],
+   "cie": [
+    {
+     "query": 57,
+     "demos": [
+      169,
+      171,
+      168,
+      33,
+      58
+     ],
+     "shuffled_outputs": [
+      "flowers",
+      "gloves",
+      "forks",
+      "printers",
+      "calendars"
+     ]
+    },
+    {
+     "query": 58,
+     "demos": [
+      130,
+      168,
+      32,
+      178,
+      190
+     ],
+     "shuffled_outputs": [
+      "bottles",
+      "balls",
+      "forks",
+      "mugs",
+      "spoons"
+     ]
+    },
+    {
+     "query": 59,
+     "demos": [
+      149,
+      169,
+      150,
+      63,
+      19
+     ],
+     "shuffled_outputs": [
+      "calendars",
+      "screws",
+      "desks",
+      "bicycles",
+      "ties"
+     ]
+    },
+    {
+     "query": 61,
+     "demos": [
+      186,
+      22,
+      108,
+      38,
+      24
+     ],
+     "shuffled_outputs": [
+      "keyboards",
+      "hairdryers",
+      "vacuums",
+      "glues",
+      "backpacks"
+     ]
+    },
+    {
+     "query": 62,
+     "demos": [
+      55,
+      37,
+      167,
+      121,
+      49
+     ],
+     "shuffled_outputs": [
+      "drills",
+      "doors",
+      "bags",
+      "eyeshadows",
+      "saws"
+     ]
+    },
+    {
+     "query": 63,
+     "demos": [
+      110,
+      166,
+      34,
+      121,
+      31
+     ],
+     "shuffled_outputs": [
+      "drills",
+      "razors",
+      "suitcases",
+      "nuts",
+      "graters"
+     ]
+    },
+    {
+     "query": 66,
+     "demos": [
+      20,
+      63,
+      58,
+      38,
+      195
+     ],
+     "shuffled_outputs": [
+      "flowers",
+      "toys",
+      "desks",
+      "dolls",
+      "keyboards"
+     ]
+    },
+    {
+     "query": 67,
+     "demos": [
+      110,
+      49,
+      186,
+      182,
+      14
+     ],
+     "shuffled_outputs": [
+      "nuts",
+      "dryers",
+      "glues",
+      "paintbrushes",
+      "doors"
+     ]
+    }
+   ]
+  },
+  "fmt-F3": {
+   "mean": [
+    3,
+    4,
+    7,
+    9,
+    11,
+    12,
+    14,
+    15,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    26,
+    27,
+    29,
+    31,
+    32,
+    33,
+    34,
+    37,
+    38,
+    40,
+    45,
+    46,
+    48,
+    49,
+    50,
+    51,
+    52,
+    55,
+    56
+   ],
+   "cie": [
+    {
+     "query": 57,
+     "demos": [
+      169,
+      171,
+      168,
+      33,
+      58
+     ],
+     "shuffled_outputs": [
+      "gloves",
+      "printers",
+      "flowers",
+      "forks",
+      "calendars"
+     ]
+    },
+    {
+     "query": 58,
+     "demos": [
+      130,
+      168,
+      32,
+      178,
+      190
+     ],
+     "shuffled_outputs": [
+      "mugs",
+      "bottles",
+      "forks",
+      "spoons",
+      "balls"
+     ]
+    },
+    {
+     "query": 59,
+     "demos": [
+      149,
+      169,
+      150,
+      63,
+      19
+     ],
+     "shuffled_outputs": [
+      "desks",
+      "calendars",
+      "screws",
+      "ties",
+      "bicycles"
+     ]
+    },
+    {
+     "query": 61,
+     "demos": [
+      186,
+      22,
+      108,
+      38,
+      24
+     ],
+     "shuffled_outputs": [
+      "keyboards",
+      "hairdryers",
+      "vacuums",
+      "glues",
+      "backpacks"
+     ]
+    },
+    {
+     "query": 62,
+     "demos": [
+      55,
+      37,
+      167,
+      121,
+      49
+     ],
+     "shuffled_outputs": [
+      "doors",
+      "eyeshadows",
+      "drills",
+      "saws",
+      "bags"
+     ]
+    },
+    {
+     "query": 63,
+     "demos": [
+      110,
+      166,
+      34,
+      121,
+      31
+     ],
+     "shuffled_outputs": [
+      "graters",
+      "nuts",
+      "razors",
+      "drills",
+      "suitcases"
+     ]
+    },
+    {
+     "query": 66,
+     "demos": [
+      20,
+      63,
+      58,
+      38,
+      195
+     ],
+     "shuffled_outputs": [
+      "flowers",
+      "dolls",
+      "toys",
+      "keyboards",
+      "desks"
+     ]
+    },
+    {
+     "query": 67,
+     "demos": [
+      110,
+      49,
+      186,
+      182,
+      14
+     ],
+     "shuffled_outputs": [
+      "dryers",
+      "glues",
+      "nuts",
+      "doors",
+      "paintbrushes"
+     ]
+    }
+   ]
+  }
+ },
+ "present-past": {
+  "fmt-F1": {
+   "mean": [
+    1,
+    2,
+    3,
+    4,
+    7,
+    9,
+    11,
+    12,
+    16,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    26,
+    27,
+    29,
+    30,
+    32,
+    34,
+    38,
+    40,
+    48,
+    49,
+    51,
+    53,
+    55,
+    56,
+    57,
+    58,
+    59,
+    62,
+    66
+   ],
+   "cie": [
+    {
+     "query": 67,
+     "demos": [
+      59,
+      55,
+      154,
+      180,
+      34
+     ],
+     "shuffled_outputs": [
+      "pointed",
+      "devised",
+      "designed",
+      "manipulated",
+      "computed"
+     ]
+    },
+    {
+     "query": 69,
+     "demos": [
+      187,
+      234,
+      205,
+      30,
+      127
+     ],
+     "shuffled_outputs": [
+      "compared",
+      "instructed",
+      "recorded",
+      "prevented",
+      "scheduled"
+     ]
+    },
+    {
+     "query": 73,
+     "demos": [
+      58,
+      171,
+      184,
+      183,
+      220
+     ],
+     "shuffled_outputs": [
+      "practiced",
+      "developed",
+      "prepared",
+      "required",
+      "overcame"
+     ]
+    },
+    {
+     "query": 76,
+     "demos": [
+      241,
+      136,
+      120,
+      278,
+      202
+     ],
+     "shuffled_outputs": [
+      "kept",
+      "valued",
+      "increased",
+      "reached",
+      "showed"
+     ]
+    },
+    {
+     "query": 77,
+     "demos": [
+      129,
+      180,
+      281,
+      29,
+      146
+     ],
+     "shuffled_outputs": [
+      "lifted",
+      "communicated",
+      "visited",
+      "interpreted",
+      "pointed"
+     ]
+    },
+    {
+     "query": 78,
+     "demos": [
+      244,
+      4,
+      281,
+      95,
+      242
+     ],
+     "shuffled_outputs": [
+      "filled",
+      "solved",
+      "analyzed",
+      "visited",
+      "signaled"
+     ]
+    },
+    {
+     "query": 79,
+     "demos": [
+      211,
+      225,
+      217,
+      203,
+      282
+     ],
+     "shuffled_outputs": [
+      "received",
+      "retained",
+      "waited",
+      "reported",
+      "remained"
+     ]
+    },
+    {
+     "query": 80,
+     "demos": [
+      289,
+      26,
+      275,
+      108,
+      125
+     ],
+     "shuffled_outputs": [
+      "worried",
+      "helped",
+      "used",
+      "inserted",
+      "cleaned"
+     ]
+    },
+    {
+     "query": 81,
+     "demos": [
+      253,
+      110,
+      26,
+      193,
+      62
+     ],
+     "shuffled_outputs": [
+      "protected",
+      "submitted",
+      "displayed",
+      "cleaned",
+      "hinted"
+     ]
+    }
+   ]
+  },
+  "fmt-F2": {
+   "mean": [
+    1,
+    2,
+    3,
+    4,
+    7,
+    9,
+    11,
+    12,
+    16,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    26,
+    27,
+    29,
+    30,
+    32,
+    34,
+    38,
+    40,
+    48,
+    49,
+    51,
+    53,
+    55,
+    56,
+    57,
+    58,
+    59,
+    62
+   ],
+   "cie": [
+    {
+     "query": 66,
+     "demos": [
+      100,
+      112,
+      110,
+      156,
+      242
+     ],
+     "shuffled_outputs": [
+      "signaled",
+      "met",
+      "gained",
+      "held",
+      "hinted"
+     ]
+    },
+    {
+     "query": 67,
+     "demos": [
+      59,
+      55,
+      154,
+      180,
+      34
+     ],
+     "shuffled_outputs": [
+      "manipulated",
+      "devised",
+      "computed",
+      "designed",
+      "pointed"
+     ]
+    },
+    {
+     "query": 69,
+     "demos": [
+      187,
+      234,
+      205,
+      30,
+      127
+     ],
+     "shuffled_outputs": [
+      "recorded",
+      "scheduled",
+      "instructed",
+      "compared",
+      "prevented"
+     ]
+    },
+    {
+     "query": 73,
+     "demos": [
+      58,
+      171,
+      184,
+      183,
+      220
+     ],
+     "shuffled_outputs": [
+      "overcame",
+      "prepared",
+      "required",
+      "practiced",
+      "developed"
+     ]
+    },
+    {
+     "query": 76,
+     "demos": [
+      241,
+      136,
+      120,
+      278,
+      202
+     ],
+     "shuffled_outputs": [
+      "increased",
+      "reached",
+      "showed",
+      "kept",
+      "valued"
+     ]
+    },
+    {
+     "query": 77,
+     "demos": [
+      129,
+      180,
+      281,
+      29,
+      146
+     ],
+     "shuffled_outputs": [
+      "interpreted",
+      "communicated",
+      "pointed",
+      "lifted",
+      "visited"
+     ]
+    },
+    {
+     "query": 78,
+     "demos": [
+      244,
+      4,
+      281,
+      95,
+      242
+     ],
+     "shuffled_outputs": [
+      "solved",
+      "signaled",
+      "analyzed",
+      "filled",
+      "visited"
+     ]
+    },
+    {
+     "query": 79,
+     "demos": [
+      211,
+      225,
+      217,
+      203,
+      282
+     ],
+     "shuffled_outputs": [
+      "waited",
+      "reported",
+      "retained",
+      "remained",
+      "received"
+     ]
+    }
+   ]
+  },
+  "fmt-F3": {
+   "mean": [
+    1,
+    2,
+    3,
+    4,
+    7,
+    9,
+    11,
+    12,
+    16,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    26,
+    27,
+    29,
+    30,
+    32,
+    34,
+    38,
+    40,
+    48,
+    49,
+    51,
+    53,
+    55,
+    56,
+    57,
+    58,
+    59,
+    62
+   ],
+   "cie": [
+    {
+     "query": 66,
+     "demos": [
+      100,
+      112,
+      110,
+      156,
+      242
+     ],
+     "shuffled_outputs": [
+      "gained",
+      "met",
+      "held",
+      "signaled",
+      "hinted"
+     ]
+    },
+    {
+     "query": 67,
+     "demos": [
+      59,
+      55,
+      154,
+      180,
+      34
+     ],
+     "shuffled_outputs": [
+      "devised",
+      "manipulated",
+      "designed",
+      "computed",
+      "pointed"
+     ]
+    },
+    {
+     "query": 69,
+     "demos": [
+      187,
+      234,
+      205,
+      30,
+      127
+     ],
+     "shuffled_outputs": [
+      "instructed",
+      "compared",
+      "prevented",
+      "recorded",
+      "scheduled"
+     ]
+    },
+    {
+     "query": 73,
+     "demos": [
+      58,
+      171,
+      184,
+      183,
+      220
+     ],
+     "shuffled_outputs": [
+      "prepared",
+      "required",
+      "developed",
+      "practiced",
+      "overcame"
+     ]
+    },
+    {
+     "query": 76,
+     "demos": [
+      241,
+      136,
+      120,
+      278,
+      202
+     ],
+     "shuffled_outputs": [
+      "reached",
+      "increased",
+      "valued",
+      "showed",
+      "kept"
+     ]
+    },
+    {
+     "query": 77,
+     "demos": [
+      129,
+      180,
+      281,
+      29,
+      146
+     ],
+     "shuffled_outputs": [
+      "interpreted",
+      "visited",
+      "pointed",
+      "communicated",
+      "lifted"
+     ]
+    },
+    {
+     "query": 78,
+     "demos": [
+      244,
+      4,
+      281,
+      95,
+      242
+     ],
+     "shuffled_outputs": [
+      "filled",
+      "analyzed",
+      "solved",
+      "visited",
+      "signaled"
+     ]
+    },
+    {
+     "query": 79,
+     "demos": [
+      211,
+      225,
+      217,
+      203,
+      282
+     ],
+     "shuffled_outputs": [
+      "waited",
+      "reported",
+      "remained",
+      "received",
+      "retained"
+     ]
+    }
+   ]
+  }
+ },
+ "country-capital": {
+  "fmt-F1": {
+   "mean": [
+    3,
+    4,
+    7,
+    8,
+    9,
+    12,
+    14,
+    15,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    29,
+    31,
+    32,
+    33,
+    34,
+    37,
+    40,
+    43,
+    45,
+    46,
+    48,
+    49,
+    50,
+    51,
+    52,
+    55,
+    56
+   ],
+   "cie": [
+    {
+     "query": 57,
+     "demos": [
+      78,
+      115,
+      196,
+      86,
+      73
+     ],
+     "shuffled_outputs": [
+      "Tehran",
+      "Harare",
+      "Astana",
+      "Podgorica",
+      "Tegucigalpa"
+     ]
+    },
+    {
+     "query": 58,
+     "demos": [
+      196,
+      101,
+      125,
+      60,
+      31
+     ],
+     "shuffled_outputs": [
+      "Ottawa",
+      "Harare",
+      "Niamey",
+      "Paris",
+      "Antananarivo"
+     ]
+    },
+    {
+     "query": 59,
+     "demos": [
+      79,
+      96,
+      25,
+      186,
+      86
+     ],
+     "shuffled_outputs": [
+      "London",
+      "Baghdad",
+      "Sofia",
+      "Astana",
+      "Monrovia"
+     ]
+    },
+    {
+     "query": 60,
+     "demos": [
+      46,
+      187,
+      78,
+      76,
+      31
+     ],
+     "shuffled_outputs": [
+      "Ottawa",
+      "Copenhagen",
+      "Tehran",
+      "Washington, D.C.",
+      "New Delhi"
+     ]
+    },
+    {
+     "query": 61,
+     "demos": [
+      59,
+      63,
+      178,
+      4,
+      96
+     ],
+     "shuffled_outputs": [
+      "Tbilisi",
+      "Monrovia",
+      "Port of Spain",
+      "Helsinki",
+      "Luanda"
+     ]
+    },
+    {
+     "query": 62,
+     "demos": [
+      38,
+      158,
+      134,
+      159,
+      34
+     ],
+     "shuffled_outputs": [
+      "Panama City",
+      "Kinshasa",
+      "Ljubljana",
+      "Santiago",
+      "Honiara"
+     ]
+    },
+    {
+     "query": 63,
+     "demos": [
+      52,
+      32,
+      127,
+      120,
+      115
+     ],
+     "shuffled_outputs": [
+      "Podgorica",
+      "Yaren District",
+      "Bangui",
+      "San Salvador",
+      "Pyongyang"
+     ]
+    },
+    {
+     "query": 66,
+     "demos": [
+      22,
+      51,
+      69,
+      45,
+      187
+     ],
+     "shuffled_outputs": [
+      "Washington, D.C.",
+      "Kinshasa",
+      "Conakry",
+      "Gaborone",
+      "Cairo"
+     ]
+    },
+    {
+     "query": 67,
+     "demos": [
+      140,
+      120,
+      85,
+      101,
+      14
+     ],
+     "shuffled_outputs": [
+      "Yaren District",
+      "Amman",
+      "Antananarivo",
+      "Bridgetown",
+      "Lisbon"
+     ]
+    }
+   ]
+  },
+  "fmt-F2": {
+   "mean": [
+    3,
+    4,
+    7,
+    8,
+    9,
+    12,
+    14,
+    15,
+    19,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    29,
+    31,
+    32,
+    33,
+    34,
+    37,
+    40,
+    43,
+    45,
+    46,
+    48,
+    49,
+    50,
+    51,
+    52,
+    55,
+    56
+   ],
+   "cie": [
+    {
+     "query": 57,
+     "demos": [
+      78,
+      115,
+      196,
+      86,
+      73
+     ],
+     "shuffled_outputs": [
+      "Tegucigalpa",
+      "Podgorica",
+      "Tehran",
+      "Harare",
+      "Astana"
+     ]
+    },
+    {
+     "query": 58,
+     "demos": [
+      196,
+      101,
+      125,
+      60,
+      31
+     ],
+     "shuffled_outputs": [
+      "Antananarivo",
+      "Ottawa",
+      "Harare",
+      "Niamey",
+      "Paris"
+     ]
+    },
+    {
+     "query": 59,
+     "demos": [
+      79,
+      96,
+      25,
+      186,
+      86
+     ],
+     "shuffled_outputs": [
+      "Baghdad",
+      "Sofia",
+      "Monrovia",
+      "London",
+      "Astana"
+     ]
+    },
+    {
+     "query": 60,
+     "demos": [
+      46,
+      187,
+      78,
+      76,
+      31
+     ],
+     "shuffled_outputs": [
+      "Copenhagen",
+      "Ottawa",
+      "Washington, D.C.",
+      "New Delhi",
+      "Tehran"
+     ]
+    },
+    {
+     "query": 61,
+     "demos": [
+      59,
+      63,
+      178,
+      4,
+      96
+     ],
+     "shuffled_outputs": [
+      "Monrovia",
+      "Port of Spain",
+      "Tbilisi",
+      "Helsinki",
+      "Luanda"
+     ]
+    },
+    {
+     "query": 62,
+     "demos": [
+      38,
+      158,
+      134,
+      159,
+      34
+     ],
+     "shuffled_outputs": [
+      "Panama City",
+      "Santiago",
+      "Honiara",
+      "Kinshasa",
+      "Ljubljana"
+     ]
+    },
+    {
+     "query": 63,
+     "demos": [
+      52,
+      32,
+      127,
+      120,
+      115
+     ],
+     "shuffled_outputs": [
+      "Yaren District",
+      "Bangui",
+      "San Salvador",
+      "Podgorica",
+      "Pyongyang"
+     ]
+    },
+    {
+     "query": 66,
+     "demos": [
+      22,
+      51,
+      69,
+      45,
+      187
+     ],
+     "shuffled_outputs": [
+      "Gaborone",
+      "Washington, D.C.",
+      "Conakry",
+      "Kinshasa",
+      "Cairo"
+     ]
+    }
+   ]
+  },
+  "fmt-F3": {
+   "mean": [
+    3,
+    4,
+    7,
+    8,
+    9,
+    12,
+    14,
+    15,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    29,
+    31,
+    32,
+    33,
+    34,
+    37,
+    38,
+    40,
+    43,
+    45,
+    46,
+    48,
+    49,
+    50,
+    51,
+    52
+   ],
+   "cie": [
+    {
+     "query": 55,
+     "demos": [
+      4,
+      132,
+      24,
+      58,
+      96
+     ],
+     "shuffled_outputs": [
+      "Luanda",
+      "Suva",
+      "Bandar Seri Begawan",
+      "Ngerulmud",
+      "Monrovia"
+     ]
+    },
+    {
+     "query": 56,
+     "demos": [
+      33,
+      15,
+      186,
+      135,
+      27
+     ],
+     "shuffled_outputs": [
+      "Minsk",
+      "London",
+      "N'Djamena",
+      "Port Moresby",
+      "Bujumbura"
+     ]
+    },
+    {
+     "query": 57,
+     "demos": [
+      78,
+      115,
+      196,
+      86,
+      73
+     ],
+     "shuffled_outputs": [
+      "Podgorica",
+      "Harare",
+      "Astana",
+      "Tegucigalpa",
+      "Tehran"
+     ]
+    },
+    {
+     "query": 58,
+     "demos": [
+      196,
+      101,
+      125,
+      60,
+      31
+     ],
+     "shuffled_outputs": [
+      "Niamey",
+      "Harare",
+      "Antananarivo",
+      "Ottawa",
+      "Paris"
+     ]
+    },
+    {
+     "query": 59,
+     "demos": [
+      79,
+      96,
+      25,
+      186,
+      86
+     ],
+     "shuffled_outputs": [
+      "London",
+      "Baghdad",
+      "Sofia",
+      "Monrovia",
+      "Astana"
+     ]
+    },
+    {
+     "query": 60,
+     "demos": [
+      46,
+      187,
+      78,
+      76,
+      31
+     ],
+     "shuffled_outputs": [
+      "Ottawa",
+      "Tehran",
+      "New Delhi",
+      "Copenhagen",
+      "Washington, D.C."
+     ]
+    },
+    {
+     "query": 61,
+     "demos": [
+      59,
+      63,
+      178,
+      4,
+      96
+     ],
+     "shuffled_outputs": [
+      "Luanda",
+      "Tbilisi",
+      "Monrovia",
+      "Helsinki",
+      "Port of Spain"
+     ]
+    },
+    {
+     "query": 62,
+     "demos": [
+      38,
+      158,
+      134,
+      159,
+      34
+     ],
+     "shuffled_outputs": [
+      "Ljubljana",
+      "Panama City",
+      "Santiago",
+      "Kinshasa",
+      "Honiara"
+     ]
+    }
+   ]
+  }
+ },
+ "country-currency": {
+  "fmt-F1": {
+   "mean": [
+    3,
+    8,
+    9,
+    12,
+    14,
+    15,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    29,
+    31,
+    32,
+    33,
+    34,
+    37,
+    38,
+    43,
+    45,
+    46,
+    48,
+    49,
+    50,
+    51,
+    52,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60
+   ],
+   "cie": [
+    {
+     "query": 63,
+     "demos": [
+      110,
+      33,
+      85,
+      50,
+      196
+     ],
+     "shuffled_outputs": [
+      "Jordanian Dinar (JOD)",
+      "Zimbabwean Dollar",
+      "US Dollar (USD)",
+      "Central African CFA franc",
+      "Mexican Peso"
+     ]
+    },
+    {
+     "query": 66,
+     "demos": [
+      125,
+      50,
+      9,
+      88,
+      19
+     ],
+     "shuffled_outputs": [
+      "US Dollar (USD)",
+      "Australian Dollar (AUD)",
+      "Naira",
+      "Euro (EUR)",
+      "Ngultrum (BTN)"
+     ]
+    },
+    {
+     "query": 69,
+     "demos": [
+      100,
+      25,
+      169,
+      31,
+      20
+     ],
+     "shuffled_outputs": [
+      "Bulgarian Lev (BGN)",
+      "Swiss Franc (CHF)",
+      "Bolivian Boliviano (BOB)",
+      "Euro (EUR)",
+      "Canadian Dollar (CAD)"
+     ]
+    },
+    {
+     "query": 76,
+     "demos": [
+      52,
+      4,
+      113,
+      158,
+      37
+     ],
+     "shuffled_outputs": [
+      "Euro (EUR)",
+      "Comorian Franc",
+      "US Dollar (USD)",
+      "Kwanza (AOA)",
+      "Euro (EUR)"
+     ]
+    },
+    {
+     "query": 77,
+     "demos": [
+      172,
+      57,
+      62,
+      20,
+      148
+     ],
+     "shuffled_outputs": [
+      "Tajikistani Somoni",
+      "Ethiopian Birr",
+      "Dalasi (GMD)",
+      "Bolivian Boliviano (BOB)",
+      "Tala"
+     ]
+    },
+    {
+     "query": 78,
+     "demos": [
+      181,
+      107,
+      45,
+      12,
+      32
+     ],
+     "shuffled_outputs": [
+      "Bahraini Dinar (BHD)",
+      "Congolese Franc (CDF)",
+      "Turkmenistani Manat",
+      "Central African CFA franc",
+      "US Dollar (USD)"
+     ]
+    },
+    {
+     "query": 79,
+     "demos": [
+      25,
+      7,
+      76,
+      60,
+      191
+     ],
+     "shuffled_outputs": [
+      "Euro (EUR)",
+      "Indian Rupee",
+      "Euro (EUR)",
+      "Bulgarian Lev (BGN)",
+      "Dram (AMD)"
+     ]
+    },
+    {
+     "query": 85,
+     "demos": [
+      15,
+      67,
+      176,
+      4,
+      9
+     ],
+     "shuffled_outputs": [
+      "CFA Franc",
+      "Belarusian Ruble (BYN)",
+      "Kwanza (AOA)",
+      "East Caribbean Dollar (XCD)",
+      "Euro (EUR)"
+     ]
+    },
+    {
+     "query": 88,
+     "demos": [
+      67,
+      77,
+      27,
+      113,
+      187
+     ],
+     "shuffled_outputs": [
+      "US Dollar (USD)",
+      "Burundian Franc (BIF)",
+      "Euro (EUR)",
+      "Indonesian Rupiah",
+      "East Caribbean Dollar (XCD)"
+     ]
+    }
+   ]
+  },
+  "fmt-F2": {
+   "mean": [
+    3,
+    8,
+    9,
+    12,
+    14,
+    15,
+    19,
+    21,
+    23,
+    24,
+    25,
+    26,
+    27,
+    29,
+    31,
+    32,
+    33,
+    34,
+    37,
+    38,
+    43,
+    45,
+    46,
+    48,
+    49,
+    50,
+    51,
+    52,
+    55,
+    56,
+    57,
+    58,
+    59
+   ],
+   "cie": [
+    {
+     "query": 60,
+     "demos": [
+      24,
+      62,
+      66,
+      26,
+      135
+     ],
+     "shuffled_outputs": [
+      "Kina (PGK)",
+      "Euro (EUR)",
+      "Dalasi (GMD)",
+      "Brunei Dollar (BND)",
+      "West African CFA franc"
+     ]
+    },
+    {
+     "query": 63,
+     "demos": [
+      110,
+      33,
+      85,
+      50,
+      196
+     ],
+     "shuffled_outputs": [
+      "Mexican Peso",
+      "US Dollar (USD)",
+      "Central African CFA franc",
+      "Jordanian Dinar (JOD)",
+      "Zimbabwean Dollar"
+     ]
+    },
+    {
+     "query": 66,
+     "demos": [
+      125,
+      50,
+      9,
+      88,
+      19
+     ],
+     "shuffled_outputs": [
+      "Australian Dollar (AUD)",
+      "Ngultrum (BTN)",
+      "Euro (EUR)",
+      "US Dollar (USD)",
+      "Naira"
+     ]
+    },
+    {
+     "query": 69,
+     "demos": [
+      100,
+      25,
+      169,
+      31,
+      20
+     ],
+     "shuffled_outputs": [
+      "Canadian Dollar (CAD)",
+      "Bulgarian Lev (BGN)",
+      "Euro (EUR)",
+      "Bolivian Boliviano (BOB)",
+      "Swiss Franc (CHF)"
+     ]
+    },
+    {
+     "query": 76,
+     "demos": [
+      52,
+      4,
+      113,
+      158,
+      37
+     ],
+     "shuffled_outputs": [
+      "Comorian Franc",
+      "US Dollar (USD)",
+      "Euro (EUR)",
+      "Euro (EUR)",
+      "Kwanza (AOA)"
+     ]
+    },
+    {
+     "query": 77,
+     "demos": [
+      172,
+      57,
+      62,
+      20,
+      148
+     ],
+     "shuffled_outputs": [
+      "Tajikistani Somoni",
+      "Dalasi (GMD)",
+      "Bolivian Boliviano (BOB)",
+      "Ethiopian Birr",
+      "Tala"
+     ]
+    },
+    {
+     "query": 78,
+     "demos": [
+      181,
+      107,
+      45,
+      12,
+      32
+     ],
+     "shuffled_outputs": [
+      "Congolese Franc (CDF)",
+      "Bahraini Dinar (BHD)",
+      "Turkmenistani Manat",
+      "Central African CFA franc",
+      "US Dollar (USD)"
+     ]
+    },
+    {
+     "query": 79,
+     "demos": [
+      25,
+      7,
+      76,
+      60,
+      191
+     ],
+     "shuffled_outputs": [
+      "Bulgarian Lev (BGN)",
+      "Indian Rupee",
+      "Dram (AMD)",
+      "Euro (EUR)",
+      "Euro (EUR)"
+     ]
+    }
+   ]
+  },
+  "fmt-F3": {
+   "mean": [
+    3,
+    8,
+    9,
+    12,
+    14,
+    15,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    29,
+    31,
+    32,
+    33,
+    34,
+    37,
+    38,
+    43,
+    45,
+    46,
+    49,
+    50,
+    51,
+    52,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60
+   ],
+   "cie": [
+    {
+     "query": 61,
+     "demos": [
+      101,
+      79,
+      19,
+      182,
+      14
+     ],
+     "shuffled_outputs": [
+      "Barbadian Dollar (BBD)",
+      "Ariary",
+      "Tuvaluan Dollar (TVD)",
+      "Ngultrum (BTN)",
+      "Iraqi Dinar (IQD)"
+     ]
+    },
+    {
+     "query": 63,
+     "demos": [
+      110,
+      33,
+      85,
+      50,
+      196
+     ],
+     "shuffled_outputs": [
+      "Central African CFA franc",
+      "Jordanian Dinar (JOD)",
+      "Zimbabwean Dollar",
+      "Mexican Peso",
+      "US Dollar (USD)"
+     ]
+    },
+    {
+     "query": 66,
+     "demos": [
+      125,
+      50,
+      9,
+      88,
+      19
+     ],
+     "shuffled_outputs": [
+      "Australian Dollar (AUD)",
+      "Ngultrum (BTN)",
+      "Euro (EUR)",
+      "Naira",
+      "US Dollar (USD)"
+     ]
+    },
+    {
+     "query": 69,
+     "demos": [
+      100,
+      25,
+      169,
+      31,
+      20
+     ],
+     "shuffled_outputs": [
+      "Canadian Dollar (CAD)",
+      "Swiss Franc (CHF)",
+      "Bulgarian Lev (BGN)",
+      "Euro (EUR)",
+      "Bolivian Boliviano (BOB)"
+     ]
+    },
+    {
+     "query": 76,
+     "demos": [
+      52,
+      4,
+      113,
+      158,
+      37
+     ],
+     "shuffled_outputs": [
+      "Comorian Franc",
+      "Euro (EUR)",
+      "Euro (EUR)",
+      "Kwanza (AOA)",
+      "US Dollar (USD)"
+     ]
+    },
+    {
+     "query": 78,
+     "demos": [
+      181,
+      107,
+      45,
+      12,
+      32
+     ],
+     "shuffled_outputs": [
+      "Congolese Franc (CDF)",
+      "Bahraini Dinar (BHD)",
+      "Turkmenistani Manat",
+      "Central African CFA franc",
+      "US Dollar (USD)"
+     ]
+    },
+    {
+     "query": 79,
+     "demos": [
+      25,
+      7,
+      76,
+      60,
+      191
+     ],
+     "shuffled_outputs": [
+      "Euro (EUR)",
+      "Dram (AMD)",
+      "Bulgarian Lev (BGN)",
+      "Euro (EUR)",
+      "Indian Rupee"
+     ]
+    },
+    {
+     "query": 85,
+     "demos": [
+      15,
+      67,
+      176,
+      4,
+      9
+     ],
+     "shuffled_outputs": [
+      "East Caribbean Dollar (XCD)",
+      "Kwanza (AOA)",
+      "Euro (EUR)",
+      "Belarusian Ruble (BYN)",
+      "CFA Franc"
+     ]
+    }
+   ]
+  }
+ },
+ "landmark-country": {
+  "fmt-F1": {
+   "mean": [
+    0,
+    1,
+    3,
+    4,
+    6,
+    7,
+    9,
+    10,
+    11,
+    14,
+    16,
+    24,
+    29,
+    30,
+    31,
+    33,
+    34,
+    40,
+    43,
+    44,
+    47,
+    48,
+    50,
+    51,
+    57,
+    59,
+    60,
+    61,
+    62,
+    65,
+    66,
+    67,
+    70,
+    72
+   ],
+   "cie": [
+    {
+     "query": 73,
+     "demos": [
+      373,
+      546,
+      521,
+      31,
+      408
+     ],
+     "shuffled_outputs": [
+      "Canada",
+      "Australia",
+      "India",
+      "Turkey",
+      "Japan"
+     ]
+    },
+    {
+     "query": 76,
+     "demos": [
+      349,
+      531,
+      392,
+      466,
+      700
+     ],
+     "shuffled_outputs": [
+      "Switzerland",
+      "India",
+      "Ireland",
+      "Netherlands",
+      "Romania"
+     ]
+    },
+    {
+     "query": 78,
+     "demos": [
+      605,
+      188,
+      349,
+      568,
+      388
+     ],
+     "shuffled_outputs": [
+      "Japan",
+      "Netherlands",
+      "Switzerland",
+      "Estonia",
+      "Pakistan"
+     ]
+    },
+    {
+     "query": 82,
+     "demos": [
+      14,
+      768,
+      676,
+      704,
+      698
+     ],
+     "shuffled_outputs": [
+      "India",
+      "Ireland",
+      "Iran",
+      "Philippines",
+      "Germany"
+     ]
+    },
+    {
+     "query": 95,
+     "demos": [
+      637,
+      345,
+      243,
+      691,
+      753
+     ],
+     "shuffled_outputs": [
+      "Greece",
+      "Greece",
+      "Canada",
+      "Switzerland",
+      "Japan"
+     ]
+    },
+    {
+     "query": 97,
+     "demos": [
+      16,
+      444,
+      378,
+      240,
+      186
+     ],
+     "shuffled_outputs": [
+      "India",
+      "Lebanon",
+      "Spain",
+      "Russia",
+      "Italy"
+     ]
+    },
+    {
+     "query": 102,
+     "demos": [
+      524,
+      561,
+      399,
+      44,
+      359
+     ],
+     "shuffled_outputs": [
+      "Switzerland",
+      "Canada",
+      "Italy",
+      "India",
+      "Japan"
+     ]
+    },
+    {
+     "query": 104,
+     "demos": [
+      666,
+      554,
+      632,
+      60,
+      408
+     ],
+     "shuffled_outputs": [
+      "Norway",
+      "Austria",
+      "Japan",
+      "Italy",
+      "Turkey"
+     ]
+    },
+    {
+     "query": 108,
+     "demos": [
+      485,
+      499,
+      359,
+      34,
+      427
+     ],
+     "shuffled_outputs": [
+      "Colombia",
+      "Slovenia",
+      "Australia",
+      "Switzerland",
+      "Vietnam"
+     ]
+    }
+   ]
+  },
+  "fmt-F2": {
+   "mean": [
+    0,
+    1,
+    3,
+    4,
+    6,
+    7,
+    9,
+    10,
+    11,
+    14,
+    16,
+    24,
+    29,
+    30,
+    31,
+    33,
+    34,
+    40,
+    43,
+    44,
+    47,
+    48,
+    50,
+    51,
+    57,
+    59,
+    60,
+    61,
+    62,
+    65,
+    66,
+    67,
+    70
+   ],
+   "cie": [
+    {
+     "query": 72,
+     "demos": [
+      317,
+      149,
+      490,
+      183,
+      226
+     ],
+     "shuffled_outputs": [
+      "Germany",
+      "India",
+      "India",
+      "Finland",
+      "Japan"
+     ]
+    },
+    {
+     "query": 73,
+     "demos": [
+      373,
+      546,
+      521,
+      31,
+      408
+     ],
+     "shuffled_outputs": [
+      "Australia",
+      "Turkey",
+      "Canada",
+      "India",
+      "Japan"
+     ]
+    },
+    {
+     "query": 76,
+     "demos": [
+      349,
+      531,
+      392,
+      466,
+      700
+     ],
+     "shuffled_outputs": [
+      "Ireland",
+      "Switzerland",
+      "Netherlands",
+      "India",
+      "Romania"
+     ]
+    },
+    {
+     "query": 78,
+     "demos": [
+      605,
+      188,
+      349,
+      568,
+      388
+     ],
+     "shuffled_outputs": [
+      "Estonia",
+      "Pakistan",
+      "Switzerland",
+      "Japan",
+      "Netherlands"
+     ]
+    },
+    {
+     "query": 82,
+     "demos": [
+      14,
+      768,
+      676,
+      704,
+      698
+     ],
+     "shuffled_outputs": [
+      "India",
+      "Iran",
+      "Philippines",
+      "Ireland",
+      "Germany"
+     ]
+    },
+    {
+     "query": 95,
+     "demos": [
+      637,
+      345,
+      243,
+      691,
+      753
+     ],
+     "shuffled_outputs": [
+      "Greece",
+      "Japan",
+      "Switzerland",
+      "Canada",
+      "Greece"
+     ]
+    },
+    {
+     "query": 97,
+     "demos": [
+      16,
+      444,
+      378,
+      240,
+      186
+     ],
+     "shuffled_outputs": [
+      "Spain",
+      "Lebanon",
+      "India",
+      "Russia",
+      "Italy"
+     ]
+    },
+    {
+     "query": 102,
+     "demos": [
+      524,
+      561,
+      399,
+      44,
+      359
+     ],
+     "shuffled_outputs": [
+      "Canada",
+      "Switzerland",
+      "India",
+      "Japan",
+      "Italy"
+     ]
+    }
+   ]
+  },
+  "fmt-F3": {
+   "mean": [
+    0,
+    1,
+    3,
+    4,
+    6,
+    7,
+    9,
+    10,
+    11,
+    14,
+    16,
+    24,
+    29,
+    30,
+    31,
+    33,
+    34,
+    40,
+    43,
+    44,
+    48,
+    50,
+    51,
+    57,
+    59,
+    60,
+    61,
+    62,
+    65,
+    66,
+    67,
+    70,
+    73
+   ],
+   "cie": [
+    {
+     "query": 76,
+     "demos": [
+      349,
+      531,
+      392,
+      466,
+      700
+     ],
+     "shuffled_outputs": [
+      "India",
+      "Netherlands",
+      "Romania",
+      "Switzerland",
+      "Ireland"
+     ]
+    },
+    {
+     "query": 78,
+     "demos": [
+      605,
+      188,
+      349,
+      568,
+      388
+     ],
+     "shuffled_outputs": [
+      "Japan",
+      "Switzerland",
+      "Netherlands",
+      "Estonia",
+      "Pakistan"
+     ]
+    },
+    {
+     "query": 82,
+     "demos": [
+      14,
+      768,
+      676,
+      704,
+      698
+     ],
+     "shuffled_outputs": [
+      "Ireland",
+      "Philippines",
+      "Germany",
+      "Iran",
+      "India"
+     ]
+    },
+    {
+     "query": 95,
+     "demos": [
+      637,
+      345,
+      243,
+      691,
+      753
+     ],
+     "shuffled_outputs": [
+      "Greece",
+      "Canada",
+      "Switzerland",
+      "Greece",
+      "Japan"
+     ]
+    },
+    {
+     "query": 97,
+     "demos": [
+      16,
+      444,
+      378,
+      240,
+      186
+     ],
+     "shuffled_outputs": [
+      "Russia",
+      "Italy",
+      "Spain",
+      "Lebanon",
+      "India"
+     ]
+    },
+    {
+     "query": 102,
+     "demos": [
+      524,
+      561,
+      399,
+      44,
+      359
+     ],
+     "shuffled_outputs": [
+      "India",
+      "Italy",
+      "Switzerland",
+      "Canada",
+      "Japan"
+     ]
+    },
+    {
+     "query": 104,
+     "demos": [
+      666,
+      554,
+      632,
+      60,
+      408
+     ],
+     "shuffled_outputs": [
+      "Turkey",
+      "Austria",
+      "Italy",
+      "Japan",
+      "Norway"
+     ]
+    },
+    {
+     "query": 108,
+     "demos": [
+      485,
+      499,
+      359,
+      34,
+      427
+     ],
+     "shuffled_outputs": [
+      "Vietnam",
+      "Colombia",
+      "Australia",
+      "Switzerland",
+      "Slovenia"
+     ]
+    }
+   ]
+  }
+ },
+ "park-country": {
+  "fmt-F1": {
+   "mean": [
+    0,
+    1,
+    3,
+    4,
+    6,
+    9,
+    10,
+    11,
+    14,
+    22,
+    29,
+    30,
+    31,
+    32,
+    34,
+    40,
+    43,
+    47,
+    48,
+    50,
+    51,
+    57,
+    59,
+    60,
+    61,
+    62,
+    66,
+    67,
+    72,
+    73,
+    76,
+    78,
+    82,
+    87
+   ],
+   "cie": [
+    {
+     "query": 95,
+     "demos": [
+      332,
+      673,
+      314,
+      269,
+      7
+     ],
+     "shuffled_outputs": [
+      "Finland",
+      "Honduras",
+      "Albania",
+      "Turkey",
+      "India"
+     ]
+    },
+    {
+     "query": 97,
+     "demos": [
+      298,
+      596,
+      192,
+      102,
+      181
+     ],
+     "shuffled_outputs": [
+      "Costa Rica",
+      "Greece",
+      "Colombia",
+      "Botswana",
+      "South Korea"
+     ]
+    },
+    {
+     "query": 102,
+     "demos": [
+      574,
+      694,
+      6,
+      237,
+      552
+     ],
+     "shuffled_outputs": [
+      "Egypt",
+      "Albania",
+      "Poland",
+      "Seychelles",
+      "United Kingdom"
+     ]
+    },
+    {
+     "query": 104,
+     "demos": [
+      644,
+      438,
+      681,
+      185,
+      234
+     ],
+     "shuffled_outputs": [
+      "Congo",
+      "Tanzania",
+      "Uganda",
+      "Ecuador",
+      "Mali"
+     ]
+    },
+    {
+     "query": 106,
+     "demos": [
+      211,
+      73,
+      384,
+      385,
+      409
+     ],
+     "shuffled_outputs": [
+      "Japan",
+      "Croatia",
+      "Barbados",
+      "Latvia",
+      "Japan"
+     ]
+    },
+    {
+     "query": 107,
+     "demos": [
+      438,
+      185,
+      324,
+      607,
+      268
+     ],
+     "shuffled_outputs": [
+      "Hungary",
+      "Congo",
+      "Finland",
+      "Mali",
+      "Spain"
+     ]
+    },
+    {
+     "query": 108,
+     "demos": [
+      503,
+      554,
+      359,
+      210,
+      102
+     ],
+     "shuffled_outputs": [
+      "Botswana",
+      "Romania",
+      "Niger",
+      "Ireland",
+      "Croatia"
+     ]
+    },
+    {
+     "query": 110,
+     "demos": [
+      597,
+      301,
+      571,
+      174,
+      563
+     ],
+     "shuffled_outputs": [
+      "Serbia",
+      "Colombia",
+      "South Korea",
+      "Grenada",
+      "Saint Lucia"
+     ]
+    },
+    {
+     "query": 113,
+     "demos": [
+      156,
+      502,
+      267,
+      184,
+      268
+     ],
+     "shuffled_outputs": [
+      "Finland",
+      "Nicaragua",
+      "Finland",
+      "Canada",
+      "Comoros"
+     ]
+    }
+   ]
+  },
+  "fmt-F2": {
+   "mean": [
+    0,
+    1,
+    3,
+    4,
+    6,
+    9,
+    10,
+    11,
+    14,
+    22,
+    29,
+    30,
+    31,
+    32,
+    34,
+    40,
+    43,
+    47,
+    48,
+    50,
+    51,
+    57,
+    59,
+    60,
+    61,
+    62,
+    66,
+    67,
+    72,
+    73,
+    76,
+    78,
+    82
+   ],
+   "cie": [
+    {
+     "query": 87,
+     "demos": [
+      689,
+      249,
+      404,
+      48,
+      572
+     ],
+     "shuffled_outputs": [
+      "United Kingdom",
+      "Austria",
+      "Kosovo",
+      "Serbia",
+      "Estonia"
+     ]
+    },
+    {
+     "query": 95,
+     "demos": [
+      332,
+      673,
+      314,
+      269,
+      7
+     ],
+     "shuffled_outputs": [
+      "Finland",
+      "Honduras",
+      "Albania",
+      "Turkey",
+      "India"
+     ]
+    },
+    {
+     "query": 97,
+     "demos": [
+      298,
+      596,
+      192,
+      102,
+      181
+     ],
+     "shuffled_outputs": [
+      "Botswana",
+      "South Korea",
+      "Greece",
+      "Costa Rica",
+      "Colombia"
+     ]
+    },
+    {
+     "query": 102,
+     "demos": [
+      574,
+      694,
+      6,
+      237,
+      552
+     ],
+     "shuffled_outputs": [
+      "Seychelles",
+      "Egypt",
+      "United Kingdom",
+      "Albania",
+      "Poland"
+     ]
+    },
+    {
+     "query": 104,
+     "demos": [
+      644,
+      438,
+      681,
+      185,
+      234
+     ],
+     "shuffled_outputs": [
+      "Tanzania",
+      "Ecuador",
+      "Congo",
+      "Mali",
+      "Uganda"
+     ]
+    },
+    {
+     "query": 106,
+     "demos": [
+      211,
+      73,
+      384,
+      385,
+      409
+     ],
+     "shuffled_outputs": [
+      "Japan",
+      "Croatia",
+      "Latvia",
+      "Barbados",
+      "Japan"
+     ]
+    },
+    {
+     "query": 107,
+     "demos": [
+      438,
+      185,
+      324,
+      607,
+      268
+     ],
+     "shuffled_outputs": [
+      "Hungary",
+      "Congo",
+      "Finland",
+      "Spain",
+      "Mali"
+     ]
+    },
+    {
+     "query": 108,
+     "demos": [
+      503,
+      554,
+      359,
+      210,
+      102
+     ],
+     "shuffled_outputs": [
+      "Croatia",
+      "Romania",
+      "Botswana",
+      "Niger",
+      "Ireland"
+     ]
+    }
+   ]
+  },
+  "fmt-F3": {
+   "mean": [
+    0,
+    1,
+    3,
+    4,
+    6,
+    9,
+    10,
+    11,
+    14,
+    22,
+    29,
+    30,
+    31,
+    32,
+    34,
+    40,
+    43,
+    47,
+    48,
+    50,
+    51,
+    57,
+    59,
+    60,
+    61,
+    62,
+    66,
+    67,
+    72,
+    73,
+    76,
+    78,
+    82
+   ],
+   "cie": [
+    {
+     "query": 95,
+     "demos": [
+      332,
+      673,
+      314,
+      269,
+      7
+     ],
+     "shuffled_outputs": [
+      "Finland",
+      "Turkey",
+      "Honduras",
+      "Albania",
+      "India"
+     ]
+    },
+    {
+     "query": 97,
+     "demos": [
+      298,
+      596,
+      192,
+      102,
+      181
+     ],
+     "shuffled_outputs": [
+      "Botswana",
+      "Greece",
+      "Costa Rica",
+      "South Korea",
+      "Colombia"
+     ]
+    },
+    {
+     "query": 102,
+     "demos": [
+      574,
+      694,
+      6,
+      237,
+      552
+     ],
+     "shuffled_outputs": [
+      "United Kingdom",
+      "Poland",
+      "Egypt",
+      "Albania",
+      "Seychelles"
+     ]
+    },
+    {
+     "query": 104,
+     "demos": [
+      644,
+      438,
+      681,
+      185,
+      234
+     ],
+     "shuffled_outputs": [
+      "Mali",
+      "Congo",
+      "Uganda",
+      "Tanzania",
+      "Ecuador"
+     ]
+    },
+    {
+     "query": 106,
+     "demos": [
+      211,
+      73,
+      384,
+      385,
+      409
+     ],
+     "shuffled_outputs": [
+      "Barbados",
+      "Croatia",
+      "Latvia",
+      "Japan",
+      "Japan"
+     ]
+    },
+    {
+     "query": 107,
+     "demos": [
+      438,
+      185,
+      324,
+      607,
+      268
+     ],
+     "shuffled_outputs": [
+      "Finland",
+      "Hungary",
+      "Spain",
+      "Congo",
+      "Mali"
+     ]
+    },
+    {
+     "query": 108,
+     "demos": [
+      503,
+      554,
+      359,
+      210,
+      102
+     ],
+     "shuffled_outputs": [
+      "Botswana",
+      "Romania",
+      "Niger",
+      "Croatia",
+      "Ireland"
+     ]
+    },
+    {
+     "query": 110,
+     "demos": [
+      597,
+      301,
+      571,
+      174,
+      563
+     ],
+     "shuffled_outputs": [
+      "Serbia",
+      "Colombia",
+      "Grenada",
+      "South Korea",
+      "Saint Lucia"
+     ]
+    }
+   ]
+  }
+ },
+ "product-company": {
+  "fmt-F1": {
+   "mean": [
+    1,
+    3,
+    4,
+    7,
+    8,
+    9,
+    16,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    30,
+    34,
+    40,
+    48,
+    49,
+    53,
+    56,
+    57,
+    58,
+    62,
+    66,
+    73,
+    74,
+    76,
+    79,
+    82,
+    86,
+    97,
+    101,
+    102,
+    104
+   ],
+   "cie": [
+    {
+     "query": 108,
+     "demos": [
+      40,
+      243,
+      59,
+      218,
+      188
+     ],
+     "shuffled_outputs": [
+      "Douglas",
+      "Intel",
+      "Microsoft",
+      "Microsoft",
+      "Microsoft"
+     ]
+    },
+    {
+     "query": 110,
+     "demos": [
+      319,
+      360,
+      361,
+      151,
+      278
+     ],
+     "shuffled_outputs": [
+      "Renault",
+      "Apple",
+      "Boeing",
+      "Microsoft",
+      "IBM"
+     ]
+    },
+    {
+     "query": 112,
+     "demos": [
+      74,
+      267,
+      29,
+      28,
+      13
+     ],
+     "shuffled_outputs": [
+      "Fiat",
+      "Fiat",
+      "Nissan",
+      "Sega",
+      "Microsoft"
+     ]
+    },
+    {
+     "query": 115,
+     "demos": [
+      37,
+      131,
+      73,
+      187,
+      7
+     ],
+     "shuffled_outputs": [
+      "Fiat",
+      "Sony",
+      "Sony",
+      "Apple",
+      "Microsoft"
+     ]
+    },
+    {
+     "query": 118,
+     "demos": [
+      363,
+      437,
+      258,
+      267,
+      474
+     ],
+     "shuffled_outputs": [
+      "Sony",
+      "Apple",
+      "IBM",
+      "Sega",
+      "Sega"
+     ]
+    },
+    {
+     "query": 125,
+     "demos": [
+      51,
+      425,
+      310,
+      485,
+      197
+     ],
+     "shuffled_outputs": [
+      "Microsoft",
+      "Google",
+      "Sony",
+      "Renault",
+      "IBM"
+     ]
+    },
+    {
+     "query": 129,
+     "demos": [
+      279,
+      311,
+      500,
+      8,
+      384
+     ],
+     "shuffled_outputs": [
+      "Boeing",
+      "Apple",
+      "Microsoft",
+      "Sony",
+      "Adobe"
+     ]
+    },
+    {
+     "query": 132,
+     "demos": [
+      59,
+      494,
+      301,
+      474,
+      377
+     ],
+     "shuffled_outputs": [
+      "Sega",
+      "Douglas",
+      "IBM",
+      "Sega",
+      "Intel"
+     ]
+    },
+    {
+     "query": 134,
+     "demos": [
+      239,
+      515,
+      1,
+      329,
+      151
+     ],
+     "shuffled_outputs": [
+      "Renault",
+      "Apple",
+      "Microsoft",
+      "Google",
+      "Iran"
+     ]
+    }
+   ]
+  },
+  "fmt-F2": {
+   "mean": [
+    1,
+    3,
+    4,
+    7,
+    8,
+    9,
+    16,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    29,
+    30,
+    34,
+    40,
+    49,
+    53,
+    56,
+    57,
+    58,
+    59,
+    60,
+    62,
+    66,
+    73,
+    74,
+    78,
+    79,
+    82,
+    86,
+    97
+   ],
+   "cie": [
+    {
+     "query": 100,
+     "demos": [
+      474,
+      175,
+      192,
+      226,
+      391
+     ],
+     "shuffled_outputs": [
+      "Microsoft",
+      "Apple",
+      "IBM",
+      "Google",
+      "Sega"
+     ]
+    },
+    {
+     "query": 101,
+     "demos": [
+      48,
+      388,
+      455,
+      156,
+      28
+     ],
+     "shuffled_outputs": [
+      "Boeing",
+      "Intel",
+      "Sega",
+      "Honda",
+      "Fiat"
+     ]
+    },
+    {
+     "query": 102,
+     "demos": [
+      451,
+      270,
+      14,
+      303,
+      326
+     ],
+     "shuffled_outputs": [
+      "Microsoft",
+      "Sega",
+      "Microsoft",
+      "Boeing",
+      "IBM"
+     ]
+    },
+    {
+     "query": 104,
+     "demos": [
+      243,
+      163,
+      176,
+      146,
+      165
+     ],
+     "shuffled_outputs": [
+      "Fiat",
+      "Samsung",
+      "Microsoft",
+      "Microsoft",
+      "Microsoft"
+     ]
+    },
+    {
+     "query": 108,
+     "demos": [
+      40,
+      243,
+      59,
+      218,
+      188
+     ],
+     "shuffled_outputs": [
+      "Microsoft",
+      "Intel",
+      "Microsoft",
+      "Douglas",
+      "Microsoft"
+     ]
+    },
+    {
+     "query": 110,
+     "demos": [
+      319,
+      360,
+      361,
+      151,
+      278
+     ],
+     "shuffled_outputs": [
+      "IBM",
+      "Boeing",
+      "Renault",
+      "Apple",
+      "Microsoft"
+     ]
+    },
+    {
+     "query": 112,
+     "demos": [
+      74,
+      267,
+      29,
+      28,
+      13
+     ],
+     "shuffled_outputs": [
+      "Nissan",
+      "Microsoft",
+      "Sega",
+      "Fiat",
+      "Fiat"
+     ]
+    },
+    {
+     "query": 115,
+     "demos": [
+      37,
+      131,
+      73,
+      187,
+      7
+     ],
+     "shuffled_outputs": [
+      "Microsoft",
+      "Fiat",
+      "Sony",
+      "Sony",
+      "Apple"
+     ]
+    }
+   ]
+  },
+  "fmt-F3": {
+   "mean": [
+    1,
+    3,
+    4,
+    7,
+    8,
+    9,
+    16,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    29,
+    30,
+    40,
+    48,
+    49,
+    53,
+    56,
+    57,
+    58,
+    60,
+    62,
+    66,
+    73,
+    74,
+    76,
+    79,
+    82,
+    86,
+    97,
+    100
+   ],
+   "cie": [
+    {
+     "query": 102,
+     "demos": [
+      451,
+      270,
+      14,
+      303,
+      326
+     ],
+     "shuffled_outputs": [
+      "IBM",
+      "Microsoft",
+      "Boeing",
+      "Sega",
+      "Microsoft"
+     ]
+    },
+    {
+     "query": 104,
+     "demos": [
+      243,
+      163,
+      176,
+      146,
+      165
+     ],
+     "shuffled_outputs": [
+      "Microsoft",
+      "Microsoft",
+      "Fiat",
+      "Microsoft",
+      "Samsung"
+     ]
+    },
+    {
+     "query": 108,
+     "demos": [
+      40,
+      243,
+      59,
+      218,
+      188
+     ],
+     "shuffled_outputs": [
+      "Microsoft",
+      "Douglas",
+      "Microsoft",
+      "Intel",
+      "Microsoft"
+     ]
+    },
+    {
+     "query": 110,
+     "demos": [
+      319,
+      360,
+      361,
+      151,
+      278
+     ],
+     "shuffled_outputs": [
+      "IBM",
+      "Boeing",
+      "Microsoft",
+      "Apple",
+      "Renault"
+     ]
+    },
+    {
+     "query": 112,
+     "demos": [
+      74,
+      267,
+      29,
+      28,
+      13
+     ],
+     "shuffled_outputs": [
+      "Sega",
+      "Fiat",
+      "Fiat",
+      "Microsoft",
+      "Nissan"
+     ]
+    },
+    {
+     "query": 115,
+     "demos": [
+      37,
+      131,
+      73,
+      187,
+      7
+     ],
+     "shuffled_outputs": [
+      "Microsoft",
+      "Sony",
+      "Sony",
+      "Fiat",
+      "Apple"
+     ]
+    },
+    {
+     "query": 118,
+     "demos": [
+      363,
+      437,
+      258,
+      267,
+      474
+     ],
+     "shuffled_outputs": [
+      "IBM",
+      "Sega",
+      "Sega",
+      "Sony",
+      "Apple"
+     ]
+    },
+    {
+     "query": 125,
+     "demos": [
+      51,
+      425,
+      310,
+      485,
+      197
+     ],
+     "shuffled_outputs": [
+      "Microsoft",
+      "Sony",
+      "Google",
+      "IBM",
+      "Renault"
+     ]
+    }
+   ]
+  }
+ },
+ "next_item": {
+  "fmt-F1": {
+   "mean": [
+    1,
+    2,
+    3,
+    4,
+    7,
+    11,
+    12,
+    14,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    26,
+    27,
+    29,
+    31,
+    33,
+    34,
+    38,
+    40,
+    44,
+    45,
+    46,
+    48,
+    49,
+    51,
+    55,
+    56,
+    58,
+    59,
+    61,
+    62
+   ],
+   "cie": [
+    {
+     "query": 63,
+     "demos": [
+      125,
+      11,
+      166,
+      3,
+      203
+     ],
+     "shuffled_outputs": [
+      "december",
+      "cc",
+      "XIX",
+      "four",
+      "twelve"
+     ]
+    },
+    {
+     "query": 66,
+     "demos": [
+      12,
+      184,
+      29,
+      171,
+      57
+     ],
+     "shuffled_outputs": [
+      "10",
+      "thirteen",
+      "j",
+      "v",
+      "xviii"
+     ]
+    },
+    {
+     "query": 67,
+     "demos": [
+      137,
+      12,
+      3,
+      204,
+      34
+     ],
+     "shuffled_outputs": [
+      "four",
+      "oo",
+      "Tuesday",
+      "thirteen",
+      "15"
+     ]
+    },
+    {
+     "query": 69,
+     "demos": [
+      38,
+      7,
+      31,
+      171,
+      165
+     ],
+     "shuffled_outputs": [
+      "eight",
+      "XVIII",
+      "12",
+      "v",
+      "19"
+     ]
+    },
+    {
+     "query": 73,
+     "demos": [
+      223,
+      169,
+      197,
+      21,
+      12
+     ],
+     "shuffled_outputs": [
+      "2",
+      "thirteen",
+      "iii",
+      "Monday",
+      "june"
+     ]
+    },
+    {
+     "query": 76,
+     "demos": [
+      26,
+      162,
+      136,
+      114,
+      67
+     ],
+     "shuffled_outputs": [
+      "7",
+      "t",
+      "QQ",
+      "XV",
+      "nn"
+     ]
+    },
+    {
+     "query": 77,
+     "demos": [
+      220,
+      127,
+      171,
+      31,
+      49
+     ],
+     "shuffled_outputs": [
+      "b",
+      "12",
+      "ee",
+      "December",
+      "v"
+     ]
+    },
+    {
+     "query": 78,
+     "demos": [
+      44,
+      76,
+      21,
+      2,
+      34
+     ],
+     "shuffled_outputs": [
+      "2",
+      "three",
+      "15",
+      "D",
+      "25"
+     ]
+    },
+    {
+     "query": 79,
+     "demos": [
+      158,
+      57,
+      156,
+      160,
+      40
+     ],
+     "shuffled_outputs": [
+      "XI",
+      "j",
+      "21",
+      "XIII",
+      "IX"
+     ]
+    }
+   ]
+  },
+  "fmt-F2": {
+   "mean": [
+    1,
+    2,
+    3,
+    7,
+    11,
+    12,
+    14,
+    20,
+    21,
+    22,
+    23,
+    24,
+    26,
+    27,
+    29,
+    31,
+    32,
+    33,
+    34,
+    38,
+    40,
+    44,
+    45,
+    46,
+    48,
+    49,
+    51,
+    55,
+    56,
+    58,
+    59,
+    61,
+    62
+   ],
+   "cie": [
+    {
+     "query": 63,
+     "demos": [
+      125,
+      11,
+      166,
+      3,
+      203
+     ],
+     "shuffled_outputs": [
+      "cc",
+      "four",
+      "twelve",
+      "december",
+      "XIX"
+     ]
+    },
+    {
+     "query": 66,
+     "demos": [
+      12,
+      184,
+      29,
+      171,
+      57
+     ],
+     "shuffled_outputs": [
+      "xviii",
+      "thirteen",
+      "j",
+      "10",
+      "v"
+     ]
+    },
+    {
+     "query": 67,
+     "demos": [
+      137,
+      12,
+      3,
+      204,
+      34
+     ],
+     "shuffled_outputs": [
+      "thirteen",
+      "four",
+      "Tuesday",
+      "oo",
+      "15"
+     ]
+    },
+    {
+     "query": 69,
+     "demos": [
+      38,
+      7,
+      31,
+      171,
+      165
+     ],
+     "shuffled_outputs": [
+      "v",
+      "XVIII",
+      "19",
+      "eight",
+      "12"
+     ]
+    },
+    {
+     "query": 73,
+     "demos": [
+      223,
+      169,
+      197,
+      21,
+      12
+     ],
+     "shuffled_outputs": [
+      "Monday",
+      "thirteen",
+      "2",
+      "iii",
+      "june"
+     ]
+    },
+    {
+     "query": 76,
+     "demos": [
+      26,
+      162,
+      136,
+      114,
+      67
+     ],
+     "shuffled_outputs": [
+      "QQ",
+      "XV",
+      "nn",
+      "7",
+      "t"
+     ]
+    },
+    {
+     "query": 77,
+     "demos": [
+      220,
+      127,
+      171,
+      31,
+      49
+     ],
+     "shuffled_outputs": [
+      "12",
+      "b",
+      "December",
+      "v",
+      "ee"
+     ]
+    },
+    {
+     "query": 78,
+     "demos": [
+      44,
+      76,
+      21,
+      2,
+      34
+     ],
+     "shuffled_outputs": [
+      "25",
+      "three",
+      "2",
+      "D",
+      "15"
+     ]
+    }
+   ]
+  },
+  "fmt-F3": {
+   "mean": [
+    1,
+    2,
+    3,
+    4,
+    7,
+    11,
+    12,
+    14,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    26,
+    27,
+    31,
+    32,
+    33,
+    34,
+    38,
+    44,
+    45,
+    46,
+    48,
+    49,
+    51,
+    55,
+    56,
+    58,
+    59,
+    61,
+    62
+   ],
+   "cie": [
+    {
+     "query": 63,
+     "demos": [
+      125,
+      11,
+      166,
+      3,
+      203
+     ],
+     "shuffled_outputs": [
+      "twelve",
+      "XIX",
+      "december",
+      "four",
+      "cc"
+     ]
+    },
+    {
+     "query": 66,
+     "demos": [
+      12,
+      184,
+      29,
+      171,
+      57
+     ],
+     "shuffled_outputs": [
+      "j",
+      "v",
+      "10",
+      "thirteen",
+      "xviii"
+     ]
+    },
+    {
+     "query": 67,
+     "demos": [
+      137,
+      12,
+      3,
+      204,
+      34
+     ],
+     "shuffled_outputs": [
+      "15",
+      "four",
+      "Tuesday",
+      "oo",
+      "thirteen"
+     ]
+    },
+    {
+     "query": 69,
+     "demos": [
+      38,
+      7,
+      31,
+      171,
+      165
+     ],
+     "shuffled_outputs": [
+      "19",
+      "eight",
+      "XVIII",
+      "12",
+      "v"
+     ]
+    },
+    {
+     "query": 73,
+     "demos": [
+      223,
+      169,
+      197,
+      21,
+      12
+     ],
+     "shuffled_outputs": [
+      "Monday",
+      "june",
+      "2",
+      "thirteen",
+      "iii"
+     ]
+    },
+    {
+     "query": 76,
+     "demos": [
+      26,
+      162,
+      136,
+      114,
+      67
+     ],
+     "shuffled_outputs": [
+      "nn",
+      "QQ",
+      "7",
+      "t",
+      "XV"
+     ]
+    },
+    {
+     "query": 77,
+     "demos": [
+      220,
+      127,
+      171,
+      31,
+      49
+     ],
+     "shuffled_outputs": [
+      "b",
+      "12",
+      "December",
+      "ee",
+      "v"
+     ]
+    },
+    {
+     "query": 78,
+     "demos": [
+      44,
+      76,
+      21,
+      2,
+      34
+     ],
+     "shuffled_outputs": [
+      "D",
+      "25",
+      "15",
+      "three",
+      "2"
+     ]
+    }
+   ]
+  }
+ },
+ "prev_item": {
+  "fmt-F1": {
+   "mean": [
+    1,
+    3,
+    4,
+    7,
+    11,
+    12,
+    14,
+    19,
+    21,
+    22,
+    23,
+    24,
+    26,
+    27,
+    29,
+    31,
+    32,
+    33,
+    34,
+    38,
+    40,
+    44,
+    45,
+    46,
+    48,
+    49,
+    51,
+    55,
+    57,
+    58,
+    61,
+    62,
+    67,
+    73
+   ],
+   "cie": [
+    {
+     "query": 76,
+     "demos": [
+      4,
+      48,
+      219,
+      46,
+      101
+     ],
+     "shuffled_outputs": [
+      "four",
+      "October",
+      "CC",
+      "28",
+      "26"
+     ]
+    },
+    {
+     "query": 86,
+     "demos": [
+      69,
+      220,
+      21,
+      223,
+      181
+     ],
+     "shuffled_outputs": [
+      "xiv",
+      "November",
+      "u",
+      "Sunday",
+      "1"
+     ]
+    },
+    {
+     "query": 88,
+     "demos": [
+      128,
+      137,
+      73,
+      1,
+      67
+     ],
+     "shuffled_outputs": [
+      "s",
+      "y",
+      "ee",
+      "one",
+      "nn"
+     ]
+    },
+    {
+     "query": 95,
+     "demos": [
+      27,
+      165,
+      44,
+      217,
+      129
+     ],
+     "shuffled_outputs": [
+      "7",
+      "XVII",
+      "ff",
+      "24",
+      "August"
+     ]
+    },
+    {
+     "query": 96,
+     "demos": [
+      114,
+      58,
+      78,
+      104,
+      12
+     ],
+     "shuffled_outputs": [
+      "j",
+      "PP",
+      "E",
+      "FF",
+      "twelve"
+     ]
+    },
+    {
+     "query": 101,
+     "demos": [
+      67,
+      223,
+      118,
+      85,
+      200
+     ],
+     "shuffled_outputs": [
+      "L",
+      "august",
+      "TT",
+      "s",
+      "Sunday"
+     ]
+    },
+    {
+     "query": 103,
+     "demos": [
+      78,
+      145,
+      101,
+      44,
+      156
+     ],
+     "shuffled_outputs": [
+      "E",
+      "VIII",
+      "vv",
+      "CC",
+      "24"
+     ]
+    },
+    {
+     "query": 108,
+     "demos": [
+      127,
+      40,
+      125,
+      1,
+      58
+     ],
+     "shuffled_outputs": [
+      "20",
+      "dd",
+      "one",
+      "bb",
+      "j"
+     ]
+    },
+    {
+     "query": 114,
+     "demos": [
+      195,
+      108,
+      44,
+      224,
+      214
+     ],
+     "shuffled_outputs": [
+      "march",
+      "December",
+      "JJ",
+      "24",
+      "May"
+     ]
+    }
+   ]
+  },
+  "fmt-F2": {
+   "mean": [
+    1,
+    3,
+    4,
+    7,
+    11,
+    12,
+    14,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    26,
+    27,
+    29,
+    31,
+    32,
+    33,
+    34,
+    38,
+    40,
+    44,
+    45,
+    46,
+    48,
+    49,
+    51,
+    55,
+    57,
+    58,
+    59,
+    61
+   ],
+   "cie": [
+    {
+     "query": 62,
+     "demos": [
+      22,
+      181,
+      81,
+      56,
+      85
+     ],
+     "shuffled_outputs": [
+      "xiv",
+      "L",
+      "h",
+      "2",
+      "H"
+     ]
+    },
+    {
+     "query": 66,
+     "demos": [
+      103,
+      44,
+      186,
+      169,
+      134
+     ],
+     "shuffled_outputs": [
+      "ii",
+      "EE",
+      "xix",
+      "kk",
+      "24"
+     ]
+    },
+    {
+     "query": 67,
+     "demos": [
+      61,
+      160,
+      221,
+      214,
+      7
+     ],
+     "shuffled_outputs": [
+      "May",
+      "sunday",
+      "m",
+      "seven",
+      "XII"
+     ]
+    },
+    {
+     "query": 69,
+     "demos": [
+      67,
+      221,
+      33,
+      136,
+      107
+     ],
+     "shuffled_outputs": [
+      "sunday",
+      "mm",
+      "13",
+      "II",
+      "s"
+     ]
+    },
+    {
+     "query": 73,
+     "demos": [
+      95,
+      162,
+      189,
+      44,
+      195
+     ],
+     "shuffled_outputs": [
+      "V",
+      "march",
+      "24",
+      "XIV",
+      "wednesday"
+     ]
+    },
+    {
+     "query": 76,
+     "demos": [
+      4,
+      48,
+      219,
+      46,
+      101
+     ],
+     "shuffled_outputs": [
+      "28",
+      "26",
+      "October",
+      "CC",
+      "four"
+     ]
+    },
+    {
+     "query": 77,
+     "demos": [
+      20,
+      61,
+      224,
+      167,
+      195
+     ],
+     "shuffled_outputs": [
+      "m",
+      "December",
+      "XIX",
+      "0",
+      "march"
+     ]
+    },
+    {
+     "query": 79,
+     "demos": [
+      107,
+      33,
+      195,
+      85,
+      165
+     ],
+     "shuffled_outputs": [
+      "march",
+      "13",
+      "L",
+      "II",
+      "XVII"
+     ]
+    }
+   ]
+  },
+  "fmt-F3": {
+   "mean": [
+    1,
+    2,
+    3,
+    4,
+    7,
+    11,
+    12,
+    14,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    26,
+    27,
+    29,
+    31,
+    32,
+    33,
+    34,
+    38,
+    40,
+    44,
+    45,
+    46,
+    48,
+    49,
+    51,
+    55,
+    57,
+    58,
+    59
+   ],
+   "cie": [
+    {
+     "query": 61,
+     "demos": [
+      51,
+      107,
+      118,
+      44,
+      143
+     ],
+     "shuffled_outputs": [
+      "24",
+      "tt",
+      "c",
+      "II",
+      "TT"
+     ]
+    },
+    {
+     "query": 62,
+     "demos": [
+      22,
+      181,
+      81,
+      56,
+      85
+     ],
+     "shuffled_outputs": [
+      "2",
+      "L",
+      "xiv",
+      "H",
+      "h"
+     ]
+    },
+    {
+     "query": 67,
+     "demos": [
+      61,
+      160,
+      221,
+      214,
+      7
+     ],
+     "shuffled_outputs": [
+      "m",
+      "sunday",
+      "XII",
+      "seven",
+      "May"
+     ]
+    },
+    {
+     "query": 69,
+     "demos": [
+      67,
+      221,
+      33,
+      136,
+      107
+     ],
+     "shuffled_outputs": [
+      "sunday",
+      "II",
+      "s",
+      "13",
+      "mm"
+     ]
+    },
+    {
+     "query": 73,
+     "demos": [
+      95,
+      162,
+      189,
+      44,
+      195
+     ],
+     "shuffled_outputs": [
+      "wednesday",
+      "V",
+      "march",
+      "24",
+      "XIV"
+     ]
+    },
+    {
+     "query": 76,
+     "demos": [
+      4,
+      48,
+      219,
+      46,
+      101
+     ],
+     "shuffled_outputs": [
+      "28",
+      "26",
+      "October",
+      "four",
+      "CC"
+     ]
+    },
+    {
+     "query": 77,
+     "demos": [
+      20,
+      61,
+      224,
+      167,
+      195
+     ],
+     "shuffled_outputs": [
+      "march",
+      "XIX",
+      "0",
+      "December",
+      "m"
+     ]
+    },
+    {
+     "query": 78,
+     "demos": [
+      204,
+      143,
+      104,
+      112,
+      209
+     ],
+     "shuffled_outputs": [
+      "Saturday",
+      "NN",
+      "Monday",
+      "FF",
+      "tt"
+     ]
+    }
+   ]
+  }
+ },
+ "english-french": {
+  "fmt-F1": {
+   "mean": [
+    3,
+    5,
+    6,
+    9,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    22,
+    23,
+    27,
+    32,
+    33,
+    36,
+    37,
+    39,
+    40,
+    41,
+    52,
+    54,
+    55,
+    57,
+    58,
+    62,
+    63,
+    64,
+    66,
+    69,
+    73,
+    76,
+    78,
+    81
+   ],
+   "cie": [
+    {
+     "query": 89,
+     "demos": [
+      3161,
+      605,
+      1244,
+      1478,
+      4354
+     ],
+     "shuffled_outputs": [
+      "J\u00e9sus",
+      "ambassadeurs",
+      "milliard",
+      "internationalement",
+      "devise"
+     ]
+    },
+    {
+     "query": 92,
+     "demos": [
+      4212,
+      4375,
+      1381,
+      1414,
+      824
+     ],
+     "shuffled_outputs": [
+      "cantique",
+      "sentiers",
+      "Irak",
+      "ancre",
+      "caract\u00e9ristique"
+     ]
+    },
+    {
+     "query": 93,
+     "demos": [
+      366,
+      2390,
+      128,
+      3043,
+      1493
+     ],
+     "shuffled_outputs": [
+      "plac\u00e9",
+      "s\u00e9curis\u00e9",
+      "sixi\u00e8me",
+      "honneurs",
+      "itin\u00e9raire"
+     ]
+    },
+    {
+     "query": 94,
+     "demos": [
+      4363,
+      2283,
+      1349,
+      3145,
+      294
+     ],
+     "shuffled_outputs": [
+      "manteau",
+      "entra\u00eenement",
+      "r\u00e9duit",
+      "journal",
+      "taille"
+     ]
+    },
+    {
+     "query": 95,
+     "demos": [
+      4577,
+      1287,
+      905,
+      2668,
+      1179
+     ],
+     "shuffled_outputs": [
+      "naissance",
+      "diff\u00e9rent",
+      "doit",
+      "bien",
+      "peut"
+     ]
+    },
+    {
+     "query": 97,
+     "demos": [
+      2907,
+      3425,
+      882,
+      2204,
+      1093
+     ],
+     "shuffled_outputs": [
+      "doyen",
+      "partisans",
+      "pouce",
+      "bulgare",
+      "cravate"
+     ]
+    },
+    {
+     "query": 99,
+     "demos": [
+      3397,
+      910,
+      1965,
+      3293,
+      740
+     ],
+     "shuffled_outputs": [
+      "\u00e9pouse",
+      "chef",
+      "s\u00e9v\u00e8rement",
+      "p\u00e9ninsule",
+      "s'est enfui"
+     ]
+    },
+    {
+     "query": 100,
+     "demos": [
+      1994,
+      1141,
+      4603,
+      896,
+      824
+     ],
+     "shuffled_outputs": [
+      "conseiller",
+      "biblioth\u00e8que",
+      "temp\u00e9ratures",
+      "sentiers",
+      "calcul\u00e9"
+     ]
+    },
+    {
+     "query": 101,
+     "demos": [
+      3217,
+      1938,
+      770,
+      833,
+      4267
+     ],
+     "shuffled_outputs": [
+      "comparaison",
+      "baltique",
+      "revendication",
+      "universit\u00e9",
+      "industrie"
+     ]
+    }
+   ]
+  },
+  "fmt-F2": {
+   "mean": [
+    3,
+    5,
+    6,
+    8,
+    9,
+    15,
+    16,
+    17,
+    19,
+    20,
+    22,
+    23,
+    25,
+    27,
+    32,
+    33,
+    36,
+    37,
+    39,
+    40,
+    41,
+    44,
+    51,
+    52,
+    54,
+    55,
+    57,
+    58,
+    62,
+    63,
+    64,
+    66,
+    69
+   ],
+   "cie": [
+    {
+     "query": 71,
+     "demos": [
+      1136,
+      1113,
+      3861,
+      287,
+      2405
+     ],
+     "shuffled_outputs": [
+      "comt\u00e9s",
+      "oiseau",
+      "cela",
+      "r\u00e9publicain",
+      "illustr\u00e9"
+     ]
+    },
+    {
+     "query": 73,
+     "demos": [
+      3018,
+      386,
+      2024,
+      327,
+      43
+     ],
+     "shuffled_outputs": [
+      "dimensionnel",
+      "isra\u00e9lien",
+      "rivi\u00e8re",
+      "mus\u00e9es",
+      "\u00e9valu\u00e9"
+     ]
+    },
+    {
+     "query": 76,
+     "demos": [
+      2540,
+      3438,
+      3799,
+      110,
+      4523
+     ],
+     "shuffled_outputs": [
+      "hebdomadaire",
+      "diff\u00e9rence",
+      "s\u00fbr",
+      "jeudi",
+      "arrivant"
+     ]
+    },
+    {
+     "query": 78,
+     "demos": [
+      3256,
+      602,
+      554,
+      3881,
+      459
+     ],
+     "shuffled_outputs": [
+      "v\u00e9rifier",
+      "contributeurs",
+      "Croatie",
+      "filles",
+      "manque"
+     ]
+    },
+    {
+     "query": 81,
+     "demos": [
+      817,
+      3670,
+      229,
+      2004,
+      4668
+     ],
+     "shuffled_outputs": [
+      "supposant",
+      "surintendant",
+      "chronologie",
+      "tuyau",
+      "juillet"
+     ]
+    },
+    {
+     "query": 89,
+     "demos": [
+      3161,
+      605,
+      1244,
+      1478,
+      4354
+     ],
+     "shuffled_outputs": [
+      "milliard",
+      "J\u00e9sus",
+      "internationalement",
+      "ambassadeurs",
+      "devise"
+     ]
+    },
+    {
+     "query": 91,
+     "demos": [
+      3970,
+      1704,
+      3088,
+      2886,
+      3257
+     ],
+     "shuffled_outputs": [
+      "s'opposer",
+      "fleur",
+      "colonnes",
+      "dictionnaire",
+      "courir"
+     ]
+    },
+    {
+     "query": 92,
+     "demos": [
+      4212,
+      4375,
+      1381,
+      1414,
+      824
+     ],
+     "shuffled_outputs": [
+      "sentiers",
+      "ancre",
+      "caract\u00e9ristique",
+      "Irak",
+      "cantique"
+     ]
+    }
+   ]
+  },
+  "fmt-F3": {
+   "mean": [
+    3,
+    5,
+    6,
+    9,
+    15,
+    16,
+    17,
+    19,
+    20,
+    22,
+    23,
+    27,
+    32,
+    33,
+    36,
+    37,
+    39,
+    40,
+    44,
+    47,
+    52,
+    54,
+    55,
+    57,
+    58,
+    62,
+    63,
+    64,
+    69,
+    71,
+    73,
+    76,
+    78
+   ],
+   "cie": [
+    {
+     "query": 81,
+     "demos": [
+      817,
+      3670,
+      229,
+      2004,
+      4668
+     ],
+     "shuffled_outputs": [
+      "tuyau",
+      "juillet",
+      "surintendant",
+      "supposant",
+      "chronologie"
+     ]
+    },
+    {
+     "query": 89,
+     "demos": [
+      3161,
+      605,
+      1244,
+      1478,
+      4354
+     ],
+     "shuffled_outputs": [
+      "milliard",
+      "internationalement",
+      "devise",
+      "ambassadeurs",
+      "J\u00e9sus"
+     ]
+    },
+    {
+     "query": 92,
+     "demos": [
+      4212,
+      4375,
+      1381,
+      1414,
+      824
+     ],
+     "shuffled_outputs": [
+      "ancre",
+      "Irak",
+      "cantique",
+      "caract\u00e9ristique",
+      "sentiers"
+     ]
+    },
+    {
+     "query": 93,
+     "demos": [
+      366,
+      2390,
+      128,
+      3043,
+      1493
+     ],
+     "shuffled_outputs": [
+      "s\u00e9curis\u00e9",
+      "honneurs",
+      "plac\u00e9",
+      "itin\u00e9raire",
+      "sixi\u00e8me"
+     ]
+    },
+    {
+     "query": 97,
+     "demos": [
+      2907,
+      3425,
+      882,
+      2204,
+      1093
+     ],
+     "shuffled_outputs": [
+      "pouce",
+      "bulgare",
+      "doyen",
+      "partisans",
+      "cravate"
+     ]
+    },
+    {
+     "query": 99,
+     "demos": [
+      3397,
+      910,
+      1965,
+      3293,
+      740
+     ],
+     "shuffled_outputs": [
+      "s'est enfui",
+      "chef",
+      "\u00e9pouse",
+      "s\u00e9v\u00e8rement",
+      "p\u00e9ninsule"
+     ]
+    },
+    {
+     "query": 100,
+     "demos": [
+      1994,
+      1141,
+      4603,
+      896,
+      824
+     ],
+     "shuffled_outputs": [
+      "temp\u00e9ratures",
+      "conseiller",
+      "sentiers",
+      "biblioth\u00e8que",
+      "calcul\u00e9"
+     ]
+    },
+    {
+     "query": 101,
+     "demos": [
+      3217,
+      1938,
+      770,
+      833,
+      4267
+     ],
+     "shuffled_outputs": [
+      "baltique",
+      "comparaison",
+      "industrie",
+      "revendication",
+      "universit\u00e9"
+     ]
+    }
+   ]
+  }
+ },
+ "english-german": {
+  "fmt-F1": {
+   "mean": [
+    3,
+    5,
+    6,
+    8,
+    9,
+    16,
+    18,
+    20,
+    23,
+    25,
+    27,
+    31,
+    32,
+    33,
+    37,
+    39,
+    41,
+    43,
+    44,
+    47,
+    52,
+    55,
+    57,
+    63,
+    69,
+    71,
+    73,
+    76,
+    78,
+    81,
+    88,
+    89,
+    91,
+    93
+   ],
+   "cie": [
+    {
+     "query": 95,
+     "demos": [
+      3077,
+      2075,
+      370,
+      2338,
+      226
+     ],
+     "shuffled_outputs": [
+      "leicht",
+      "traurig",
+      "halb",
+      "muster",
+      "Quelle"
+     ]
+    },
+    {
+     "query": 97,
+     "demos": [
+      3224,
+      4053,
+      4561,
+      2110,
+      1857
+     ],
+     "shuffled_outputs": [
+      "attraktion",
+      "verursachend",
+      "m\u00e4nnlich",
+      "schmerz",
+      "troph\u00e4e"
+     ]
+    },
+    {
+     "query": 99,
+     "demos": [
+      4277,
+      3588,
+      1968,
+      3895,
+      1895
+     ],
+     "shuffled_outputs": [
+      "steigend",
+      "Pers\u00f6nlichkeit",
+      "Felsen",
+      "eingeben",
+      "preis"
+     ]
+    },
+    {
+     "query": 100,
+     "demos": [
+      996,
+      936,
+      678,
+      1684,
+      4920
+     ],
+     "shuffled_outputs": [
+      "forderungen",
+      "Herzegowina",
+      "Identifikation",
+      "spieler",
+      "zeigt an"
+     ]
+    },
+    {
+     "query": 101,
+     "demos": [
+      3674,
+      2161,
+      2103,
+      834,
+      2910
+     ],
+     "shuffled_outputs": [
+      "morgen",
+      "h\u00f6hle",
+      "danke",
+      "erfolgreich",
+      "Anpassung"
+     ]
+    },
+    {
+     "query": 102,
+     "demos": [
+      4977,
+      4191,
+      3200,
+      1960,
+      1738
+     ],
+     "shuffled_outputs": [
+      "ermutigen",
+      "ber\u00fchren",
+      "lehrer",
+      "automatisiert",
+      "Enzym"
+     ]
+    },
+    {
+     "query": 108,
+     "demos": [
+      2329,
+      3037,
+      2435,
+      4563,
+      4506
+     ],
+     "shuffled_outputs": [
+      "unfrei",
+      "kino",
+      "Portionen",
+      "Assistent",
+      "angriff"
+     ]
+    },
+    {
+     "query": 110,
+     "demos": [
+      3320,
+      128,
+      1881,
+      4064,
+      2188
+     ],
+     "shuffled_outputs": [
+      "Kongo",
+      "bereits",
+      "Listungen",
+      "basen",
+      "zugeschrieben"
+     ]
+    },
+    {
+     "query": 111,
+     "demos": [
+      2542,
+      5128,
+      3316,
+      2031,
+      4282
+     ],
+     "shuffled_outputs": [
+      "die",
+      "w\u00e4lder",
+      "Hauptstadt",
+      "Dienstag",
+      "\u00e4hnlich"
+     ]
+    }
+   ]
+  },
+  "fmt-F2": {
+   "mean": [
+    3,
+    5,
+    6,
+    8,
+    9,
+    16,
+    18,
+    20,
+    23,
+    25,
+    29,
+    31,
+    32,
+    37,
+    39,
+    41,
+    43,
+    44,
+    47,
+    52,
+    54,
+    55,
+    56,
+    57,
+    63,
+    66,
+    69,
+    71,
+    73,
+    76,
+    78,
+    81,
+    88
+   ],
+   "cie": [
+    {
+     "query": 89,
+     "demos": [
+      1265,
+      1287,
+      1695,
+      1061,
+      4436
+     ],
+     "shuffled_outputs": [
+      "vorw\u00e4rts",
+      "hoffnung",
+      "Lastwagen",
+      "richter",
+      "austausch"
+     ]
+    },
+    {
+     "query": 91,
+     "demos": [
+      4216,
+      801,
+      387,
+      2602,
+      598
+     ],
+     "shuffled_outputs": [
+      "spa\u00df",
+      "Anmut",
+      "Instanz",
+      "Gewinn",
+      "Schlachten"
+     ]
+    },
+    {
+     "query": 93,
+     "demos": [
+      4902,
+      2379,
+      2954,
+      4499,
+      2898
+     ],
+     "shuffled_outputs": [
+      "vorsichtig",
+      "Ufer",
+      "bewiesen",
+      "sollte",
+      "iranisch"
+     ]
+    },
+    {
+     "query": 95,
+     "demos": [
+      3077,
+      2075,
+      370,
+      2338,
+      226
+     ],
+     "shuffled_outputs": [
+      "Quelle",
+      "halb",
+      "traurig",
+      "muster",
+      "leicht"
+     ]
+    },
+    {
+     "query": 97,
+     "demos": [
+      3224,
+      4053,
+      4561,
+      2110,
+      1857
+     ],
+     "shuffled_outputs": [
+      "schmerz",
+      "m\u00e4nnlich",
+      "verursachend",
+      "troph\u00e4e",
+      "attraktion"
+     ]
+    },
+    {
+     "query": 99,
+     "demos": [
+      4277,
+      3588,
+      1968,
+      3895,
+      1895
+     ],
+     "shuffled_outputs": [
+      "Felsen",
+      "Pers\u00f6nlichkeit",
+      "steigend",
+      "preis",
+      "eingeben"
+     ]
+    },
+    {
+     "query": 100,
+     "demos": [
+      996,
+      936,
+      678,
+      1684,
+      4920
+     ],
+     "shuffled_outputs": [
+      "spieler",
+      "Herzegowina",
+      "zeigt an",
+      "forderungen",
+      "Identifikation"
+     ]
+    },
+    {
+     "query": 101,
+     "demos": [
+      3674,
+      2161,
+      2103,
+      834,
+      2910
+     ],
+     "shuffled_outputs": [
+      "erfolgreich",
+      "danke",
+      "morgen",
+      "h\u00f6hle",
+      "Anpassung"
+     ]
+    }
+   ]
+  },
+  "fmt-F3": {
+   "mean": [
+    3,
+    5,
+    6,
+    8,
+    9,
+    16,
+    18,
+    20,
+    23,
+    25,
+    27,
+    29,
+    31,
+    32,
+    33,
+    39,
+    41,
+    43,
+    44,
+    47,
+    52,
+    54,
+    55,
+    57,
+    63,
+    66,
+    69,
+    71,
+    73,
+    76,
+    78,
+    81,
+    89
+   ],
+   "cie": [
+    {
+     "query": 91,
+     "demos": [
+      4216,
+      801,
+      387,
+      2602,
+      598
+     ],
+     "shuffled_outputs": [
+      "Anmut",
+      "spa\u00df",
+      "Schlachten",
+      "Gewinn",
+      "Instanz"
+     ]
+    },
+    {
+     "query": 93,
+     "demos": [
+      4902,
+      2379,
+      2954,
+      4499,
+      2898
+     ],
+     "shuffled_outputs": [
+      "sollte",
+      "iranisch",
+      "vorsichtig",
+      "bewiesen",
+      "Ufer"
+     ]
+    },
+    {
+     "query": 94,
+     "demos": [
+      3529,
+      2063,
+      4038,
+      4800,
+      1259
+     ],
+     "shuffled_outputs": [
+      "irgendwie",
+      "br\u00fcder",
+      "Gipfel",
+      "abh\u00e4ngig",
+      "Inseln"
+     ]
+    },
+    {
+     "query": 95,
+     "demos": [
+      3077,
+      2075,
+      370,
+      2338,
+      226
+     ],
+     "shuffled_outputs": [
+      "muster",
+      "Quelle",
+      "halb",
+      "traurig",
+      "leicht"
+     ]
+    },
+    {
+     "query": 97,
+     "demos": [
+      3224,
+      4053,
+      4561,
+      2110,
+      1857
+     ],
+     "shuffled_outputs": [
+      "m\u00e4nnlich",
+      "schmerz",
+      "verursachend",
+      "troph\u00e4e",
+      "attraktion"
+     ]
+    },
+    {
+     "query": 99,
+     "demos": [
+      4277,
+      3588,
+      1968,
+      3895,
+      1895
+     ],
+     "shuffled_outputs": [
+      "Felsen",
+      "eingeben",
+      "steigend",
+      "preis",
+      "Pers\u00f6nlichkeit"
+     ]
+    },
+    {
+     "query": 100,
+     "demos": [
+      996,
+      936,
+      678,
+      1684,
+      4920
+     ],
+     "shuffled_outputs": [
+      "forderungen",
+      "Herzegowina",
+      "spieler",
+      "zeigt an",
+      "Identifikation"
+     ]
+    },
+    {
+     "query": 101,
+     "demos": [
+      3674,
+      2161,
+      2103,
+      834,
+      2910
+     ],
+     "shuffled_outputs": [
+      "danke",
+      "erfolgreich",
+      "Anpassung",
+      "h\u00f6hle",
+      "morgen"
+     ]
+    }
+   ]
+  }
+ },
+ "english-spanish": {
+  "fmt-F1": {
+   "mean": [
+    5,
+    6,
+    7,
+    8,
+    16,
+    18,
+    20,
+    23,
+    25,
+    29,
+    31,
+    32,
+    33,
+    34,
+    36,
+    39,
+    41,
+    44,
+    51,
+    52,
+    54,
+    55,
+    57,
+    58,
+    62,
+    64,
+    66,
+    71,
+    76,
+    78,
+    88,
+    89,
+    92,
+    94
+   ],
+   "cie": [
+    {
+     "query": 99,
+     "demos": [
+      1245,
+      1665,
+      3246,
+      594,
+      4138
+     ],
+     "shuffled_outputs": [
+      "gen\u00e9rico",
+      "independencia",
+      "diversi\u00f3n",
+      "lituano",
+      "columpio"
+     ]
+    },
+    {
+     "query": 101,
+     "demos": [
+      706,
+      1932,
+      3812,
+      5121,
+      4933
+     ],
+     "shuffled_outputs": [
+      "aplica",
+      "discute",
+      "respuesta",
+      "esquema",
+      "perseguir"
+     ]
+    },
+    {
+     "query": 102,
+     "demos": [
+      2232,
+      215,
+      2441,
+      3951,
+      1235
+     ],
+     "shuffled_outputs": [
+      "Alemania",
+      "traducciones",
+      "cr\u00e1neo",
+      "patios",
+      "hacer clic"
+     ]
+    },
+    {
+     "query": 105,
+     "demos": [
+      3665,
+      733,
+      2933,
+      910,
+      1425
+     ],
+     "shuffled_outputs": [
+      "golpeado",
+      "encontrado",
+      "libras",
+      "traducido",
+      "croata"
+     ]
+    },
+    {
+     "query": 106,
+     "demos": [
+      2611,
+      4863,
+      1438,
+      58,
+      369
+     ],
+     "shuffled_outputs": [
+      "escribe",
+      "monasterio",
+      "princesa",
+      "se refiere",
+      "pandilla"
+     ]
+    },
+    {
+     "query": 108,
+     "demos": [
+      4686,
+      4889,
+      3024,
+      4165,
+      1632
+     ],
+     "shuffled_outputs": [
+      "serbio",
+      "monumento",
+      "borrando",
+      "oveja",
+      "estado"
+     ]
+    },
+    {
+     "query": 110,
+     "demos": [
+      327,
+      1143,
+      4746,
+      3137,
+      3712
+     ],
+     "shuffled_outputs": [
+      "poemas",
+      "ficticio",
+      "respondi\u00f3",
+      "semillas",
+      "todo"
+     ]
+    },
+    {
+     "query": 111,
+     "demos": [
+      540,
+      2911,
+      529,
+      4455,
+      5139
+     ],
+     "shuffled_outputs": [
+      "causas",
+      "patrullando",
+      "Espa\u00f1a",
+      "Adri\u00e1n",
+      "subyacente"
+     ]
+    },
+    {
+     "query": 114,
+     "demos": [
+      2829,
+      2182,
+      4833,
+      3962,
+      4862
+     ],
+     "shuffled_outputs": [
+      "cuarto",
+      "fracaso",
+      "soluciones",
+      "b\u00e1sicamente",
+      "demandas"
+     ]
+    }
+   ]
+  },
+  "fmt-F2": {
+   "mean": [
+    5,
+    6,
+    7,
+    8,
+    16,
+    18,
+    20,
+    23,
+    25,
+    29,
+    31,
+    32,
+    33,
+    34,
+    37,
+    39,
+    41,
+    44,
+    51,
+    52,
+    54,
+    55,
+    57,
+    58,
+    62,
+    64,
+    66,
+    71,
+    76,
+    78,
+    88,
+    89,
+    92
+   ],
+   "cie": [
+    {
+     "query": 94,
+     "demos": [
+      2800,
+      1484,
+      3622,
+      3257,
+      1104
+     ],
+     "shuffled_outputs": [
+      "art\u00edculo",
+      "Prusia",
+      "alojamiento",
+      "trabaj\u00f3",
+      "direcci\u00f3n"
+     ]
+    },
+    {
+     "query": 99,
+     "demos": [
+      1245,
+      1665,
+      3246,
+      594,
+      4138
+     ],
+     "shuffled_outputs": [
+      "independencia",
+      "gen\u00e9rico",
+      "columpio",
+      "diversi\u00f3n",
+      "lituano"
+     ]
+    },
+    {
+     "query": 101,
+     "demos": [
+      706,
+      1932,
+      3812,
+      5121,
+      4933
+     ],
+     "shuffled_outputs": [
+      "esquema",
+      "aplica",
+      "respuesta",
+      "discute",
+      "perseguir"
+     ]
+    },
+    {
+     "query": 102,
+     "demos": [
+      2232,
+      215,
+      2441,
+      3951,
+      1235
+     ],
+     "shuffled_outputs": [
+      "patios",
+      "Alemania",
+      "traducciones",
+      "cr\u00e1neo",
+      "hacer clic"
+     ]
+    },
+    {
+     "query": 105,
+     "demos": [
+      3665,
+      733,
+      2933,
+      910,
+      1425
+     ],
+     "shuffled_outputs": [
+      "traducido",
+      "croata",
+      "encontrado",
+      "libras",
+      "golpeado"
+     ]
+    },
+    {
+     "query": 106,
+     "demos": [
+      2611,
+      4863,
+      1438,
+      58,
+      369
+     ],
+     "shuffled_outputs": [
+      "pandilla",
+      "princesa",
+      "escribe",
+      "monasterio",
+      "se refiere"
+     ]
+    },
+    {
+     "query": 108,
+     "demos": [
+      4686,
+      4889,
+      3024,
+      4165,
+      1632
+     ],
+     "shuffled_outputs": [
+      "monumento",
+      "estado",
+      "borrando",
+      "serbio",
+      "oveja"
+     ]
+    },
+    {
+     "query": 110,
+     "demos": [
+      327,
+      1143,
+      4746,
+      3137,
+      3712
+     ],
+     "shuffled_outputs": [
+      "poemas",
+      "todo",
+      "ficticio",
+      "semillas",
+      "respondi\u00f3"
+     ]
+    }
+   ]
+  },
+  "fmt-F3": {
+   "mean": [
+    5,
+    6,
+    7,
+    8,
+    16,
+    18,
+    20,
+    23,
+    25,
+    29,
+    31,
+    32,
+    33,
+    34,
+    36,
+    39,
+    41,
+    44,
+    51,
+    52,
+    54,
+    55,
+    58,
+    62,
+    64,
+    66,
+    71,
+    76,
+    78,
+    88,
+    89,
+    92,
+    94
+   ],
+   "cie": [
+    {
+     "query": 97,
+     "demos": [
+      1538,
+      701,
+      1564,
+      1296,
+      1018
+     ],
+     "shuffled_outputs": [
+      "aceptado",
+      "cuentas",
+      "bailando",
+      "fil\u00f3sofos",
+      "residencial"
+     ]
+    },
+    {
+     "query": 99,
+     "demos": [
+      1245,
+      1665,
+      3246,
+      594,
+      4138
+     ],
+     "shuffled_outputs": [
+      "diversi\u00f3n",
+      "independencia",
+      "columpio",
+      "gen\u00e9rico",
+      "lituano"
+     ]
+    },
+    {
+     "query": 101,
+     "demos": [
+      706,
+      1932,
+      3812,
+      5121,
+      4933
+     ],
+     "shuffled_outputs": [
+      "respuesta",
+      "discute",
+      "perseguir",
+      "esquema",
+      "aplica"
+     ]
+    },
+    {
+     "query": 102,
+     "demos": [
+      2232,
+      215,
+      2441,
+      3951,
+      1235
+     ],
+     "shuffled_outputs": [
+      "cr\u00e1neo",
+      "Alemania",
+      "traducciones",
+      "patios",
+      "hacer clic"
+     ]
+    },
+    {
+     "query": 105,
+     "demos": [
+      3665,
+      733,
+      2933,
+      910,
+      1425
+     ],
+     "shuffled_outputs": [
+      "golpeado",
+      "libras",
+      "traducido",
+      "croata",
+      "encontrado"
+     ]
+    },
+    {
+     "query": 106,
+     "demos": [
+      2611,
+      4863,
+      1438,
+      58,
+      369
+     ],
+     "shuffled_outputs": [
+      "se refiere",
+      "escribe",
+      "pandilla",
+      "princesa",
+      "monasterio"
+     ]
+    },
+    {
+     "query": 108,
+     "demos": [
+      4686,
+      4889,
+      3024,
+      4165,
+      1632
+     ],
+     "shuffled_outputs": [
+      "serbio",
+      "oveja",
+      "borrando",
+      "monumento",
+      "estado"
+     ]
+    },
+    {
+     "query": 110,
+     "demos": [
+      327,
+      1143,
+      4746,
+      3137,
+      3712
+     ],
+     "shuffled_outputs": [
+      "poemas",
+      "semillas",
+      "todo",
+      "respondi\u00f3",
+      "ficticio"
+     ]
+    }
+   ]
+  }
+ }
+}

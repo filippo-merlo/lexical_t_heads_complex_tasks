@@ -1,0 +1,208 @@
+{
+ "1": {
+  "per task": {
+   "combo": "Y",
+   "features": [
+    "demonstration outputs"
+   ],
+   "score_other_fold": 0.9065,
+   "score_own_fold": 0.9173,
+   "top10_other_fold": [
+    [
+     "Y",
+     0.9065
+    ],
+    [
+     "BY",
+     0.899
+    ],
+    [
+     "DBY",
+     0.8876
+    ],
+    [
+     "DY",
+     0.8427
+    ],
+    [
+     "DBYS",
+     0.8204
+    ],
+    [
+     "DBS",
+     0.8199
+    ],
+    [
+     "DYS",
+     0.8161
+    ],
+    [
+     "DBXY",
+     0.7918
+    ],
+    [
+     "DXY",
+     0.7693
+    ],
+    [
+     "DBXYS",
+     0.759
+    ]
+   ]
+  },
+  "shared": {
+   "combo": "BY",
+   "features": [
+    "non-first",
+    "demonstration outputs"
+   ],
+   "score_other_fold": 0.8999,
+   "score_own_fold": 0.9197,
+   "top10_other_fold": [
+    [
+     "BY",
+     0.8999
+    ],
+    [
+     "DB",
+     0.8853
+    ],
+    [
+     "DBY",
+     0.87
+    ],
+    [
+     "DBXY",
+     0.8548
+    ],
+    [
+     "DBS",
+     0.8387
+    ],
+    [
+     "DY",
+     0.831
+    ],
+    [
+     "DBYS",
+     0.8108
+    ],
+    [
+     "DYS",
+     0.7984
+    ],
+    [
+     "DS",
+     0.7938
+    ],
+    [
+     "Y",
+     0.7855
+    ]
+   ]
+  }
+ },
+ "2": {
+  "per task": {
+   "combo": "Y",
+   "features": [
+    "demonstration outputs"
+   ],
+   "score_other_fold": 0.9173,
+   "score_own_fold": 0.9065,
+   "top10_other_fold": [
+    [
+     "Y",
+     0.9173
+    ],
+    [
+     "BY",
+     0.8873
+    ],
+    [
+     "DBY",
+     0.847
+    ],
+    [
+     "DBYS",
+     0.8402
+    ],
+    [
+     "DY",
+     0.8276
+    ],
+    [
+     "DBS",
+     0.8134
+    ],
+    [
+     "DYS",
+     0.8095
+    ],
+    [
+     "DBXYS",
+     0.7862
+    ],
+    [
+     "DS",
+     0.7722
+    ],
+    [
+     "DXY",
+     0.7672
+    ]
+   ]
+  },
+  "shared": {
+   "combo": "BY",
+   "features": [
+    "non-first",
+    "demonstration outputs"
+   ],
+   "score_other_fold": 0.9197,
+   "score_own_fold": 0.8999,
+   "top10_other_fold": [
+    [
+     "BY",
+     0.9197
+    ],
+    [
+     "DB",
+     0.8878
+    ],
+    [
+     "DBY",
+     0.8789
+    ],
+    [
+     "DY",
+     0.8714
+    ],
+    [
+     "DS",
+     0.8484
+    ],
+    [
+     "DBXY",
+     0.8481
+    ],
+    [
+     "DBS",
+     0.8328
+    ],
+    [
+     "Y",
+     0.8118
+    ],
+    [
+     "DBYS",
+     0.8
+    ],
+    [
+     "DYS",
+     0.7924
+    ]
+   ]
+  }
+ }
+}
