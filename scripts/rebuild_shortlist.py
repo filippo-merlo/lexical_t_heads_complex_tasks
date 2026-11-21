@@ -33,7 +33,7 @@ from lth import simple  # noqa: E402
 from rebuild_select import SCOPES, features_combos  # noqa: E402
 from rebuild_sets import FOLDS, OUT  # noqa: E402
 
-QUICK = {"additions": "quick-s2", "examples": "quick-s3e"}  # part name of the quick pass (no stage prefix matches it)
+QUICK = {"additions": "quick-s2", "examples": "quick-s3e", "tfidf_screen": "quick-s2"}  # part name of the quick pass (no stage prefix matches it)
 QUICK_ALPHA = 2.0
 
 

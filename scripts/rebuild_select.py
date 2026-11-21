@@ -53,7 +53,9 @@ from lth import simple  # noqa: E402
 from rebuild_sets import (COMBOS, FEATURES, FOLDS, OUT, SCREEN_N, SIZES, order_of, random_sets,  # noqa: E402
                           rankdata, ranks, top)
 
-POOLS = {"additions": ("patching_simple.part-s2-*.csv", ""), "wordings": ("patching_simple.part-s3w-screen-*.csv", "wordings/"),
+POOLS = {"additions": ("patching_simple.part-s2-*.csv", ""),
+         "tfidf_screen": ("patching_simple.part-s2-screen-*.csv", "tfidf_screen/"),  # rebuild_tfidf_sets.py --screen
+         "wordings": ("patching_simple.part-s3w-screen-*.csv", "wordings/"),
          "examples": ("patching_simple.part-s3e-screen-*.csv", "examples/")}  # screen files, random-set key prefix
 
 

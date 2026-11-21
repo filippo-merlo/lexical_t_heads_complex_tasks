@@ -29,8 +29,9 @@ ALL_TASKS=(antonym synonym singular-plural present-past country-capital country-
 read -r -a TASK_LIST <<< "${TASKS:-${ALL_TASKS[*]}}"
 case $POOL in
     additions) MEANS=rule; QUICK=quick-s2; FULL=s2-screen ;;
+    tfidf_screen) MEANS=rule; QUICK=quick-s2; FULL=s2-screen ;;  # stage 2 with TF-IDF lists (rebuild_tfidf_sets.py --screen)
     examples)  MEANS=fmtP; QUICK=quick-s3e; FULL=s3e-screen ;;
-    *) echo "pool: additions or examples" >&2; exit 2 ;;
+    *) echo "pool: additions, tfidf_screen or examples" >&2; exit 2 ;;
 esac
 COMMON=(--family simple --set-list --same-style --mean-styles rule --control-same-wording --min-mean-prompts 10
         --mean-wordings "$MEANS" --task-only screen shared_screen)

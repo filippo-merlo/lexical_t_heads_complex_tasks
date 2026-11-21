@@ -1,0 +1,10 @@
+fold,combo,top5_of_fold,n_heads,overlap_stage2,layer_median,layer_median_stage2
+2,DBTML,"1,2",40,36,13.0,13.0
+2,DBSM,1,40,32,13.0,13.0
+2,DBPM,1,40,33,13.0,13.0
+2,DBOML,1,40,36,13.0,13.0
+2,DBTM,1,40,35,13.0,13.0
+2,DTOSPL,2,40,36,13.0,13.0
+2,DBTPL,2,40,35,14.0,14.0
+2,DTML,2,40,35,13.0,13.0
+2,DBM,2,40,35,13.0,13.0
