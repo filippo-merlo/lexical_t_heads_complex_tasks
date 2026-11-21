@@ -1,17 +1,20 @@
 #!/usr/bin/env bash
 # Rebuilt design, stage 2 (paper/head-sets-simple-design.tex, Sec. 5): our additions.
-# Phase A, one job per fold and task, from one queue over the GPUs:
-#   - the ladder rules Yang terms (J-head), D and Causal - generic, per task and shared, every size, with
-#     their control means and random sets (task means only);
-#   - the screen: every combination of the nine features at 40 heads, per task and shared, task means
-#     only (sets equal to an earlier one of the job are patched once, scripts/patch.py).
-# Then scripts/rebuild_select.py picks Selected per scope and fold by cross-fitting and adds its sets.
+# Phase A, one job per fold and task, from one queue over the GPUs: the ladder rules Yang terms (J-head), D and
+# Causal - generic, per task and shared, every size, with their control means and random sets (task means only).
+# Then the screen of the combinations of the nine features at 40 heads, in two stages
+# (scripts/rebuild_quick_screen.sh additions all): a quick pass of every combination (alpha 2, 10 test items
+# per task, first token), the ten best of each fold and scope in full, and scripts/rebuild_select.py
+# --shortlist, which picks Selected per scope and fold by cross-fitting among them and adds its sets.
 # Phase B: Selected at every size, per task and shared, with control means and random sets.
 # Check 1; the choosing half's means of Yang et al.'s five templates (at least 10 correct prompts),
 # control means of the same templates; alphas 1 and 2; replies of at most 16 tokens. A job whose output
-# exists is skipped (restartable). Writes results/rebuild/additions/fold{1,2}/patching_simple.part-s2-<task>.csv,
-# .part-s2sel-<task>.csv and answers/. Start detached:
+# exists is skipped (restartable). Writes results/rebuild/additions/fold{1,2}/patching_simple.part-s2-<task>.csv
+# (ladder), .part-quick-s2-<task>.csv (quick pass), .part-s2-screen-<task>.csv (shortlist in full), .part-s2sel-<task>.csv
+# and answers/. Start detached:
 #   setsid nohup scripts/rebuild_stage2.sh 0 2 3 5 > logs/rebuild/stage2.log 2>&1 < /dev/null &
+# SCREEN=full reproduces the results of 2026-11-18 (68d8183): all 511 combinations in full in phase A, then
+# scripts/rebuild_select.py among all of them; replaced by the two-stage screen on 2026-11-21.
 set -uo pipefail
 cd "$(dirname "$0")/.."
 PY=.venv/bin/python
@@ -28,6 +31,12 @@ LADDER=('yangJ*' 'random_yangJ*' 'D[0-9]*' 'random_D[0-9]*' 'causalnogen*' 'rand
         'shared_yangJ*' 'random_shared_yangJ*' 'shared_D[0-9]*' 'random_shared_D[0-9]*'
         'shared_causalnogen*' 'random_shared_causalnogen*' 'screen_*' 'shared_screen_*')
 SELECTED=('selected*' 'random_selected*' 'shared_selected*' 'random_shared_selected*')
+SCREEN=${SCREEN:-two-stage}
+case $SCREEN in
+    full) ;;
+    two-stage) LADDER=("${LADDER[@]:0:12}") ;;  # the ladder rules only; the screen runs in two stages
+    *) echo "SCREEN: full or two-stage" >&2; exit 2 ;;
+esac
 Q=logs/rebuild/s2_queue
 
 next_job() {  # pop the first line of the queue
@@ -77,7 +86,11 @@ for fold in 1 2; do for task in "${TASKS[@]}"; do
     [ -f "results/rebuild/additions/fold$fold/patching_simple.part-s2-$task.csv" ] || { say "missing fold $fold $task"; missing=1; }
 done; done
 [ "$missing" = 0 ] || { say "stage 2 stopped: phase A incomplete"; exit 1; }
-$PY scripts/rebuild_select.py || { say "stage 2 stopped: selection failed"; exit 1; }
+if [ "$SCREEN" = two-stage ]; then
+    scripts/rebuild_quick_screen.sh additions all "${GPUS[@]}" || { say "stage 2 stopped: two-stage screen failed"; exit 1; }
+else
+    $PY scripts/rebuild_select.py || { say "stage 2 stopped: selection failed"; exit 1; }
+fi
 say "selection done"
 phase B
 say "stage 2 done"

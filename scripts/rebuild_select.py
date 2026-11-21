@@ -26,6 +26,13 @@ patching_simple.part-s3<w|e>-screen-*.csv``, patched with the pool's own means).
 ``--candidates K`` (stage 3.2, user 2026-11-18): instead of all combinations, fold f chooses among the K
 best stage-2 combinations of its scope (``results/rebuild/additions/selected.json``, ranked on the other
 fold, so Selected first); the screen then needs only the union of both folds' candidates.
+
+``--shortlist`` (two-stage screen, scripts/rebuild_quick_screen.sh): fold f chooses among its shortlist in
+``results/rebuild/<pool>/shortlist.json`` (``scripts/rebuild_shortlist.py``, the best combinations of fold
+3 - f's quick pass), scored on the full pass of those combinations as above. ``--dry-run`` prints the
+choice and writes nothing (used to check the two-stage screen against the full one).
+
+    .venv/bin/python scripts/rebuild_select.py --pool additions --shortlist --dry-run
 """
 
 from __future__ import annotations
@@ -91,10 +98,17 @@ def main() -> None:
     parser.add_argument("--pool", choices=tuple(POOLS), default="additions")
     parser.add_argument("--candidates", type=int, default=None,
                         help="choose among the K best stage-2 combinations of each fold and scope (default: all)")
+    parser.add_argument("--shortlist", action="store_true",
+                        help="choose among the shortlist of the quick pass (<pool>/shortlist.json)")
+    parser.add_argument("--dry-run", action="store_true", help="print the choice, write nothing")
     args = parser.parse_args()
+    assert not (args.candidates and args.shortlist), "--candidates or --shortlist, not both"
     stage2 = json.loads((OUT / "selected.json").read_text()) if args.candidates else None
+    short = json.loads((OUT.parent / args.pool / "shortlist.json").read_text()) if args.shortlist else None
 
     def candidates(fold: int, scope: str) -> list[str]:
+        if short is not None:
+            return [c for c, _ in short[str(fold)][scope]]
         if stage2 is None:
             return combos_
         return [c for c, _ in stage2[str(fold)][scope]["top10_other_fold"][:args.candidates]]
@@ -116,8 +130,13 @@ def main() -> None:
             score_own_fold=round(scores[fold][scope][chosen[scope]], 4),
             top10_other_fold=[[c, round(scores[other][scope][c], 4)]
                               for c in sorted(pick[scope], key=lambda c: (-pick[scope][c], len(c)))[:10]],
-            **({"candidates": candidates(fold, scope)} if args.candidates else {}))
+            **({"candidates": candidates(fold, scope)} if args.candidates or args.shortlist else {}))
             for scope in SCOPES}
+        if args.dry_run:
+            print(f"fold {fold}: " + "; ".join(f"{scope} {report[fold][scope]['combo']} "
+                                               f"(fold {other} {report[fold][scope]['score_other_fold']})"
+                                               for scope in SCOPES) + "  [dry run]", flush=True)
+            continue
 
         out = base / f"fold{fold}"
         z = np.load(out / "features.npz")
@@ -148,7 +167,8 @@ def main() -> None:
         print(f"fold {fold}: " + "; ".join(f"{scope} {report[fold][scope]['combo']} "
                                            f"(fold {other} {report[fold][scope]['score_other_fold']})"
                                            for scope in SCOPES), flush=True)
-    (base / "selected.json").write_text(json.dumps(report, indent=1))
+    if not args.dry_run:
+        (base / "selected.json").write_text(json.dumps(report, indent=1))
 
 
 if __name__ == "__main__":

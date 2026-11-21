@@ -13,14 +13,17 @@
 #   ws   3.2 screen: the candidates (best ten stage-2 combinations of each fold, user 2026-11-18) rebuilt on
 #        Yang's five + P wordings, at 40 heads, with that pool's means, task means only
 #                                                       -> results/rebuild/wordings/fold<f> (part s3w-screen)
-#   es   3.4 screen: all 127 example combinations at 40 heads, P-format means, task means only
-#                                                       -> results/rebuild/examples/fold<f> (part s3e-screen)
-# Then Selected of both pools (scripts/rebuild_select.py). Phase B:
+# Then the 3.4 screen of the 127 example combinations at 40 heads, P-format means, task means only, in two
+# stages (scripts/rebuild_quick_screen.sh examples all: quick pass of every combination, the ten best of each
+# fold and scope in full, selection among them)   -> results/rebuild/examples/fold<f> (parts quick-s3e, s3e-screen)
+# and Selected of the wordings pool (scripts/rebuild_select.py --candidates 10). Phase B:
 #   wq   3.2 re-chosen sets with the Q-wording means (+ the candidates at 40 heads, task means only)
 #   eq   3.4 re-chosen sets with the Q-format means
 #   esum 3.5 the 3.4 sets summed after layer 11, Q-format means
 # A job whose output exists is skipped (restartable). Start detached:
 #   setsid nohup scripts/rebuild_stage3.sh 0 2 3 5 > logs/rebuild/stage3.log 2>&1 < /dev/null &
+# SCREEN=full reproduces the results of 2026-11-20: job es (all 127 example combinations in full) in phase A
+# and scripts/rebuild_select.py --pool examples among all of them; replaced by the two-stage screen on 2026-11-21.
 set -uo pipefail
 cd "$(dirname "$0")/.."
 PY=.venv/bin/python
@@ -114,14 +117,20 @@ check() {  # kind part-prefix dir-pattern(with FOLD)
 }
 
 say "stage 3 start (GPUs ${GPUS[*]}; ${#CAND[@]} candidate sets)"
-phase wt sum et ws es
+SCREEN=${SCREEN:-two-stage}
+[ "$SCREEN" = full ] || [ "$SCREEN" = two-stage ] || { echo "SCREEN: full or two-stage" >&2; exit 2; }
+if [ "$SCREEN" = two-stage ]; then phase wt sum et ws; else phase wt sum et ws es; fi
 say "phase A done"
 ok=0
 check ws s3w-screen "results/rebuild/wordings/foldFOLD" || ok=1
-check es s3e-screen "results/rebuild/examples/foldFOLD" || ok=1
+[ "$SCREEN" = two-stage ] || check es s3e-screen "results/rebuild/examples/foldFOLD" || ok=1
 [ "$ok" = 0 ] || { say "stage 3 stopped: screens incomplete"; exit 1; }
 $PY scripts/rebuild_select.py --pool wordings --candidates 10 || { say "stage 3 stopped: wordings selection failed"; exit 1; }
-$PY scripts/rebuild_select.py --pool examples || { say "stage 3 stopped: examples selection failed"; exit 1; }
+if [ "$SCREEN" = two-stage ]; then
+    scripts/rebuild_quick_screen.sh examples all "${GPUS[@]}" || { say "stage 3 stopped: two-stage example screen failed"; exit 1; }
+else
+    $PY scripts/rebuild_select.py --pool examples || { say "stage 3 stopped: examples selection failed"; exit 1; }
+fi
 say "selection done"
 phase wq eq esum
 say "stage 3 done"

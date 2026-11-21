@@ -9,6 +9,12 @@ same reports of its tests under ``results/rebuild/scenarios/`` and, for the word
 files themselves (each fold and task at its cross-fitted alpha). Writes
 ``paper/figures/design_*.pdf`` and ``paper/tables/design_*.tex``.
 
+With a two-stage screen (``scripts/rebuild_quick_screen.sh``), only the shortlist is patched in full: the
+analyses over all combinations (each feature's contribution, fold 1 against fold 2, the best combination of
+each task) then read the quick pass (``scripts/rebuild_shortlist.py``: first-token accuracy at alpha 2 on 10
+test items per task, mean over the template means) instead of the cross-fitted accuracies; the tables of the
+five best combinations rank each fold's shortlist.
+
     .venv/bin/python scripts/rebuild_figures.py
 """
 
@@ -31,6 +37,7 @@ from matplotlib.lines import Line2D  # noqa: E402
 
 from lth import simple  # noqa: E402
 from rebuild_select import screen_scores  # noqa: E402
+from rebuild_shortlist import has_quick, quick_per_task, quick_scores  # noqa: E402
 from rebuild_sets import FEATURES, SCREEN_N, SIZES  # noqa: E402
 
 DIR = rt.RESULTS / "rebuild" / "additions"
@@ -47,6 +54,8 @@ LADDER = ("yangL", "yangJ", "D", "selected", "causal", "causalnogen")  # order o
 SCOPES = {"per task": "", "shared": "shared_"}
 FEATURE_NAMES = {c: name for c, (name, _) in FEATURES.items()}
 CONTROL_STYLE = rt.CONTROL_STYLE
+QUICK = has_quick()  # the screen ran in two stages: the analyses over all combinations read the quick pass
+SCREEN_METRIC = "first-token accuracy, quick pass" if QUICK else "accuracy"
 
 
 def plot_label(rule: str) -> str:
@@ -251,7 +260,8 @@ def table_selected(scores) -> None:
     for scope in SCOPES:
         for fold in (1, 2):
             other = 3 - fold
-            ranked = sorted(scores[other][scope], key=lambda c: (-scores[other][scope][c], len(c)))[:5]
+            pool = sel[str(fold)][scope].get("candidates") or scores[other][scope]  # the shortlist of a two-stage screen
+            ranked = sorted(pool, key=lambda c: (-scores[other][scope][c], len(c)))[:5]
             for k, c in enumerate(ranked, 1):
                 mark = (lambda x: f"\\textbf{{{x}}}") if c == sel[str(fold)][scope]["combo"] else (lambda x: x)
                 names = ", ".join(FEATURE_NAMES[f] if f != "D" else "D" for f in c)
@@ -354,12 +364,16 @@ def fig_controls() -> None:
 
 def feature_effects():
     """Accuracy of each feature alone at 40 heads, and the mean change when it is added to a combination
-    that lacks it (mean over tasks and folds, cross-fitted alpha)."""
+    that lacks it (mean over tasks and folds, cross-fitted alpha; with a two-stage screen, the quick pass)."""
     from rebuild_sets import COMBOS
     order = list(FEATURES)
+    quick = {f: quick_scores(f, "additions") for f in (1, 2)} if QUICK else None
     out = {}
     for scope, prefix in SCOPES.items():
-        acc = {c: mean_over(f"{prefix}screen_{c}") for c in COMBOS}
+        if QUICK:
+            acc = {c: float(np.mean([quick[f][scope][c] for f in (1, 2)])) for c in COMBOS}
+        else:
+            acc = {c: mean_over(f"{prefix}screen_{c}") for c in COMBOS}
         alone = {f: acc[f] for f in order}
         added = {}
         for f in order:
@@ -380,15 +394,16 @@ def fig_features(effects) -> None:
         cols = [rt.AQUA if f in chosen else rt.GREY for f in order]
         ax = axes[0, j]
         ax.barh(y, [alone[f] for f in order], color=cols, height=0.62)
-        ax.set_xlim(0, 0.5)
+        ax.set_xlim(0, max(0.5, 1.08 * max(alone.values())) if QUICK else 0.5)
         ax.set_title(f"({'ab'[j]}) {scope}: feature alone, $N={SCREEN_N}$", loc="left")
-        ax.set_xlabel("accuracy")
+        ax.set_xlabel(SCREEN_METRIC)
         ax = axes[1, j]
         ax.barh(y, [added[f][0] for f in order], color=cols, height=0.62)
         ax.axvline(0, color=rt.AXIS_LINE, lw=0.8)
-        ax.set_xlim(-0.2, 0.32)
+        changes = [added[f][0] for f in order]
+        ax.set_xlim(*((min(-0.2, 1.1 * min(changes)), max(0.32, 1.1 * max(changes))) if QUICK else (-0.2, 0.32)))
         ax.set_title(f"({'cd'[j]}) {scope}: feature added", loc="left")
-        ax.set_xlabel("mean change in accuracy")
+        ax.set_xlabel("mean change, quick pass" if QUICK else "mean change in accuracy")
         for a in axes[:, j]:
             a.set_yticks(y)
             a.set_yticklabels([f"{f}  {FEATURE_NAMES[f]}" if f != "D" else "D  decodes a list word" for f in order])
@@ -406,18 +421,24 @@ def task_best(top_k: int = 10):
     """Per scope and task: the best of the 511 combinations at 40 heads (accuracy on the test half with
     cross-fitted alpha, mean over the two folds; ties to fewer features), the share of the task's
     ``top_k`` best combinations that contain each feature, and the accuracies of the best and of Selected.
-    Descriptive: the best is chosen on the accuracies it is shown with, so it is not held out."""
+    Descriptive: the best is chosen on the accuracies it is shown with, so it is not held out. With a
+    two-stage screen, every accuracy (Selected's too) is the quick pass's, mean over the two folds."""
     from rebuild_sets import COMBOS
     sel = json.loads((DIR / "selected.json").read_text())
+    quick = {f: quick_per_task(f, "additions") for f in (1, 2)} if QUICK else None
     out = {}
     for scope, prefix in SCOPES.items():
         rows = {}
         for t in simple.TASKS:
-            acc = {c: per_task(f"{prefix}screen_{c}", t) for c in COMBOS}
+            if QUICK:
+                acc = {c: float(np.mean([quick[f][scope][c][t] for f in (1, 2)])) for c in COMBOS}
+                selected = float(np.mean([quick[f][scope][sel[str(f)][scope]["combo"]][t] for f in (1, 2)]))
+            else:
+                acc = {c: per_task(f"{prefix}screen_{c}", t) for c in COMBOS}
+                selected = per_task(f"{prefix}selected{SCREEN_N}", t)
             ranked = sorted(COMBOS, key=lambda c: (-acc[c], len(c), COMBOS.index(c)))
             share = {f: np.mean([f in c for c in ranked[:top_k]]) for f in FEATURES}
-            rows[t] = dict(best=ranked[0], acc=acc[ranked[0]], share=share,
-                           selected=per_task(f"{prefix}selected{SCREEN_N}", t))
+            rows[t] = dict(best=ranked[0], acc=acc[ranked[0]], share=share, selected=selected)
         out[scope] = dict(tasks=rows, selected=sel["1"][scope]["combo"], selected_folds=sel["2"][scope]["combo"])
     return out
 
@@ -464,7 +485,7 @@ def fig_task_best(best, top_k: int = 10) -> None:
         ax.text(len(order) - 0.1, -0.85, "best", ha="left", va="bottom", fontsize=6.8, color=rt.INK)
         ax.text(len(order) + 1.05, -0.85, "Sel.", ha="left", va="bottom", fontsize=6.8, color=rt.INK_2)
         ax.set_title(f"({'ab'[j]}) {'One set per task' if scope == 'per task' else 'One set for all 14 tasks'}, "
-                     f"$N={SCREEN_N}$", loc="left", pad=86)
+                     f"$N={SCREEN_N}$" + (", quick pass" if QUICK else ""), loc="left", pad=86)
     handles = [Line2D([], [], ls="", marker="o", ms=4.5, color=rt.INK, mec=rt.SURFACE,
                       label="feature of the task's best combination")]
     fig.legend(handles=handles, loc="lower left", bbox_to_anchor=(0.01, 0.0))
@@ -483,13 +504,14 @@ def fig_screen(scores) -> tuple[float, float]:
     sel = json.loads((DIR / "selected.json").read_text())
     fig, axes = plt.subplots(1, 2, figsize=(6.5, 3.0), sharex=True, sharey=True)
     corr = []
+    lim = max(0.7, 1.05 * max(v for f in (1, 2) for s in SCOPES for v in scores[f][s].values()))
     for ax, scope in zip(axes, SCOPES):
         combos = sorted(scores[1][scope])
         x = np.array([scores[1][scope][c] for c in combos])
         y = np.array([scores[2][scope][c] for c in combos])
         has_d = np.array(["D" in c for c in combos])
         corr.append(float(np.corrcoef(x, y)[0, 1]))
-        ax.plot([0, 0.7], [0, 0.7], color=rt.AXIS_LINE, lw=0.8, zorder=1)
+        ax.plot([0, lim], [0, lim], color=rt.AXIS_LINE, lw=0.8, zorder=1)
         ax.scatter(x[~has_d], y[~has_d], s=9, color=rt.GREY, alpha=0.6, lw=0, label="without D", zorder=2)
         ax.scatter(x[has_d], y[has_d], s=9, color=rt.MAGENTA, alpha=0.6, lw=0, label="with D", zorder=2)
         for c in {sel["1"][scope]["combo"], sel["2"][scope]["combo"]}:
@@ -497,10 +519,11 @@ def fig_screen(scores) -> tuple[float, float]:
                        zorder=4)
             ax.annotate(f"Selected: {c}", (scores[1][scope][c], scores[2][scope][c]), xytext=(-8, 8),
                         textcoords="offset points", ha="right", fontsize=7, color=rt.INK)
-        ax.set_title(f"({'ab'[list(SCOPES).index(scope)]}) {scope}, all 511 combinations at $N={SCREEN_N}$", loc="left")
+        ax.set_title(f"({'ab'[list(SCOPES).index(scope)]}) {scope}, all {len(combos)} combinations at $N={SCREEN_N}$"
+                     + ("\nquick pass: first token, $\\alpha=2$, 10 items" if QUICK else ""), loc="left")
         ax.set_xlabel("fold 1 (tested on half B)")
-        ax.set_xlim(0, 0.7)
-        ax.set_ylim(0, 0.7)
+        ax.set_xlim(0, lim)
+        ax.set_ylim(0, lim)
         ax.set_aspect("equal")
         ax.spines[["top", "right"]].set_visible(False)
     axes[0].set_ylabel("fold 2 (tested on half A)")
@@ -741,7 +764,8 @@ def table_selected_examples() -> None:
     for scope in SCOPES:
         for fold in (1, 2):
             other = 3 - fold
-            ranked = sorted(scores[other][scope], key=lambda c: (-scores[other][scope][c], len(c)))[:5]
+            pool = sel[str(fold)][scope].get("candidates") or scores[other][scope]  # the shortlist of a two-stage screen
+            ranked = sorted(pool, key=lambda c: (-scores[other][scope][c], len(c)))[:5]
             for k, c in enumerate(ranked, 1):
                 mark = (lambda x: f"\\textbf{{{x}}}") if c == sel[str(fold)][scope]["combo"] else (lambda x: x)
                 names = ", ".join(EX_FEATURES[f][0] if f != "D" else "D" for f in c)
@@ -978,7 +1002,7 @@ def main() -> None:
     fig_controls()
     effects = feature_effects()
     fig_features(effects)
-    corr = fig_screen(scores)
+    corr = fig_screen({f: quick_scores(f, "additions") for f in (1, 2)} if QUICK else scores)
     fig_layers()
     fig_types()
     best = task_best()

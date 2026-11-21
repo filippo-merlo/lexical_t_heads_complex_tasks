@@ -53,6 +53,7 @@ import csv
 import fnmatch
 import gzip
 import json
+import random
 import sys
 import tempfile
 import time
@@ -135,7 +136,8 @@ def simple_mean(lm, ids: list[list[int]], items: list[int]):
 def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple", sets=SETS,
                set_list=False, same_style=False, alphas=ALPHAS, half=None, wrong_control=False,
                max_new_tokens=None, task_only=(), set_alphas=None, names=None, mean_wordings="rule",
-               example_wordings=None, mean_styles=None, control_same_wording=False, min_mean_prompts=1):
+               example_wordings=None, mean_styles=None, control_same_wording=False, min_mean_prompts=1,
+               n_items=None):
     """Yang et al.'s ``fix_corrupted_prompts_vary_prompt_instances_average_new``, with each
     style's heads (``intervention_component_prompt_type``) patched with the means of each
     style (``prompt_type_fix``), one source wording at a time, and their control.
@@ -171,7 +173,11 @@ def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple", s
     (default: all); ``control_same_wording``, one control mean per task wording, from the control
     task's first 100 correctly answered prompts of the same wording on the choosing half, in place of
     the single 1-shot control mean; ``min_mean_prompts``, a mean (task or control) over fewer
-    correctly answered prompts is not formed."""
+    correctly answered prompts is not formed.
+
+    Two-stage screen (scripts/rebuild_quick_screen.sh): ``n_items``, patch only that many of each task's
+    test items, a seeded random sample (seed: task and half) of the up to 100 it would patch otherwise;
+    the means do not change, since they come from the choosing half."""
     from run_outputs import SIMPLE_MAX_TOKENS, simple_answer
 
     from lth.evaluation import flexible_simple_for
@@ -202,6 +208,8 @@ def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple", s
             fixed = tested(task, [int(r["item"]) for r in one_shot if not r["correct"]])[: simple.CAP]
         else:
             fixed = tested(task, simple.correct_items(one_shot))[: simple.CAP]
+        if n_items:
+            fixed = sorted(random.Random(f"{task} {half}").sample(fixed, min(n_items, len(fixed))))
         prompts, answers = simple.prompts(task, target)
         corrupt = simple.token_ids(lm.tokenizer, prompts)
         unpatched = {int(r["item"]): r for r in records(task, target)}
@@ -426,6 +434,8 @@ def main() -> None:
                         help="rebuild: one control mean per task wording, the control task's prompts of that wording")
     parser.add_argument("--min-mean-prompts", type=int, default=1,
                         help="rebuild: no mean over fewer correctly answered prompts (default 1)")
+    parser.add_argument("--n-items", type=int, default=None,
+                        help="two-stage screen: patch a seeded random sample of this many test items per task")
     args = parser.parse_args()
     gpu.pin(args.gpu)
     sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -445,7 +455,7 @@ def main() -> None:
                    args.max_new_tokens, tuple(args.task_only),
                    json.loads(args.set_alphas.read_text()) if args.set_alphas else None, args.names,
                    args.mean_wordings, args.example_wordings, args.mean_styles, args.control_same_wording,
-                   args.min_mean_prompts)
+                   args.min_mean_prompts, args.n_items)
     name = args.family + "".join("_" + level.replace("/", "-") for level in args.levels or [])
     if args.tasks:
         name += f".part-{args.part}"
