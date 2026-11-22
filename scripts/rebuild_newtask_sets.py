@@ -9,8 +9,8 @@ combination; the unseen task only supplies its own means (``scripts/patch.py``, 
 half) and its test items. Control tasks: ``lth.simple.CONTROL``. Capitalize is scored with case kept
 (``lth.evaluation.CASE_SENSITIVE_TASKS``).
 
-Sets, per fold, copied from ``results/rebuild/additions/fold<f>/heads.json``: shared Selected (DBTML, first
-on both folds), the other combinations among the five best shared ones of each fold (``shared_screen_<combo>``),
+Sets, per fold, copied from ``results/rebuild/additions/fold<f>/heads.json``: shared Selected (the same
+combination on both folds, from ``selected.json``; DBTML with the lists used until 2026-11-21, DBTM since), the other combinations among the five best shared ones of each fold (``shared_screen_<combo>``),
 shared Causal, Causal - generic and D, all at 40 heads. Random sets: the existing ones where the rule has
 them (Selected, Causal, Causal - generic, D); for the other combinations ``N_RANDOM`` new draws,
 ``rebuild_sets.random_sets`` with key ``newtasks/<fold>/shared/<name>``.
@@ -37,16 +37,22 @@ from lth import ROOT, simple  # noqa: E402
 from rebuild_sets import FOLDS, N_RANDOM, OUT, SCREEN_N, random_sets  # noqa: E402
 
 N_BEST = 5
-SELECTED = "DBTML"
 DEST = OUT.parent / "newtasks"
 SPLIT = ROOT / "results" / "heldout" / "split.json"
+
+
+def selected() -> str:
+    """Shared Selected, the same combination on both folds."""
+    sel = json.loads((OUT / "selected.json").read_text())
+    picks = {sel[str(fold)]["shared"]["combo"] for fold in FOLDS}
+    assert len(picks) == 1, picks
+    return picks.pop()
 
 
 def combos_used() -> list[str]:
     sel = json.loads((OUT / "selected.json").read_text())
     out = []
     for fold in FOLDS:
-        assert sel[str(fold)]["shared"]["combo"] == SELECTED, fold
         for c, _ in sel[str(fold)]["shared"]["top10_other_fold"][:N_BEST]:
             if c not in out:
                 out.append(c)
@@ -72,6 +78,7 @@ def extend_split() -> None:
 def main() -> None:
     assert not set(simple.UNSEEN_TASKS) & set(simple.TASKS)
     extend_split()
+    SELECTED = selected()
     combos = combos_used()
     for fold in FOLDS:
         listed = json.loads((OUT / f"fold{fold}" / "heads.json").read_text())["simple"]

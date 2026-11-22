@@ -3,7 +3,7 @@ other prompts, per fold, from the choosing half only. No GPU.
 
 Two choosing pools, built as ``scripts/rebuild_sets.py`` builds the stage-2 sets from Yang et al.'s five
 templates (same budget of 300 correctly answered prompts per task spread evenly over the pool's templates
-or formats with at least ten such prompts, same word rule and generic words, same rankings, sizes, scopes,
+or formats with at least ten such prompts, same word rule and TF-IDF word list, same rankings, sizes, scopes,
 random sets and generic-head cut):
 
 - ``wordings`` (Sec. 6.1, re-chosen): Yang et al.'s five templates and the task's 15 P wordings. Segments
@@ -37,9 +37,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from lth import DATA, RESULTS, simple  # noqa: E402
-from rebuild_sets import (BUDGET, FEATURES, FOLDS, GENERIC_MAX, GENERIC_TOP, JH, KINDS, MIN_CORRECT, N_ALL,  # noqa: E402
-                          N_HEADS, SCREEN_N, SIZES, generic_scores, heads_of, name, order_of, random_sets, rankdata,
-                          ranks, top, two_group_cut)
+from rebuild_sets import (BUDGET, FEATURES, FOLDS, GENERIC_MAX, GENERIC_TOP, JH, KINDS, LIST_RULE, MIN_CORRECT,  # noqa: E402
+                          N_ALL, N_HEADS, SCREEN_N, SIZES, generic_scores, heads_of, name, order_of, random_sets,
+                          rankdata, ranks, smooth_tfidf, top, two_group_cut, word_list)
 
 EX_CATS = ("bos", "query", "self", "outputs", "inputs", "separators")
 EX_FEATURES = {"D": ("decodes a list word", None), "B": ("non-first", None), "X": ("demonstration inputs", "inputs"),
@@ -169,7 +169,7 @@ def causal_scores(pool_name: str, fold: int) -> dict[str, np.ndarray]:
     return {t: cie[t].ravel() for t in simple.TASKS}
 
 
-def build(pool_name: str, fold: int, tok, tmap, words, generic_words):
+def build(pool_name: str, fold: int, tok, tmap, words, wiki):
     from e13_lists import N_WORDS, shares
 
     from lth.terms import expand_to_token_ids, simple_term_lists
@@ -184,8 +184,10 @@ def build(pool_name: str, fold: int, tok, tmap, words, generic_words):
         tops[t] = top_t
         jt = top_t[:, JH].astype(np.int64)
         sh = shares(top_t[:, JH], tmap, len(words))
-        order = [i for i in np.argsort(-sh, kind="stable") if sh[i] > 0 and words[i] not in generic_words][:N_WORDS]
-        lists[t] = {"words": [words[i] for i in order], "shares": [round(float(sh[i]), 6) for i in order],
+        order = word_list(sh, wiki, N_WORDS)
+        tfidf = smooth_tfidf(sh, wiki)
+        lists[t] = {"words": [words[i] for i in order], "scores": [round(float(tfidf[i]), 6) for i in order],
+                    "shares": [round(float(sh[i]), 6) for i in order], "wiki_shares": [round(float(wiki[i]), 6) for i in order],
                     "n_prompts": len(keys), "prompts_per_wording": used}
         member = np.zeros(len(words) + 1, dtype=bool)
         member[order] = True
@@ -275,7 +277,7 @@ def build(pool_name: str, fold: int, tok, tmap, words, generic_words):
     np.savez_compressed(out / "features.npz", **{f"{t}/{c}": feats[t][c] for t in simple.TASKS for c in feats_def},
                         **{f"{t}/causal": causal[t] for t in simple.TASKS})
     (out / "word_lists.json").write_text(json.dumps(dict(
-        fold=fold, choosing_half=half, pool=pool_name, generic_words=sorted(generic_words), tasks=lists,
+        fold=fold, choosing_half=half, pool=pool_name, rule=LIST_RULE, tasks=lists,
         segment_prompts=seg_counts), ensure_ascii=False, indent=1))
     (out / "generic.json").write_text(json.dumps(dict(
         fold=fold, choosing_half=half, pool=pool_name, top30_by_score=[[name(x), round(g[x], 4)] for x in by_score],
@@ -315,16 +317,15 @@ def main() -> None:
     if args.show:
         show(args.pool, args.show)
         return
-    from e13_lists import N_GENERIC, shares, token_words
+    from e13_lists import shares, token_words
 
     from lth.evaluation import tokenizer
 
     tok = tokenizer()
     tmap, words = token_words(tok)
     wiki = shares(np.load(DATA / "readings" / "neutral" / "wikitext.npz")["top"][:, JH], tmap, len(words))
-    generic_words = {words[i] for i in np.argsort(-wiki, kind="stable")[:N_GENERIC]}
     for fold in FOLDS:
-        generic, screen = build(args.pool, fold, tok, tmap, words, generic_words)
+        generic, screen = build(args.pool, fold, tok, tmap, words, wiki)
         print(f"fold {fold} {args.pool}: generic heads {sorted(name(x) for x in generic)}; distinct screen sets: shared "
               f"{screen['shared']}/{screen['combos']}, per task {min(screen['per_task'].values())}-"
               f"{max(screen['per_task'].values())}", flush=True)

@@ -6,8 +6,12 @@ correctly answered prompts on the half is not used; up to ``BUDGET`` prompts per
 over the templates used (the first ones of each, in item order, from the half's readings
 ``data/readings/heldout/<half>``).
 
-- **Word list and D** (Sec. 5.2): ``scripts/e13_lists.py``'s word rule and generic words on the pool's
-  J-head top 10; D = share of pool prompts whose top 10 holds a word of the 30-word list.
+- **Word list and D** (Sec. 5.2): ``scripts/e13_lists.py``'s word rule on the pool's J-head top 10; a word's
+  share is the fraction of (prompt, head) pairs whose top 10 holds it, on the pool and on 1,000 WikiText-103
+  passages read the same way; the list is the 30 words with the largest smooth TF-IDF of the task against
+  WikiText, share * log(2 share / (share + WikiText share)) (``smooth_tfidf``; since 2026-11-22, user; before,
+  the 30 words with the largest share after removing the 50 most shared on WikiText). D = share of pool
+  prompts whose top 10 holds a word of the list.
 - **Segments** (Sec. 5.3): ``scripts/e20_bai_attention.py``'s ``categorise`` with the fold's list, on the
   stored last-token attention rows (``scripts/rebuild_attention.py``); a head's score on a segment is its
   attention mass on it averaged over the pool prompts where the segment is not empty; B (non-first) is
@@ -69,6 +73,23 @@ FEATURES = {"D": ("decodes a list word", None), "B": ("non-first", None), "T": (
             "M": ("markers", "template"), "Q": ("query", "query"), "L": ("last token", "self")}
 COMBOS = ["".join(c) for k in range(1, len(FEATURES) + 1) for c in itertools.combinations(FEATURES, k)]
 YANG_OWN_SHARE, YANG_OWN_PROMPTS, DAVIDSON_N, GENERIC_TOP, GENERIC_MAX = 0.10, 100, 20, 30, 15
+
+
+LIST_RULE = "30 words with the largest smooth TF-IDF of the task against WikiText (share * log(2 share / (share + WikiText share)))"
+
+
+def smooth_tfidf(s_task: np.ndarray, s_wiki: np.ndarray) -> np.ndarray:
+    """Task and WikiText as the two documents: about 0 for a word decoded as often on WikiText as on the task,
+    share * log 2 for one never decoded on WikiText; -inf for words the task never decodes."""
+    with np.errstate(divide="ignore", invalid="ignore"):
+        score = s_task * np.log(2 * s_task / (s_task + s_wiki))
+    return np.where(s_task > 0, score, -np.inf)
+
+
+def word_list(s_task: np.ndarray, s_wiki: np.ndarray, n: int) -> list[int]:
+    """The task's list: the ``n`` words with the largest ``smooth_tfidf``, ties to the lower word index."""
+    score = smooth_tfidf(s_task, s_wiki)
+    return [int(i) for i in np.argsort(-score, kind="stable") if np.isfinite(score[i])][:n]
 
 
 def rankdata(x: np.ndarray, method: str = "average") -> np.ndarray:
@@ -174,7 +195,7 @@ def name(i: int) -> str:
     return f"L{i // N_HEADS}H{i % N_HEADS}"
 
 
-def build(fold: int, tok, tmap, words, generic_words):
+def build(fold: int, tok, tmap, words, wiki):
     from e13_lists import N_WORDS, shares
 
     from lth.store import load
@@ -190,8 +211,10 @@ def build(fold: int, tok, tmap, words, generic_words):
         tops[t] = top_t
         jt = top_t[:, JH].astype(np.int64)
         sh = shares(top_t[:, JH], tmap, len(words))
-        order = [i for i in np.argsort(-sh, kind="stable") if sh[i] > 0 and words[i] not in generic_words][:N_WORDS]
-        lists[t] = {"words": [words[i] for i in order], "shares": [round(float(sh[i]), 6) for i in order],
+        order = word_list(sh, wiki, N_WORDS)
+        tfidf = smooth_tfidf(sh, wiki)
+        lists[t] = {"words": [words[i] for i in order], "scores": [round(float(tfidf[i]), 6) for i in order],
+                    "shares": [round(float(sh[i]), 6) for i in order], "wiki_shares": [round(float(wiki[i]), 6) for i in order],
                     "n_prompts": len(keys), "prompts_per_template": used[t]}
         member = np.zeros(len(words) + 1, dtype=bool)
         member[order] = True
@@ -307,7 +330,7 @@ def build(fold: int, tok, tmap, words, generic_words):
     np.savez_compressed(out / "features.npz", **{f"{t}/{c}": feats[t][c] for t in simple.TASKS for c in FEATURES},
                         **{f"{t}/causal": causal[t] for t in simple.TASKS})
     (out / "word_lists.json").write_text(json.dumps(dict(
-        fold=fold, choosing_half=half, generic_words=sorted(generic_words), tasks=lists,
+        fold=fold, choosing_half=half, rule=LIST_RULE, tasks=lists,
         segment_prompts=seg_counts), ensure_ascii=False, indent=1))
     (out / "generic.json").write_text(json.dumps(dict(
         fold=fold, choosing_half=half, top30_by_score=[[name(x), round(g[x], 4)] for x in by_score],
@@ -346,16 +369,15 @@ def main() -> None:
     if args.show:
         show(args.show)
         return
-    from e13_lists import N_GENERIC, shares, token_words
+    from e13_lists import shares, token_words
 
     from lth.evaluation import tokenizer
 
     tok = tokenizer()
     tmap, words = token_words(tok)
     wiki = shares(np.load(DATA / "readings" / "neutral" / "wikitext.npz")["top"][:, JH], tmap, len(words))
-    generic_words = {words[i] for i in np.argsort(-wiki, kind="stable")[:N_GENERIC]}
     for fold in FOLDS:
-        generic, screen = build(fold, tok, tmap, words, generic_words)
+        generic, screen = build(fold, tok, tmap, words, wiki)
         print(f"fold {fold}: generic heads {sorted(name(x) for x in generic)}; distinct screen sets: shared "
               f"{screen['shared']}/{screen['combos']}, per task {min(screen['per_task'].values())}-"
               f"{max(screen['per_task'].values())}", flush=True)

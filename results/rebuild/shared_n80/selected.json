@@ -1,0 +1,97 @@
+{
+ "1": {
+  "combo": "DBTSPML",
+  "score_other_fold": 0.7138,
+  "test": 0.7051,
+  "candidates": [
+   [
+    "DBTSPML",
+    0.7138
+   ],
+   [
+    "DBTOPML",
+    0.7046
+   ],
+   [
+    "DTSML",
+    0.6995
+   ],
+   [
+    "DBTSML",
+    0.6975
+   ],
+   [
+    "DBTOML",
+    0.6843
+   ],
+   [
+    "DBTPM",
+    0.6842
+   ],
+   [
+    "DTOPML",
+    0.675
+   ],
+   [
+    "DBPM",
+    0.6737
+   ],
+   [
+    "DBOSML",
+    0.6679
+   ],
+   [
+    "DBSPM",
+    0.6678
+   ]
+  ]
+ },
+ "2": {
+  "combo": "DBTSPML",
+  "score_other_fold": 0.7051,
+  "test": 0.7138,
+  "candidates": [
+   [
+    "DBTSPML",
+    0.7051
+   ],
+   [
+    "DTSML",
+    0.7037
+   ],
+   [
+    "DBTSML",
+    0.7005
+   ],
+   [
+    "DBTOPML",
+    0.6872
+   ],
+   [
+    "DTSPML",
+    0.686
+   ],
+   [
+    "DBTOML",
+    0.682
+   ],
+   [
+    "DBSM",
+    0.6682
+   ],
+   [
+    "DBOSPMQL",
+    0.6652
+   ],
+   [
+    "DBOSML",
+    0.6556
+   ],
+   [
+    "DBTSPMQL",
+    0.6505
+   ]
+  ]
+ },
+ "selected_test_mean": 0.7094
+}

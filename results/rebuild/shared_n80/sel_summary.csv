@@ -1,0 +1,2 @@
+set,scope,n,task,control,random,tasks_folds
+shared_selected80,shared,80,0.709,0.025,0.053,28

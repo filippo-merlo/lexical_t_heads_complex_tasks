@@ -1,20 +1,20 @@
 {
  "per_task": {
   "antonym": 511,
-  "synonym": 510,
+  "synonym": 511,
   "singular-plural": 511,
   "present-past": 511,
-  "country-capital": 511,
-  "country-currency": 511,
+  "country-capital": 510,
+  "country-currency": 510,
   "landmark-country": 511,
   "park-country": 511,
   "product-company": 511,
-  "next_item": 511,
+  "next_item": 510,
   "prev_item": 511,
   "english-french": 511,
   "english-german": 511,
-  "english-spanish": 511
+  "english-spanish": 510
  },
- "shared": 511,
+ "shared": 510,
  "combos": 511
 }
