@@ -9,8 +9,7 @@ over the templates used (the first ones of each, in item order, from the half's 
 - **Word list and D** (Sec. 5.2): ``scripts/e13_lists.py``'s word rule on the pool's J-head top 10; a word's
   share is the fraction of (prompt, head) pairs whose top 10 holds it, on the pool and on 1,000 WikiText-103
   passages read the same way; the list is the 30 words with the largest smooth TF-IDF of the task against
-  WikiText, share * log(2 share / (share + WikiText share)) (``smooth_tfidf``; since 2026-11-22, user; before,
-  the 30 words with the largest share after removing the 50 most shared on WikiText). D = share of pool
+  WikiText, share * log(2 share / (share + WikiText share)) (``smooth_tfidf``). D = share of pool
   prompts whose top 10 holds a word of the list.
 - **Segments** (Sec. 5.3): ``scripts/e20_bai_attention.py``'s ``categorise`` with the fold's list, on the
   stored last-token attention rows (``scripts/rebuild_attention.py``); a head's score on a segment is its

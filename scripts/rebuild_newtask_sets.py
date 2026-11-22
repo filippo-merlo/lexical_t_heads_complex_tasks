@@ -10,7 +10,7 @@ half) and its test items. Control tasks: ``lth.simple.CONTROL``. Capitalize is s
 (``lth.evaluation.CASE_SENSITIVE_TASKS``).
 
 Sets, per fold, copied from ``results/rebuild/additions/fold<f>/heads.json``: shared Selected (the same
-combination on both folds, from ``selected.json``; DBTML with the lists used until 2026-11-21, DBTM since), the other combinations among the five best shared ones of each fold (``shared_screen_<combo>``),
+combination on both folds, from ``selected.json``), the other combinations among the five best shared ones of each fold (``shared_screen_<combo>``),
 shared Causal, Causal - generic and D, all at 40 heads. Random sets: the existing ones where the rule has
 them (Selected, Causal, Causal - generic, D); for the other combinations ``N_RANDOM`` new draws,
 ``rebuild_sets.random_sets`` with key ``newtasks/<fold>/shared/<name>``.

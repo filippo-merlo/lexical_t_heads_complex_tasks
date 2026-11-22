@@ -19,10 +19,6 @@ combinations of the nine features, shared scope only, with sets of ``--n`` heads
   ``shared_n<N>/<fold>/shared/shared_selected<N>``), which the runner patches with control means (random sets with
   task means only), as stage 2's phase B; ``scripts/rebuild_report.py --dir shared_n<N> --stage sel`` reports them.
 
-``--lists old`` (user 2026-11-22): the same screen with the word lists used until 2026-11-21 (share ranking, the
-50 most shared WikiText words removed): features and stored sets from ``results/rebuild/archive/share_lists/
-additions``; writes ``results/rebuild/shared_n<N>_old/``.
-
 Writes ``results/rebuild/shared_n<N>/``: ``fold<f>/heads.json``, ``shortlist.json``, ``selected.json``,
 ``summary.csv``.
 
@@ -48,12 +44,11 @@ from lth import RESULTS, simple  # noqa: E402
 from rebuild_sets import COMBOS, FEATURES, FOLDS, N_RANDOM, order_of, rankdata, random_sets, ranks, top  # noqa: E402
 
 K = 10
-SOURCES = {"tfidf": (RESULTS / "rebuild" / "additions", ""), "old": (RESULTS / "rebuild" / "archive" / "share_lists" / "additions", "_old")}
-ADD, SUFFIX = SOURCES["tfidf"]
+ADD = RESULTS / "rebuild" / "additions"
 
 
 def out_dir(n: int) -> Path:
-    return RESULTS / "rebuild" / f"shared_n{n}{SUFFIX}"
+    return RESULTS / "rebuild" / f"shared_n{n}"
 
 
 def shared_sets(fold: int, n: int) -> dict[str, list[list[int]]]:
@@ -130,7 +125,7 @@ def cmd_select(n: int) -> None:
         sel = listed[f"shared_screen_{report[str(fold)]['combo']}"]
         label = f"shared_selected{n}"
         add = [["rule", label, sel]] + [["rule", f"random_{label}_{i}", r] for i, r in
-                                        enumerate(random_sets(sel, f"shared_n{n}{SUFFIX}/{fold}/shared/{label}"))]
+                                        enumerate(random_sets(sel, f"shared_n{n}/{fold}/shared/{label}"))]
         assert len(add) == N_RANDOM + 1
         for t in simple.TASKS:
             sets = [e for e in heads["simple"][t]["sets"] if "selected" not in e[1]]
@@ -156,10 +151,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("step", choices=("sets", "shortlist", "select"))
     parser.add_argument("--n", type=int, required=True)
-    parser.add_argument("--lists", choices=tuple(SOURCES), default="tfidf")
     args = parser.parse_args()
-    global ADD, SUFFIX
-    ADD, SUFFIX = SOURCES[args.lists]
     {"sets": cmd_sets, "shortlist": cmd_shortlist, "select": cmd_select}[args.step](args.n)
 
 
