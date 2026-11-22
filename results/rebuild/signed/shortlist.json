@@ -1,0 +1,59 @@
+{
+ "1": {
+  "per task": [
+   [
+    "DBTSPL-Q",
+    0.59
+   ],
+   [
+    "DBTSPL-MQ",
+    0.5814
+   ],
+   [
+    "DBTSPL-OQ",
+    0.5757
+   ]
+  ],
+  "shared": [
+   [
+    "DBTM-Q",
+    0.6014
+   ]
+  ]
+ },
+ "2": {
+  "per task": [
+   [
+    "DBTSPL-O",
+    0.6643
+   ],
+   [
+    "DBTSPL-Q",
+    0.6586
+   ]
+  ],
+  "shared": [
+   [
+    "DBTM-Q",
+    0.6614
+   ],
+   [
+    "DBTM-O",
+    0.6186
+   ]
+  ]
+ },
+ "union": {
+  "per task": [
+   "DBTSPL-O",
+   "DBTSPL-Q",
+   "DBTSPL-OQ",
+   "DBTSPL-MQ"
+  ],
+  "shared": [
+   "DBTM-O",
+   "DBTM-Q"
+  ]
+ },
+ "k": 3
+}
