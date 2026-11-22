@@ -1,0 +1,29 @@
+scope,task,stage2,tfidf
+per task,antonym,0.679,0.551
+per task,synonym,0.405,0.568
+per task,singular-plural,0.8482,0.878
+per task,present-past,0.65,0.596
+per task,country-capital,0.9577,0.9576
+per task,country-currency,0.6704,0.7287
+per task,landmark-country,0.922,0.905
+per task,park-country,0.77,0.876
+per task,product-company,0.851,0.853
+per task,next_item,0.0557,0.0656
+per task,prev_item,0.0894,0.1331
+per task,english-french,0.598,0.55
+per task,english-german,0.591,0.48
+per task,english-spanish,0.678,0.785
+shared,antonym,0.731,0.677
+shared,synonym,0.566,0.373
+shared,singular-plural,0.8357,0.8695
+shared,present-past,0.889,0.866
+shared,country-capital,0.9718,0.9847
+shared,country-currency,0.6708,0.6559
+shared,landmark-country,0.82,0.831
+shared,park-country,0.837,0.862
+shared,product-company,0.849,0.867
+shared,next_item,0.1213,0.1883
+shared,prev_item,0.1484,0.2803
+shared,english-french,0.239,0.371
+shared,english-german,0.055,0.194
+shared,english-spanish,0.614,0.693

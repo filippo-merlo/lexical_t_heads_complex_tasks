@@ -1,0 +1,270 @@
+{
+ "1": {
+  "per task": {
+   "combo": "DBTSPL",
+   "features": [
+    "decodes a list word",
+    "non-first",
+    "task words",
+    "stopwords",
+    "punctuation",
+    "last token"
+   ],
+   "score_other_fold": 0.6326,
+   "score_own_fold": 0.6427,
+   "top10_other_fold": [
+    [
+     "DBTSPL",
+     0.6326
+    ],
+    [
+     "DBTM",
+     0.6252
+    ],
+    [
+     "DBTPM",
+     0.604
+    ],
+    [
+     "DBTSPM",
+     0.5901
+    ],
+    [
+     "DBP",
+     0.5849
+    ],
+    [
+     "DBTOSPL",
+     0.5832
+    ],
+    [
+     "DBTSL",
+     0.578
+    ],
+    [
+     "DBTSM",
+     0.5733
+    ],
+    [
+     "DBTSPML",
+     0.5654
+    ],
+    [
+     "DTM",
+     0.5549
+    ]
+   ],
+   "candidates": [
+    "DBTSPL",
+    "DBTM",
+    "DBTOSPL",
+    "DBP",
+    "DBTPM",
+    "DBTSM",
+    "DBTSL",
+    "DBTSPML",
+    "DTM",
+    "DBTSPM"
+   ]
+  },
+  "shared": {
+   "combo": "DBTM",
+   "features": [
+    "decodes a list word",
+    "non-first",
+    "task words",
+    "markers"
+   ],
+   "score_other_fold": 0.6273,
+   "score_own_fold": 0.6174,
+   "top10_other_fold": [
+    [
+     "DBTM",
+     0.6273
+    ],
+    [
+     "DBM",
+     0.6112
+    ],
+    [
+     "DBTOML",
+     0.5982
+    ],
+    [
+     "DTPML",
+     0.582
+    ],
+    [
+     "DBTML",
+     0.581
+    ],
+    [
+     "DBTPL",
+     0.5754
+    ],
+    [
+     "DBPML",
+     0.5658
+    ],
+    [
+     "DBTPML",
+     0.5652
+    ],
+    [
+     "DBOML",
+     0.564
+    ],
+    [
+     "DTPL",
+     0.546
+    ]
+   ],
+   "candidates": [
+    "DBM",
+    "DTPML",
+    "DBTOML",
+    "DBTM",
+    "DBTPML",
+    "DBOML",
+    "DBTML",
+    "DBPML",
+    "DBTPL",
+    "DTPL"
+   ]
+  }
+ },
+ "2": {
+  "per task": {
+   "combo": "DBTSPL",
+   "features": [
+    "decodes a list word",
+    "non-first",
+    "task words",
+    "stopwords",
+    "punctuation",
+    "last token"
+   ],
+   "score_other_fold": 0.6427,
+   "score_own_fold": 0.6326,
+   "top10_other_fold": [
+    [
+     "DBTSPL",
+     0.6427
+    ],
+    [
+     "DBTM",
+     0.6223
+    ],
+    [
+     "DBTPM",
+     0.6079
+    ],
+    [
+     "DBTPL",
+     0.6021
+    ],
+    [
+     "DBTSL",
+     0.5943
+    ],
+    [
+     "DTSPL",
+     0.5904
+    ],
+    [
+     "DBTPML",
+     0.589
+    ],
+    [
+     "DBTOSPL",
+     0.5784
+    ],
+    [
+     "DBTSML",
+     0.5632
+    ],
+    [
+     "DBSPL",
+     0.556
+    ]
+   ],
+   "candidates": [
+    "DBTSPL",
+    "DBTPM",
+    "DBTPL",
+    "DBTSL",
+    "DBTM",
+    "DTSPL",
+    "DBTPML",
+    "DBTSML",
+    "DBTOSPL",
+    "DBSPL"
+   ]
+  },
+  "shared": {
+   "combo": "DBTM",
+   "features": [
+    "decodes a list word",
+    "non-first",
+    "task words",
+    "markers"
+   ],
+   "score_other_fold": 0.6174,
+   "score_own_fold": 0.6273,
+   "top10_other_fold": [
+    [
+     "DBTM",
+     0.6174
+    ],
+    [
+     "DBM",
+     0.6101
+    ],
+    [
+     "DBTML",
+     0.5875
+    ],
+    [
+     "DBTPL",
+     0.583
+    ],
+    [
+     "DBPML",
+     0.5784
+    ],
+    [
+     "DBOSP",
+     0.5746
+    ],
+    [
+     "DBTOML",
+     0.5716
+    ],
+    [
+     "DTML",
+     0.5667
+    ],
+    [
+     "DTPML",
+     0.5524
+    ],
+    [
+     "DBOML",
+     0.5468
+    ]
+   ],
+   "candidates": [
+    "DBTM",
+    "DBM",
+    "DBTML",
+    "DBTPL",
+    "DBPML",
+    "DTML",
+    "DBTOML",
+    "DTPML",
+    "DBOSP",
+    "DBOML"
+   ]
+  }
+ }
+}

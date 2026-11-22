@@ -32,7 +32,7 @@
 
 \title{Lexical Task Heads on Simple Tasks\\\large Schematic project summary}
 \author{Filippo Merlo}
-\date{Last updated: 21 November 2026}
+\date{Last updated: 22 November 2026}
 
 \begin{document}
 \maketitle
@@ -196,6 +196,7 @@ Overlap of the styles & Example- vs instruction-identified sets, same rule, scop
 3.5b Summed, example sets & 3.4 sets summed after L11 with the Q format means. & Selected $\approx$ head by head (0.88 vs 0.91 per task, 0.88 vs 0.90 shared, 40 heads); Causal still loses (0.61 vs 0.75); D, Yang terms $\approx$ or better. Differs from 3.5a in both identification prompts and means. & \mixed \\
 Unseen tasks & Shared 40-head sets from the 14 tasks, patched into person--occupation, --sport, --instrument and capitalize with their own means; $\alpha$ 1 and 2 fixed. & $\alpha=2$, mean of the 4: Selected 0.57 (0.60 on the 14), Causal 0.39, Causal $-$ gen.\ 0.66, D 0.50; DTOSPL 0.68 and DBTPL 0.65 (no M). Capitalize cleanest (Selected 0.76). Occupation answered mostly \emph{actor}; sport control inflated (\emph{baseball player}). & \mixed \\
 Word list by TF-IDF & The task's 30 words by a smooth TF-IDF of the task against WikiText, share $\times\log\frac{2\,\text{share}}{\text{share}+\text{WikiText share}}$, in place of the share ranking with the 50 top WikiText words cut; D and the segments recomputed; the 5 best stage-2 shared combinations of each fold (9 in all) at 40 heads, both folds, task means only. Results \texttt{results/rebuild/tfidf}. & Lists keep 13--26 of 30 words: \emph{american}, \emph{therefore}, \emph{named} leave, more specific words and \emph{etc}, \emph{what}, \emph{answer} enter; sets keep 32--37 of 40 heads. Mean of the 9: 0.56$\to$0.58; DBTM 0.56$\to$\textbf{0.62} and DBM 0.56$\to$0.61 (13 of 14 tasks up), Selected (DBTML) 0.60$\to$0.58. Picked among each fold's 5 on the other fold: DBTM / DBM, 0.61 vs 0.60. Facts and translations gain, word relations and sequences lose a little. & \mixed \\
+TF-IDF lists, full screen & Stage 2's screen with the TF-IDF lists: all 511 combinations per scope at 40 heads in two stages (quick pass of every combination, each fold's 10 best by the other fold's quick pass in full; \texttt{rebuild\_quick\_screen.sh tfidf\_screen}), Selected picked on the other fold; task means only. Results \texttt{results/rebuild/tfidf\_screen}. & Selected = DBTSPL per task, DBTM shared, both folds (stage 2: DBP, DBTML). Per task 0.63$\to$\textbf{0.64}, shared 0.60$\to$\textbf{0.62}. Most shortlisted combinations are higher than with the stage-2 lists (13 of 15 per task, 9 of 12 shared), but DBP falls 0.63$\to$0.58. Shared: translations and sequences gain (english--german 0.06$\to$0.19, prev-item 0.15$\to$0.28), synonym loses (0.57$\to$0.37); per task synonym, park, english--spanish gain, antonym and english--german lose. & \mixed \\
 \bottomrule
 \end{xltabular}
 \normalsize
@@ -303,7 +304,7 @@ H7--H9 (E4b) & Not run. & -- \\
 11-17 & Per-experiment rule rosters (E13--E27); combinations and sizes picked on the test items; wordings chosen and tested on the same 35 templates; unequal budgets per prompt style & One shared design (rebuild): every rule at 10--120 heads in both scopes, all combinations screened at 40 heads with Selected picked on the other fold, P/Q split of wordings and formats, 300 prompts per pool & Comparable conditions, no choice on the test items (user). \\
 11-18 & 3.2: full combination screen on the wider wording pool & Selected among the 10 best stage-2 combinations per fold and scope & Compute (user decision). \\
 11-19 & Held-out-task choice of Selected's combination (leave one task or type out) & Shared stage-2 sets patched into four unseen tasks & User wanted sets identified without the unseen task. \\
-11-21 & D/T word list: share ranking, the 50 top WikiText words removed & Smooth TF-IDF against WikiText (tested on shared 40-head sets only) & Filler words just past the cut of 50 leave; small gain at 40 heads. \\
+11-21 & D/T word list: share ranking, the 50 top WikiText words removed & Smooth TF-IDF against WikiText (screened at 40 heads; not yet at other sizes) & Filler words just past the cut of 50 leave; Selected at 40 heads 0.63$\to$0.64 per task, 0.60$\to$0.62 shared. \\
 \bottomrule
 \end{tabularx}
 \normalsize
