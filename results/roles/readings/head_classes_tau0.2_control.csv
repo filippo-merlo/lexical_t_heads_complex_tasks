@@ -1,0 +1,554 @@
+half,head,layer,primary_roles,per_task,generic
+A,L0H4,0,category,park-country:category product-company:category,0.861
+A,L0H16,0,category,landmark-country:category,0.955
+A,L0H19,0,category,country-capital:category country-currency:category,0.833
+A,L1H7,1,category,country-currency:category landmark-country:category,0.859
+A,L1H15,1,category,english-french:category,0.751
+A,L1H16,1,category,prev_item:category,0.902
+A,L1H19,1,category,landmark-country:category park-country:category,0.809
+A,L2H16,2,category,country-currency:category,0.736
+A,L2H28,2,category,country-capital:category country-currency:category,0.6
+A,L3H7,3,category,country-currency:category,0.813
+A,L3H14,3,category,english-spanish:category,0.598
+A,L3H25,3,category,country-capital:category country-currency:category,0.834
+A,L4H2,4,category,next_item:category,0.847
+A,L4H10,4,category,country-capital:category country-currency:category park-country:category,0.649
+A,L4H19,4,category,country-capital:category country-currency:category park-country:category,0.808
+A,L4H21,4,category,country-currency:category,0.678
+A,L5H6,5,category,country-capital:category country-currency:category park-country:category product-company:category,0.516
+A,L5H22,5,category,next_item:category,0.764
+A,L6H6,6,category,english-german:category english-spanish:category,0.549
+A,L6H7,6,category,product-company:category,0.279
+A,L6H13,6,category,park-country:category product-company:category,0.522
+A,L6H16,6,category,english-german:category,0.4
+A,L6H17,6,category,next_item:category,0.638
+A,L6H24,6,category,country-capital:category country-currency:category,0.91
+A,L6H30,6,category,country-capital:category,0.251
+A,L7H1,7,category,prev_item:category,0.802
+A,L7H3,7,category,country-capital:category,0.889
+A,L7H4,7,category,prev_item:category,0.708
+A,L7H9,7,category,park-country:category,0.44
+A,L7H10,7,category,country-capital:category country-currency:category,0.535
+A,L7H28,7,category,english-french:category english-german:category english-spanish:category,0.416
+A,L8H2,8,category,english-german:category,0.394
+A,L8H15,8,category,country-currency:category,0.398
+A,L8H16,8,category,singular-plural:category next_item:category,0.41
+A,L8H22,8,category,country-currency:category,0.549
+A,L8H24,8,category,country-currency:category,0.312
+A,L8H31,8,task_word,antonym:task_word,0.165
+A,L9H0,9,category,prev_item:category,0.439
+A,L9H4,9,category,next_item:category,0.506
+A,L9H8,9,category,english-spanish:category,0.473
+A,L9H12,9,task_word,singular-plural:task_word,0.447
+A,L9H17,9,category,next_item:category,0.41
+A,L9H19,9,task_word,antonym:task_word,0.322
+A,L9H24,9,category,english-french:category,0.719
+A,L10H0,10,category,antonym:category country-currency:category next_item:category,0.421
+A,L10H3,10,category,next_item:category,0.612
+A,L10H5,10,task_word,english-french:task_word,0.604
+A,L10H10,10,category,english-spanish:category,0.443
+A,L10H15,10,category,next_item:category,0.599
+A,L11H2,11,task_word,english-spanish:task_word,0.46
+A,L11H4,11,task_word,english-german:task_word english-spanish:task_word,0.334
+A,L11H9,11,category,country-currency:category,0.726
+A,L11H16,11,task_word,english-french:task_word,0.551
+A,L11H17,11,category,product-company:category,0.623
+A,L11H25,11,category,country-capital:category country-currency:category park-country:category,0.334
+A,L11H26,11,category,product-company:category english-german:category,0.457
+A,L11H27,11,category,english-french:category,0.47
+A,L11H28,11,category,landmark-country:category park-country:category,0.831
+A,L12H1,12,category,prev_item:category,0.596
+A,L12H2,12,category,country-capital:category,0.619
+A,L12H4,12,category,english-german:category english-spanish:category,0.251
+A,L12H9,12,category,synonym:category,0.528
+A,L12H13,12,category,next_item:category prev_item:category,0.356
+A,L12H15,12,category,landmark-country:category next_item:category,0.406
+A,L12H16,12,category,english-german:category,0.527
+A,L12H17,12,task_word,present-past:task_word,0.65
+A,L12H21,12,category,synonym:category,0.516
+A,L12H22,12,category task_word,synonym:category english-spanish:task_word,0.492
+A,L12H24,12,category,english-german:category,0.297
+A,L12H27,12,category,english-spanish:category,0.41
+A,L12H29,12,category,next_item:category english-french:category english-german:category english-spanish:category,0.5
+A,L13H5,13,category task_word,singular-plural:task_word english-spanish:category,0.256
+A,L13H10,13,category,country-capital:category country-currency:category prev_item:category,0.234
+A,L13H11,13,task_word,english-french:task_word english-german:task_word english-spanish:task_word,0.247
+A,L13H12,13,category,english-french:category english-spanish:category,0.204
+A,L13H14,13,category,english-french:category english-german:category english-spanish:category,0.278
+A,L13H16,13,category,prev_item:category,0.229
+A,L13H17,13,category,english-german:category,0.345
+A,L13H21,13,category,synonym:category prev_item:category,0.14
+A,L13H22,13,category,synonym:category next_item:category prev_item:category,0.134
+A,L13H25,13,category task_word,country-currency:task_word park-country:category,0.439
+A,L13H29,13,category,synonym:category english-french:category english-german:category english-spanish:category,0.559
+A,L13H30,13,task_word,antonym:task_word synonym:task_word,0.194
+A,L13H31,13,category,english-french:category english-spanish:category,0.563
+A,L14H0,14,category,english-french:category english-german:category english-spanish:category,0.137
+A,L14H2,14,category,prev_item:category english-german:category,0.201
+A,L14H3,14,category,prev_item:category,0.243
+A,L14H4,14,category,next_item:category,0.156
+A,L14H5,14,category,prev_item:category,0.081
+A,L14H10,14,category,english-french:category english-spanish:category,0.772
+A,L14H11,14,category,next_item:category,0.612
+A,L14H12,14,category,synonym:category,0.164
+A,L14H13,14,category,prev_item:category,0.141
+A,L14H14,14,task_word,present-past:task_word,0.215
+A,L14H15,14,category,synonym:category,0.263
+A,L14H16,14,category,english-french:category,0.713
+A,L14H22,14,category task_word,singular-plural:task_word english-french:category english-german:category english-spanish:category,0.163
+A,L14H27,14,category,present-past:category prev_item:category,0.221
+A,L15H6,15,task_word,present-past:task_word,0.298
+A,L15H8,15,category,prev_item:category,0.247
+A,L15H12,15,task_word,english-french:task_word english-german:task_word english-spanish:task_word,0.154
+A,L15H14,15,category,prev_item:category,0.063
+A,L15H15,15,task_word,present-past:task_word,0.145
+A,L15H16,15,category,landmark-country:category,0.434
+A,L15H18,15,category,english-spanish:category,0.722
+A,L15H23,15,category,english-german:category,0.189
+A,L15H24,15,category,next_item:category prev_item:category,0.17
+A,L15H25,15,task_word,synonym:task_word,0.13
+A,L15H26,15,category,next_item:category,0.194
+A,L15H27,15,category,next_item:category,0.169
+A,L15H28,15,category,english-french:category english-german:category english-spanish:category,0.441
+A,L15H29,15,category,landmark-country:category,0.767
+A,L15H30,15,category,park-country:category,0.507
+A,L15H31,15,category,prev_item:category,0.692
+A,L16H3,16,category,landmark-country:category park-country:category product-company:category,0.251
+A,L16H4,16,task_word,english-german:task_word english-spanish:task_word,0.436
+A,L16H8,16,category,present-past:category prev_item:category,0.071
+A,L16H11,16,task_word,antonym:task_word,0.652
+A,L16H12,16,task_word,antonym:task_word,0.635
+A,L16H17,16,category task_word,country-currency:task_word next_item:category,0.32
+A,L16H20,16,category,park-country:category english-french:category english-german:category,0.743
+A,L16H23,16,category,product-company:category,0.866
+A,L16H25,16,task_word,antonym:task_word synonym:task_word,0.147
+A,L17H0,17,category,prev_item:category,0.264
+A,L17H1,17,task_word,landmark-country:task_word,0.167
+A,L17H2,17,task_word,synonym:task_word english-french:task_word english-german:task_word,0.17
+A,L17H3,17,category,next_item:category prev_item:category,0.197
+A,L17H4,17,category task_word,antonym:task_word next_item:category prev_item:category,0.261
+A,L17H5,17,category,next_item:category english-french:category english-spanish:category,0.141
+A,L17H7,17,category,next_item:category,0.184
+A,L17H11,17,category,next_item:category,0.653
+A,L17H12,17,category,english-french:category,0.202
+A,L17H13,17,task_word,english-french:task_word,0.603
+A,L17H15,17,category task_word,synonym:task_word next_item:category prev_item:category,0.19
+A,L17H21,17,category,prev_item:category,0.129
+A,L17H22,17,task_word,antonym:task_word,0.268
+A,L17H24,17,category,landmark-country:category,0.469
+A,L17H26,17,category,prev_item:category,0.151
+A,L17H31,17,task_word,country-currency:task_word park-country:task_word,0.593
+A,L18H0,18,task_word,synonym:task_word country-currency:task_word english-german:task_word english-spanish:task_word,0.3
+A,L18H1,18,category,next_item:category,0.462
+A,L18H3,18,category,prev_item:category,0.55
+A,L18H5,18,category,next_item:category,0.198
+A,L18H6,18,category,english-french:category english-german:category,0.515
+A,L18H8,18,category,english-french:category,0.276
+A,L18H12,18,category,english-french:category,0.358
+A,L18H14,18,category task_word,antonym:task_word synonym:task_word next_item:category prev_item:category,0.163
+A,L18H15,18,category,prev_item:category,0.203
+A,L18H18,18,category,english-german:category,0.223
+A,L18H20,18,category,landmark-country:category park-country:category,0.368
+A,L18H21,18,category,country-capital:category country-currency:category,0.471
+A,L18H23,18,category,landmark-country:category park-country:category,0.346
+A,L19H0,19,category,landmark-country:category,0.578
+A,L19H2,19,category,park-country:category,0.191
+A,L19H3,19,category,prev_item:category,0.254
+A,L19H5,19,category,english-spanish:category,0.642
+A,L19H6,19,category,next_item:category prev_item:category,0.419
+A,L19H7,19,category,prev_item:category english-french:category english-german:category,0.399
+A,L19H9,19,category,prev_item:category,0.129
+A,L19H13,19,category,landmark-country:category,0.606
+A,L19H18,19,category,english-french:category english-spanish:category,0.763
+A,L19H19,19,category,landmark-country:category park-country:category,0.525
+A,L20H1,20,category,english-spanish:category,0.075
+A,L20H4,20,task_word,country-currency:task_word,0.751
+A,L20H5,20,category,english-spanish:category,0.66
+A,L20H8,20,category,prev_item:category,0.142
+A,L20H9,20,category,next_item:category,0.261
+A,L20H11,20,category,next_item:category prev_item:category,0.167
+A,L20H13,20,category,singular-plural:category,0.6
+A,L20H14,20,category,english-german:category,0.262
+A,L20H20,20,category task_word,country-capital:task_word country-currency:task_word prev_item:category,0.37
+A,L20H22,20,category,country-capital:category,0.663
+A,L20H23,20,category,english-german:category,0.277
+A,L20H25,20,category,landmark-country:category park-country:category,0.438
+A,L20H28,20,category task_word,antonym:task_word next_item:category,0.572
+A,L20H29,20,category,country-capital:category country-currency:category product-company:category prev_item:category,0.341
+A,L20H31,20,category,landmark-country:category next_item:category,0.816
+A,L21H1,21,category,english-spanish:category,0.141
+A,L21H2,21,category,english-german:category,0.128
+A,L21H4,21,category,english-german:category,0.3
+A,L21H6,21,task_word,country-currency:task_word park-country:task_word,0.313
+A,L21H10,21,category,next_item:category,0.136
+A,L21H15,21,category,prev_item:category,0.287
+A,L21H18,21,category,english-french:category,0.598
+A,L21H19,21,task_word,present-past:task_word,0.37
+A,L21H20,21,task_word,english-french:task_word english-spanish:task_word,0.825
+A,L21H24,21,category,landmark-country:category product-company:category,0.658
+A,L21H25,21,category,next_item:category,0.266
+A,L22H2,22,category,prev_item:category,0.346
+A,L22H5,22,category,prev_item:category,0.719
+A,L22H13,22,category,country-currency:category,0.541
+A,L22H17,22,category,synonym:category prev_item:category,0.431
+A,L22H24,22,task_word,synonym:task_word,0.216
+A,L22H25,22,category task_word,product-company:task_word prev_item:category,0.282
+A,L22H26,22,category,next_item:category,0.531
+A,L22H27,22,category,next_item:category prev_item:category,0.178
+A,L22H31,22,category,english-german:category,0.876
+A,L23H1,23,category,prev_item:category,0.418
+A,L23H5,23,category,prev_item:category,0.302
+A,L23H8,23,category,next_item:category prev_item:category,0.126
+A,L23H11,23,category,english-french:category,0.271
+A,L23H12,23,category,english-german:category,0.37
+A,L23H16,23,category,country-capital:category landmark-country:category park-country:category prev_item:category,0.583
+A,L24H1,24,category,prev_item:category,0.152
+A,L24H3,24,category,present-past:category prev_item:category,0.174
+A,L24H4,24,category,synonym:category english-german:category,0.426
+A,L24H10,24,category,next_item:category,0.307
+A,L24H16,24,category,english-german:category,0.232
+A,L24H25,24,category,synonym:category,0.592
+A,L24H27,24,category,country-currency:category,0.295
+A,L25H4,25,category,next_item:category prev_item:category,0.329
+A,L25H10,25,category,synonym:category,0.323
+A,L25H11,25,task_word,english-french:task_word,0.516
+A,L25H13,25,category,prev_item:category,0.344
+A,L25H19,25,category,landmark-country:category,0.607
+A,L25H20,25,category,country-currency:category,0.485
+A,L25H21,25,category,english-french:category english-german:category english-spanish:category,0.093
+A,L25H23,25,category,english-french:category english-german:category english-spanish:category,0.094
+A,L25H27,25,category,english-french:category english-spanish:category,0.278
+A,L25H30,25,category,english-french:category,0.329
+A,L26H0,26,category,english-spanish:category,0.149
+A,L26H1,26,category,landmark-country:category,0.214
+A,L26H12,26,category task_word,product-company:task_word prev_item:category,0.363
+A,L26H20,26,task_word,country-currency:task_word park-country:task_word,0.46
+A,L26H23,26,category,synonym:category english-german:category,0.317
+A,L26H26,26,category,english-french:category english-spanish:category,0.283
+A,L26H29,26,category,english-german:category,0.664
+A,L27H0,27,category,antonym:category,0.623
+A,L27H1,27,task_word,country-capital:task_word,0.623
+A,L27H15,27,category,prev_item:category english-french:category,0.377
+A,L27H29,27,category,next_item:category,0.644
+A,L28H1,28,category,prev_item:category,0.53
+A,L28H2,28,task_word,english-german:task_word,0.842
+A,L28H3,28,category,prev_item:category,0.158
+A,L28H4,28,category,next_item:category english-german:category,0.63
+A,L28H7,28,category,next_item:category,0.448
+A,L28H9,28,category,prev_item:category,0.64
+A,L28H11,28,task_word,country-currency:task_word park-country:task_word,0.232
+A,L28H17,28,category,next_item:category,0.391
+A,L28H22,28,category,english-german:category,0.871
+A,L28H24,28,task_word,country-capital:task_word park-country:task_word,0.422
+A,L29H1,29,category,country-currency:category,0.423
+A,L29H2,29,category,product-company:category english-spanish:category,0.555
+A,L29H6,29,category,english-german:category,0.452
+A,L29H14,29,category,prev_item:category,0.177
+A,L29H15,29,category,product-company:category,0.266
+A,L29H19,29,category,park-country:category,0.663
+A,L29H24,29,category,country-capital:category landmark-country:category park-country:category product-company:category,0.81
+A,L29H25,29,category task_word,singular-plural:task_word english-spanish:category,0.232
+A,L29H28,29,category task_word,antonym:task_word synonym:task_word next_item:category english-spanish:category,0.258
+A,L29H30,29,task_word,synonym:task_word,0.308
+A,L30H4,30,category,english-spanish:category,0.893
+A,L30H6,30,category,product-company:category,0.524
+A,L30H7,30,category,english-spanish:category,0.981
+A,L30H8,30,category,country-currency:category english-german:category,0.487
+A,L30H9,30,category,next_item:category,0.285
+A,L30H10,30,category,next_item:category,0.735
+A,L30H13,30,category,prev_item:category,0.211
+A,L30H16,30,category,english-french:category english-german:category english-spanish:category,0.509
+A,L30H25,30,category,country-currency:category english-french:category,0.362
+A,L31H1,31,category,country-currency:category,0.221
+A,L31H5,31,category,next_item:category,0.494
+A,L31H6,31,category,next_item:category prev_item:category,0.063
+A,L31H7,31,category,next_item:category,0.104
+A,L31H8,31,category,country-currency:category,0.398
+A,L31H10,31,category,product-company:category,0.354
+A,L31H11,31,category,landmark-country:category park-country:category,0.108
+A,L31H12,31,category,country-currency:category product-company:category,0.449
+A,L31H16,31,category,prev_item:category,0.828
+A,L31H17,31,category,english-french:category english-german:category english-spanish:category,0.565
+A,L31H21,31,category,english-french:category,0.222
+A,L31H26,31,task_word,antonym:task_word,0.644
+A,L31H28,31,category,prev_item:category,0.443
+B,L0H4,0,category,park-country:category product-company:category,0.868
+B,L0H16,0,category,landmark-country:category,0.954
+B,L0H19,0,category,country-capital:category country-currency:category,0.831
+B,L1H7,1,category,country-currency:category landmark-country:category,0.861
+B,L1H15,1,category,english-french:category,0.753
+B,L1H16,1,category,prev_item:category,0.904
+B,L1H19,1,category,landmark-country:category park-country:category,0.814
+B,L2H16,2,category,country-currency:category,0.736
+B,L2H28,2,category,country-currency:category,0.611
+B,L3H7,3,category,country-currency:category,0.838
+B,L3H14,3,category,english-spanish:category,0.6
+B,L3H25,3,category,country-capital:category country-currency:category,0.835
+B,L4H10,4,category,country-capital:category country-currency:category park-country:category,0.651
+B,L4H19,4,category,country-capital:category country-currency:category park-country:category,0.81
+B,L4H21,4,category,country-currency:category,0.673
+B,L5H6,5,category,country-capital:category country-currency:category park-country:category product-company:category,0.517
+B,L5H22,5,category,landmark-country:category next_item:category,0.765
+B,L6H6,6,category,english-german:category english-spanish:category,0.55
+B,L6H7,6,category,product-company:category,0.281
+B,L6H13,6,category,park-country:category product-company:category,0.524
+B,L6H16,6,category,english-german:category,0.404
+B,L6H24,6,category,country-capital:category country-currency:category,0.911
+B,L6H30,6,category,country-capital:category,0.25
+B,L7H4,7,category,prev_item:category,0.706
+B,L7H9,7,category,park-country:category,0.451
+B,L7H10,7,category,country-capital:category country-currency:category park-country:category,0.536
+B,L7H28,7,category,english-french:category english-german:category english-spanish:category,0.416
+B,L8H2,8,category,english-german:category,0.392
+B,L8H15,8,category,country-currency:category,0.397
+B,L8H16,8,category,singular-plural:category next_item:category,0.414
+B,L8H19,8,category,next_item:category,0.369
+B,L8H22,8,category,country-currency:category,0.551
+B,L8H24,8,category,country-currency:category,0.315
+B,L8H31,8,task_word,antonym:task_word,0.165
+B,L9H0,9,category,prev_item:category,0.437
+B,L9H2,9,category,country-currency:category,0.662
+B,L9H8,9,category,english-spanish:category,0.467
+B,L9H12,9,task_word,singular-plural:task_word,0.445
+B,L9H17,9,category,next_item:category,0.411
+B,L9H19,9,task_word,antonym:task_word,0.324
+B,L9H24,9,category,english-french:category,0.719
+B,L10H0,10,category,antonym:category next_item:category,0.419
+B,L10H3,10,category task_word,present-past:task_word next_item:category,0.615
+B,L10H5,10,task_word,english-french:task_word,0.602
+B,L10H10,10,category,english-spanish:category,0.448
+B,L10H15,10,category,next_item:category,0.597
+B,L11H2,11,task_word,english-spanish:task_word,0.458
+B,L11H4,11,task_word,english-french:task_word english-german:task_word english-spanish:task_word,0.327
+B,L11H9,11,category,country-currency:category,0.728
+B,L11H16,11,category task_word,english-french:task_word english-spanish:category,0.548
+B,L11H17,11,category,product-company:category,0.63
+B,L11H25,11,category,country-capital:category country-currency:category park-country:category,0.327
+B,L11H26,11,category,product-company:category english-french:category english-german:category,0.46
+B,L11H27,11,category,english-french:category,0.466
+B,L11H28,11,category,landmark-country:category park-country:category,0.828
+B,L12H1,12,category,prev_item:category,0.591
+B,L12H4,12,category,english-french:category english-german:category english-spanish:category,0.245
+B,L12H9,12,category,synonym:category,0.528
+B,L12H13,12,category,next_item:category prev_item:category,0.353
+B,L12H15,12,category,landmark-country:category next_item:category,0.396
+B,L12H16,12,category,english-german:category,0.53
+B,L12H17,12,task_word,present-past:task_word,0.646
+B,L12H21,12,category,synonym:category,0.516
+B,L12H22,12,category task_word,synonym:category english-spanish:task_word,0.492
+B,L12H24,12,category,country-currency:category english-german:category,0.29
+B,L12H27,12,category,english-spanish:category,0.418
+B,L12H29,12,category,next_item:category english-german:category english-spanish:category,0.498
+B,L13H0,13,category,english-german:category,0.198
+B,L13H10,13,category,country-capital:category country-currency:category prev_item:category,0.232
+B,L13H11,13,task_word,english-french:task_word english-german:task_word english-spanish:task_word,0.232
+B,L13H12,13,category,english-french:category english-german:category english-spanish:category,0.198
+B,L13H13,13,category,english-spanish:category,0.185
+B,L13H14,13,category,english-french:category english-german:category english-spanish:category,0.282
+B,L13H16,13,category task_word,singular-plural:task_word prev_item:category,0.232
+B,L13H17,13,category,english-german:category,0.338
+B,L13H21,13,category,synonym:category prev_item:category,0.141
+B,L13H22,13,category,synonym:category next_item:category prev_item:category,0.135
+B,L13H25,13,category task_word,country-currency:task_word park-country:category,0.438
+B,L13H29,13,category,synonym:category english-french:category english-german:category english-spanish:category,0.563
+B,L13H30,13,category task_word,antonym:task_word synonym:task_word prev_item:category,0.188
+B,L13H31,13,category,english-french:category english-spanish:category,0.567
+B,L14H0,14,category task_word,present-past:task_word english-french:category english-german:category english-spanish:category,0.136
+B,L14H1,14,task_word,park-country:task_word,0.239
+B,L14H2,14,category,prev_item:category english-german:category,0.204
+B,L14H3,14,category,prev_item:category,0.24
+B,L14H4,14,category,next_item:category,0.153
+B,L14H5,14,category,prev_item:category,0.079
+B,L14H10,14,category,english-french:category english-spanish:category,0.768
+B,L14H12,14,category task_word,antonym:task_word synonym:category,0.163
+B,L14H13,14,category,prev_item:category,0.141
+B,L14H14,14,category task_word,singular-plural:task_word present-past:task_word next_item:category,0.216
+B,L14H15,14,category,synonym:category,0.262
+B,L14H16,14,category,english-french:category,0.707
+B,L14H22,14,category task_word,singular-plural:task_word english-french:category english-german:category english-spanish:category,0.161
+B,L14H24,14,category,present-past:category,0.157
+B,L14H27,14,category,present-past:category prev_item:category,0.216
+B,L14H28,14,task_word,present-past:task_word,0.213
+B,L15H6,15,task_word,present-past:task_word,0.299
+B,L15H8,15,category,prev_item:category,0.244
+B,L15H12,15,task_word,english-french:task_word english-german:task_word english-spanish:task_word,0.155
+B,L15H14,15,category,prev_item:category,0.058
+B,L15H15,15,task_word,present-past:task_word,0.139
+B,L15H16,15,category,landmark-country:category,0.449
+B,L15H18,15,category,english-spanish:category,0.726
+B,L15H19,15,category,next_item:category,0.863
+B,L15H20,15,task_word,singular-plural:task_word,0.178
+B,L15H21,15,category,prev_item:category,0.295
+B,L15H23,15,category,english-german:category,0.182
+B,L15H24,15,category,next_item:category prev_item:category,0.173
+B,L15H26,15,category,next_item:category,0.184
+B,L15H27,15,category,next_item:category,0.164
+B,L15H28,15,category,product-company:category english-french:category english-german:category english-spanish:category,0.441
+B,L15H29,15,category,landmark-country:category,0.773
+B,L15H31,15,category,prev_item:category,0.691
+B,L16H2,16,task_word,landmark-country:task_word,0.29
+B,L16H3,16,category,landmark-country:category park-country:category product-company:category,0.249
+B,L16H4,16,task_word,english-german:task_word,0.425
+B,L16H8,16,category,present-past:category,0.073
+B,L16H11,16,task_word,antonym:task_word,0.617
+B,L16H17,16,category task_word,country-currency:task_word next_item:category,0.325
+B,L16H19,16,category,present-past:category,0.252
+B,L16H20,16,category,english-german:category english-spanish:category,0.754
+B,L16H23,16,category,product-company:category,0.86
+B,L16H25,16,task_word,antonym:task_word,0.144
+B,L16H26,16,category,english-spanish:category,0.29
+B,L17H0,17,category,prev_item:category,0.265
+B,L17H1,17,task_word,landmark-country:task_word,0.164
+B,L17H2,17,category task_word,synonym:task_word english-french:task_word english-german:category,0.167
+B,L17H3,17,category,next_item:category prev_item:category,0.19
+B,L17H4,17,category task_word,antonym:task_word next_item:category prev_item:category,0.256
+B,L17H5,17,category,next_item:category english-french:category english-spanish:category,0.143
+B,L17H7,17,category,next_item:category,0.178
+B,L17H9,17,task_word,english-french:task_word english-spanish:task_word,0.715
+B,L17H11,17,category,next_item:category,0.637
+B,L17H12,17,category,english-french:category,0.203
+B,L17H13,17,task_word,english-french:task_word,0.607
+B,L17H15,17,category task_word,synonym:task_word next_item:category prev_item:category,0.187
+B,L17H18,17,category,english-german:category,0.195
+B,L17H21,17,category,prev_item:category,0.131
+B,L17H22,17,task_word,antonym:task_word,0.272
+B,L17H23,17,category,singular-plural:category,0.131
+B,L17H26,17,category,prev_item:category,0.159
+B,L17H31,17,task_word,park-country:task_word,0.607
+B,L18H0,18,task_word,country-currency:task_word english-french:task_word english-german:task_word english-spanish:task_word,0.294
+B,L18H1,18,category,next_item:category,0.467
+B,L18H3,18,category,prev_item:category,0.542
+B,L18H5,18,category,next_item:category,0.191
+B,L18H6,18,category task_word,singular-plural:task_word english-german:category,0.496
+B,L18H8,18,category,english-german:category english-spanish:category,0.268
+B,L18H14,18,category task_word,antonym:task_word synonym:task_word next_item:category prev_item:category,0.161
+B,L18H15,18,category,prev_item:category,0.201
+B,L18H18,18,category,english-german:category,0.223
+B,L18H21,18,category,country-capital:category country-currency:category,0.469
+B,L18H22,18,category,present-past:category,0.436
+B,L18H23,18,category,landmark-country:category park-country:category,0.347
+B,L19H0,19,category,landmark-country:category,0.584
+B,L19H2,19,category,park-country:category,0.193
+B,L19H3,19,category,prev_item:category,0.265
+B,L19H5,19,category,english-spanish:category,0.639
+B,L19H6,19,category,next_item:category prev_item:category,0.422
+B,L19H7,19,category,prev_item:category english-french:category,0.395
+B,L19H9,19,category,prev_item:category,0.126
+B,L19H13,19,category,landmark-country:category,0.627
+B,L19H16,19,category,english-german:category,0.694
+B,L19H18,19,category,english-french:category,0.762
+B,L19H19,19,category,landmark-country:category park-country:category,0.521
+B,L19H21,19,category,landmark-country:category,0.698
+B,L19H25,19,category,next_item:category,0.157
+B,L20H1,20,category,english-french:category,0.074
+B,L20H4,20,task_word,country-currency:task_word,0.738
+B,L20H5,20,category,english-spanish:category,0.661
+B,L20H8,20,category,prev_item:category english-french:category,0.147
+B,L20H9,20,category,next_item:category,0.265
+B,L20H11,20,category task_word,country-currency:task_word next_item:category prev_item:category,0.166
+B,L20H13,20,category,singular-plural:category,0.608
+B,L20H14,20,category,english-german:category,0.26
+B,L20H20,20,category task_word,country-capital:task_word prev_item:category,0.38
+B,L20H22,20,category,country-capital:category,0.678
+B,L20H23,20,category,english-german:category,0.272
+B,L20H25,20,category,landmark-country:category park-country:category,0.433
+B,L20H28,20,category task_word,antonym:task_word next_item:category,0.571
+B,L20H29,20,category,country-capital:category country-currency:category product-company:category prev_item:category,0.344
+B,L20H31,20,category,landmark-country:category next_item:category,0.826
+B,L21H1,21,category,next_item:category,0.135
+B,L21H2,21,category,english-german:category,0.131
+B,L21H5,21,category,english-german:category,0.302
+B,L21H6,21,task_word,park-country:task_word,0.315
+B,L21H10,21,category,next_item:category,0.131
+B,L21H15,21,category,prev_item:category,0.283
+B,L21H18,21,category,english-french:category,0.595
+B,L21H19,21,task_word,present-past:task_word,0.372
+B,L21H20,21,category,prev_item:category,0.821
+B,L21H24,21,category,landmark-country:category product-company:category,0.664
+B,L22H2,22,category,prev_item:category,0.34
+B,L22H16,22,task_word,english-spanish:task_word,0.258
+B,L22H17,22,category,synonym:category prev_item:category,0.424
+B,L22H19,22,category,singular-plural:category,0.156
+B,L22H24,22,task_word,synonym:task_word,0.209
+B,L22H25,22,category task_word,country-capital:task_word product-company:task_word prev_item:category,0.281
+B,L22H26,22,task_word,landmark-country:task_word,0.529
+B,L22H27,22,category,next_item:category prev_item:category,0.182
+B,L22H31,22,category,english-german:category,0.876
+B,L23H1,23,category,next_item:category prev_item:category,0.41
+B,L23H5,23,category,prev_item:category,0.336
+B,L23H8,23,category,next_item:category prev_item:category,0.117
+B,L23H11,23,category,english-french:category,0.263
+B,L23H12,23,category,english-german:category,0.362
+B,L23H16,23,category,country-capital:category landmark-country:category park-country:category prev_item:category,0.581
+B,L23H31,23,category,english-german:category,0.4
+B,L24H1,24,category,prev_item:category,0.142
+B,L24H3,24,category,present-past:category,0.171
+B,L24H4,24,category,synonym:category english-german:category,0.416
+B,L24H10,24,category,next_item:category,0.306
+B,L24H16,24,category,english-german:category,0.227
+B,L24H25,24,category,synonym:category,0.596
+B,L24H27,24,category,country-currency:category,0.292
+B,L25H5,25,category,english-french:category,0.478
+B,L25H10,25,category,synonym:category,0.312
+B,L25H11,25,task_word,english-french:task_word,0.529
+B,L25H13,25,category,prev_item:category,0.34
+B,L25H20,25,category,country-currency:category,0.47
+B,L25H21,25,category,english-french:category english-german:category english-spanish:category,0.088
+B,L25H23,25,category,english-french:category english-german:category english-spanish:category,0.093
+B,L25H27,25,category,english-french:category english-spanish:category,0.273
+B,L25H30,25,category,english-french:category,0.335
+B,L26H1,26,category,landmark-country:category,0.209
+B,L26H7,26,category,next_item:category,0.381
+B,L26H12,26,category,prev_item:category,0.37
+B,L26H20,26,task_word,country-currency:task_word park-country:task_word,0.444
+B,L26H22,26,category,synonym:category,0.345
+B,L26H23,26,category,synonym:category english-german:category,0.31
+B,L26H25,26,category,next_item:category,0.286
+B,L26H26,26,category,english-french:category english-spanish:category,0.281
+B,L27H0,27,category,antonym:category,0.615
+B,L27H1,27,task_word,country-capital:task_word,0.617
+B,L27H7,27,category,next_item:category,0.264
+B,L27H15,27,category,prev_item:category english-french:category,0.369
+B,L27H24,27,category,prev_item:category,0.533
+B,L27H29,27,category,next_item:category,0.644
+B,L28H2,28,task_word,english-german:task_word,0.836
+B,L28H4,28,category,next_item:category english-german:category,0.633
+B,L28H7,28,category,next_item:category,0.446
+B,L28H9,28,category,prev_item:category,0.624
+B,L28H11,28,task_word,country-currency:task_word park-country:task_word,0.237
+B,L28H14,28,category,next_item:category,0.373
+B,L28H17,28,category,next_item:category,0.399
+B,L28H22,28,category,english-german:category,0.884
+B,L28H24,28,task_word,country-capital:task_word park-country:task_word,0.421
+B,L29H2,29,category,product-company:category,0.555
+B,L29H6,29,category,english-german:category,0.452
+B,L29H14,29,category,prev_item:category,0.169
+B,L29H15,29,category,product-company:category,0.278
+B,L29H17,29,category,english-french:category,0.538
+B,L29H24,29,category,country-capital:category landmark-country:category park-country:category product-company:category,0.806
+B,L29H25,29,category task_word,singular-plural:task_word english-german:category,0.232
+B,L29H28,29,category task_word,antonym:task_word synonym:task_word next_item:category,0.254
+B,L29H30,29,task_word,synonym:task_word,0.305
+B,L29H31,29,category task_word,synonym:task_word next_item:category,0.174
+B,L30H2,30,category,prev_item:category,0.253
+B,L30H4,30,category,english-spanish:category,0.897
+B,L30H7,30,category,english-spanish:category,0.978
+B,L30H8,30,category,country-currency:category,0.482
+B,L30H9,30,category,next_item:category,0.291
+B,L30H10,30,category,next_item:category,0.729
+B,L30H13,30,category,prev_item:category,0.206
+B,L30H16,30,category,english-french:category english-german:category english-spanish:category,0.501
+B,L30H25,30,category,country-currency:category english-french:category,0.362
+B,L30H28,30,category,english-french:category,0.431
+B,L31H1,31,category,country-capital:category country-currency:category,0.209
+B,L31H2,31,category,prev_item:category,0.224
+B,L31H5,31,category,next_item:category,0.505
+B,L31H6,31,category,next_item:category prev_item:category,0.057
+B,L31H7,31,category,next_item:category,0.1
+B,L31H11,31,category,landmark-country:category park-country:category,0.107
+B,L31H12,31,category,country-currency:category product-company:category,0.465
+B,L31H16,31,category,prev_item:category,0.825
+B,L31H17,31,category,english-french:category english-german:category english-spanish:category,0.552
+B,L31H21,31,category,english-french:category,0.216
+B,L31H26,31,task_word,antonym:task_word,0.641
+B,L31H28,31,category,prev_item:category,0.437

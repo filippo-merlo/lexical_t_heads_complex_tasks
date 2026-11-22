@@ -1,0 +1,19 @@
+{
+ "item_derangement_seed": 0,
+ "task_partner": {
+  "antonym": "singular-plural",
+  "synonym": "present-past",
+  "singular-plural": "country-capital",
+  "present-past": "country-currency",
+  "country-capital": "next_item",
+  "country-currency": "prev_item",
+  "landmark-country": "next_item",
+  "park-country": "prev_item",
+  "product-company": "next_item",
+  "next_item": "english-french",
+  "prev_item": "english-german",
+  "english-french": "antonym",
+  "english-german": "synonym",
+  "english-spanish": "antonym"
+ }
+}

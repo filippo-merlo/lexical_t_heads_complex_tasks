@@ -1,0 +1,29 @@
+\begin{table}[tbp]
+\centering\small
+\begin{tabularx}{\textwidth}{@{}llL@{}}
+\toprule
+Head & Task & Most frequent tokens in the top 10 (share of prompts) \\
+\midrule
+\texttt{L14H13} & country-capital & \texttt{\small ' city' 1.00, ' cities' 0.98, 'city' 0.96, ' Cities' 0.85, ' ciudad' 0.83, ' Mayor' 0.61} \\
+\texttt{} & country-currency & \texttt{\small ' currency' 1.00, ' currencies' 1.00, 'Currency' 1.00, ' Currency' 1.00, ' monetary' 1.00, ' financial' 1.00} \\
+\texttt{} & english-french & \texttt{\small ' linguistic' 0.74, ' language' 0.74, ' Language' 0.70, ' translations' 0.67, ' languages' 0.67, ' lingu' 0.66} \\
+\texttt{} & next\_item & \texttt{\small ' alphabetical' 0.37, ' calendar' 0.34, ' calendars' 0.31, ' Calendar' 0.30, ' calend' 0.28, ' alphabet' 0.25} \\
+\texttt{L25H23} & country-capital & \texttt{\small ' Barcelona' 0.89, ' Mumbai' 0.77, ' Bangkok' 0.76, ' Paris' 0.74, ' Athens' 0.69, ' Rome' 0.61} \\
+\texttt{} & country-currency & \texttt{\small ' Portuguese' 0.99, ' Japanese' 0.99, ' Spanish' 0.82, ' Pakistani' 0.74, ' Turkish' 0.71, ' British' 0.70} \\
+\texttt{} & antonym & \texttt{\small ' woman' 0.27, ' healthy' 0.24, ' peaceful' 0.21, ':\&' 0.19, ' None' 0.19, ' conservative' 0.16} \\
+\texttt{L31H1} & country-capital & \texttt{\small ' state' 0.33, ' city' 0.25, ' country' 0.24, 'state' 0.18, '-b' 0.14, 'b' 0.13} \\
+\texttt{} & english-german & \texttt{\small '\_b' 0.11, '-b' 0.11, 'b' 0.10, '-s' 0.09, '\_s' 0.09, '\textbackslash{}xads' 0.08} \\
+\texttt{L24H3} & country-capital & \texttt{\small ' African' 0.21, ' Africa' 0.19, 'Africa' 0.18, ' Africans' 0.17, ' Belize' 0.12, ' Caribbean' 0.11} \\
+\texttt{} & landmark-country & \texttt{\small ' German' 0.10, ' Germany' 0.09, 'German' 0.09, ' Germans' 0.09, 'Germany' 0.09, ' german' 0.09} \\
+\texttt{} & english-french & \texttt{\small ' French' 0.95, ' France' 0.95, 'French' 0.94, ' french' 0.94, 'France' 0.94, ' Paris' 0.94} \\
+\texttt{L26H27} & country-capital & \texttt{\small ' country' 0.83, ' Country' 0.72, 'country' 0.67, ' nation' 0.64, 'Country' 0.63, ' city' 0.61} \\
+\texttt{} & product-company & \texttt{\small ' company' 0.83, ' Company' 0.77, 'company' 0.72, ' companies' 0.70, 'Company' 0.68, ' COMPANY' 0.64} \\
+\texttt{L28H24} & next\_item & \texttt{\small ' next' 0.86, 'next' 0.79, 'Next' 0.79, ' Next' 0.76, '-next' 0.68, '.next' 0.66} \\
+\texttt{} & prev\_item & \texttt{\small ' previously' 0.91, ' previous' 0.87, ' Previously' 0.85, 'Previously' 0.84, 'Previous' 0.69, ' Previous' 0.68} \\
+\texttt{L24H1} & english-french & \texttt{\small ' les' 1.00, ' dé' 1.00, ' Ré' 0.99, ' É' 0.99, ' é' 0.98, ' ét' 0.98} \\
+\texttt{} & english-german & \texttt{\small ' von' 0.98, ' Die' 0.98, ' Haupt' 0.98, ' Das' 0.98, ' Auf' 0.97, ' Ein' 0.97} \\
+\bottomrule
+\end{tabularx}
+\caption{What some heads decode, on half $A$ (J-head, last token, five instruction templates). Source: \texttt{results/roles/readings/examples.csv} (\texttt{scripts/roles\_examples.py}), the first six of the eight most frequent tokens that are in Latin script. Item-level roles (letters, answers) change from item to item and show only weakly in counts pooled over items.}
+\label{tab:examples}
+\end{table}

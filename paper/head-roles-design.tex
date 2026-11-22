@@ -1,0 +1,235 @@
+% =====================================================================
+%  Roles of heads across the 14 simple tasks: design of a test of head groups.
+%  Status: DESIGN (22 November 2026). Stage 1 (readings, CPU) has been run:
+%  scripts/roles_readings.py, scripts/roles_report.py, scripts/roles_examples.py,
+%  results/roles/readings. Stage 2 (patching and ablation) has NOT been run; its
+%  result sections are placeholders (\pending). Compile with Tectonic (XeTeX).
+% =====================================================================
+\documentclass[10pt,a4paper]{article}
+
+\usepackage{fontspec}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,tabularx,array}
+\usepackage{float}
+\usepackage[section]{placeins}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=green!40!black,urlcolor=blue!60!black]{hyperref}
+
+\setlist{nosep,leftmargin=*}
+\captionsetup{font=small,labelfont=bf}
+\renewcommand{\arraystretch}{1.12}
+\setlength{\emergencystretch}{3em}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcommand{\pending}[1]{\par\smallskip\noindent{\color{orange!70!black}\textbf{Not run yet.} #1}\par\smallskip}
+\newcommand{\decide}[1]{\par\smallskip\noindent{\color{blue!60!black}\textbf{To decide.} #1}\par\smallskip}
+\newcommand{\nl}{\textbackslash n}
+\newcommand{\p}[1]{``\texttt{#1}''}
+\newcommand{\zbar}{\bar z}
+\newcommand{\hd}[1]{\texttt{#1}}
+\newcommand{\simpledoc}{\texttt{head-sets-simple-design}}
+
+\title{Roles of Attention Heads across Simple Tasks\\[2pt]
+\large Design of a test of head groups read with Head-JLens in Llama-3.1-8B-Instruct}
+\author{Filippo Merlo}
+\date{22 November 2026 (design; stage 1 from readings only, stage 2 not run)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The head-set study (\simpledoc) separates heads that trigger a task from generic heads, which read alike on every task, and from heads that decode the answer. What heads decode suggests finer groups: heads that decode the name of the relation, the type of the answer, the answer itself or its first letter, the query or its first letter, the direction of a sequence, or the output language. This document lays out how we test these groups and asks three questions: whether the groups exist as separate sets of heads, whether a group does the same thing in different tasks, and whether a head keeps one role across tasks or changes role from task to task. Stage~1 measures, from unpatched readings, how often each head decodes each kind of token beyond a control, on each task and on both halves of the items. Stage~2, not yet run, tests the groups by their effects: whether a group's mean output brings the task into a prompt that does not give it, whether the model needs the group when the task is given, whether a role found in some tasks has the same effect in the others, and whether heads that read differently on two tasks with the same inputs carry the difference between them. In the readings, the roles are found again on held-out items. Few heads keep one role in every task: those that decode the first letter of the answer or of the query, and one head that decodes the name of each task's domain. Most roles recur in some families of tasks but not in all, and many heads change role from one family to another. The item-level roles pass a failure control; the task-level roles pass it only on some families, which has to be settled before stage~2.
+\end{abstract}
+
+% =====================================================================
+\section{Questions}\label{sec:questions}
+
+Reading heads with Head-JLens in the head-set study separated three kinds of heads: heads whose task-conditioned means trigger the task in a zero-shot prompt, generic heads whose readings are much the same on every task (\simpledoc, Sec.~5.5), and heads that decode the answer of the item. A closer look at the top tokens suggested that these kinds split further, for instance into heads that decode members of the answer's category (capital cities on country--capital, but not the right one) and heads that decode only the first letter of the right answer. We ask:
+\begin{enumerate}[label=\textbf{Q\arabic*}]
+\item \textbf{Do the groups exist?} Are the heads that decode each kind of token largely different heads, and are they found again on items not used to find them?
+\item \textbf{Does a group do the same thing in different tasks?} Is a role found in every task, in the tasks of one family, or in single tasks, and does it have the same kind of effect wherever it is found?
+\item \textbf{Does a head keep its role?} Does a head have one role in every task where it has any, or different roles in different tasks? Which heads keep the same function in every task?
+\end{enumerate}
+A reading says what a head writes, as read through the layers that follow it; it does not say that the model uses it. Stage~1 answers the questions at the level of readings. Stage~2 answers them at the level of effects, by patching and removing groups. Nothing in this document selects heads for the head-set study, and no choice here uses test items.
+
+% =====================================================================
+\section{Setup}\label{sec:setup}
+
+Everything not stated here is as in \simpledoc{}, Secs.~3.1--3.6: Llama-3.1-8B-Instruct in bfloat16 (1{,}024 heads), the 14 simple tasks in five families (word relations, morphology, facts, sequences, translations), Yang et al.'s five instruction templates, raw prompts and greedy decoding, the item halves $A$ and $B$ (fold~1 identifies on $A$ and tests on $B$, fold~2 the reverse), task-conditioned mean activations, patching head by head into the zero-shot prompt \p{ x:}, the scoring of a reply, the control mean of a related task, and three random sets with the same number of heads per layer as the set they control.
+
+\paragraph{Readings.} Stage~1 uses the readings the rebuilt design identifies on: for each half, task and template, up to 100 correctly answered prompts, each head's ten highest J-head tokens at the last token (\texttt{data/readings/heldout/<half>/simple}). We use all of these prompts, up to 500 per task and half (224 to 500 on half~$A$), rather than the pool of 300 used for means, because the scores below are rates and more prompts make them less noisy.
+
+% =====================================================================
+\section{Stage 1: roles from readings}\label{sec:stage1}
+
+\subsection{Token sets}\label{sec:sets}
+
+For item $i$ of task $t$, with query $x_i$ and reference answer $y_i$:
+\begin{itemize}
+\item \textbf{Item tokens} $A_i$ and $Q_i$: the first token of $y_i$ (resp.\ $x_i$), with and without a leading space, in three casings, kept only if it is the whole word or a prefix of at least four characters. Shorter pieces match too much (\p{ CAN} would count as Canada). Tokens shared by $y_i$ and $x_i$ are removed from both, so that copying the query is not counted as decoding the answer.
+\item \textbf{Letters} $a_i$ and $q_i$: the first letter of $y_i$ and of $x_i$, matched by single-letter tokens, optionally after a space, hyphen or underscore. Letter scores use only items with $a_i\neq q_i$, and a task needs at least 20 such prompts; singular--plural and present--past have none.
+\item \textbf{Category set} $C_t$: the item tokens of all answers of the task (whole dataset), minus the answer tokens of every task of another family.
+\item \textbf{Word set} $W_t$: the fold's 30-word list of the task as currently used by the rebuilt design (\texttt{results/rebuild/additions/fold<k>/word\_lists.json}: the 30 words with the largest smooth TF-IDF of the task against WikiText), minus the words in the lists of tasks of other families, minus the task's answer and query tokens.
+\end{itemize}
+The last two sets are \emph{specific}: a first version that kept the other families' tokens and words failed the failure control for the task-level roles (Sec.~\ref{sec:checks}).
+
+\subsection{Role scores}\label{sec:scores}
+
+Let $T_h(p)$ be head $h$'s ten highest J-head tokens on prompt $p$ of item $i(p)$, and $\mathrm{Own}(p)$ the tokens of that item's query and answer. Every score is a rate minus a control rate, so that 0 means ``no more than chance''. The \emph{item-level} roles compare the item with the other items $j$ of the same half:
+\begin{align}
+s^{\mathrm{ans}}_t(h) &= \mathbb{E}_p\Big[\mathbf{1}\{A_{i}\cap T_h(p)\neq\emptyset\} - \mathbb{E}_{j\neq i}\,\mathbf{1}\{A_j\cap (T_h(p)\setminus \mathrm{Own}(p))\neq\emptyset\}\Big],
+\end{align}
+and likewise $s^{\mathrm{qry}}$ with $Q$, $s^{\mathrm{aL}}$ with the answer's first letter and $s^{\mathrm{qL}}$ with the query's. The \emph{task-level} roles compare the task with the other tasks:
+\begin{align}
+s^{\mathrm{cat}}_t(h) &= \Pr_{p\in t}\big[C_t\cap (T_h(p)\setminus\mathrm{Own}(p))\neq\emptyset\big] - \operatorname*{median}_{t'\neq t}\Pr_{p\in t'}\big[C_t\cap T_h(p)\neq\emptyset\big],\\
+s^{\mathrm{word}}_t(h) &= \Pr_{p\in t}\big[W_t\cap T_h(p)\neq\emptyset\big] - \operatorname*{median}_{t'\neq t}\Pr_{p\in t'}\big[W_t\cap T_h(p)\neq\emptyset\big].
+\end{align}
+The median over the other 13 tasks removes tokens that a head decodes on any prompt while tolerating the one or two tasks that share a category (landmark--country and park--country both answer with countries).
+
+Two further measures are per head. The \emph{generic score} $g(h)$ is the mean cosine, over task pairs, of the head's top-10 token counts (\simpledoc, Sec.~5.5). For the five pairs of tasks with shared inputs (next-item/prev-item, 129 of 133 inputs shared; country--capital/country--currency, all 197; the three translation pairs, 4{,}119 to 4{,}609; and antonym/synonym, 1{,}224, as a pair of related tasks), the \emph{pair cosine} is the cosine of the head's token counts between the two tasks, among heads with a sharp readout (some token on at least half of the prompts of each task). A sharp head with a low pair cosine reads differently on two tasks that receive the same inputs, so its reading follows the relation rather than the input.
+
+\subsection{Roles and classes}\label{sec:classes}
+
+A head has role $r$ in task $t$ when $s^r_t(h)\ge\tau$; the pilot uses $\tau=0.3$. Across the tasks where $r$ can be measured (12 for the letters, 14 otherwise), a head with role $r$ is
+\begin{itemize}
+\item \textbf{constant} if it has $r$ in at least 85\% of them (12 of 14, 11 of 12);
+\item \textbf{broad} if it has $r$ in tasks of two or more families, but fewer;
+\item \textbf{family} if it has $r$ in two or more tasks, all of one family;
+\item \textbf{single} if it has $r$ in one task only.
+\end{itemize}
+A head's \emph{primary role} in a task is its highest-scoring role there. A head is \emph{multi-role} if its primary roles differ between tasks, and \emph{item and task} if it has an item-level role in some task and a task-level role in some task.
+
+\subsection{Checks}\label{sec:checks}
+
+\paragraph{Held-out agreement.} Roles found on one half are looked up on the other: the share of (head, task) roles that pass $\tau$ again, and the correlation of the scores between halves over the (head, task) pairs that pass $\tau$ on either half. This measures how reliable the readings are, not what they mean.
+
+\paragraph{Failure control.} The scores must be able to fail. In the control, every prompt is scored against another item of its half (a fixed derangement within the half) and every task against the category and word sets of a task of another family (word relations take morphology's, morphology takes facts', facts take sequences', sequences take translations', translations take word relations'). Under the control the roles should vanish. The gate for stage~2: for every role, at most ten heads pass $\tau$ in any task under the control.
+
+\paragraph{Reproduction of the first pilot.} \texttt{scripts/roles\_readings.py --sets shared} rebuilds the first version's sets; its scores are compared value by value with the saved first pilot.
+
+\subsection{Stage 1 results}\label{sec:stage1-results}
+
+All counts are at $\tau=0.3$ and given as half $A$ / half $B$, from \texttt{results/roles/readings/summary.json} unless stated.
+
+\input{tables/roles_control.tex}
+\input{tables/roles_classes.tex}
+\input{tables/roles_examples.tex}
+
+\paragraph{Checks.} The item-level roles pass the failure control: when each prompt is scored against another item, no head passes $\tau$ in any task, and the highest control score is below 0.1 (Table~\ref{tab:control}). The task-level roles do not fully pass. With the specific sets, the task-word role reaches 11 heads in one task and half (antonym, half $B$), one above the gate, and stays within it at $\tau=0.5$. The category role reaches 37. The failures sit on two families: the sequence tasks scored with the translations' answers, and the translations scored with the word relations' answers. On the facts, word relations and morphology the control stays within the gate. The tokens behind the first failure are pieces such as \p{ prior}, \p{ Sequ} and \p{ math}, which begin German answers and are also what heads decode on the sequence tasks. Behind the second, the translation prompts hold an English query, and a head that decodes English words near the query passes with any set of English words. The first pilot, with shared sets, failed more widely (61 and 37 heads). Its scores are reproduced exactly by \texttt{--sets shared}. Stage~2 cannot use the category role on the sequences and translations until D0 (Sec.~\ref{sec:decisions}) is settled. The results below on the task-level roles are therefore read with this caveat.
+
+\paragraph{Q1: the groups.} Each role marks a group that is found again on the other half: 81 to 96\% of the (head, task) roles found on one half pass $\tau$ on the other, and the scores correlate at 0.88 to 0.97 between halves (Table~\ref{tab:classes}). The item-level groups are small, from 10 heads that decode the answer's first letter to about 90 that decode the query in some task; the task-level groups hold over 230 heads each. The groups also sit at different depths: the median layer is 19--20 for the task-level roles, 21--22 for the item answer and query, and 30 for the answer's first letter. The groups are not separate sets of heads, however. Of the 118 / 121 heads with an item-level role in some task, 87 / 90 also have a task-level role in some task, and 54 / 56 have both kinds of role in at least one same task.
+
+\paragraph{Q2: the same role in different tasks.} The letter roles are the most constant. Two heads (\hd{L30H24}, \hd{L30H26}) decode the first letter of the answer, and six (\hd{L22H14}, \hd{L22H15}, \hd{L24H24}, \hd{L29H21}, \hd{L30H15}, \hd{L31H13}) the first letter of the query, in at least 11 of the 12 tasks where letters can be measured, on both halves. Among the task-level roles, one head is constant on both halves: \hd{L14H13} decodes the word for the task's domain, which is a different word in every task (city, currency, language, calendar; Table~\ref{tab:examples}). \hd{L31H6} is constant in the category role on half $A$ only, and part of its tasks are those where the category role fails the control. The item answer and the item query are never constant. They recur within one family (the facts above all) or in a single task. The task-level roles spread further: 99 / 101 task-word heads and 69 / 70 category heads have their role in two or more families, though in fewer than 12 tasks, while about half of the category heads (111 / 122) have it in a single task. Some are confined to one family, for instance \hd{L26H27}, which decodes the task's relation word on the five facts tasks only (country, company), and \hd{L28H24}, which decodes ``next'' on next-item and ``previous'' on prev-item and has no role elsewhere. On the pairs of tasks with the same inputs, most heads read alike: of the 640 to 720 heads with a sharp readout, the median pair cosine is 0.83 to 0.95. Only 3--4 heads read differently between next-item and prev-item, 42--46 between country--capital and country--currency, 21--29 between two translations and 7 between antonym and synonym (\texttt{pairs.csv}).
+
+\paragraph{Q3: one head, one role?} Of the 375 / 379 heads with a role, 138 / 147 have different primary roles in different tasks. For 73 / 78 of them the role is the same within each family and changes only between families. The most frequent combination is the category with the task word (65 / 67 heads), two task-level roles. A clear case of an item-level and a task-level role in one head is a group of four heads, \hd{L24H3}, \hd{L16H9}, \hd{L19H25} and \hd{L17H23}. On half $A$ they have the query role on country--capital and country--currency, the answer role on landmark--country and park--country, and a task-level role on the translations (\texttt{head\_classes.csv}). What \hd{L24H3} decodes in these tasks is a region or country near the query, the country of the landmark, and the country of the language asked for (Table~\ref{tab:examples}); the other three heads have not been inspected token by token. If they decode the same, the role label changes with where the country sits in the task, as the query, the answer or the language, while the content stays the same. T5 tests whether such heads do one thing or several.
+
+\paragraph{Heads with the same function in every task.} At the level of readings, few heads keep the same role in every task: the eight letter heads and \hd{L14H13} above. Counting any role, 19 / 20 heads have one in at least 12 of the 14 tasks and 2 / 4 in all 14. Of the item-level roles taken together, seven heads on half $A$ and ten on half $B$ have one in at least 12 tasks, among them \hd{L31H1} and \hd{L31H3} (13 tasks on half $A$). Heads that read the same tokens on every task also exist: six on half $A$ and seven on half $B$, all in layers 0 to 3, have a pair cosine of at least 0.99 on every pair and a generic score of 0.98 to 1.00 (\texttt{summary.json}, field \texttt{same\_reading\_on\_all\_pairs}). What they decode does not change with the task, so they have none of these roles.
+
+\paragraph{Threshold.} At $\tau=0.2$, 446 / 451 heads have a role, and at $\tau=0.5$, 259 / 262. The constant letter heads are 4 (answer) and 8 (query) at $\tau=0.2$, and 0 and 2 / 4 at $\tau=0.5$; \hd{L14H13} is constant at $\tau=0.2$ but not at $0.5$, and at $\tau=0.2$ \hd{L25H23} and \hd{L31H6} are constant in the category role (\texttt{head\_roles\_tau0.2.csv}, \texttt{summary\_tau0.5.json}).
+
+% =====================================================================
+\section{Stage 2: effects of the groups}\label{sec:stage2}
+
+Stage~2 has not been run. It tests every group by its effect, on the test half of each fold, with the groups built on the identification half.
+
+\subsection{Groups}\label{sec:groups}
+
+\begin{itemize}
+\item \textbf{Per-task groups.} For role $r$, task $t$ and fold, the heads with $s^r_t(h)\ge\tau$ on the identification half, ranked by $s^r_t$; the top $N$, $N\in\{5,10,20\}$. A group that cannot fill $N$ is not run (--), as in \simpledoc{}, Sec.~3.6.
+\item \textbf{Constant groups.} For each role, the heads that are constant in it on the identification half: one set for every task, each patched with its own task's means.
+\item \textbf{Family groups.} For each role and family, the heads whose role $r$ falls only in that family.
+\item \textbf{Switching groups.} For each pair of tasks with shared inputs, the sharp heads with pair cosine below 0.2, all of them, compared with random sets of the same size.
+\item \textbf{Multi-role groups.} The most frequent patterns of primary roles across families with at least five heads, for instance heads whose primary role is the query on country--capital and country--currency, the answer on landmark--country and park--country, and a task word on the translations (Sec.~\ref{sec:stage1-results}).
+\end{itemize}
+
+\subsection{Outcome measures}\label{sec:measures}
+
+Every reply is scored in four ways and kept with its item, prompt, condition and score (\texttt{answers/*.jsonl.gz}):
+\begin{itemize}
+\item \textbf{accuracy}: the reply begins with the whole reference answer (\simpledoc, Sec.~3.5);
+\item \textbf{category rate}: the reply begins with the answer of \emph{any} item of the task, in either half, so a capital city on country--capital, a French word on English--French;
+\item \textbf{letter rate}: the reply begins with the reference answer's first letter, on items whose answer and query start with different letters;
+\item \textbf{copy rate}: the reply begins with the query.
+\end{itemize}
+The category rate tells a group that pushes the type of the answer from one that pushes the item's answer; the letter rate tells a group that carries the start of the answer.
+
+\subsection{Tests}\label{sec:tests}
+
+\paragraph{T1: does the group bring the task in?} Each group is patched head by head with its task's means into the zero-shot prompt \p{ x:}, exactly as the head-set sets are (\simpledoc, Secs.~3.4--3.5): items answered correctly with one F1 example, up to 100 per task and fold, each patched with the means of the five templates, $\alpha\in\{1,2\}$ cross-fitted, the control mean and three layer-matched random sets.
+
+\paragraph{T2: does the model need the group?} On instruction prompts of the test half that the model answers correctly unpatched (five templates, up to 100 items), every head of the group has its output at the last prompt token replaced by its mean over the other 13 tasks' prompts of the same template on the identification half. This removes what is specific to the task and to the item while keeping the head's usual output. Three layer-matched random sets get the same treatment. T1 cannot show item-level roles, because a mean over items has no item left in it; T2 can.
+
+\paragraph{T3: does a role have the same effect in every task?} Constant groups are run through T1 and T2 in every task. Family groups are run in the tasks of their family and, with those tasks' own means, in the tasks outside it. A role does the same thing across tasks if the same outcome measure moves in the same direction in every task where the role is found, and a family role is specific if it has no effect outside its family.
+
+\paragraph{T4: does a group carry the relation?} For each pair of tasks with shared inputs, in both directions ($t\to t'$), instruction prompts of $t'$ on items present in both datasets have the group patched with the means of $t$ on the same template. The \emph{switch rate} is the share of replies that give $t$'s answer for the item (the capital where the currency was asked), the \emph{keep rate} the share that give $t'$'s. Groups: the switching heads, the per-task task-level groups of $t$ at $N=10$, and, as negative controls, the item-level groups and three layer-matched random sets, patched in the same way.
+
+\paragraph{T5: does a head with two roles do two things?} Each multi-role group is run through T1 and T2 in the tasks of each of its roles. If the role labels are right, the group behaves like an item-level group (T2 effect, no T1 effect) in the tasks where its role is item-level and like a task-level group in the tasks where its role is task-level. If instead the group behaves alike everywhere, the heads hold one stable content (for instance, a country) that our labels name differently depending on where that content sits in the task.
+
+\paragraph{T6: do the letter and answer heads follow the model's reply?} Forward passes only, no patching. On prompts the model answers \emph{wrongly}, do the answer-letter and item-answer heads decode the first letter of the model's reply or of the reference? Heads that follow the reply track the model's prediction; heads that follow the reference track something the model knows but does not say. This needs new readings of wrongly answered prompts (the saved readings hold only correct ones).
+
+\begin{table}[tbp]
+\centering\small
+\begin{tabularx}{\textwidth}{@{}lLLL@{}}
+\toprule
+Group & T1 (patch means into \p{ x:}) & T2 (remove in instruction prompts) & T4 (patch $t$'s means into $t'$) \\
+\midrule
+task word, relation name & accuracy and category rate up & accuracy and category rate down & switch rate up \\
+answer category & category rate up, accuracy less & category rate down & switch rate up \\
+direction, output language (switching) & accuracy up on its task & accuracy down & switch rate up \\
+item answer & no effect beyond random & accuracy down, category kept & no switch \\
+answer letter & no effect beyond random & letter rate and accuracy down & no switch \\
+query, query letter & no effect beyond random & accuracy down if the query is read here & no switch \\
+generic & as random, or the form of a short answer & little & no switch \\
+\bottomrule
+\end{tabularx}
+\caption{What each group is expected to do in each test if its readings name its role. These are hypotheses written down before any run; T3 and T5 combine T1 and T2 across tasks.}
+\label{tab:predictions}
+\end{table}
+
+\subsection{Protocol and cost}\label{sec:cost}
+
+Groups, thresholds, means and every choice come from the identification half of the fold; only replies come from the test half. Groups are compared only with groups and random sets of the same size. Upper bounds on the patched conditions, before removing groups that cannot fill their size:
+\begin{itemize}
+\item T1: 6 roles $\times$ 14 tasks $\times$ 3 sizes $\times$ 2 folds $=$ 504 groups, each with the task mean and the control mean at two $\alpha$ and three random sets at two $\alpha$ (10 conditions), up to 100 items $\times$ 5 template means each.
+\item T2: the same 504 groups and three random sets each, one condition per set, up to 100 items $\times$ 5 templates.
+\item T3--T5: the constant, family, switching and multi-role groups, a few dozen sets.
+\item T6: forward passes on wrongly answered prompts, no generation beyond the reply already saved.
+\end{itemize}
+T1 alone is about as large as one stage-2 screen of the head-set study. A one-task timing run decides the final budget before launch.
+
+\subsection{Stage 2 results}\label{sec:stage2-results}
+
+\pending{T1--T6 will be run only after the choices in Sec.~\ref{sec:decisions} are made.}
+
+% =====================================================================
+\section{Decisions before stage 2}\label{sec:decisions}
+
+\begin{enumerate}[label=\textbf{D\arabic*}]
+\setcounter{enumi}{-1}
+\item \textbf{Task-level roles and the gate.} The category role fails the failure control on the sequences and translations, and the task-word role misses the gate by one head on antonym (Sec.~\ref{sec:stage1-results}). Options: (a) use the category role only on the tasks whose control stays within the gate (facts, word relations, morphology) and run the task word at $\tau=0.5$, where it passes; (b) narrow the sets further, for instance by removing from every category set the tokens of every other task's word list and, on the translations, every English word, and run the control again; (c) drop the category role. The gate itself stays as written.
+\item \textbf{Threshold.} $\tau=0.3$ as in the pilot, or another value (counts at 0.2 and 0.5 in Sec.~\ref{sec:stage1-results}).
+\item \textbf{Sizes.} $N\in\{5,10,20\}$, smaller than the head-set sizes because most groups are small.
+\item \textbf{Removal in T2.} The value that replaces a head's output: the mean over the other 13 tasks (proposed), the control task's mean, or zero. The positions: the last prompt token only (proposed; it decides the first token of the reply), or also every generated token.
+\item \textbf{Task-level roles.} Keep category and task word apart, or merge them into one task-level role for stage~2.
+\item \textbf{Prompts.} Stage~1 reads instruction templates only; the P example formats could be added.
+\item \textbf{Order.} T1 and T2 first, then T4, T3, T5 and T6.
+\end{enumerate}
+
+% =====================================================================
+\section{Limitations}\label{sec:limits}
+
+\begin{itemize}
+\item Roles are named by the token sets we chose. A head may have a role we have no set for (formatting, the length of the answer) and then counts as having none.
+\item On word relations and morphology the answers are ordinary words, so the category set holds much of the English vocabulary; the category role there may mark heads that decode words near the query rather than the type of the answer.
+\item Letters cannot be measured on singular--plural and present--past, and on the translations cognates make the answer's and the query's first letters agree on about half of the items, which are left out.
+\item Readings come from correctly answered prompts only, so stage~1 cannot say what a head does when the model fails (T6 addresses this for the letter and answer heads).
+\item Stage~1 shows what heads decode and that this is found again on other items; whether the model uses it is the question of stage~2.
+\end{itemize}
+
+\section*{Code and results}
+\sloppy
+Stage 1: \texttt{scripts/roles\_readings.py} (scores, both halves; \texttt{--control}; \texttt{--sets shared}), \texttt{scripts/roles\_report.py} (classes, agreement, pairs, counts; \texttt{--tau}, \texttt{--control}, \texttt{--sets}), \texttt{scripts/roles\_examples.py} (Table~\ref{tab:examples}), \texttt{scripts/roles\_tables.py} (Tables~\ref{tab:control}--\ref{tab:examples}); outputs in \texttt{results/roles/readings}. Stage 2 needs new code for the ablation of T2, the cross-task patching of T4, the readings of wrongly answered prompts of T6, and the category, letter and copy rates.
+
+\end{document}

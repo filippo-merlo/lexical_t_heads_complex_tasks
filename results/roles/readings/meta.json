@@ -1,0 +1,68 @@
+{
+ "halves": [
+  "A",
+  "B"
+ ],
+ "roles": [
+  "answer",
+  "query",
+  "answer_letter",
+  "query_letter",
+  "category",
+  "task_word"
+ ],
+ "tasks": [
+  "antonym",
+  "synonym",
+  "singular-plural",
+  "present-past",
+  "country-capital",
+  "country-currency",
+  "landmark-country",
+  "park-country",
+  "product-company",
+  "next_item",
+  "prev_item",
+  "english-french",
+  "english-german",
+  "english-spanish"
+ ],
+ "pairs": [
+  [
+   "next_item",
+   "prev_item"
+  ],
+  [
+   "country-capital",
+   "country-currency"
+  ],
+  [
+   "english-french",
+   "english-german"
+  ],
+  [
+   "english-french",
+   "english-spanish"
+  ],
+  [
+   "english-german",
+   "english-spanish"
+  ],
+  [
+   "antonym",
+   "synonym"
+  ]
+ ],
+ "templates": [
+  "inst0",
+  "inst1",
+  "inst2",
+  "inst3",
+  "inst4"
+ ],
+ "readout": "jhead",
+ "top_k": 10,
+ "readings": "data/readings/heldout/<half>/simple",
+ "word_lists": "results/rebuild/additions/fold<k>/word_lists.json (fold 1 = half A, fold 2 = half B)",
+ "letter_min_prompts": 20
+}

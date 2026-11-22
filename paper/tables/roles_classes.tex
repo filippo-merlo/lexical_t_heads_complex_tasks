@@ -1,0 +1,22 @@
+\begin{table}[tbp]
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}l rrrrrr rrrrrr r@{}}
+\toprule
+ & \multicolumn{6}{c}{identified on half $A$} & \multicolumn{6}{c}{identified on half $B$} & \\
+\cmidrule(lr){2-7}\cmidrule(lr){8-13}
+Role & heads & const. & broad & fam. & single & held & heads & const. & broad & fam. & single & held & $r$ \\
+\midrule
+item answer & 57 & 0 & 8 & 18 & 31 & 0.84 & 62 & 0 & 6 & 22 & 34 & 0.81 & 0.94 \\
+item query & 87 & 0 & 36 & 21 & 30 & 0.91 & 91 & 0 & 35 & 27 & 29 & 0.88 & 0.88 \\
+answer's first letter & 10 & 2 & 3 & 0 & 5 & 0.96 & 10 & 2 & 3 & 0 & 5 & 0.96 & 0.93 \\
+query's first letter & 20 & 6 & 6 & 1 & 7 & 0.90 & 15 & 6 & 4 & 1 & 4 & 0.94 & 0.93 \\
+answer category & 234 & 1 & 69 & 53 & 111 & 0.94 & 239 & 0 & 70 & 47 & 122 & 0.93 & 0.97 \\
+task word & 233 & 1 & 99 & 65 & 68 & 0.96 & 237 & 1 & 101 & 63 & 72 & 0.93 & 0.91 \\
+\midrule
+any role & 375 & \multicolumn{5}{l}{138 with several primary roles} & 379 & \multicolumn{5}{l}{147 with several primary roles} & \\
+\bottomrule
+\end{tabular}
+\caption{Heads with each role at $\tau=0.3$, by how many tasks the role recurs in (Sec.~\ref{sec:classes}): constant (at least 85\% of the tasks where the role can be measured), broad (two or more families), family (two or more tasks of one family), single (one task). \emph{held}: share of the (head, task) roles found again at $\tau$ on the other half. $r$: correlation of the scores between halves over the (head, task) pairs at $\tau$ on either half. Source: \texttt{results/roles/readings/summary.json}.}
+\label{tab:classes}
+\end{table}

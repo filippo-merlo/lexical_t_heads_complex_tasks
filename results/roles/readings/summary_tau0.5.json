@@ -1,0 +1,560 @@
+{
+ "tau": 0.5,
+ "halves": {
+  "A": {
+   "roles": {
+    "answer": {
+     "heads": 30,
+     "constant": 0,
+     "broad": 1,
+     "family": 17,
+     "single": 12,
+     "measurable_tasks": 14,
+     "role_task_pairs": 57,
+     "held_on_other_half": 0.93
+    },
+    "query": {
+     "heads": 45,
+     "constant": 0,
+     "broad": 17,
+     "family": 16,
+     "single": 12,
+     "measurable_tasks": 14,
+     "role_task_pairs": 113,
+     "held_on_other_half": 0.788
+    },
+    "answer_letter": {
+     "heads": 5,
+     "constant": 0,
+     "broad": 4,
+     "family": 0,
+     "single": 1,
+     "measurable_tasks": 12,
+     "role_task_pairs": 25,
+     "held_on_other_half": 0.92
+    },
+    "query_letter": {
+     "heads": 9,
+     "constant": 2,
+     "broad": 7,
+     "family": 0,
+     "single": 0,
+     "measurable_tasks": 12,
+     "role_task_pairs": 62,
+     "held_on_other_half": 0.919
+    },
+    "category": {
+     "heads": 116,
+     "constant": 0,
+     "broad": 23,
+     "family": 34,
+     "single": 59,
+     "measurable_tasks": 14,
+     "role_task_pairs": 245,
+     "held_on_other_half": 0.922
+    },
+    "task_word": {
+     "heads": 184,
+     "constant": 0,
+     "broad": 64,
+     "family": 55,
+     "single": 65,
+     "measurable_tasks": 14,
+     "role_task_pairs": 485,
+     "held_on_other_half": 0.969
+    }
+   },
+   "heads_with_a_role": 259,
+   "one_primary_role": 187,
+   "several_primary_roles": 72,
+   "of_which_item_and_task_roles": 39,
+   "score_correlation_active": {
+    "answer": 0.927,
+    "query": 0.681,
+    "answer_letter": 0.861,
+    "query_letter": 0.81,
+    "category": 0.962,
+    "task_word": 0.843
+   },
+   "heads_per_task": {
+    "answer": {
+     "antonym": 3,
+     "synonym": 3,
+     "singular-plural": 6,
+     "present-past": 5,
+     "country-capital": 0,
+     "country-currency": 0,
+     "landmark-country": 14,
+     "park-country": 15,
+     "product-company": 8,
+     "next_item": 1,
+     "prev_item": 2,
+     "english-french": 0,
+     "english-german": 0,
+     "english-spanish": 0
+    },
+    "query": {
+     "antonym": 6,
+     "synonym": 11,
+     "singular-plural": 12,
+     "present-past": 5,
+     "country-capital": 13,
+     "country-currency": 10,
+     "landmark-country": 0,
+     "park-country": 0,
+     "product-company": 0,
+     "next_item": 10,
+     "prev_item": 10,
+     "english-french": 9,
+     "english-german": 13,
+     "english-spanish": 14
+    },
+    "answer_letter": {
+     "antonym": 0,
+     "synonym": 0,
+     "singular-plural": 0,
+     "present-past": 0,
+     "country-capital": 5,
+     "country-currency": 3,
+     "landmark-country": 4,
+     "park-country": 2,
+     "product-company": 1,
+     "next_item": 4,
+     "prev_item": 3,
+     "english-french": 0,
+     "english-german": 2,
+     "english-spanish": 1
+    },
+    "query_letter": {
+     "antonym": 6,
+     "synonym": 8,
+     "singular-plural": 0,
+     "present-past": 0,
+     "country-capital": 4,
+     "country-currency": 8,
+     "landmark-country": 5,
+     "park-country": 5,
+     "product-company": 3,
+     "next_item": 6,
+     "prev_item": 7,
+     "english-french": 4,
+     "english-german": 4,
+     "english-spanish": 2
+    },
+    "category": {
+     "antonym": 20,
+     "synonym": 5,
+     "singular-plural": 8,
+     "present-past": 11,
+     "country-capital": 14,
+     "country-currency": 15,
+     "landmark-country": 26,
+     "park-country": 29,
+     "product-company": 12,
+     "next_item": 27,
+     "prev_item": 24,
+     "english-french": 17,
+     "english-german": 18,
+     "english-spanish": 19
+    },
+    "task_word": {
+     "antonym": 17,
+     "synonym": 11,
+     "singular-plural": 29,
+     "present-past": 20,
+     "country-capital": 42,
+     "country-currency": 49,
+     "landmark-country": 64,
+     "park-country": 81,
+     "product-company": 39,
+     "next_item": 36,
+     "prev_item": 41,
+     "english-french": 17,
+     "english-german": 14,
+     "english-spanish": 25
+    }
+   },
+   "max_heads_in_a_task": {
+    "answer": 15,
+    "query": 14,
+    "answer_letter": 5,
+    "query_letter": 8,
+    "category": 29,
+    "task_word": 81
+   },
+   "constant_heads": {
+    "answer": [],
+    "query": [],
+    "answer_letter": [],
+    "query_letter": [
+     "L22H15",
+     "L31H13"
+    ],
+    "category": [],
+    "task_word": []
+   },
+   "task_level_in_12_of_14": {},
+   "item_level_in_12_of_14": {
+    "L22H15": 12
+   },
+   "any_role_in_14": 1,
+   "any_role_in_12_or_more": 3,
+   "heads_by_tasks_with_a_role": {
+    "1": 83,
+    "2": 46,
+    "3": 37,
+    "4": 28,
+    "5": 16,
+    "6": 11,
+    "7": 12,
+    "8": 8,
+    "9": 4,
+    "10": 5,
+    "11": 6,
+    "12": 2,
+    "13": 0,
+    "14": 1
+   },
+   "heads_with_an_item_level_role": 64,
+   "heads_with_a_task_level_role": 239,
+   "heads_with_item_and_task_roles": 44,
+   "of_which_both_in_one_task": 17,
+   "layers": {
+    "answer": {
+     "heads": 30,
+     "median": 22.0,
+     "q25": 18.25,
+     "q75": 28.75
+    },
+    "query": {
+     "heads": 45,
+     "median": 21.0,
+     "q25": 18.0,
+     "q75": 27.0
+    },
+    "answer_letter": {
+     "heads": 5,
+     "median": 30.0,
+     "q25": 30.0,
+     "q75": 31.0
+    },
+    "query_letter": {
+     "heads": 9,
+     "median": 29.0,
+     "q25": 22.0,
+     "q75": 30.0
+    },
+    "category": {
+     "heads": 116,
+     "median": 19.0,
+     "q25": 15.0,
+     "q75": 25.0
+    },
+    "task_word": {
+     "heads": 184,
+     "median": 21.0,
+     "q25": 15.0,
+     "q75": 24.0
+    }
+   },
+   "role_combinations_of_multi_role_heads": {
+    "category task_word": 31,
+    "query task_word": 16,
+    "answer query task_word": 6,
+    "answer category query task_word": 5,
+    "answer task_word": 4,
+    "category query": 2,
+    "answer category task_word": 2,
+    "category query task_word": 2
+   },
+   "multi_role_heads_with_one_role_per_family": 33,
+   "same_reading_on_all_pairs": {
+    "L0H28": 0.998,
+    "L0H29": 1.0,
+    "L0H31": 1.0,
+    "L2H12": 0.989,
+    "L2H21": 0.987,
+    "L3H4": 0.997
+   }
+  },
+  "B": {
+   "roles": {
+    "answer": {
+     "heads": 30,
+     "constant": 0,
+     "broad": 1,
+     "family": 17,
+     "single": 12,
+     "measurable_tasks": 14,
+     "role_task_pairs": 57,
+     "held_on_other_half": 0.93
+    },
+    "query": {
+     "heads": 41,
+     "constant": 0,
+     "broad": 19,
+     "family": 9,
+     "single": 13,
+     "measurable_tasks": 14,
+     "role_task_pairs": 107,
+     "held_on_other_half": 0.832
+    },
+    "answer_letter": {
+     "heads": 5,
+     "constant": 0,
+     "broad": 4,
+     "family": 0,
+     "single": 1,
+     "measurable_tasks": 12,
+     "role_task_pairs": 25,
+     "held_on_other_half": 0.92
+    },
+    "query_letter": {
+     "heads": 9,
+     "constant": 4,
+     "broad": 4,
+     "family": 0,
+     "single": 1,
+     "measurable_tasks": 12,
+     "role_task_pairs": 63,
+     "held_on_other_half": 0.905
+    },
+    "category": {
+     "heads": 112,
+     "constant": 0,
+     "broad": 22,
+     "family": 36,
+     "single": 54,
+     "measurable_tasks": 14,
+     "role_task_pairs": 237,
+     "held_on_other_half": 0.954
+    },
+    "task_word": {
+     "heads": 193,
+     "constant": 0,
+     "broad": 67,
+     "family": 59,
+     "single": 67,
+     "measurable_tasks": 14,
+     "role_task_pairs": 521,
+     "held_on_other_half": 0.902
+    }
+   },
+   "heads_with_a_role": 262,
+   "one_primary_role": 187,
+   "several_primary_roles": 75,
+   "of_which_item_and_task_roles": 39,
+   "score_correlation_active": {
+    "answer": 0.927,
+    "query": 0.681,
+    "answer_letter": 0.861,
+    "query_letter": 0.81,
+    "category": 0.962,
+    "task_word": 0.843
+   },
+   "heads_per_task": {
+    "answer": {
+     "antonym": 3,
+     "synonym": 3,
+     "singular-plural": 3,
+     "present-past": 5,
+     "country-capital": 0,
+     "country-currency": 0,
+     "landmark-country": 14,
+     "park-country": 14,
+     "product-company": 10,
+     "next_item": 2,
+     "prev_item": 3,
+     "english-french": 0,
+     "english-german": 0,
+     "english-spanish": 0
+    },
+    "query": {
+     "antonym": 9,
+     "synonym": 11,
+     "singular-plural": 8,
+     "present-past": 8,
+     "country-capital": 8,
+     "country-currency": 6,
+     "landmark-country": 0,
+     "park-country": 0,
+     "product-company": 0,
+     "next_item": 10,
+     "prev_item": 10,
+     "english-french": 15,
+     "english-german": 12,
+     "english-spanish": 10
+    },
+    "answer_letter": {
+     "antonym": 0,
+     "synonym": 0,
+     "singular-plural": 0,
+     "present-past": 0,
+     "country-capital": 5,
+     "country-currency": 3,
+     "landmark-country": 4,
+     "park-country": 3,
+     "product-company": 0,
+     "next_item": 4,
+     "prev_item": 4,
+     "english-french": 0,
+     "english-german": 2,
+     "english-spanish": 0
+    },
+    "query_letter": {
+     "antonym": 6,
+     "synonym": 7,
+     "singular-plural": 0,
+     "present-past": 0,
+     "country-capital": 4,
+     "country-currency": 8,
+     "landmark-country": 5,
+     "park-country": 5,
+     "product-company": 3,
+     "next_item": 6,
+     "prev_item": 6,
+     "english-french": 4,
+     "english-german": 5,
+     "english-spanish": 4
+    },
+    "category": {
+     "antonym": 17,
+     "synonym": 6,
+     "singular-plural": 7,
+     "present-past": 13,
+     "country-capital": 12,
+     "country-currency": 14,
+     "landmark-country": 28,
+     "park-country": 30,
+     "product-company": 13,
+     "next_item": 25,
+     "prev_item": 20,
+     "english-french": 16,
+     "english-german": 17,
+     "english-spanish": 19
+    },
+    "task_word": {
+     "antonym": 21,
+     "synonym": 11,
+     "singular-plural": 30,
+     "present-past": 21,
+     "country-capital": 44,
+     "country-currency": 53,
+     "landmark-country": 70,
+     "park-country": 82,
+     "product-company": 47,
+     "next_item": 37,
+     "prev_item": 46,
+     "english-french": 18,
+     "english-german": 14,
+     "english-spanish": 27
+    }
+   },
+   "max_heads_in_a_task": {
+    "answer": 14,
+    "query": 15,
+    "answer_letter": 5,
+    "query_letter": 8,
+    "category": 30,
+    "task_word": 82
+   },
+   "constant_heads": {
+    "answer": [],
+    "query": [],
+    "answer_letter": [],
+    "query_letter": [
+     "L22H14",
+     "L22H15",
+     "L24H24",
+     "L31H13"
+    ],
+    "category": [],
+    "task_word": []
+   },
+   "task_level_in_12_of_14": {},
+   "item_level_in_12_of_14": {
+    "L22H14": 12
+   },
+   "any_role_in_14": 1,
+   "any_role_in_12_or_more": 4,
+   "heads_by_tasks_with_a_role": {
+    "1": 78,
+    "2": 55,
+    "3": 38,
+    "4": 23,
+    "5": 17,
+    "6": 15,
+    "7": 8,
+    "8": 8,
+    "9": 5,
+    "10": 3,
+    "11": 8,
+    "12": 2,
+    "13": 1,
+    "14": 1
+   },
+   "heads_with_an_item_level_role": 68,
+   "heads_with_a_task_level_role": 239,
+   "heads_with_item_and_task_roles": 45,
+   "of_which_both_in_one_task": 18,
+   "layers": {
+    "answer": {
+     "heads": 30,
+     "median": 22.0,
+     "q25": 18.0,
+     "q75": 28.0
+    },
+    "query": {
+     "heads": 41,
+     "median": 20.0,
+     "q25": 18.0,
+     "q75": 27.0
+    },
+    "answer_letter": {
+     "heads": 5,
+     "median": 30.0,
+     "q25": 30.0,
+     "q75": 31.0
+    },
+    "query_letter": {
+     "heads": 9,
+     "median": 29.0,
+     "q25": 22.0,
+     "q75": 30.0
+    },
+    "category": {
+     "heads": 112,
+     "median": 19.0,
+     "q25": 15.0,
+     "q75": 24.25
+    },
+    "task_word": {
+     "heads": 193,
+     "median": 20.0,
+     "q25": 16.0,
+     "q75": 24.0
+    }
+   },
+   "role_combinations_of_multi_role_heads": {
+    "category task_word": 35,
+    "query task_word": 15,
+    "answer category task_word": 6,
+    "answer query task_word": 6,
+    "answer task_word": 4,
+    "category query": 3,
+    "category query task_word": 2,
+    "answer category query task_word": 1
+   },
+   "multi_role_heads_with_one_role_per_family": 35,
+   "same_reading_on_all_pairs": {
+    "L0H24": 0.981,
+    "L0H28": 0.998,
+    "L0H29": 1.0,
+    "L0H31": 1.0,
+    "L2H12": 0.99,
+    "L2H21": 0.99,
+    "L3H4": 0.998
+   }
+  }
+ }
+}

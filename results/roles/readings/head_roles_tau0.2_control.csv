@@ -1,0 +1,595 @@
+half,head,layer,role,class,n_tasks,tasks,families,mean_score,held_other_half
+A,L0H4,0,category,family,2,park-country product-company,facts,0.285,1.0
+A,L0H16,0,category,single,1,landmark-country,facts,0.354,1.0
+A,L0H19,0,category,family,2,country-capital country-currency,facts,0.235,1.0
+A,L1H7,1,category,family,2,country-currency landmark-country,facts,0.328,1.0
+A,L1H15,1,category,single,1,english-french,transl,0.228,1.0
+A,L1H16,1,category,single,1,prev_item,seq,0.237,1.0
+A,L1H19,1,category,family,2,landmark-country park-country,facts,0.335,1.0
+A,L2H16,2,category,single,1,country-currency,facts,0.216,1.0
+A,L2H28,2,category,family,2,country-capital country-currency,facts,0.267,0.5
+A,L3H7,3,category,single,1,country-currency,facts,0.21,1.0
+A,L3H14,3,category,single,1,english-spanish,transl,0.256,1.0
+A,L3H25,3,category,family,2,country-capital country-currency,facts,0.301,1.0
+A,L4H2,4,category,single,1,next_item,seq,0.209,0.0
+A,L4H10,4,category,family,3,country-capital country-currency park-country,facts,0.283,1.0
+A,L4H19,4,category,family,3,country-capital country-currency park-country,facts,0.333,1.0
+A,L4H21,4,category,single,1,country-currency,facts,0.211,1.0
+A,L5H6,5,category,family,4,country-capital country-currency park-country product-company,facts,0.273,1.0
+A,L5H22,5,category,single,1,next_item,seq,0.268,1.0
+A,L6H6,6,category,family,2,english-german english-spanish,transl,0.41,1.0
+A,L6H7,6,category,single,1,product-company,facts,0.232,1.0
+A,L6H13,6,category,family,2,park-country product-company,facts,0.32,1.0
+A,L6H16,6,category,single,1,english-german,transl,0.269,1.0
+A,L6H17,6,category,single,1,next_item,seq,0.208,0.0
+A,L6H24,6,category,family,2,country-capital country-currency,facts,0.301,1.0
+A,L6H30,6,category,single,1,country-capital,facts,0.249,1.0
+A,L7H1,7,category,single,1,prev_item,seq,0.206,0.0
+A,L7H3,7,category,single,1,country-capital,facts,0.2,0.0
+A,L7H4,7,category,single,1,prev_item,seq,0.422,1.0
+A,L7H9,7,category,single,1,park-country,facts,0.384,1.0
+A,L7H10,7,category,family,2,country-capital country-currency,facts,0.288,1.0
+A,L7H28,7,category,family,3,english-french english-german english-spanish,transl,0.31,1.0
+A,L8H2,8,category,single,1,english-german,transl,0.488,1.0
+A,L8H15,8,category,single,1,country-currency,facts,0.365,1.0
+A,L8H16,8,category,broad,2,singular-plural next_item,morph seq,0.289,1.0
+A,L8H22,8,category,single,1,country-currency,facts,0.207,1.0
+A,L8H24,8,category,single,1,country-currency,facts,0.346,1.0
+A,L9H0,9,category,single,1,prev_item,seq,0.357,1.0
+A,L9H4,9,category,single,1,next_item,seq,0.261,0.0
+A,L9H8,9,category,single,1,english-spanish,transl,0.36,1.0
+A,L9H17,9,category,single,1,next_item,seq,0.37,1.0
+A,L9H24,9,category,single,1,english-french,transl,0.24,1.0
+A,L10H0,10,category,broad,3,antonym country-currency next_item,facts seq word,0.257,0.667
+A,L10H3,10,category,single,1,next_item,seq,0.494,1.0
+A,L10H10,10,category,single,1,english-spanish,transl,0.378,1.0
+A,L10H15,10,category,single,1,next_item,seq,0.38,1.0
+A,L11H9,11,category,single,1,country-currency,facts,0.202,1.0
+A,L11H17,11,category,single,1,product-company,facts,0.211,1.0
+A,L11H25,11,category,family,3,country-capital country-currency park-country,facts,0.429,1.0
+A,L11H26,11,category,broad,2,product-company english-german,facts transl,0.222,1.0
+A,L11H27,11,category,single,1,english-french,transl,0.228,1.0
+A,L11H28,11,category,family,2,landmark-country park-country,facts,0.335,1.0
+A,L12H1,12,category,single,1,prev_item,seq,0.245,1.0
+A,L12H2,12,category,single,1,country-capital,facts,0.217,0.0
+A,L12H4,12,category,family,2,english-german english-spanish,transl,0.266,1.0
+A,L12H9,12,category,single,1,synonym,word,0.284,1.0
+A,L12H13,12,category,family,2,next_item prev_item,seq,0.285,1.0
+A,L12H15,12,category,broad,2,landmark-country next_item,facts seq,0.249,1.0
+A,L12H16,12,category,single,1,english-german,transl,0.369,1.0
+A,L12H21,12,category,single,1,synonym,word,0.248,1.0
+A,L12H22,12,category,single,1,synonym,word,0.288,1.0
+A,L12H24,12,category,single,1,english-german,transl,0.344,1.0
+A,L12H27,12,category,single,1,english-spanish,transl,0.366,1.0
+A,L12H29,12,category,broad,4,next_item english-french english-german english-spanish,seq transl,0.371,0.75
+A,L13H5,13,category,single,1,english-spanish,transl,0.205,0.0
+A,L13H10,13,category,broad,3,country-capital country-currency prev_item,facts seq,0.318,1.0
+A,L13H12,13,category,family,2,english-french english-spanish,transl,0.343,1.0
+A,L13H14,13,category,family,3,english-french english-german english-spanish,transl,0.633,1.0
+A,L13H16,13,category,single,1,prev_item,seq,0.308,1.0
+A,L13H17,13,category,single,1,english-german,transl,0.258,1.0
+A,L13H21,13,category,broad,2,synonym prev_item,seq word,0.574,1.0
+A,L13H22,13,category,broad,3,synonym next_item prev_item,seq word,0.669,1.0
+A,L13H25,13,category,single,1,park-country,facts,0.314,1.0
+A,L13H29,13,category,broad,4,synonym english-french english-german english-spanish,transl word,0.284,1.0
+A,L13H31,13,category,family,2,english-french english-spanish,transl,0.452,1.0
+A,L14H0,14,category,family,3,english-french english-german english-spanish,transl,0.345,1.0
+A,L14H2,14,category,broad,2,prev_item english-german,seq transl,0.335,1.0
+A,L14H3,14,category,single,1,prev_item,seq,0.229,1.0
+A,L14H4,14,category,single,1,next_item,seq,0.346,1.0
+A,L14H5,14,category,single,1,prev_item,seq,0.638,1.0
+A,L14H10,14,category,family,2,english-french english-spanish,transl,0.4,1.0
+A,L14H11,14,category,single,1,next_item,seq,0.224,0.0
+A,L14H12,14,category,single,1,synonym,word,0.288,1.0
+A,L14H13,14,category,single,1,prev_item,seq,0.601,1.0
+A,L14H15,14,category,single,1,synonym,word,0.598,1.0
+A,L14H16,14,category,single,1,english-french,transl,0.408,1.0
+A,L14H22,14,category,family,3,english-french english-german english-spanish,transl,0.278,1.0
+A,L14H27,14,category,broad,2,present-past prev_item,morph seq,0.305,1.0
+A,L15H8,15,category,single,1,prev_item,seq,0.34,1.0
+A,L15H14,15,category,single,1,prev_item,seq,0.462,1.0
+A,L15H16,15,category,single,1,landmark-country,facts,0.254,1.0
+A,L15H18,15,category,single,1,english-spanish,transl,0.416,1.0
+A,L15H23,15,category,single,1,english-german,transl,0.22,1.0
+A,L15H24,15,category,family,2,next_item prev_item,seq,0.465,1.0
+A,L15H26,15,category,single,1,next_item,seq,0.302,1.0
+A,L15H27,15,category,single,1,next_item,seq,0.302,1.0
+A,L15H28,15,category,family,3,english-french english-german english-spanish,transl,0.384,1.0
+A,L15H29,15,category,single,1,landmark-country,facts,0.376,1.0
+A,L15H30,15,category,single,1,park-country,facts,0.204,0.0
+A,L15H31,15,category,single,1,prev_item,seq,0.333,1.0
+A,L16H3,16,category,family,3,landmark-country park-country product-company,facts,0.292,1.0
+A,L16H8,16,category,broad,2,present-past prev_item,morph seq,0.478,0.5
+A,L16H17,16,category,single,1,next_item,seq,0.259,1.0
+A,L16H20,16,category,broad,3,park-country english-french english-german,facts transl,0.229,0.333
+A,L16H23,16,category,single,1,product-company,facts,0.232,1.0
+A,L17H0,17,category,single,1,prev_item,seq,0.225,1.0
+A,L17H2,17,category,single,1,english-german,transl,0.21,1.0
+A,L17H3,17,category,family,2,next_item prev_item,seq,0.38,1.0
+A,L17H4,17,category,family,2,next_item prev_item,seq,0.363,1.0
+A,L17H5,17,category,broad,3,next_item english-french english-spanish,seq transl,0.307,1.0
+A,L17H7,17,category,single,1,next_item,seq,0.218,1.0
+A,L17H11,17,category,single,1,next_item,seq,0.232,1.0
+A,L17H12,17,category,single,1,english-french,transl,0.214,1.0
+A,L17H15,17,category,family,2,next_item prev_item,seq,0.346,1.0
+A,L17H21,17,category,single,1,prev_item,seq,0.409,1.0
+A,L17H24,17,category,single,1,landmark-country,facts,0.236,0.0
+A,L17H26,17,category,single,1,prev_item,seq,0.375,1.0
+A,L18H1,18,category,single,1,next_item,seq,0.209,1.0
+A,L18H3,18,category,single,1,prev_item,seq,0.203,1.0
+A,L18H5,18,category,single,1,next_item,seq,0.239,1.0
+A,L18H6,18,category,family,2,english-french english-german,transl,0.238,0.5
+A,L18H8,18,category,single,1,english-french,transl,0.21,0.0
+A,L18H12,18,category,single,1,english-french,transl,0.21,0.0
+A,L18H14,18,category,family,2,next_item prev_item,seq,0.486,1.0
+A,L18H15,18,category,single,1,prev_item,seq,0.211,1.0
+A,L18H18,18,category,single,1,english-german,transl,0.252,1.0
+A,L18H20,18,category,family,2,landmark-country park-country,facts,0.212,0.0
+A,L18H21,18,category,family,2,country-capital country-currency,facts,0.258,1.0
+A,L18H23,18,category,family,2,landmark-country park-country,facts,0.266,1.0
+A,L19H0,19,category,single,1,landmark-country,facts,0.258,1.0
+A,L19H2,19,category,single,1,park-country,facts,0.222,1.0
+A,L19H3,19,category,single,1,prev_item,seq,0.235,1.0
+A,L19H5,19,category,single,1,english-spanish,transl,0.21,1.0
+A,L19H6,19,category,family,2,next_item prev_item,seq,0.388,1.0
+A,L19H7,19,category,broad,3,prev_item english-french english-german,seq transl,0.268,0.667
+A,L19H9,19,category,single,1,prev_item,seq,0.27,1.0
+A,L19H13,19,category,single,1,landmark-country,facts,0.255,1.0
+A,L19H18,19,category,family,2,english-french english-spanish,transl,0.248,0.5
+A,L19H19,19,category,family,2,landmark-country park-country,facts,0.393,1.0
+A,L20H1,20,category,single,1,english-spanish,transl,0.215,0.0
+A,L20H5,20,category,single,1,english-spanish,transl,0.376,1.0
+A,L20H8,20,category,single,1,prev_item,seq,0.409,1.0
+A,L20H9,20,category,single,1,next_item,seq,0.477,1.0
+A,L20H11,20,category,family,2,next_item prev_item,seq,0.49,1.0
+A,L20H13,20,category,single,1,singular-plural,morph,0.347,1.0
+A,L20H14,20,category,single,1,english-german,transl,0.204,1.0
+A,L20H20,20,category,single,1,prev_item,seq,0.577,1.0
+A,L20H22,20,category,single,1,country-capital,facts,0.215,1.0
+A,L20H23,20,category,single,1,english-german,transl,0.28,1.0
+A,L20H25,20,category,family,2,landmark-country park-country,facts,0.281,1.0
+A,L20H28,20,category,single,1,next_item,seq,0.226,1.0
+A,L20H29,20,category,broad,4,country-capital country-currency product-company prev_item,facts seq,0.499,1.0
+A,L20H31,20,category,broad,2,landmark-country next_item,facts seq,0.308,1.0
+A,L21H1,21,category,single,1,english-spanish,transl,0.204,0.0
+A,L21H2,21,category,single,1,english-german,transl,0.356,1.0
+A,L21H4,21,category,single,1,english-german,transl,0.203,0.0
+A,L21H10,21,category,single,1,next_item,seq,0.346,1.0
+A,L21H15,21,category,single,1,prev_item,seq,0.416,1.0
+A,L21H18,21,category,single,1,english-french,transl,0.206,1.0
+A,L21H24,21,category,family,2,landmark-country product-company,facts,0.33,1.0
+A,L21H25,21,category,single,1,next_item,seq,0.275,0.0
+A,L22H2,22,category,single,1,prev_item,seq,0.509,1.0
+A,L22H5,22,category,single,1,prev_item,seq,0.224,0.0
+A,L22H13,22,category,single,1,country-currency,facts,0.203,0.0
+A,L22H17,22,category,broad,2,synonym prev_item,seq word,0.392,1.0
+A,L22H25,22,category,single,1,prev_item,seq,0.236,1.0
+A,L22H26,22,category,single,1,next_item,seq,0.219,0.0
+A,L22H27,22,category,family,2,next_item prev_item,seq,0.56,1.0
+A,L22H31,22,category,single,1,english-german,transl,0.294,1.0
+A,L23H1,23,category,single,1,prev_item,seq,0.355,1.0
+A,L23H5,23,category,single,1,prev_item,seq,0.262,1.0
+A,L23H8,23,category,family,2,next_item prev_item,seq,0.469,1.0
+A,L23H11,23,category,single,1,english-french,transl,0.3,1.0
+A,L23H12,23,category,single,1,english-german,transl,0.338,1.0
+A,L23H16,23,category,broad,4,country-capital landmark-country park-country prev_item,facts seq,0.324,1.0
+A,L24H1,24,category,single,1,prev_item,seq,0.253,1.0
+A,L24H3,24,category,broad,2,present-past prev_item,morph seq,0.249,0.5
+A,L24H4,24,category,broad,2,synonym english-german,transl word,0.263,1.0
+A,L24H10,24,category,single,1,next_item,seq,0.728,1.0
+A,L24H16,24,category,single,1,english-german,transl,0.272,1.0
+A,L24H25,24,category,single,1,synonym,word,0.42,1.0
+A,L24H27,24,category,single,1,country-currency,facts,0.251,1.0
+A,L25H4,25,category,family,2,next_item prev_item,seq,0.218,0.0
+A,L25H10,25,category,single,1,synonym,word,0.342,1.0
+A,L25H13,25,category,single,1,prev_item,seq,0.512,1.0
+A,L25H19,25,category,single,1,landmark-country,facts,0.202,0.0
+A,L25H20,25,category,single,1,country-currency,facts,0.892,1.0
+A,L25H21,25,category,family,3,english-french english-german english-spanish,transl,0.423,1.0
+A,L25H23,25,category,family,3,english-french english-german english-spanish,transl,0.289,1.0
+A,L25H27,25,category,family,2,english-french english-spanish,transl,0.376,1.0
+A,L25H30,25,category,single,1,english-french,transl,0.326,1.0
+A,L26H0,26,category,single,1,english-spanish,transl,0.208,0.0
+A,L26H1,26,category,single,1,landmark-country,facts,0.254,1.0
+A,L26H12,26,category,single,1,prev_item,seq,0.566,1.0
+A,L26H23,26,category,broad,2,synonym english-german,transl word,0.262,1.0
+A,L26H26,26,category,family,2,english-french english-spanish,transl,0.273,1.0
+A,L26H29,26,category,single,1,english-german,transl,0.22,0.0
+A,L27H0,27,category,single,1,antonym,word,0.215,1.0
+A,L27H15,27,category,broad,2,prev_item english-french,seq transl,0.33,1.0
+A,L27H29,27,category,single,1,next_item,seq,0.25,1.0
+A,L28H1,28,category,single,1,prev_item,seq,0.233,0.0
+A,L28H3,28,category,single,1,prev_item,seq,0.204,0.0
+A,L28H4,28,category,broad,2,next_item english-german,seq transl,0.375,1.0
+A,L28H7,28,category,single,1,next_item,seq,0.363,1.0
+A,L28H9,28,category,single,1,prev_item,seq,0.248,1.0
+A,L28H17,28,category,single,1,next_item,seq,0.202,1.0
+A,L28H22,28,category,single,1,english-german,transl,0.204,1.0
+A,L29H1,29,category,single,1,country-currency,facts,0.265,0.0
+A,L29H2,29,category,broad,2,product-company english-spanish,facts transl,0.263,0.5
+A,L29H6,29,category,single,1,english-german,transl,0.304,1.0
+A,L29H14,29,category,single,1,prev_item,seq,0.36,1.0
+A,L29H15,29,category,single,1,product-company,facts,0.258,1.0
+A,L29H19,29,category,single,1,park-country,facts,0.201,0.0
+A,L29H24,29,category,family,4,country-capital landmark-country park-country product-company,facts,0.493,1.0
+A,L29H25,29,category,single,1,english-spanish,transl,0.212,0.0
+A,L29H28,29,category,broad,2,next_item english-spanish,seq transl,0.35,0.5
+A,L30H4,30,category,single,1,english-spanish,transl,0.356,1.0
+A,L30H6,30,category,single,1,product-company,facts,0.224,0.0
+A,L30H7,30,category,single,1,english-spanish,transl,0.504,1.0
+A,L30H8,30,category,broad,2,country-currency english-german,facts transl,0.289,0.5
+A,L30H9,30,category,single,1,next_item,seq,0.318,1.0
+A,L30H10,30,category,single,1,next_item,seq,0.22,1.0
+A,L30H13,30,category,single,1,prev_item,seq,0.234,1.0
+A,L30H16,30,category,family,3,english-french english-german english-spanish,transl,0.308,1.0
+A,L30H25,30,category,broad,2,country-currency english-french,facts transl,0.261,1.0
+A,L31H1,31,category,single,1,country-currency,facts,0.309,1.0
+A,L31H5,31,category,single,1,next_item,seq,0.203,1.0
+A,L31H6,31,category,family,2,next_item prev_item,seq,0.316,1.0
+A,L31H7,31,category,single,1,next_item,seq,0.23,1.0
+A,L31H8,31,category,single,1,country-currency,facts,0.224,0.0
+A,L31H10,31,category,single,1,product-company,facts,0.216,0.0
+A,L31H11,31,category,family,2,landmark-country park-country,facts,0.316,1.0
+A,L31H12,31,category,family,2,country-currency product-company,facts,0.244,1.0
+A,L31H16,31,category,single,1,prev_item,seq,0.287,1.0
+A,L31H17,31,category,family,3,english-french english-german english-spanish,transl,0.317,1.0
+A,L31H21,31,category,single,1,english-french,transl,0.243,1.0
+A,L31H28,31,category,single,1,prev_item,seq,0.3,1.0
+A,L8H31,8,task_word,single,1,antonym,word,0.562,1.0
+A,L9H12,9,task_word,single,1,singular-plural,morph,0.482,1.0
+A,L9H19,9,task_word,single,1,antonym,word,0.56,1.0
+A,L10H5,10,task_word,single,1,english-french,transl,0.341,1.0
+A,L11H2,11,task_word,single,1,english-spanish,transl,0.338,1.0
+A,L11H4,11,task_word,family,2,english-german english-spanish,transl,0.349,1.0
+A,L11H16,11,task_word,single,1,english-french,transl,0.269,1.0
+A,L12H17,12,task_word,single,1,present-past,morph,0.303,1.0
+A,L12H22,12,task_word,single,1,english-spanish,transl,0.494,1.0
+A,L13H5,13,task_word,single,1,singular-plural,morph,0.204,0.0
+A,L13H11,13,task_word,family,3,english-french english-german english-spanish,transl,0.562,1.0
+A,L13H25,13,task_word,single,1,country-currency,facts,0.337,1.0
+A,L13H30,13,task_word,family,2,antonym synonym,word,0.31,1.0
+A,L14H14,14,task_word,single,1,present-past,morph,0.47,1.0
+A,L14H22,14,task_word,single,1,singular-plural,morph,0.364,1.0
+A,L15H6,15,task_word,single,1,present-past,morph,0.414,1.0
+A,L15H12,15,task_word,family,3,english-french english-german english-spanish,transl,0.27,1.0
+A,L15H15,15,task_word,single,1,present-past,morph,0.39,1.0
+A,L15H25,15,task_word,single,1,synonym,word,0.226,0.0
+A,L16H4,16,task_word,family,2,english-german english-spanish,transl,0.28,0.5
+A,L16H11,16,task_word,single,1,antonym,word,0.558,1.0
+A,L16H12,16,task_word,single,1,antonym,word,0.21,0.0
+A,L16H17,16,task_word,single,1,country-currency,facts,0.744,1.0
+A,L16H25,16,task_word,family,2,antonym synonym,word,0.315,0.5
+A,L17H1,17,task_word,single,1,landmark-country,facts,0.24,1.0
+A,L17H2,17,task_word,broad,3,synonym english-french english-german,transl word,0.485,1.0
+A,L17H4,17,task_word,single,1,antonym,word,0.502,1.0
+A,L17H13,17,task_word,single,1,english-french,transl,0.656,1.0
+A,L17H15,17,task_word,single,1,synonym,word,0.312,1.0
+A,L17H22,17,task_word,single,1,antonym,word,0.384,1.0
+A,L17H31,17,task_word,family,2,country-currency park-country,facts,0.302,0.5
+A,L18H0,18,task_word,broad,4,synonym country-currency english-german english-spanish,facts transl word,0.306,0.75
+A,L18H14,18,task_word,family,2,antonym synonym,word,0.359,1.0
+A,L19H7,19,task_word,single,1,english-french,transl,0.215,1.0
+A,L20H4,20,task_word,single,1,country-currency,facts,0.35,1.0
+A,L20H20,20,task_word,family,2,country-capital country-currency,facts,0.231,0.5
+A,L20H28,20,task_word,single,1,antonym,word,0.296,1.0
+A,L21H6,21,task_word,family,2,country-currency park-country,facts,0.297,0.5
+A,L21H19,21,task_word,single,1,present-past,morph,0.572,1.0
+A,L21H20,21,task_word,family,2,english-french english-spanish,transl,0.34,0.0
+A,L22H24,22,task_word,single,1,synonym,word,0.294,1.0
+A,L22H25,22,task_word,single,1,product-company,facts,0.265,1.0
+A,L25H11,25,task_word,single,1,english-french,transl,0.228,1.0
+A,L26H12,26,task_word,single,1,product-company,facts,0.252,0.0
+A,L26H20,26,task_word,family,2,country-currency park-country,facts,0.577,1.0
+A,L27H1,27,task_word,single,1,country-capital,facts,0.201,1.0
+A,L28H2,28,task_word,single,1,english-german,transl,0.208,1.0
+A,L28H11,28,task_word,family,2,country-currency park-country,facts,0.422,1.0
+A,L28H24,28,task_word,family,2,country-capital park-country,facts,0.332,1.0
+A,L29H25,29,task_word,single,1,singular-plural,morph,0.226,1.0
+A,L29H28,29,task_word,family,2,antonym synonym,word,0.779,1.0
+A,L29H30,29,task_word,single,1,synonym,word,0.276,1.0
+A,L31H26,31,task_word,single,1,antonym,word,0.224,1.0
+B,L0H4,0,category,family,2,park-country product-company,facts,0.239,1.0
+B,L0H16,0,category,single,1,landmark-country,facts,0.408,1.0
+B,L0H19,0,category,family,2,country-capital country-currency,facts,0.262,1.0
+B,L1H7,1,category,family,2,country-currency landmark-country,facts,0.294,1.0
+B,L1H15,1,category,single,1,english-french,transl,0.204,1.0
+B,L1H16,1,category,single,1,prev_item,seq,0.286,1.0
+B,L1H19,1,category,family,2,landmark-country park-country,facts,0.332,1.0
+B,L2H16,2,category,single,1,country-currency,facts,0.238,1.0
+B,L2H28,2,category,single,1,country-currency,facts,0.28,1.0
+B,L3H7,3,category,single,1,country-currency,facts,0.217,1.0
+B,L3H14,3,category,single,1,english-spanish,transl,0.268,1.0
+B,L3H25,3,category,family,2,country-capital country-currency,facts,0.258,1.0
+B,L4H10,4,category,family,3,country-capital country-currency park-country,facts,0.252,1.0
+B,L4H19,4,category,family,3,country-capital country-currency park-country,facts,0.335,1.0
+B,L4H21,4,category,single,1,country-currency,facts,0.22,1.0
+B,L5H6,5,category,family,4,country-capital country-currency park-country product-company,facts,0.282,1.0
+B,L5H22,5,category,broad,2,landmark-country next_item,facts seq,0.248,0.5
+B,L6H6,6,category,family,2,english-german english-spanish,transl,0.415,1.0
+B,L6H7,6,category,single,1,product-company,facts,0.234,1.0
+B,L6H13,6,category,family,2,park-country product-company,facts,0.313,1.0
+B,L6H16,6,category,single,1,english-german,transl,0.252,1.0
+B,L6H24,6,category,family,2,country-capital country-currency,facts,0.306,1.0
+B,L6H30,6,category,single,1,country-capital,facts,0.257,1.0
+B,L7H4,7,category,single,1,prev_item,seq,0.421,1.0
+B,L7H9,7,category,single,1,park-country,facts,0.358,1.0
+B,L7H10,7,category,family,3,country-capital country-currency park-country,facts,0.273,0.667
+B,L7H28,7,category,family,3,english-french english-german english-spanish,transl,0.329,1.0
+B,L8H2,8,category,single,1,english-german,transl,0.48,1.0
+B,L8H15,8,category,single,1,country-currency,facts,0.379,1.0
+B,L8H16,8,category,broad,2,singular-plural next_item,morph seq,0.314,1.0
+B,L8H19,8,category,single,1,next_item,seq,0.215,0.0
+B,L8H22,8,category,single,1,country-currency,facts,0.209,1.0
+B,L8H24,8,category,single,1,country-currency,facts,0.368,1.0
+B,L9H0,9,category,single,1,prev_item,seq,0.376,1.0
+B,L9H2,9,category,single,1,country-currency,facts,0.202,0.0
+B,L9H8,9,category,single,1,english-spanish,transl,0.324,1.0
+B,L9H17,9,category,single,1,next_item,seq,0.311,1.0
+B,L9H24,9,category,single,1,english-french,transl,0.25,1.0
+B,L10H0,10,category,broad,2,antonym next_item,seq word,0.297,1.0
+B,L10H3,10,category,single,1,next_item,seq,0.49,1.0
+B,L10H10,10,category,single,1,english-spanish,transl,0.39,1.0
+B,L10H15,10,category,single,1,next_item,seq,0.411,1.0
+B,L11H9,11,category,single,1,country-currency,facts,0.201,1.0
+B,L11H16,11,category,single,1,english-spanish,transl,0.203,0.0
+B,L11H17,11,category,single,1,product-company,facts,0.202,1.0
+B,L11H25,11,category,family,3,country-capital country-currency park-country,facts,0.43,1.0
+B,L11H26,11,category,broad,3,product-company english-french english-german,facts transl,0.249,0.667
+B,L11H27,11,category,single,1,english-french,transl,0.229,1.0
+B,L11H28,11,category,family,2,landmark-country park-country,facts,0.34,1.0
+B,L12H1,12,category,single,1,prev_item,seq,0.249,1.0
+B,L12H4,12,category,family,3,english-french english-german english-spanish,transl,0.246,0.667
+B,L12H9,12,category,single,1,synonym,word,0.32,1.0
+B,L12H13,12,category,family,2,next_item prev_item,seq,0.318,1.0
+B,L12H15,12,category,broad,2,landmark-country next_item,facts seq,0.277,1.0
+B,L12H16,12,category,single,1,english-german,transl,0.355,1.0
+B,L12H21,12,category,single,1,synonym,word,0.254,1.0
+B,L12H22,12,category,single,1,synonym,word,0.336,1.0
+B,L12H24,12,category,broad,2,country-currency english-german,facts transl,0.297,0.5
+B,L12H27,12,category,single,1,english-spanish,transl,0.378,1.0
+B,L12H29,12,category,broad,3,next_item english-german english-spanish,seq transl,0.395,1.0
+B,L13H0,13,category,single,1,english-german,transl,0.231,0.0
+B,L13H10,13,category,broad,3,country-capital country-currency prev_item,facts seq,0.316,1.0
+B,L13H12,13,category,family,3,english-french english-german english-spanish,transl,0.298,0.667
+B,L13H13,13,category,single,1,english-spanish,transl,0.226,0.0
+B,L13H14,13,category,family,3,english-french english-german english-spanish,transl,0.618,1.0
+B,L13H16,13,category,single,1,prev_item,seq,0.419,1.0
+B,L13H17,13,category,single,1,english-german,transl,0.284,1.0
+B,L13H21,13,category,broad,2,synonym prev_item,seq word,0.563,1.0
+B,L13H22,13,category,broad,3,synonym next_item prev_item,seq word,0.637,1.0
+B,L13H25,13,category,single,1,park-country,facts,0.284,1.0
+B,L13H29,13,category,broad,4,synonym english-french english-german english-spanish,transl word,0.284,1.0
+B,L13H30,13,category,single,1,prev_item,seq,0.223,0.0
+B,L13H31,13,category,family,2,english-french english-spanish,transl,0.455,1.0
+B,L14H0,14,category,family,3,english-french english-german english-spanish,transl,0.343,1.0
+B,L14H2,14,category,broad,2,prev_item english-german,seq transl,0.359,1.0
+B,L14H3,14,category,single,1,prev_item,seq,0.201,1.0
+B,L14H4,14,category,single,1,next_item,seq,0.323,1.0
+B,L14H5,14,category,single,1,prev_item,seq,0.656,1.0
+B,L14H10,14,category,family,2,english-french english-spanish,transl,0.427,1.0
+B,L14H12,14,category,single,1,synonym,word,0.293,1.0
+B,L14H13,14,category,single,1,prev_item,seq,0.604,1.0
+B,L14H14,14,category,single,1,next_item,seq,0.241,0.0
+B,L14H15,14,category,single,1,synonym,word,0.607,1.0
+B,L14H16,14,category,single,1,english-french,transl,0.43,1.0
+B,L14H22,14,category,family,3,english-french english-german english-spanish,transl,0.304,1.0
+B,L14H24,14,category,single,1,present-past,morph,0.222,0.0
+B,L14H27,14,category,broad,2,present-past prev_item,morph seq,0.298,1.0
+B,L15H8,15,category,single,1,prev_item,seq,0.317,1.0
+B,L15H12,15,category,single,1,english-german,transl,0.202,0.0
+B,L15H14,15,category,single,1,prev_item,seq,0.442,1.0
+B,L15H16,15,category,single,1,landmark-country,facts,0.282,1.0
+B,L15H18,15,category,single,1,english-spanish,transl,0.394,1.0
+B,L15H19,15,category,single,1,next_item,seq,0.228,0.0
+B,L15H21,15,category,single,1,prev_item,seq,0.249,0.0
+B,L15H23,15,category,single,1,english-german,transl,0.286,1.0
+B,L15H24,15,category,family,2,next_item prev_item,seq,0.413,1.0
+B,L15H26,15,category,single,1,next_item,seq,0.275,1.0
+B,L15H27,15,category,single,1,next_item,seq,0.319,1.0
+B,L15H28,15,category,broad,4,product-company english-french english-german english-spanish,facts transl,0.397,0.75
+B,L15H29,15,category,single,1,landmark-country,facts,0.336,1.0
+B,L15H31,15,category,single,1,prev_item,seq,0.393,1.0
+B,L16H3,16,category,family,3,landmark-country park-country product-company,facts,0.267,1.0
+B,L16H8,16,category,single,1,present-past,morph,0.804,1.0
+B,L16H17,16,category,single,1,next_item,seq,0.229,1.0
+B,L16H19,16,category,single,1,present-past,morph,0.21,0.0
+B,L16H20,16,category,family,2,english-german english-spanish,transl,0.236,0.5
+B,L16H23,16,category,single,1,product-company,facts,0.248,1.0
+B,L16H26,16,category,single,1,english-spanish,transl,0.21,0.0
+B,L17H0,17,category,single,1,prev_item,seq,0.201,1.0
+B,L17H2,17,category,single,1,english-german,transl,0.272,1.0
+B,L17H3,17,category,family,2,next_item prev_item,seq,0.36,1.0
+B,L17H4,17,category,family,2,next_item prev_item,seq,0.385,1.0
+B,L17H5,17,category,broad,3,next_item english-french english-spanish,seq transl,0.293,1.0
+B,L17H7,17,category,single,1,next_item,seq,0.267,1.0
+B,L17H11,17,category,single,1,next_item,seq,0.243,1.0
+B,L17H12,17,category,single,1,english-french,transl,0.268,1.0
+B,L17H15,17,category,family,2,next_item prev_item,seq,0.373,1.0
+B,L17H18,17,category,single,1,english-german,transl,0.23,0.0
+B,L17H21,17,category,single,1,prev_item,seq,0.378,1.0
+B,L17H23,17,category,single,1,singular-plural,morph,0.211,0.0
+B,L17H26,17,category,single,1,prev_item,seq,0.376,1.0
+B,L18H1,18,category,single,1,next_item,seq,0.22,1.0
+B,L18H3,18,category,single,1,prev_item,seq,0.202,1.0
+B,L18H5,18,category,single,1,next_item,seq,0.241,1.0
+B,L18H6,18,category,single,1,english-german,transl,0.204,1.0
+B,L18H8,18,category,family,2,english-german english-spanish,transl,0.228,0.0
+B,L18H14,18,category,family,2,next_item prev_item,seq,0.515,1.0
+B,L18H15,18,category,single,1,prev_item,seq,0.21,1.0
+B,L18H18,18,category,single,1,english-german,transl,0.274,1.0
+B,L18H21,18,category,family,2,country-capital country-currency,facts,0.262,1.0
+B,L18H22,18,category,single,1,present-past,morph,0.232,0.0
+B,L18H23,18,category,family,2,landmark-country park-country,facts,0.262,1.0
+B,L19H0,19,category,single,1,landmark-country,facts,0.214,1.0
+B,L19H2,19,category,single,1,park-country,facts,0.21,1.0
+B,L19H3,19,category,single,1,prev_item,seq,0.277,1.0
+B,L19H5,19,category,single,1,english-spanish,transl,0.325,1.0
+B,L19H6,19,category,family,2,next_item prev_item,seq,0.411,1.0
+B,L19H7,19,category,broad,2,prev_item english-french,seq transl,0.312,1.0
+B,L19H9,19,category,single,1,prev_item,seq,0.202,1.0
+B,L19H13,19,category,single,1,landmark-country,facts,0.231,1.0
+B,L19H16,19,category,single,1,english-german,transl,0.233,0.0
+B,L19H18,19,category,single,1,english-french,transl,0.214,1.0
+B,L19H19,19,category,family,2,landmark-country park-country,facts,0.411,1.0
+B,L19H21,19,category,single,1,landmark-country,facts,0.214,0.0
+B,L19H25,19,category,single,1,next_item,seq,0.222,0.0
+B,L20H1,20,category,single,1,english-french,transl,0.203,0.0
+B,L20H5,20,category,single,1,english-spanish,transl,0.384,1.0
+B,L20H8,20,category,broad,2,prev_item english-french,seq transl,0.31,0.5
+B,L20H9,20,category,single,1,next_item,seq,0.356,1.0
+B,L20H11,20,category,family,2,next_item prev_item,seq,0.55,1.0
+B,L20H13,20,category,single,1,singular-plural,morph,0.394,1.0
+B,L20H14,20,category,single,1,english-german,transl,0.248,1.0
+B,L20H20,20,category,single,1,prev_item,seq,0.633,1.0
+B,L20H22,20,category,single,1,country-capital,facts,0.217,1.0
+B,L20H23,20,category,single,1,english-german,transl,0.247,1.0
+B,L20H25,20,category,family,2,landmark-country park-country,facts,0.297,1.0
+B,L20H28,20,category,single,1,next_item,seq,0.266,1.0
+B,L20H29,20,category,broad,4,country-capital country-currency product-company prev_item,facts seq,0.49,1.0
+B,L20H31,20,category,broad,2,landmark-country next_item,facts seq,0.328,1.0
+B,L21H1,21,category,single,1,next_item,seq,0.268,0.0
+B,L21H2,21,category,single,1,english-german,transl,0.414,1.0
+B,L21H5,21,category,single,1,english-german,transl,0.246,0.0
+B,L21H10,21,category,single,1,next_item,seq,0.419,1.0
+B,L21H15,21,category,single,1,prev_item,seq,0.379,1.0
+B,L21H18,21,category,single,1,english-french,transl,0.232,1.0
+B,L21H20,21,category,single,1,prev_item,seq,0.204,0.0
+B,L21H24,21,category,family,2,landmark-country product-company,facts,0.289,1.0
+B,L22H2,22,category,single,1,prev_item,seq,0.559,1.0
+B,L22H17,22,category,broad,2,synonym prev_item,seq word,0.401,1.0
+B,L22H19,22,category,single,1,singular-plural,morph,0.209,0.0
+B,L22H25,22,category,single,1,prev_item,seq,0.311,1.0
+B,L22H27,22,category,family,2,next_item prev_item,seq,0.569,1.0
+B,L22H31,22,category,single,1,english-german,transl,0.3,1.0
+B,L23H1,23,category,family,2,next_item prev_item,seq,0.304,0.5
+B,L23H5,23,category,single,1,prev_item,seq,0.365,1.0
+B,L23H8,23,category,family,2,next_item prev_item,seq,0.495,1.0
+B,L23H11,23,category,single,1,english-french,transl,0.284,1.0
+B,L23H12,23,category,single,1,english-german,transl,0.302,1.0
+B,L23H16,23,category,broad,4,country-capital landmark-country park-country prev_item,facts seq,0.366,1.0
+B,L23H31,23,category,single,1,english-german,transl,0.218,0.0
+B,L24H1,24,category,single,1,prev_item,seq,0.2,1.0
+B,L24H3,24,category,single,1,present-past,morph,0.229,1.0
+B,L24H4,24,category,broad,2,synonym english-german,transl word,0.258,1.0
+B,L24H10,24,category,single,1,next_item,seq,0.712,1.0
+B,L24H16,24,category,single,1,english-german,transl,0.34,1.0
+B,L24H25,24,category,single,1,synonym,word,0.414,1.0
+B,L24H27,24,category,single,1,country-currency,facts,0.255,1.0
+B,L25H5,25,category,single,1,english-french,transl,0.212,0.0
+B,L25H10,25,category,single,1,synonym,word,0.32,1.0
+B,L25H13,25,category,single,1,prev_item,seq,0.511,1.0
+B,L25H20,25,category,single,1,country-currency,facts,0.891,1.0
+B,L25H21,25,category,family,3,english-french english-german english-spanish,transl,0.433,1.0
+B,L25H23,25,category,family,3,english-french english-german english-spanish,transl,0.294,1.0
+B,L25H27,25,category,family,2,english-french english-spanish,transl,0.416,1.0
+B,L25H30,25,category,single,1,english-french,transl,0.322,1.0
+B,L26H1,26,category,single,1,landmark-country,facts,0.204,1.0
+B,L26H7,26,category,single,1,next_item,seq,0.267,0.0
+B,L26H12,26,category,single,1,prev_item,seq,0.546,1.0
+B,L26H22,26,category,single,1,synonym,word,0.321,0.0
+B,L26H23,26,category,broad,2,synonym english-german,transl word,0.256,1.0
+B,L26H25,26,category,single,1,next_item,seq,0.233,0.0
+B,L26H26,26,category,family,2,english-french english-spanish,transl,0.295,1.0
+B,L27H0,27,category,single,1,antonym,word,0.349,1.0
+B,L27H7,27,category,single,1,next_item,seq,0.204,0.0
+B,L27H15,27,category,broad,2,prev_item english-french,seq transl,0.319,1.0
+B,L27H24,27,category,single,1,prev_item,seq,0.212,0.0
+B,L27H29,27,category,single,1,next_item,seq,0.245,1.0
+B,L28H4,28,category,broad,2,next_item english-german,seq transl,0.432,1.0
+B,L28H7,28,category,single,1,next_item,seq,0.393,1.0
+B,L28H9,28,category,single,1,prev_item,seq,0.248,1.0
+B,L28H14,28,category,single,1,next_item,seq,0.237,0.0
+B,L28H17,28,category,single,1,next_item,seq,0.223,1.0
+B,L28H22,28,category,single,1,english-german,transl,0.206,1.0
+B,L29H2,29,category,single,1,product-company,facts,0.398,1.0
+B,L29H6,29,category,single,1,english-german,transl,0.35,1.0
+B,L29H14,29,category,single,1,prev_item,seq,0.565,1.0
+B,L29H15,29,category,single,1,product-company,facts,0.287,1.0
+B,L29H17,29,category,single,1,english-french,transl,0.204,0.0
+B,L29H24,29,category,family,4,country-capital landmark-country park-country product-company,facts,0.449,1.0
+B,L29H25,29,category,single,1,english-german,transl,0.208,0.0
+B,L29H28,29,category,single,1,next_item,seq,0.45,1.0
+B,L29H31,29,category,single,1,next_item,seq,0.213,0.0
+B,L30H2,30,category,single,1,prev_item,seq,0.222,0.0
+B,L30H4,30,category,single,1,english-spanish,transl,0.294,1.0
+B,L30H7,30,category,single,1,english-spanish,transl,0.48,1.0
+B,L30H8,30,category,single,1,country-currency,facts,0.334,1.0
+B,L30H9,30,category,single,1,next_item,seq,0.284,1.0
+B,L30H10,30,category,single,1,next_item,seq,0.277,1.0
+B,L30H13,30,category,single,1,prev_item,seq,0.273,1.0
+B,L30H16,30,category,family,3,english-french english-german english-spanish,transl,0.287,1.0
+B,L30H25,30,category,broad,2,country-currency english-french,facts transl,0.27,1.0
+B,L30H28,30,category,single,1,english-french,transl,0.204,0.0
+B,L31H1,31,category,family,2,country-capital country-currency,facts,0.278,0.5
+B,L31H2,31,category,single,1,prev_item,seq,0.219,0.0
+B,L31H5,31,category,single,1,next_item,seq,0.209,1.0
+B,L31H6,31,category,family,2,next_item prev_item,seq,0.349,1.0
+B,L31H7,31,category,single,1,next_item,seq,0.245,1.0
+B,L31H11,31,category,family,2,landmark-country park-country,facts,0.375,1.0
+B,L31H12,31,category,family,2,country-currency product-company,facts,0.213,1.0
+B,L31H16,31,category,single,1,prev_item,seq,0.29,1.0
+B,L31H17,31,category,family,3,english-french english-german english-spanish,transl,0.332,1.0
+B,L31H21,31,category,single,1,english-french,transl,0.204,1.0
+B,L31H28,31,category,single,1,prev_item,seq,0.326,1.0
+B,L8H31,8,task_word,single,1,antonym,word,0.549,1.0
+B,L9H12,9,task_word,single,1,singular-plural,morph,0.471,1.0
+B,L9H19,9,task_word,single,1,antonym,word,0.58,1.0
+B,L10H3,10,task_word,single,1,present-past,morph,0.228,0.0
+B,L10H5,10,task_word,single,1,english-french,transl,0.34,1.0
+B,L11H2,11,task_word,single,1,english-spanish,transl,0.304,1.0
+B,L11H4,11,task_word,family,3,english-french english-german english-spanish,transl,0.449,0.667
+B,L11H16,11,task_word,single,1,english-french,transl,0.298,1.0
+B,L12H17,12,task_word,single,1,present-past,morph,0.294,1.0
+B,L12H22,12,task_word,single,1,english-spanish,transl,0.492,1.0
+B,L13H11,13,task_word,family,3,english-french english-german english-spanish,transl,0.616,1.0
+B,L13H16,13,task_word,single,1,singular-plural,morph,0.254,0.0
+B,L13H25,13,task_word,single,1,country-currency,facts,0.358,1.0
+B,L13H30,13,task_word,family,2,antonym synonym,word,0.334,1.0
+B,L14H0,14,task_word,single,1,present-past,morph,0.502,0.0
+B,L14H1,14,task_word,single,1,park-country,facts,0.256,0.0
+B,L14H12,14,task_word,single,1,antonym,word,0.446,0.0
+B,L14H14,14,task_word,family,2,singular-plural present-past,morph,0.347,0.5
+B,L14H22,14,task_word,single,1,singular-plural,morph,0.434,1.0
+B,L14H28,14,task_word,single,1,present-past,morph,0.2,0.0
+B,L15H6,15,task_word,single,1,present-past,morph,0.394,1.0
+B,L15H12,15,task_word,family,3,english-french english-german english-spanish,transl,0.301,1.0
+B,L15H15,15,task_word,single,1,present-past,morph,0.41,1.0
+B,L15H20,15,task_word,single,1,singular-plural,morph,0.262,0.0
+B,L16H2,16,task_word,single,1,landmark-country,facts,0.24,0.0
+B,L16H4,16,task_word,single,1,english-german,transl,0.226,1.0
+B,L16H11,16,task_word,single,1,antonym,word,0.63,1.0
+B,L16H17,16,task_word,single,1,country-currency,facts,0.758,1.0
+B,L16H25,16,task_word,single,1,antonym,word,0.372,1.0
+B,L17H1,17,task_word,single,1,landmark-country,facts,0.264,1.0
+B,L17H2,17,task_word,broad,3,synonym english-french english-german,transl word,0.477,1.0
+B,L17H4,17,task_word,single,1,antonym,word,0.462,1.0
+B,L17H9,17,task_word,family,2,english-french english-spanish,transl,0.245,0.0
+B,L17H13,17,task_word,single,1,english-french,transl,0.648,1.0
+B,L17H15,17,task_word,single,1,synonym,word,0.304,1.0
+B,L17H22,17,task_word,single,1,antonym,word,0.396,1.0
+B,L17H31,17,task_word,single,1,park-country,facts,0.344,1.0
+B,L18H0,18,task_word,broad,4,country-currency english-french english-german english-spanish,facts transl,0.287,0.75
+B,L18H6,18,task_word,single,1,singular-plural,morph,0.38,0.0
+B,L18H14,18,task_word,family,2,antonym synonym,word,0.409,1.0
+B,L19H7,19,task_word,single,1,english-french,transl,0.288,1.0
+B,L20H4,20,task_word,single,1,country-currency,facts,0.322,1.0
+B,L20H11,20,task_word,single,1,country-currency,facts,0.298,0.0
+B,L20H20,20,task_word,single,1,country-capital,facts,0.256,1.0
+B,L20H28,20,task_word,single,1,antonym,word,0.32,1.0
+B,L21H6,21,task_word,single,1,park-country,facts,0.37,1.0
+B,L21H19,21,task_word,single,1,present-past,morph,0.57,1.0
+B,L22H16,22,task_word,single,1,english-spanish,transl,0.242,0.0
+B,L22H24,22,task_word,single,1,synonym,word,0.324,1.0
+B,L22H25,22,task_word,family,2,country-capital product-company,facts,0.472,0.5
+B,L22H26,22,task_word,single,1,landmark-country,facts,0.676,0.0
+B,L25H11,25,task_word,single,1,english-french,transl,0.236,1.0
+B,L26H20,26,task_word,family,2,country-currency park-country,facts,0.566,1.0
+B,L27H1,27,task_word,single,1,country-capital,facts,0.201,1.0
+B,L28H2,28,task_word,single,1,english-german,transl,0.332,1.0
+B,L28H11,28,task_word,family,2,country-currency park-country,facts,0.389,1.0
+B,L28H24,28,task_word,family,2,country-capital park-country,facts,0.304,1.0
+B,L29H25,29,task_word,single,1,singular-plural,morph,0.244,1.0
+B,L29H28,29,task_word,family,2,antonym synonym,word,0.804,1.0
+B,L29H30,29,task_word,single,1,synonym,word,0.246,1.0
+B,L29H31,29,task_word,single,1,synonym,word,0.212,0.0
+B,L31H26,31,task_word,single,1,antonym,word,0.22,1.0

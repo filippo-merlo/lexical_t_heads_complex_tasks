@@ -1,0 +1,606 @@
+{
+ "tau": 0.3,
+ "halves": {
+  "A": {
+   "roles": {
+    "answer": {
+     "heads": 57,
+     "constant": 0,
+     "broad": 8,
+     "family": 18,
+     "single": 31,
+     "measurable_tasks": 14,
+     "role_task_pairs": 104,
+     "held_on_other_half": 0.837
+    },
+    "query": {
+     "heads": 87,
+     "constant": 0,
+     "broad": 36,
+     "family": 21,
+     "single": 30,
+     "measurable_tasks": 14,
+     "role_task_pairs": 273,
+     "held_on_other_half": 0.912
+    },
+    "answer_letter": {
+     "heads": 10,
+     "constant": 2,
+     "broad": 3,
+     "family": 0,
+     "single": 5,
+     "measurable_tasks": 12,
+     "role_task_pairs": 52,
+     "held_on_other_half": 0.962
+    },
+    "query_letter": {
+     "heads": 20,
+     "constant": 6,
+     "broad": 6,
+     "family": 1,
+     "single": 7,
+     "measurable_tasks": 12,
+     "role_task_pairs": 113,
+     "held_on_other_half": 0.903
+    },
+    "category": {
+     "heads": 264,
+     "constant": 1,
+     "broad": 80,
+     "family": 60,
+     "single": 123,
+     "measurable_tasks": 14,
+     "role_task_pairs": 575,
+     "held_on_other_half": 0.911
+    },
+    "task_word": {
+     "heads": 264,
+     "constant": 1,
+     "broad": 121,
+     "family": 68,
+     "single": 74,
+     "measurable_tasks": 14,
+     "role_task_pairs": 834,
+     "held_on_other_half": 0.966
+    }
+   },
+   "heads_with_a_role": 419,
+   "one_primary_role": 262,
+   "several_primary_roles": 157,
+   "of_which_item_and_task_roles": 69,
+   "score_correlation_active": {
+    "answer": 0.943,
+    "query": 0.879,
+    "answer_letter": 0.929,
+    "query_letter": 0.929,
+    "category": 0.967,
+    "task_word": 0.913
+   },
+   "heads_per_task": {
+    "answer": {
+     "antonym": 6,
+     "synonym": 3,
+     "singular-plural": 14,
+     "present-past": 11,
+     "country-capital": 1,
+     "country-currency": 2,
+     "landmark-country": 19,
+     "park-country": 18,
+     "product-company": 15,
+     "next_item": 7,
+     "prev_item": 8,
+     "english-french": 0,
+     "english-german": 0,
+     "english-spanish": 0
+    },
+    "query": {
+     "antonym": 22,
+     "synonym": 25,
+     "singular-plural": 27,
+     "present-past": 15,
+     "country-capital": 20,
+     "country-currency": 20,
+     "landmark-country": 0,
+     "park-country": 0,
+     "product-company": 4,
+     "next_item": 24,
+     "prev_item": 22,
+     "english-french": 29,
+     "english-german": 31,
+     "english-spanish": 34
+    },
+    "answer_letter": {
+     "antonym": 2,
+     "synonym": 0,
+     "singular-plural": 0,
+     "present-past": 0,
+     "country-capital": 5,
+     "country-currency": 5,
+     "landmark-country": 5,
+     "park-country": 10,
+     "product-company": 5,
+     "next_item": 5,
+     "prev_item": 4,
+     "english-french": 3,
+     "english-german": 4,
+     "english-spanish": 4
+    },
+    "query_letter": {
+     "antonym": 9,
+     "synonym": 8,
+     "singular-plural": 0,
+     "present-past": 0,
+     "country-capital": 7,
+     "country-currency": 8,
+     "landmark-country": 12,
+     "park-country": 11,
+     "product-company": 8,
+     "next_item": 10,
+     "prev_item": 19,
+     "english-french": 8,
+     "english-german": 7,
+     "english-spanish": 6
+    },
+    "category": {
+     "antonym": 54,
+     "synonym": 37,
+     "singular-plural": 19,
+     "present-past": 25,
+     "country-capital": 30,
+     "country-currency": 38,
+     "landmark-country": 42,
+     "park-country": 56,
+     "product-company": 17,
+     "next_item": 64,
+     "prev_item": 71,
+     "english-french": 42,
+     "english-german": 36,
+     "english-spanish": 44
+    },
+    "task_word": {
+     "antonym": 39,
+     "synonym": 46,
+     "singular-plural": 62,
+     "present-past": 48,
+     "country-capital": 61,
+     "country-currency": 68,
+     "landmark-country": 100,
+     "park-country": 108,
+     "product-company": 60,
+     "next_item": 71,
+     "prev_item": 82,
+     "english-french": 29,
+     "english-german": 20,
+     "english-spanish": 40
+    }
+   },
+   "max_heads_in_a_task": {
+    "answer": 19,
+    "query": 34,
+    "answer_letter": 10,
+    "query_letter": 19,
+    "category": 71,
+    "task_word": 108
+   },
+   "constant_heads": {
+    "answer": [],
+    "query": [],
+    "answer_letter": [
+     "L30H24",
+     "L30H26"
+    ],
+    "query_letter": [
+     "L22H14",
+     "L22H15",
+     "L24H24",
+     "L29H21",
+     "L30H15",
+     "L31H13"
+    ],
+    "category": [
+     "L31H6"
+    ],
+    "task_word": [
+     "L14H13"
+    ]
+   },
+   "task_level_in_12_of_14": {
+    "L14H13": 13,
+    "L31H6": 13,
+    "L15H27": 12,
+    "L18H14": 12,
+    "L29H28": 12
+   },
+   "item_level_in_12_of_14": {
+    "L31H1": 13,
+    "L31H3": 13,
+    "L22H14": 12,
+    "L22H15": 12,
+    "L24H24": 12,
+    "L29H21": 12,
+    "L31H13": 12
+   },
+   "any_role_in_14": 4,
+   "any_role_in_12_or_more": 21,
+   "heads_by_tasks_with_a_role": {
+    "1": 110,
+    "2": 86,
+    "3": 61,
+    "4": 32,
+    "5": 29,
+    "6": 16,
+    "7": 16,
+    "8": 16,
+    "9": 9,
+    "10": 11,
+    "11": 12,
+    "12": 11,
+    "13": 6,
+    "14": 4
+   },
+   "heads_with_an_item_level_role": 118,
+   "heads_with_a_task_level_role": 390,
+   "heads_with_item_and_task_roles": 89,
+   "of_which_both_in_one_task": 55,
+   "layers": {
+    "answer": {
+     "heads": 57,
+     "median": 22.0,
+     "q25": 18.0,
+     "q75": 29.0
+    },
+    "query": {
+     "heads": 87,
+     "median": 21.0,
+     "q25": 17.5,
+     "q75": 27.5
+    },
+    "answer_letter": {
+     "heads": 10,
+     "median": 30.0,
+     "q25": 10.25,
+     "q75": 30.75
+    },
+    "query_letter": {
+     "heads": 20,
+     "median": 22.0,
+     "q25": 17.75,
+     "q75": 29.0
+    },
+    "category": {
+     "heads": 264,
+     "median": 19.0,
+     "q25": 14.0,
+     "q75": 25.0
+    },
+    "task_word": {
+     "heads": 264,
+     "median": 19.0,
+     "q25": 15.0,
+     "q75": 24.0
+    }
+   },
+   "role_combinations_of_multi_role_heads": {
+    "category task_word": 84,
+    "query task_word": 21,
+    "category query task_word": 15,
+    "answer category query task_word": 7,
+    "answer query task_word": 7,
+    "answer task_word": 5,
+    "category query": 5,
+    "answer query": 3
+   },
+   "multi_role_heads_with_one_role_per_family": 73,
+   "same_reading_on_all_pairs": {
+    "L0H28": 0.998,
+    "L0H29": 1.0,
+    "L0H31": 1.0,
+    "L2H12": 0.989,
+    "L2H21": 0.987,
+    "L3H4": 0.997
+   }
+  },
+  "B": {
+   "roles": {
+    "answer": {
+     "heads": 62,
+     "constant": 0,
+     "broad": 6,
+     "family": 22,
+     "single": 34,
+     "measurable_tasks": 14,
+     "role_task_pairs": 107,
+     "held_on_other_half": 0.813
+    },
+    "query": {
+     "heads": 91,
+     "constant": 0,
+     "broad": 35,
+     "family": 27,
+     "single": 29,
+     "measurable_tasks": 14,
+     "role_task_pairs": 283,
+     "held_on_other_half": 0.88
+    },
+    "answer_letter": {
+     "heads": 10,
+     "constant": 2,
+     "broad": 3,
+     "family": 0,
+     "single": 5,
+     "measurable_tasks": 12,
+     "role_task_pairs": 52,
+     "held_on_other_half": 0.962
+    },
+    "query_letter": {
+     "heads": 15,
+     "constant": 6,
+     "broad": 4,
+     "family": 1,
+     "single": 4,
+     "measurable_tasks": 12,
+     "role_task_pairs": 108,
+     "held_on_other_half": 0.944
+    },
+    "category": {
+     "heads": 271,
+     "constant": 0,
+     "broad": 87,
+     "family": 52,
+     "single": 132,
+     "measurable_tasks": 14,
+     "role_task_pairs": 587,
+     "held_on_other_half": 0.893
+    },
+    "task_word": {
+     "heads": 272,
+     "constant": 2,
+     "broad": 126,
+     "family": 66,
+     "single": 78,
+     "measurable_tasks": 14,
+     "role_task_pairs": 870,
+     "held_on_other_half": 0.926
+    }
+   },
+   "heads_with_a_role": 422,
+   "one_primary_role": 256,
+   "several_primary_roles": 166,
+   "of_which_item_and_task_roles": 76,
+   "score_correlation_active": {
+    "answer": 0.943,
+    "query": 0.879,
+    "answer_letter": 0.929,
+    "query_letter": 0.929,
+    "category": 0.967,
+    "task_word": 0.913
+   },
+   "heads_per_task": {
+    "answer": {
+     "antonym": 6,
+     "synonym": 7,
+     "singular-plural": 9,
+     "present-past": 12,
+     "country-capital": 0,
+     "country-currency": 1,
+     "landmark-country": 17,
+     "park-country": 17,
+     "product-company": 16,
+     "next_item": 15,
+     "prev_item": 6,
+     "english-french": 0,
+     "english-german": 0,
+     "english-spanish": 1
+    },
+    "query": {
+     "antonym": 23,
+     "synonym": 26,
+     "singular-plural": 27,
+     "present-past": 17,
+     "country-capital": 19,
+     "country-currency": 17,
+     "landmark-country": 0,
+     "park-country": 0,
+     "product-company": 5,
+     "next_item": 27,
+     "prev_item": 24,
+     "english-french": 32,
+     "english-german": 30,
+     "english-spanish": 36
+    },
+    "answer_letter": {
+     "antonym": 2,
+     "synonym": 1,
+     "singular-plural": 0,
+     "present-past": 0,
+     "country-capital": 5,
+     "country-currency": 5,
+     "landmark-country": 5,
+     "park-country": 10,
+     "product-company": 4,
+     "next_item": 4,
+     "prev_item": 5,
+     "english-french": 3,
+     "english-german": 4,
+     "english-spanish": 4
+    },
+    "query_letter": {
+     "antonym": 9,
+     "synonym": 8,
+     "singular-plural": 0,
+     "present-past": 0,
+     "country-capital": 7,
+     "country-currency": 9,
+     "landmark-country": 11,
+     "park-country": 12,
+     "product-company": 7,
+     "next_item": 8,
+     "prev_item": 12,
+     "english-french": 9,
+     "english-german": 8,
+     "english-spanish": 8
+    },
+    "category": {
+     "antonym": 64,
+     "synonym": 41,
+     "singular-plural": 20,
+     "present-past": 28,
+     "country-capital": 29,
+     "country-currency": 39,
+     "landmark-country": 40,
+     "park-country": 60,
+     "product-company": 18,
+     "next_item": 62,
+     "prev_item": 63,
+     "english-french": 42,
+     "english-german": 35,
+     "english-spanish": 46
+    },
+    "task_word": {
+     "antonym": 45,
+     "synonym": 52,
+     "singular-plural": 64,
+     "present-past": 50,
+     "country-capital": 65,
+     "country-currency": 65,
+     "landmark-country": 102,
+     "park-country": 110,
+     "product-company": 62,
+     "next_item": 73,
+     "prev_item": 90,
+     "english-french": 29,
+     "english-german": 20,
+     "english-spanish": 43
+    }
+   },
+   "max_heads_in_a_task": {
+    "answer": 17,
+    "query": 36,
+    "answer_letter": 10,
+    "query_letter": 12,
+    "category": 64,
+    "task_word": 110
+   },
+   "constant_heads": {
+    "answer": [],
+    "query": [],
+    "answer_letter": [
+     "L30H24",
+     "L30H26"
+    ],
+    "query_letter": [
+     "L22H14",
+     "L22H15",
+     "L24H24",
+     "L29H21",
+     "L30H15",
+     "L31H13"
+    ],
+    "category": [],
+    "task_word": [
+     "L14H13",
+     "L15H27"
+    ]
+   },
+   "task_level_in_12_of_14": {
+    "L14H13": 14,
+    "L15H27": 14,
+    "L18H14": 12,
+    "L29H28": 12,
+    "L31H6": 12
+   },
+   "item_level_in_12_of_14": {
+    "L31H1": 13,
+    "L31H13": 13,
+    "L16H3": 12,
+    "L22H14": 12,
+    "L22H15": 12,
+    "L24H24": 12,
+    "L29H21": 12,
+    "L30H15": 12,
+    "L30H26": 12,
+    "L31H3": 12
+   },
+   "any_role_in_14": 6,
+   "any_role_in_12_or_more": 25,
+   "heads_by_tasks_with_a_role": {
+    "1": 110,
+    "2": 89,
+    "3": 56,
+    "4": 35,
+    "5": 24,
+    "6": 20,
+    "7": 18,
+    "8": 17,
+    "9": 6,
+    "10": 13,
+    "11": 9,
+    "12": 13,
+    "13": 6,
+    "14": 6
+   },
+   "heads_with_an_item_level_role": 121,
+   "heads_with_a_task_level_role": 395,
+   "heads_with_item_and_task_roles": 94,
+   "of_which_both_in_one_task": 58,
+   "layers": {
+    "answer": {
+     "heads": 62,
+     "median": 22.0,
+     "q25": 18.0,
+     "q75": 28.0
+    },
+    "query": {
+     "heads": 91,
+     "median": 21.0,
+     "q25": 17.5,
+     "q75": 27.0
+    },
+    "answer_letter": {
+     "heads": 10,
+     "median": 30.0,
+     "q25": 10.25,
+     "q75": 30.75
+    },
+    "query_letter": {
+     "heads": 15,
+     "median": 24.0,
+     "q25": 20.0,
+     "q75": 29.5
+    },
+    "category": {
+     "heads": 271,
+     "median": 19.0,
+     "q25": 14.0,
+     "q75": 25.0
+    },
+    "task_word": {
+     "heads": 272,
+     "median": 19.5,
+     "q25": 15.0,
+     "q75": 24.0
+    }
+   },
+   "role_combinations_of_multi_role_heads": {
+    "category task_word": 85,
+    "query task_word": 27,
+    "category query task_word": 14,
+    "category query": 8,
+    "answer category task_word": 7,
+    "answer query task_word": 6,
+    "answer category query task_word": 4,
+    "answer task_word": 4
+   },
+   "multi_role_heads_with_one_role_per_family": 83,
+   "same_reading_on_all_pairs": {
+    "L0H24": 0.981,
+    "L0H28": 0.998,
+    "L0H29": 1.0,
+    "L0H31": 1.0,
+    "L2H12": 0.99,
+    "L2H21": 0.99,
+    "L3H4": 0.998
+   }
+  }
+ }
+}

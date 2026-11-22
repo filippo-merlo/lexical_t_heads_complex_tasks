@@ -1,0 +1,15 @@
+\begin{table}[tbp]
+\centering\small
+\begin{tabular}{@{}l rrrrrr@{}}
+\toprule
+ & answer & query & ans.\ letter & qry.\ letter & category & task word \\
+\midrule
+roles, specific sets (as used) & 19 & 36 & 10 & 19 & 69 & 110 \\
+control, specific sets & 0 & 0 & 0 & 0 & 37 & 11 \\
+control, shared sets (first pilot) & 0 & 0 & 0 & 0 & 61 & 37 \\
+control, specific sets, $\tau=0.5$ & 0 & 0 & 0 & 0 & 15 & 6 \\
+\bottomrule
+\end{tabular}
+\caption{Failure control: the largest number of heads that pass $\tau$ (0.3 unless stated) in any one task and half. In the control every prompt is scored against another item of its half and every task against the category and word sets of a task of another family (Sec.~\ref{sec:checks}); the gate for stage~2 is at most 10. The first row gives the same count for the real scores. Sources: \texttt{results/roles/readings/summary*.json}, field \texttt{max\_heads\_in\_a\_task}.}
+\label{tab:control}
+\end{table}

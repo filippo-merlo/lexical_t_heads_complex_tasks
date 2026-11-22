@@ -1,0 +1,780 @@
+half,head,layer,role,class,n_tasks,tasks,families,mean_score,held_other_half
+A,L14H24,14,answer,family,2,landmark-country park-country,facts,0.849,1.0
+A,L16H8,16,answer,family,3,landmark-country park-country product-company,facts,0.747,1.0
+A,L16H9,16,answer,family,3,landmark-country park-country product-company,facts,0.666,1.0
+A,L16H18,16,answer,family,2,landmark-country park-country,facts,0.743,0.5
+A,L17H15,17,answer,family,2,landmark-country park-country,facts,0.755,1.0
+A,L17H23,17,answer,family,2,landmark-country park-country,facts,0.886,1.0
+A,L18H14,18,answer,family,3,landmark-country park-country product-company,facts,0.695,1.0
+A,L18H19,18,answer,single,1,present-past,morph,0.515,1.0
+A,L19H25,19,answer,family,2,landmark-country park-country,facts,0.891,1.0
+A,L19H27,19,answer,family,2,landmark-country park-country,facts,0.636,1.0
+A,L20H1,20,answer,single,1,singular-plural,morph,0.567,1.0
+A,L21H14,21,answer,single,1,singular-plural,morph,0.521,0.0
+A,L22H0,22,answer,single,1,present-past,morph,0.876,1.0
+A,L22H11,22,answer,single,1,singular-plural,morph,0.56,0.0
+A,L22H14,22,answer,single,1,prev_item,seq,0.518,1.0
+A,L22H28,22,answer,single,1,singular-plural,morph,0.585,1.0
+A,L23H8,23,answer,family,3,landmark-country park-country product-company,facts,0.709,1.0
+A,L24H3,24,answer,family,3,landmark-country park-country product-company,facts,0.876,1.0
+A,L27H20,27,answer,family,2,landmark-country park-country,facts,0.649,1.0
+A,L28H18,28,answer,family,2,next_item prev_item,seq,0.602,1.0
+A,L28H20,28,answer,single,1,present-past,morph,0.733,1.0
+A,L28H30,28,answer,single,1,present-past,morph,0.536,1.0
+A,L29H11,29,answer,single,1,park-country,facts,0.567,1.0
+A,L29H28,29,answer,single,1,product-company,facts,0.578,1.0
+A,L29H31,29,answer,single,1,singular-plural,morph,0.547,0.0
+A,L31H0,31,answer,broad,4,antonym synonym singular-plural present-past,morph word,0.779,1.0
+A,L31H1,31,answer,family,2,antonym synonym,word,0.597,1.0
+A,L31H3,31,answer,family,2,antonym synonym,word,0.579,1.0
+A,L31H6,31,answer,family,3,landmark-country park-country product-company,facts,0.724,1.0
+A,L31H7,31,answer,family,3,landmark-country park-country product-company,facts,0.881,1.0
+A,L14H24,14,query,family,2,country-capital country-currency,facts,0.596,0.0
+A,L15H1,15,query,family,3,english-french english-german english-spanish,transl,0.541,0.667
+A,L15H3,15,query,single,1,next_item,seq,0.502,1.0
+A,L15H14,15,query,broad,5,antonym synonym english-french english-german english-spanish,transl word,0.594,0.8
+A,L16H1,16,query,broad,5,next_item prev_item english-french english-german english-spanish,seq transl,0.543,1.0
+A,L16H3,16,query,broad,3,country-capital next_item prev_item,facts seq,0.717,1.0
+A,L16H9,16,query,family,2,country-capital country-currency,facts,0.657,1.0
+A,L16H20,16,query,broad,4,prev_item english-french english-german english-spanish,seq transl,0.596,1.0
+A,L17H23,17,query,family,2,country-capital country-currency,facts,0.611,0.5
+A,L17H24,17,query,broad,2,singular-plural next_item,morph seq,0.548,0.5
+A,L17H29,17,query,single,1,present-past,morph,0.527,1.0
+A,L18H14,18,query,family,2,country-capital country-currency,facts,0.52,0.0
+A,L18H16,18,query,broad,3,singular-plural english-german english-spanish,morph transl,0.557,0.333
+A,L18H19,18,query,single,1,synonym,word,0.535,1.0
+A,L19H0,19,query,family,2,next_item prev_item,seq,0.564,1.0
+A,L19H8,19,query,broad,4,antonym synonym present-past english-german,morph transl word,0.556,0.75
+A,L19H9,19,query,broad,5,antonym synonym english-french english-german english-spanish,transl word,0.577,1.0
+A,L19H13,19,query,family,2,antonym synonym,word,0.554,0.5
+A,L19H20,19,query,broad,5,singular-plural country-capital country-currency next_item prev_item,facts morph seq,0.63,0.8
+A,L19H25,19,query,family,2,country-capital country-currency,facts,0.665,1.0
+A,L19H27,19,query,family,2,country-capital country-currency,facts,0.686,1.0
+A,L20H1,20,query,broad,7,antonym synonym singular-plural present-past english-french english-german english-spanish,morph transl word,0.751,1.0
+A,L21H14,21,query,single,1,singular-plural,morph,0.65,1.0
+A,L21H26,21,query,single,1,synonym,word,0.587,1.0
+A,L22H11,22,query,broad,3,singular-plural english-german english-spanish,morph transl,0.564,0.333
+A,L22H13,22,query,family,2,next_item prev_item,seq,0.577,1.0
+A,L23H8,23,query,single,1,country-capital,facts,0.536,0.0
+A,L23H14,23,query,family,2,next_item prev_item,seq,0.561,0.5
+A,L24H3,24,query,family,2,country-capital country-currency,facts,0.676,1.0
+A,L24H23,24,query,broad,5,antonym synonym english-french english-german english-spanish,transl word,0.582,1.0
+A,L24H26,24,query,single,1,singular-plural,morph,0.551,0.0
+A,L27H5,27,query,broad,2,singular-plural english-spanish,morph transl,0.563,1.0
+A,L27H7,27,query,single,1,present-past,morph,0.632,1.0
+A,L27H20,27,query,family,2,country-capital country-currency,facts,0.669,1.0
+A,L28H0,28,query,single,1,singular-plural,morph,0.58,1.0
+A,L28H16,28,query,single,1,prev_item,seq,0.557,1.0
+A,L28H18,28,query,family,2,next_item prev_item,seq,0.574,1.0
+A,L28H20,28,query,single,1,present-past,morph,0.748,1.0
+A,L29H20,29,query,family,2,next_item prev_item,seq,0.582,0.0
+A,L29H31,29,query,broad,3,singular-plural english-german english-spanish,morph transl,0.571,0.667
+A,L31H0,31,query,broad,5,synonym singular-plural english-french english-german english-spanish,morph transl word,0.722,1.0
+A,L31H1,31,query,broad,2,synonym english-spanish,transl word,0.573,1.0
+A,L31H3,31,query,broad,5,synonym singular-plural english-french english-german english-spanish,morph transl word,0.572,1.0
+A,L31H6,31,query,single,1,country-capital,facts,0.55,0.0
+A,L31H7,31,query,family,2,country-capital country-currency,facts,0.578,0.0
+A,L30H24,30,answer_letter,broad,4,country-capital landmark-country next_item prev_item,facts seq,0.647,1.0
+A,L30H26,30,answer_letter,broad,8,country-capital country-currency landmark-country park-country next_item prev_item english-german english-spanish,facts seq transl,0.603,0.875
+A,L30H27,30,answer_letter,broad,5,country-capital country-currency landmark-country park-country next_item,facts seq,0.618,1.0
+A,L31H1,31,answer_letter,broad,7,country-capital country-currency landmark-country product-company next_item prev_item english-german,facts seq transl,0.655,0.857
+A,L31H3,31,answer_letter,single,1,country-capital,facts,0.744,1.0
+A,L22H12,22,query_letter,broad,4,antonym country-currency next_item prev_item,facts seq word,0.665,1.0
+A,L22H14,22,query_letter,broad,10,antonym synonym country-currency landmark-country park-country product-company next_item prev_item english-french english-german,facts seq transl word,0.609,1.0
+A,L22H15,22,query_letter,constant,12,antonym synonym country-capital country-currency landmark-country park-country product-company next_item prev_item english-french english-german english-spanish,facts seq transl word,0.658,0.917
+A,L24H24,24,query_letter,broad,9,antonym synonym country-currency landmark-country product-company next_item prev_item english-french english-german,facts seq transl word,0.636,1.0
+A,L29H20,29,query_letter,broad,2,synonym park-country,facts word,0.562,0.5
+A,L29H21,29,query_letter,broad,7,antonym synonym country-capital country-currency park-country next_item prev_item,facts seq word,0.586,0.857
+A,L30H14,30,query_letter,broad,3,synonym country-currency landmark-country,facts word,0.6,0.667
+A,L30H15,30,query_letter,broad,4,synonym country-capital country-currency prev_item,facts seq word,0.57,0.75
+A,L31H13,31,query_letter,constant,11,antonym synonym country-capital country-currency landmark-country park-country next_item prev_item english-french english-german english-spanish,facts seq transl word,0.715,1.0
+A,L6H22,6,category,family,3,country-currency landmark-country park-country,facts,0.606,1.0
+A,L7H0,7,category,single,1,next_item,seq,0.509,1.0
+A,L8H5,8,category,single,1,antonym,word,0.58,1.0
+A,L8H15,8,category,single,1,next_item,seq,0.514,0.0
+A,L8H17,8,category,broad,4,park-country english-french english-german english-spanish,facts transl,0.695,1.0
+A,L11H26,11,category,single,1,prev_item,seq,0.617,1.0
+A,L12H6,12,category,single,1,antonym,word,0.571,1.0
+A,L12H15,12,category,single,1,next_item,seq,0.577,1.0
+A,L12H16,12,category,single,1,synonym,word,0.627,1.0
+A,L13H1,13,category,single,1,country-currency,facts,0.531,1.0
+A,L13H3,13,category,single,1,country-currency,facts,0.67,1.0
+A,L13H4,13,category,single,1,english-french,transl,0.51,1.0
+A,L13H6,13,category,family,3,english-french english-german english-spanish,transl,0.576,1.0
+A,L13H22,13,category,single,1,present-past,morph,0.924,1.0
+A,L13H30,13,category,family,4,country-currency landmark-country park-country product-company,facts,0.63,1.0
+A,L14H2,14,category,single,1,present-past,morph,0.966,1.0
+A,L14H4,14,category,single,1,antonym,word,0.532,1.0
+A,L14H5,14,category,broad,3,country-capital country-currency english-spanish,facts transl,0.649,1.0
+A,L14H6,14,category,single,1,country-capital,facts,0.51,1.0
+A,L14H12,14,category,family,2,landmark-country park-country,facts,0.575,1.0
+A,L14H24,14,category,broad,2,antonym english-spanish,transl word,0.678,1.0
+A,L14H25,14,category,family,3,english-french english-german english-spanish,transl,0.797,1.0
+A,L14H27,14,category,single,1,antonym,word,0.512,1.0
+A,L14H29,14,category,single,1,country-currency,facts,0.525,0.0
+A,L15H1,15,category,broad,4,country-capital park-country next_item prev_item,facts seq,0.655,1.0
+A,L15H3,15,category,family,2,next_item prev_item,seq,0.747,1.0
+A,L15H11,15,category,single,1,park-country,facts,0.588,1.0
+A,L15H16,15,category,single,1,next_item,seq,0.558,1.0
+A,L15H22,15,category,family,4,country-capital country-currency landmark-country park-country,facts,0.925,1.0
+A,L15H28,15,category,single,1,prev_item,seq,0.631,1.0
+A,L16H1,16,category,single,1,prev_item,seq,0.532,0.0
+A,L16H7,16,category,single,1,next_item,seq,0.7,1.0
+A,L16H8,16,category,broad,4,country-capital park-country english-french english-german,facts transl,0.561,0.5
+A,L16H9,16,category,single,1,english-spanish,transl,0.694,1.0
+A,L16H12,16,category,single,1,antonym,word,0.506,0.0
+A,L16H18,16,category,family,2,english-french english-spanish,transl,0.771,1.0
+A,L16H25,16,category,family,3,country-currency landmark-country park-country,facts,0.866,1.0
+A,L16H26,16,category,single,1,country-currency,facts,0.996,1.0
+A,L16H28,16,category,single,1,next_item,seq,0.718,1.0
+A,L17H4,17,category,family,2,landmark-country park-country,facts,0.771,1.0
+A,L17H5,17,category,broad,5,country-capital landmark-country park-country product-company next_item,facts seq,0.86,0.8
+A,L17H13,17,category,single,1,english-french,transl,0.626,1.0
+A,L17H15,17,category,family,4,country-currency landmark-country park-country product-company,facts,0.708,1.0
+A,L17H18,17,category,broad,2,antonym prev_item,seq word,0.545,1.0
+A,L17H23,17,category,family,2,english-german english-spanish,transl,0.684,1.0
+A,L17H24,17,category,single,1,prev_item,seq,0.511,1.0
+A,L17H25,17,category,single,1,prev_item,seq,0.525,1.0
+A,L18H6,18,category,single,1,antonym,word,0.573,1.0
+A,L18H11,18,category,single,1,antonym,word,0.617,1.0
+A,L18H12,18,category,single,1,antonym,word,0.514,0.0
+A,L18H14,18,category,broad,5,country-currency landmark-country park-country product-company english-french,facts transl,0.656,1.0
+A,L18H15,18,category,broad,6,antonym country-currency landmark-country park-country next_item prev_item,facts seq word,0.668,1.0
+A,L18H20,18,category,family,2,next_item prev_item,seq,0.691,1.0
+A,L18H23,18,category,single,1,prev_item,seq,0.508,1.0
+A,L18H30,18,category,family,2,next_item prev_item,seq,0.622,1.0
+A,L19H0,19,category,family,2,next_item prev_item,seq,0.593,1.0
+A,L19H19,19,category,family,2,next_item prev_item,seq,0.567,1.0
+A,L19H20,19,category,single,1,next_item,seq,0.565,1.0
+A,L19H25,19,category,family,2,english-french english-spanish,transl,0.63,1.0
+A,L20H5,20,category,single,1,antonym,word,0.586,1.0
+A,L20H8,20,category,single,1,present-past,morph,0.562,1.0
+A,L20H12,20,category,broad,3,country-capital next_item prev_item,facts seq,0.619,0.667
+A,L20H14,20,category,single,1,synonym,word,0.512,0.0
+A,L20H25,20,category,single,1,next_item,seq,0.572,1.0
+A,L20H29,20,category,family,2,landmark-country park-country,facts,0.688,1.0
+A,L21H0,21,category,single,1,present-past,morph,0.784,1.0
+A,L21H1,21,category,broad,5,antonym landmark-country park-country product-company next_item,facts seq word,0.68,1.0
+A,L21H2,21,category,broad,9,antonym synonym singular-plural present-past country-capital landmark-country park-country next_item prev_item,facts morph seq word,0.827,1.0
+A,L21H4,21,category,single,1,present-past,morph,0.81,1.0
+A,L21H5,21,category,single,1,singular-plural,morph,0.83,1.0
+A,L21H8,21,category,single,1,country-capital,facts,0.605,1.0
+A,L21H10,21,category,broad,2,singular-plural landmark-country,facts morph,0.606,1.0
+A,L21H14,21,category,family,2,country-capital product-company,facts,0.673,1.0
+A,L21H19,21,category,single,1,english-french,transl,0.512,1.0
+A,L22H11,22,category,single,1,singular-plural,morph,0.502,1.0
+A,L22H13,22,category,family,2,next_item prev_item,seq,0.581,1.0
+A,L22H16,22,category,family,2,landmark-country park-country,facts,0.827,1.0
+A,L22H17,22,category,single,1,present-past,morph,0.758,1.0
+A,L22H19,22,category,family,4,country-capital landmark-country park-country product-company,facts,0.662,0.75
+A,L22H28,22,category,single,1,singular-plural,morph,0.65,1.0
+A,L23H8,23,category,broad,5,park-country product-company english-french english-german english-spanish,facts transl,0.642,1.0
+A,L23H16,23,category,single,1,prev_item,seq,0.602,1.0
+A,L24H0,24,category,family,3,english-french english-german english-spanish,transl,0.941,1.0
+A,L24H1,24,category,family,2,english-german english-spanish,transl,0.8,1.0
+A,L24H3,24,category,single,1,english-german,transl,0.638,1.0
+A,L24H30,24,category,family,2,landmark-country park-country,facts,0.799,1.0
+A,L25H23,25,category,broad,11,antonym synonym singular-plural present-past country-capital country-currency landmark-country park-country product-company next_item prev_item,facts morph seq word,0.834,1.0
+A,L25H24,25,category,family,2,landmark-country park-country,facts,0.855,1.0
+A,L25H31,25,category,single,1,prev_item,seq,0.556,0.0
+A,L26H0,26,category,broad,3,antonym landmark-country park-country,facts word,0.64,1.0
+A,L26H3,26,category,family,2,next_item prev_item,seq,0.585,1.0
+A,L26H5,26,category,single,1,english-french,transl,0.666,1.0
+A,L26H7,26,category,family,2,english-german english-spanish,transl,0.728,1.0
+A,L26H23,26,category,single,1,present-past,morph,0.884,1.0
+A,L26H24,26,category,single,1,english-french,transl,0.516,0.0
+A,L27H6,27,category,family,2,next_item prev_item,seq,0.502,0.0
+A,L28H10,28,category,broad,2,landmark-country next_item,facts seq,0.601,1.0
+A,L29H1,29,category,broad,3,synonym english-french english-german,transl word,0.811,1.0
+A,L29H2,29,category,family,2,english-french english-spanish,transl,0.561,1.0
+A,L29H4,29,category,single,1,english-german,transl,0.84,1.0
+A,L29H25,29,category,broad,3,present-past landmark-country park-country,facts morph,0.705,1.0
+A,L29H28,29,category,family,3,landmark-country park-country product-company,facts,0.845,1.0
+A,L29H30,29,category,single,1,antonym,word,0.696,1.0
+A,L30H5,30,category,single,1,antonym,word,0.514,0.0
+A,L30H6,30,category,single,1,english-german,transl,0.512,1.0
+A,L30H9,30,category,single,1,singular-plural,morph,0.632,1.0
+A,L30H21,30,category,family,2,english-german english-spanish,transl,0.721,1.0
+A,L30H22,30,category,family,2,english-german english-spanish,transl,0.903,1.0
+A,L30H23,30,category,family,3,english-french english-german english-spanish,transl,0.921,1.0
+A,L31H0,31,category,single,1,antonym,word,0.538,1.0
+A,L31H3,31,category,broad,3,antonym present-past next_item,morph seq word,0.623,1.0
+A,L31H6,31,category,broad,8,singular-plural country-capital country-currency landmark-country park-country product-company english-german english-spanish,facts morph transl,0.797,0.875
+A,L31H7,31,category,broad,7,country-capital country-currency landmark-country park-country product-company english-german english-spanish,facts transl,0.757,1.0
+A,L31H12,31,category,single,1,prev_item,seq,0.504,0.0
+A,L31H24,31,category,single,1,next_item,seq,0.562,1.0
+A,L31H30,31,category,broad,4,landmark-country park-country next_item prev_item,facts seq,0.61,0.75
+A,L6H7,6,task_word,family,2,english-french english-spanish,transl,0.671,1.0
+A,L6H22,6,task_word,family,2,singular-plural present-past,morph,0.602,1.0
+A,L6H29,6,task_word,single,1,country-capital,facts,0.597,1.0
+A,L8H17,8,task_word,single,1,english-spanish,transl,0.76,1.0
+A,L8H19,8,task_word,single,1,english-spanish,transl,0.66,1.0
+A,L8H31,8,task_word,broad,5,present-past country-capital country-currency landmark-country park-country,facts morph,0.756,1.0
+A,L9H19,9,task_word,broad,4,country-capital country-currency english-german english-spanish,facts transl,0.675,1.0
+A,L9H31,9,task_word,single,1,english-spanish,transl,0.572,1.0
+A,L10H27,10,task_word,family,4,country-capital country-currency landmark-country park-country,facts,0.61,0.75
+A,L11H4,11,task_word,family,2,antonym synonym,word,0.7,1.0
+A,L12H29,12,task_word,single,1,next_item,seq,0.623,1.0
+A,L13H1,13,task_word,family,2,country-currency park-country,facts,0.612,1.0
+A,L13H3,13,task_word,family,3,country-capital country-currency landmark-country,facts,0.616,0.667
+A,L13H4,13,task_word,single,1,english-spanish,transl,0.71,1.0
+A,L13H6,13,task_word,family,2,english-french english-spanish,transl,0.794,1.0
+A,L13H8,13,task_word,broad,3,synonym singular-plural park-country,facts morph word,0.617,1.0
+A,L13H9,13,task_word,single,1,landmark-country,facts,0.774,1.0
+A,L13H11,13,task_word,broad,6,antonym synonym country-capital country-currency landmark-country park-country,facts word,0.748,1.0
+A,L13H14,13,task_word,family,2,landmark-country park-country,facts,0.809,1.0
+A,L13H15,13,task_word,broad,4,landmark-country english-french english-german english-spanish,facts transl,0.778,1.0
+A,L13H20,13,task_word,single,1,singular-plural,morph,0.894,1.0
+A,L13H21,13,task_word,broad,3,antonym singular-plural prev_item,morph seq word,0.804,1.0
+A,L13H22,13,task_word,broad,4,antonym singular-plural next_item prev_item,morph seq word,0.873,1.0
+A,L13H23,13,task_word,single,1,antonym,word,0.784,1.0
+A,L13H30,13,task_word,broad,3,present-past country-capital park-country,facts morph,0.697,1.0
+A,L14H2,14,task_word,family,2,next_item prev_item,seq,0.716,1.0
+A,L14H5,14,task_word,broad,6,antonym singular-plural country-capital landmark-country prev_item english-spanish,facts morph seq transl word,0.731,1.0
+A,L14H6,14,task_word,single,1,park-country,facts,0.572,1.0
+A,L14H7,14,task_word,single,1,landmark-country,facts,0.503,1.0
+A,L14H12,14,task_word,broad,4,antonym synonym landmark-country park-country,facts word,0.799,1.0
+A,L14H13,14,task_word,broad,11,singular-plural present-past country-capital country-currency landmark-country park-country product-company next_item english-french english-german english-spanish,facts morph seq transl,0.841,1.0
+A,L14H24,14,task_word,family,3,english-french english-german english-spanish,transl,0.956,1.0
+A,L14H31,14,task_word,broad,3,antonym country-currency park-country,facts word,0.643,1.0
+A,L15H3,15,task_word,family,2,country-currency park-country,facts,0.67,1.0
+A,L15H4,15,task_word,broad,6,singular-plural country-capital country-currency landmark-country park-country next_item,facts morph seq,0.754,1.0
+A,L15H5,15,task_word,single,1,country-currency,facts,0.73,1.0
+A,L15H7,15,task_word,broad,2,synonym next_item,seq word,0.67,1.0
+A,L15H8,15,task_word,single,1,prev_item,seq,0.513,0.0
+A,L15H12,15,task_word,single,1,next_item,seq,0.75,1.0
+A,L15H13,15,task_word,broad,5,singular-plural country-capital country-currency landmark-country park-country,facts morph,0.92,1.0
+A,L15H14,15,task_word,broad,9,singular-plural present-past country-capital country-currency landmark-country park-country product-company next_item prev_item,facts morph seq,0.898,1.0
+A,L15H21,15,task_word,broad,6,singular-plural country-capital country-currency landmark-country park-country product-company,facts morph,0.894,1.0
+A,L15H22,15,task_word,broad,5,singular-plural landmark-country park-country prev_item english-spanish,facts morph seq transl,0.826,1.0
+A,L15H23,15,task_word,single,1,singular-plural,morph,0.548,1.0
+A,L15H25,15,task_word,broad,6,present-past country-capital country-currency landmark-country park-country product-company,facts morph,0.814,1.0
+A,L15H26,15,task_word,broad,4,country-capital country-currency park-country next_item,facts seq,0.755,1.0
+A,L15H27,15,task_word,broad,7,singular-plural present-past country-capital country-currency landmark-country park-country next_item,facts morph seq,0.881,1.0
+A,L16H1,16,task_word,family,2,landmark-country park-country,facts,0.662,1.0
+A,L16H4,16,task_word,single,1,prev_item,seq,0.573,1.0
+A,L16H8,16,task_word,broad,3,present-past country-currency english-french,facts morph transl,0.723,1.0
+A,L16H9,16,task_word,family,3,english-french english-german english-spanish,transl,0.867,1.0
+A,L16H16,16,task_word,single,1,park-country,facts,0.852,1.0
+A,L16H18,16,task_word,family,3,english-french english-german english-spanish,transl,0.991,1.0
+A,L16H25,16,task_word,broad,6,present-past country-capital country-currency landmark-country park-country product-company,facts morph,0.904,0.833
+A,L16H27,16,task_word,single,1,country-currency,facts,0.726,1.0
+A,L16H28,16,task_word,single,1,antonym,word,0.564,1.0
+A,L17H0,17,task_word,family,2,country-currency park-country,facts,0.88,1.0
+A,L17H2,17,task_word,broad,2,synonym present-past,morph word,0.753,0.5
+A,L17H3,17,task_word,broad,5,country-capital country-currency landmark-country park-country next_item,facts seq,0.907,1.0
+A,L17H4,17,task_word,broad,6,singular-plural country-capital country-currency landmark-country park-country product-company,facts morph,0.902,1.0
+A,L17H5,17,task_word,single,1,product-company,facts,0.968,1.0
+A,L17H7,17,task_word,broad,4,singular-plural present-past country-currency product-company,facts morph,0.835,1.0
+A,L17H15,17,task_word,broad,4,country-capital country-currency next_item english-french,facts seq transl,0.606,0.75
+A,L17H20,17,task_word,broad,4,antonym singular-plural next_item prev_item,morph seq word,0.691,1.0
+A,L17H21,17,task_word,broad,3,singular-plural next_item prev_item,morph seq,0.936,1.0
+A,L17H23,17,task_word,family,3,english-french english-german english-spanish,transl,0.808,1.0
+A,L17H25,17,task_word,family,2,landmark-country park-country,facts,0.768,1.0
+A,L17H26,17,task_word,broad,2,present-past prev_item,morph seq,0.727,1.0
+A,L17H29,17,task_word,single,1,product-company,facts,0.606,1.0
+A,L17H31,17,task_word,single,1,singular-plural,morph,0.546,1.0
+A,L18H0,18,task_word,broad,3,antonym present-past park-country,facts morph word,0.694,1.0
+A,L18H8,18,task_word,broad,2,singular-plural next_item,morph seq,0.646,1.0
+A,L18H9,18,task_word,family,2,country-capital product-company,facts,0.76,1.0
+A,L18H14,18,task_word,broad,6,antonym synonym present-past next_item english-french english-spanish,morph seq transl word,0.734,1.0
+A,L18H18,18,task_word,single,1,product-company,facts,0.694,1.0
+A,L18H19,18,task_word,broad,5,landmark-country park-country product-company next_item prev_item,facts seq,0.798,1.0
+A,L18H24,18,task_word,family,4,country-capital country-currency park-country product-company,facts,0.727,1.0
+A,L19H2,19,task_word,family,2,landmark-country park-country,facts,0.678,1.0
+A,L19H6,19,task_word,broad,3,landmark-country park-country prev_item,facts seq,0.546,0.667
+A,L19H8,19,task_word,broad,5,country-currency landmark-country park-country next_item prev_item,facts seq,0.849,1.0
+A,L19H9,19,task_word,broad,7,singular-plural country-currency landmark-country park-country product-company next_item prev_item,facts morph seq,0.824,1.0
+A,L19H13,19,task_word,single,1,park-country,facts,0.556,1.0
+A,L19H20,19,task_word,single,1,park-country,facts,0.744,1.0
+A,L19H21,19,task_word,single,1,park-country,facts,0.826,1.0
+A,L19H25,19,task_word,family,3,english-french english-german english-spanish,transl,0.943,1.0
+A,L20H1,20,task_word,family,4,country-capital landmark-country park-country product-company,facts,0.805,1.0
+A,L20H8,20,task_word,family,2,next_item prev_item,seq,0.608,1.0
+A,L20H12,20,task_word,family,2,landmark-country park-country,facts,0.647,0.5
+A,L20H20,20,task_word,single,1,prev_item,seq,0.731,1.0
+A,L20H28,20,task_word,single,1,singular-plural,morph,0.768,1.0
+A,L20H29,20,task_word,broad,2,landmark-country prev_item,facts seq,0.699,1.0
+A,L21H0,21,task_word,family,2,country-capital country-currency,facts,0.847,1.0
+A,L21H2,21,task_word,family,3,landmark-country park-country product-company,facts,0.794,1.0
+A,L21H9,21,task_word,single,1,park-country,facts,0.74,1.0
+A,L21H10,21,task_word,broad,5,singular-plural country-capital landmark-country park-country product-company,facts morph,0.845,1.0
+A,L21H11,21,task_word,broad,3,landmark-country park-country next_item,facts seq,0.55,1.0
+A,L21H12,21,task_word,broad,3,landmark-country park-country prev_item,facts seq,0.744,0.667
+A,L21H14,21,task_word,family,2,country-capital country-currency,facts,0.886,1.0
+A,L21H15,21,task_word,family,4,country-capital country-currency landmark-country park-country,facts,0.759,1.0
+A,L21H17,21,task_word,single,1,product-company,facts,0.686,1.0
+A,L21H19,21,task_word,family,2,country-currency park-country,facts,0.596,1.0
+A,L21H25,21,task_word,broad,3,singular-plural landmark-country park-country,facts morph,0.818,1.0
+A,L21H28,21,task_word,broad,2,present-past prev_item,morph seq,0.903,1.0
+A,L21H29,21,task_word,broad,3,antonym next_item prev_item,seq word,0.828,1.0
+A,L21H30,21,task_word,family,3,landmark-country park-country product-company,facts,0.897,1.0
+A,L22H0,22,task_word,broad,3,landmark-country product-company prev_item,facts seq,0.637,0.667
+A,L22H2,22,task_word,single,1,prev_item,seq,0.725,1.0
+A,L22H8,22,task_word,single,1,prev_item,seq,0.725,1.0
+A,L22H11,22,task_word,broad,6,country-capital country-currency landmark-country park-country product-company next_item,facts seq,0.776,1.0
+A,L22H13,22,task_word,single,1,singular-plural,morph,0.724,1.0
+A,L22H16,22,task_word,family,4,country-capital landmark-country park-country product-company,facts,0.692,1.0
+A,L22H19,22,task_word,single,1,product-company,facts,0.662,1.0
+A,L22H24,22,task_word,broad,2,singular-plural country-currency,facts morph,0.975,1.0
+A,L22H27,22,task_word,broad,4,synonym present-past country-currency next_item,facts morph seq word,0.738,1.0
+A,L22H28,22,task_word,family,5,country-capital country-currency landmark-country park-country product-company,facts,0.923,1.0
+A,L22H29,22,task_word,family,5,country-capital country-currency landmark-country park-country product-company,facts,0.956,1.0
+A,L23H5,23,task_word,single,1,prev_item,seq,0.574,1.0
+A,L23H6,23,task_word,family,5,country-capital country-currency landmark-country park-country product-company,facts,0.831,1.0
+A,L23H8,23,task_word,broad,4,next_item english-french english-german english-spanish,seq transl,0.787,1.0
+A,L23H12,23,task_word,single,1,synonym,word,0.68,1.0
+A,L23H13,23,task_word,family,4,country-capital country-currency landmark-country park-country,facts,0.808,1.0
+A,L23H20,23,task_word,single,1,country-currency,facts,0.983,1.0
+A,L23H22,23,task_word,single,1,country-currency,facts,0.936,1.0
+A,L23H25,23,task_word,family,4,country-capital country-currency landmark-country park-country,facts,0.692,1.0
+A,L23H28,23,task_word,single,1,antonym,word,0.586,1.0
+A,L23H29,23,task_word,broad,3,landmark-country park-country next_item,facts seq,0.73,1.0
+A,L24H0,24,task_word,single,1,english-french,transl,0.882,1.0
+A,L24H1,24,task_word,single,1,english-spanish,transl,1.0,1.0
+A,L24H2,24,task_word,single,1,landmark-country,facts,0.796,1.0
+A,L24H3,24,task_word,family,3,english-french english-german english-spanish,transl,0.867,1.0
+A,L24H4,24,task_word,single,1,prev_item,seq,0.501,1.0
+A,L24H7,24,task_word,single,1,prev_item,seq,0.894,1.0
+A,L24H17,24,task_word,single,1,country-currency,facts,0.722,1.0
+A,L24H18,24,task_word,family,2,country-currency product-company,facts,0.772,1.0
+A,L24H20,24,task_word,single,1,country-capital,facts,0.58,1.0
+A,L24H22,24,task_word,family,2,park-country product-company,facts,0.857,1.0
+A,L24H23,24,task_word,family,3,country-capital landmark-country park-country,facts,0.682,1.0
+A,L24H25,24,task_word,single,1,prev_item,seq,0.741,1.0
+A,L24H26,24,task_word,single,1,country-capital,facts,0.71,1.0
+A,L25H4,25,task_word,single,1,country-capital,facts,0.869,1.0
+A,L25H7,25,task_word,broad,5,present-past park-country product-company next_item prev_item,facts morph seq,0.874,1.0
+A,L25H12,25,task_word,single,1,antonym,word,0.908,1.0
+A,L25H13,25,task_word,broad,2,synonym prev_item,seq word,0.771,1.0
+A,L25H23,25,task_word,family,3,landmark-country park-country product-company,facts,0.824,1.0
+A,L25H24,25,task_word,family,2,landmark-country park-country,facts,0.802,1.0
+A,L26H7,26,task_word,single,1,english-spanish,transl,0.556,1.0
+A,L26H12,26,task_word,single,1,prev_item,seq,0.556,1.0
+A,L26H27,26,task_word,family,4,country-capital country-currency park-country product-company,facts,0.834,1.0
+A,L26H29,26,task_word,single,1,antonym,word,0.742,1.0
+A,L27H5,27,task_word,single,1,park-country,facts,0.542,0.0
+A,L27H7,27,task_word,single,1,park-country,facts,0.542,1.0
+A,L27H8,27,task_word,broad,2,park-country next_item,facts seq,0.65,1.0
+A,L27H20,27,task_word,family,2,english-french english-spanish,transl,0.781,1.0
+A,L27H22,27,task_word,family,2,next_item prev_item,seq,0.612,1.0
+A,L28H0,28,task_word,family,2,country-currency park-country,facts,0.757,0.5
+A,L28H9,28,task_word,single,1,prev_item,seq,0.557,1.0
+A,L28H10,28,task_word,single,1,landmark-country,facts,0.5,1.0
+A,L28H13,28,task_word,single,1,synonym,word,0.732,1.0
+A,L28H18,28,task_word,single,1,singular-plural,morph,0.598,1.0
+A,L28H20,28,task_word,single,1,prev_item,seq,0.724,1.0
+A,L28H22,28,task_word,family,2,landmark-country park-country,facts,0.569,1.0
+A,L28H23,28,task_word,broad,4,park-country product-company next_item prev_item,facts seq,0.585,0.75
+A,L28H24,28,task_word,family,2,next_item prev_item,seq,0.867,1.0
+A,L28H27,28,task_word,family,2,next_item prev_item,seq,0.928,1.0
+A,L28H30,28,task_word,family,3,landmark-country park-country product-company,facts,0.874,1.0
+A,L28H31,28,task_word,single,1,antonym,word,0.502,0.0
+A,L29H1,29,task_word,single,1,english-german,transl,0.922,1.0
+A,L29H28,29,task_word,broad,6,singular-plural present-past landmark-country park-country next_item english-german,facts morph seq transl,0.83,1.0
+A,L29H30,29,task_word,broad,6,present-past country-capital country-currency landmark-country park-country product-company,facts morph,0.884,1.0
+A,L29H31,29,task_word,broad,7,present-past country-capital country-currency landmark-country park-country product-company next_item,facts morph seq,0.811,1.0
+A,L30H12,30,task_word,family,5,country-capital country-currency landmark-country park-country product-company,facts,0.787,1.0
+A,L30H21,30,task_word,single,1,english-spanish,transl,0.59,1.0
+A,L30H22,30,task_word,single,1,english-spanish,transl,0.978,1.0
+A,L30H29,30,task_word,family,2,landmark-country park-country,facts,0.699,0.5
+A,L30H30,30,task_word,broad,3,landmark-country park-country prev_item,facts seq,0.734,1.0
+A,L31H0,31,task_word,broad,3,landmark-country park-country prev_item,facts seq,0.658,1.0
+A,L31H1,31,task_word,family,2,landmark-country park-country,facts,0.658,1.0
+A,L31H3,31,task_word,single,1,prev_item,seq,0.624,1.0
+A,L31H6,31,task_word,broad,2,product-company english-german,facts transl,0.749,1.0
+A,L31H7,31,task_word,broad,4,next_item english-french english-german english-spanish,seq transl,0.789,1.0
+A,L31H21,31,task_word,broad,4,park-country product-company next_item prev_item,facts seq,0.898,1.0
+A,L31H24,31,task_word,broad,2,singular-plural park-country,facts morph,0.545,1.0
+A,L31H26,31,task_word,family,2,landmark-country park-country,facts,0.626,1.0
+A,L31H30,31,task_word,family,3,landmark-country park-country product-company,facts,0.659,1.0
+B,L14H24,14,answer,family,2,landmark-country park-country,facts,0.787,1.0
+B,L16H8,16,answer,family,3,landmark-country park-country product-company,facts,0.731,1.0
+B,L16H9,16,answer,family,3,landmark-country park-country product-company,facts,0.638,1.0
+B,L16H18,16,answer,single,1,landmark-country,facts,0.889,1.0
+B,L17H15,17,answer,family,2,landmark-country park-country,facts,0.694,1.0
+B,L17H23,17,answer,family,2,landmark-country park-country,facts,0.847,1.0
+B,L18H14,18,answer,family,3,landmark-country park-country product-company,facts,0.661,1.0
+B,L18H19,18,answer,single,1,present-past,morph,0.523,1.0
+B,L18H30,18,answer,single,1,next_item,seq,0.541,0.0
+B,L19H0,19,answer,single,1,prev_item,seq,0.53,0.0
+B,L19H25,19,answer,family,2,landmark-country park-country,facts,0.839,1.0
+B,L19H27,19,answer,family,2,landmark-country park-country,facts,0.575,1.0
+B,L20H1,20,answer,single,1,singular-plural,morph,0.515,1.0
+B,L22H0,22,answer,single,1,present-past,morph,0.947,1.0
+B,L22H14,22,answer,single,1,prev_item,seq,0.584,1.0
+B,L22H28,22,answer,single,1,singular-plural,morph,0.508,1.0
+B,L23H8,23,answer,family,3,landmark-country park-country product-company,facts,0.7,1.0
+B,L23H27,23,answer,single,1,product-company,facts,0.563,0.0
+B,L24H3,24,answer,family,3,landmark-country park-country product-company,facts,0.851,1.0
+B,L27H20,27,answer,family,2,landmark-country park-country,facts,0.619,1.0
+B,L28H18,28,answer,family,2,next_item prev_item,seq,0.665,1.0
+B,L28H20,28,answer,single,1,present-past,morph,0.71,1.0
+B,L28H30,28,answer,single,1,present-past,morph,0.562,1.0
+B,L29H11,29,answer,family,2,park-country product-company,facts,0.542,0.5
+B,L29H28,29,answer,single,1,product-company,facts,0.609,1.0
+B,L31H0,31,answer,broad,4,antonym synonym singular-plural present-past,morph word,0.781,1.0
+B,L31H1,31,answer,family,2,antonym synonym,word,0.604,1.0
+B,L31H3,31,answer,family,2,antonym synonym,word,0.574,1.0
+B,L31H6,31,answer,family,3,landmark-country park-country product-company,facts,0.708,1.0
+B,L31H7,31,answer,family,3,landmark-country park-country product-company,facts,0.854,1.0
+B,L15H1,15,query,broad,3,prev_item english-french english-german,seq transl,0.555,0.667
+B,L15H3,15,query,single,1,next_item,seq,0.51,1.0
+B,L15H14,15,query,broad,4,antonym synonym english-french english-german,transl word,0.59,1.0
+B,L16H1,16,query,broad,6,antonym next_item prev_item english-french english-german english-spanish,seq transl word,0.575,0.833
+B,L16H3,16,query,broad,5,antonym country-capital next_item prev_item english-french,facts seq transl word,0.636,0.6
+B,L16H9,16,query,family,2,country-capital country-currency,facts,0.555,1.0
+B,L16H20,16,query,broad,5,next_item prev_item english-french english-german english-spanish,seq transl,0.594,0.8
+B,L17H23,17,query,single,1,country-capital,facts,0.532,1.0
+B,L17H24,17,query,single,1,next_item,seq,0.534,1.0
+B,L17H29,17,query,single,1,present-past,morph,0.587,1.0
+B,L18H16,18,query,broad,2,singular-plural english-french,morph transl,0.576,0.5
+B,L18H19,18,query,broad,2,synonym english-spanish,transl word,0.615,0.5
+B,L18H20,18,query,single,1,next_item,seq,0.524,0.0
+B,L19H0,19,query,family,2,next_item prev_item,seq,0.595,1.0
+B,L19H8,19,query,broad,3,antonym synonym present-past,morph word,0.604,1.0
+B,L19H9,19,query,broad,6,antonym synonym present-past english-french english-german english-spanish,morph transl word,0.563,0.833
+B,L19H13,19,query,broad,2,antonym english-french,transl word,0.52,0.5
+B,L19H20,19,query,broad,5,antonym country-capital country-currency next_item prev_item,facts seq word,0.619,0.8
+B,L19H25,19,query,family,2,country-capital country-currency,facts,0.544,1.0
+B,L19H27,19,query,family,2,country-capital country-currency,facts,0.598,1.0
+B,L20H1,20,query,broad,7,antonym synonym singular-plural present-past english-french english-german english-spanish,morph transl word,0.748,1.0
+B,L21H14,21,query,single,1,singular-plural,morph,0.622,1.0
+B,L21H26,21,query,broad,3,synonym english-french english-german,transl word,0.549,0.333
+B,L22H8,22,query,single,1,present-past,morph,0.521,0.0
+B,L22H11,22,query,family,2,english-french english-german,transl,0.518,0.5
+B,L22H13,22,query,family,2,next_item prev_item,seq,0.661,1.0
+B,L23H14,23,query,single,1,prev_item,seq,0.533,1.0
+B,L24H3,24,query,family,2,country-capital country-currency,facts,0.573,1.0
+B,L24H23,24,query,broad,5,antonym synonym english-french english-german english-spanish,transl word,0.596,1.0
+B,L25H18,25,query,single,1,synonym,word,0.519,0.0
+B,L27H5,27,query,broad,3,singular-plural present-past english-spanish,morph transl,0.549,0.667
+B,L27H7,27,query,single,1,present-past,morph,0.753,1.0
+B,L27H20,27,query,family,2,country-capital country-currency,facts,0.6,1.0
+B,L28H0,28,query,single,1,singular-plural,morph,0.557,1.0
+B,L28H16,28,query,single,1,prev_item,seq,0.523,1.0
+B,L28H18,28,query,family,2,next_item prev_item,seq,0.627,1.0
+B,L28H20,28,query,single,1,present-past,morph,0.738,1.0
+B,L29H31,29,query,broad,3,singular-plural english-french english-german,morph transl,0.581,0.667
+B,L31H0,31,query,broad,5,synonym singular-plural english-french english-german english-spanish,morph transl word,0.714,1.0
+B,L31H1,31,query,broad,2,synonym english-spanish,transl word,0.582,1.0
+B,L31H3,31,query,broad,5,synonym singular-plural english-french english-german english-spanish,morph transl word,0.569,1.0
+B,L30H24,30,answer_letter,broad,5,country-capital landmark-country park-country next_item prev_item,facts seq,0.632,0.8
+B,L30H26,30,answer_letter,broad,7,country-capital country-currency landmark-country park-country next_item prev_item english-german,facts seq transl,0.649,1.0
+B,L30H27,30,answer_letter,broad,6,country-capital country-currency landmark-country park-country next_item prev_item,facts seq,0.632,0.833
+B,L31H1,31,answer_letter,broad,6,country-capital country-currency landmark-country next_item prev_item english-german,facts seq transl,0.674,1.0
+B,L31H3,31,answer_letter,single,1,country-capital,facts,0.706,1.0
+B,L22H12,22,query_letter,broad,4,antonym country-currency next_item prev_item,facts seq word,0.738,1.0
+B,L22H14,22,query_letter,constant,12,antonym synonym country-capital country-currency landmark-country park-country product-company next_item prev_item english-french english-german english-spanish,facts seq transl word,0.599,0.833
+B,L22H15,22,query_letter,constant,11,antonym country-capital country-currency landmark-country park-country product-company next_item prev_item english-french english-german english-spanish,facts seq transl word,0.684,1.0
+B,L24H24,24,query_letter,constant,11,antonym synonym country-currency landmark-country park-country product-company next_item prev_item english-french english-german english-spanish,facts seq transl word,0.634,0.818
+B,L29H20,29,query_letter,single,1,synonym,word,0.521,1.0
+B,L29H21,29,query_letter,broad,8,antonym synonym country-currency landmark-country park-country next_item prev_item english-german,facts seq transl word,0.569,0.75
+B,L30H14,30,query_letter,broad,2,synonym country-currency,facts word,0.681,1.0
+B,L30H15,30,query_letter,broad,3,synonym country-capital country-currency,facts word,0.583,1.0
+B,L31H13,31,query_letter,constant,11,antonym synonym country-capital country-currency landmark-country park-country next_item prev_item english-french english-german english-spanish,facts seq transl word,0.702,1.0
+B,L6H22,6,category,family,3,country-currency landmark-country park-country,facts,0.633,1.0
+B,L7H0,7,category,single,1,next_item,seq,0.506,1.0
+B,L8H5,8,category,single,1,antonym,word,0.612,1.0
+B,L8H17,8,category,broad,4,park-country english-french english-german english-spanish,facts transl,0.709,1.0
+B,L11H26,11,category,single,1,prev_item,seq,0.59,1.0
+B,L12H6,12,category,single,1,antonym,word,0.558,1.0
+B,L12H15,12,category,single,1,next_item,seq,0.551,1.0
+B,L12H16,12,category,single,1,synonym,word,0.617,1.0
+B,L13H1,13,category,single,1,country-currency,facts,0.526,1.0
+B,L13H3,13,category,single,1,country-currency,facts,0.596,1.0
+B,L13H4,13,category,single,1,english-french,transl,0.566,1.0
+B,L13H6,13,category,family,3,english-french english-german english-spanish,transl,0.578,1.0
+B,L13H22,13,category,single,1,present-past,morph,0.924,1.0
+B,L13H30,13,category,family,4,country-currency landmark-country park-country product-company,facts,0.648,1.0
+B,L14H1,14,category,single,1,present-past,morph,0.552,0.0
+B,L14H2,14,category,single,1,present-past,morph,0.97,1.0
+B,L14H4,14,category,single,1,antonym,word,0.607,1.0
+B,L14H5,14,category,broad,3,country-capital country-currency english-spanish,facts transl,0.657,1.0
+B,L14H6,14,category,single,1,country-capital,facts,0.522,1.0
+B,L14H12,14,category,family,2,landmark-country park-country,facts,0.575,1.0
+B,L14H24,14,category,broad,2,antonym english-spanish,transl word,0.681,1.0
+B,L14H25,14,category,family,3,english-french english-german english-spanish,transl,0.817,1.0
+B,L14H27,14,category,single,1,antonym,word,0.578,1.0
+B,L15H1,15,category,broad,4,country-capital park-country next_item prev_item,facts seq,0.666,1.0
+B,L15H3,15,category,family,2,next_item prev_item,seq,0.771,1.0
+B,L15H11,15,category,single,1,park-country,facts,0.678,1.0
+B,L15H16,15,category,single,1,next_item,seq,0.502,1.0
+B,L15H21,15,category,single,1,present-past,morph,0.544,0.0
+B,L15H22,15,category,family,4,country-capital country-currency landmark-country park-country,facts,0.929,1.0
+B,L15H25,15,category,single,1,landmark-country,facts,0.541,0.0
+B,L15H28,15,category,broad,2,synonym prev_item,seq word,0.568,0.5
+B,L16H7,16,category,single,1,next_item,seq,0.669,1.0
+B,L16H8,16,category,family,2,country-capital park-country,facts,0.606,1.0
+B,L16H9,16,category,single,1,english-spanish,transl,0.624,1.0
+B,L16H18,16,category,family,2,english-french english-spanish,transl,0.778,1.0
+B,L16H25,16,category,family,3,country-currency landmark-country park-country,facts,0.861,1.0
+B,L16H26,16,category,single,1,country-currency,facts,0.986,1.0
+B,L16H28,16,category,single,1,next_item,seq,0.736,1.0
+B,L17H0,17,category,single,1,product-company,facts,0.556,0.0
+B,L17H4,17,category,family,2,landmark-country park-country,facts,0.779,1.0
+B,L17H5,17,category,family,4,country-capital landmark-country park-country product-company,facts,0.948,1.0
+B,L17H13,17,category,single,1,english-french,transl,0.67,1.0
+B,L17H15,17,category,family,4,country-currency landmark-country park-country product-company,facts,0.713,1.0
+B,L17H18,17,category,broad,2,antonym prev_item,seq word,0.553,1.0
+B,L17H23,17,category,family,2,english-german english-spanish,transl,0.709,1.0
+B,L17H24,17,category,single,1,prev_item,seq,0.528,1.0
+B,L17H25,17,category,single,1,prev_item,seq,0.502,1.0
+B,L18H6,18,category,single,1,antonym,word,0.576,1.0
+B,L18H11,18,category,single,1,antonym,word,0.59,1.0
+B,L18H14,18,category,broad,5,country-currency landmark-country park-country product-company english-french,facts transl,0.686,1.0
+B,L18H15,18,category,broad,6,antonym country-currency landmark-country park-country next_item prev_item,facts seq word,0.69,1.0
+B,L18H20,18,category,family,2,next_item prev_item,seq,0.662,1.0
+B,L18H23,18,category,single,1,prev_item,seq,0.515,1.0
+B,L18H30,18,category,family,2,next_item prev_item,seq,0.646,1.0
+B,L19H0,19,category,family,2,next_item prev_item,seq,0.603,1.0
+B,L19H19,19,category,family,2,next_item prev_item,seq,0.577,1.0
+B,L19H20,19,category,single,1,next_item,seq,0.524,1.0
+B,L19H25,19,category,family,2,english-french english-spanish,transl,0.604,1.0
+B,L20H5,20,category,single,1,antonym,word,0.6,1.0
+B,L20H8,20,category,single,1,present-past,morph,0.542,1.0
+B,L20H12,20,category,family,2,next_item prev_item,seq,0.652,1.0
+B,L20H25,20,category,single,1,next_item,seq,0.569,1.0
+B,L20H29,20,category,broad,3,landmark-country park-country next_item,facts seq,0.639,0.667
+B,L21H0,21,category,single,1,present-past,morph,0.782,1.0
+B,L21H1,21,category,broad,5,antonym landmark-country park-country product-company next_item,facts seq word,0.667,1.0
+B,L21H2,21,category,broad,9,antonym synonym singular-plural present-past country-capital landmark-country park-country next_item prev_item,facts morph seq word,0.817,1.0
+B,L21H4,21,category,single,1,present-past,morph,0.86,1.0
+B,L21H5,21,category,single,1,singular-plural,morph,0.828,1.0
+B,L21H8,21,category,single,1,country-capital,facts,0.593,1.0
+B,L21H10,21,category,broad,2,singular-plural landmark-country,facts morph,0.597,1.0
+B,L21H14,21,category,family,2,country-capital product-company,facts,0.691,1.0
+B,L21H19,21,category,single,1,english-french,transl,0.503,1.0
+B,L22H11,22,category,single,1,singular-plural,morph,0.599,1.0
+B,L22H13,22,category,family,2,next_item prev_item,seq,0.563,1.0
+B,L22H16,22,category,family,2,landmark-country park-country,facts,0.858,1.0
+B,L22H17,22,category,single,1,present-past,morph,0.758,1.0
+B,L22H19,22,category,family,3,landmark-country park-country product-company,facts,0.721,1.0
+B,L22H28,22,category,single,1,singular-plural,morph,0.58,1.0
+B,L23H8,23,category,broad,5,park-country product-company english-french english-german english-spanish,facts transl,0.671,1.0
+B,L23H16,23,category,single,1,prev_item,seq,0.634,1.0
+B,L24H0,24,category,family,3,english-french english-german english-spanish,transl,0.924,1.0
+B,L24H1,24,category,family,2,english-german english-spanish,transl,0.785,1.0
+B,L24H3,24,category,single,1,english-german,transl,0.613,1.0
+B,L24H30,24,category,family,2,landmark-country park-country,facts,0.813,1.0
+B,L25H23,25,category,broad,11,antonym synonym singular-plural present-past country-capital country-currency landmark-country park-country product-company next_item prev_item,facts morph seq word,0.835,1.0
+B,L25H24,25,category,family,2,landmark-country park-country,facts,0.862,1.0
+B,L26H0,26,category,broad,3,antonym landmark-country park-country,facts word,0.624,1.0
+B,L26H3,26,category,family,2,next_item prev_item,seq,0.555,1.0
+B,L26H5,26,category,single,1,english-french,transl,0.55,1.0
+B,L26H7,26,category,family,2,english-german english-spanish,transl,0.71,1.0
+B,L26H23,26,category,single,1,present-past,morph,0.886,1.0
+B,L28H9,28,category,single,1,landmark-country,facts,0.544,0.0
+B,L28H10,28,category,broad,3,landmark-country park-country next_item,facts seq,0.567,0.667
+B,L29H0,29,category,single,1,prev_item,seq,0.504,0.0
+B,L29H1,29,category,broad,3,synonym english-french english-german,transl word,0.783,1.0
+B,L29H2,29,category,family,2,english-french english-spanish,transl,0.551,1.0
+B,L29H4,29,category,family,2,english-french english-german,transl,0.684,0.5
+B,L29H25,29,category,broad,3,present-past landmark-country park-country,facts morph,0.67,1.0
+B,L29H28,29,category,family,3,landmark-country park-country product-company,facts,0.87,1.0
+B,L29H30,29,category,single,1,antonym,word,0.659,1.0
+B,L30H6,30,category,single,1,english-german,transl,0.504,1.0
+B,L30H9,30,category,single,1,singular-plural,morph,0.638,1.0
+B,L30H21,30,category,family,2,english-german english-spanish,transl,0.71,1.0
+B,L30H22,30,category,family,2,english-german english-spanish,transl,0.903,1.0
+B,L30H23,30,category,family,3,english-french english-german english-spanish,transl,0.908,1.0
+B,L31H0,31,category,single,1,antonym,word,0.508,1.0
+B,L31H3,31,category,broad,3,antonym present-past next_item,morph seq word,0.618,1.0
+B,L31H6,31,category,broad,7,country-capital country-currency landmark-country park-country product-company english-german english-spanish,facts transl,0.827,1.0
+B,L31H7,31,category,broad,7,country-capital country-currency landmark-country park-country product-company english-german english-spanish,facts transl,0.723,1.0
+B,L31H14,31,category,single,1,synonym,word,0.55,0.0
+B,L31H24,31,category,single,1,next_item,seq,0.568,1.0
+B,L31H30,31,category,broad,3,landmark-country park-country next_item,facts seq,0.664,1.0
+B,L6H7,6,task_word,family,2,english-french english-spanish,transl,0.676,1.0
+B,L6H22,6,task_word,broad,3,singular-plural present-past country-currency,facts morph,0.582,0.667
+B,L6H29,6,task_word,single,1,country-capital,facts,0.606,1.0
+B,L8H17,8,task_word,single,1,english-spanish,transl,0.748,1.0
+B,L8H19,8,task_word,single,1,english-spanish,transl,0.658,1.0
+B,L8H31,8,task_word,broad,5,present-past country-capital country-currency landmark-country park-country,facts morph,0.746,1.0
+B,L9H19,9,task_word,broad,4,country-capital country-currency english-german english-spanish,facts transl,0.672,1.0
+B,L9H31,9,task_word,single,1,english-spanish,transl,0.552,1.0
+B,L10H18,10,task_word,single,1,landmark-country,facts,0.514,0.0
+B,L10H27,10,task_word,family,3,country-currency landmark-country park-country,facts,0.643,1.0
+B,L11H4,11,task_word,family,2,antonym synonym,word,0.753,1.0
+B,L12H29,12,task_word,single,1,next_item,seq,0.587,1.0
+B,L13H1,13,task_word,family,2,country-currency park-country,facts,0.651,1.0
+B,L13H3,13,task_word,family,2,country-currency landmark-country,facts,0.608,1.0
+B,L13H4,13,task_word,single,1,english-spanish,transl,0.682,1.0
+B,L13H6,13,task_word,family,2,english-french english-spanish,transl,0.792,1.0
+B,L13H8,13,task_word,broad,3,synonym singular-plural park-country,facts morph word,0.605,1.0
+B,L13H9,13,task_word,single,1,landmark-country,facts,0.83,1.0
+B,L13H11,13,task_word,broad,6,antonym synonym country-capital country-currency landmark-country park-country,facts word,0.81,1.0
+B,L13H14,13,task_word,family,2,landmark-country park-country,facts,0.822,1.0
+B,L13H15,13,task_word,broad,4,landmark-country english-french english-german english-spanish,facts transl,0.758,1.0
+B,L13H20,13,task_word,single,1,singular-plural,morph,0.886,1.0
+B,L13H21,13,task_word,broad,3,antonym singular-plural prev_item,morph seq word,0.789,1.0
+B,L13H22,13,task_word,broad,4,antonym singular-plural next_item prev_item,morph seq word,0.855,1.0
+B,L13H23,13,task_word,single,1,antonym,word,0.804,1.0
+B,L13H30,13,task_word,broad,4,present-past country-capital country-currency park-country,facts morph,0.684,0.75
+B,L14H2,14,task_word,family,2,next_item prev_item,seq,0.72,1.0
+B,L14H5,14,task_word,broad,7,antonym singular-plural present-past country-capital landmark-country prev_item english-spanish,facts morph seq transl word,0.772,0.857
+B,L14H6,14,task_word,single,1,park-country,facts,0.58,1.0
+B,L14H7,14,task_word,single,1,landmark-country,facts,0.53,1.0
+B,L14H12,14,task_word,broad,4,antonym synonym landmark-country park-country,facts word,0.811,1.0
+B,L14H13,14,task_word,broad,11,singular-plural present-past country-capital country-currency landmark-country park-country product-company next_item english-french english-german english-spanish,facts morph seq transl,0.849,1.0
+B,L14H24,14,task_word,family,3,english-french english-german english-spanish,transl,0.962,1.0
+B,L14H31,14,task_word,broad,4,antonym synonym country-currency park-country,facts word,0.642,0.75
+B,L15H1,15,task_word,family,2,country-capital park-country,facts,0.551,0.0
+B,L15H3,15,task_word,family,2,country-currency park-country,facts,0.657,1.0
+B,L15H4,15,task_word,broad,6,singular-plural country-capital country-currency landmark-country park-country next_item,facts morph seq,0.761,1.0
+B,L15H5,15,task_word,family,2,country-currency product-company,facts,0.73,0.5
+B,L15H7,15,task_word,broad,3,synonym product-company next_item,facts seq word,0.684,0.667
+B,L15H12,15,task_word,single,1,next_item,seq,0.672,1.0
+B,L15H13,15,task_word,broad,5,singular-plural country-capital country-currency landmark-country park-country,facts morph,0.897,1.0
+B,L15H14,15,task_word,broad,9,singular-plural present-past country-capital country-currency landmark-country park-country product-company next_item prev_item,facts morph seq,0.903,1.0
+B,L15H21,15,task_word,broad,6,singular-plural country-capital country-currency landmark-country park-country product-company,facts morph,0.886,1.0
+B,L15H22,15,task_word,broad,5,singular-plural landmark-country park-country prev_item english-spanish,facts morph seq transl,0.786,1.0
+B,L15H23,15,task_word,single,1,singular-plural,morph,0.586,1.0
+B,L15H25,15,task_word,broad,6,present-past country-capital country-currency landmark-country park-country product-company,facts morph,0.874,1.0
+B,L15H26,15,task_word,broad,4,country-capital country-currency park-country next_item,facts seq,0.764,1.0
+B,L15H27,15,task_word,broad,8,singular-plural present-past country-capital country-currency landmark-country park-country next_item prev_item,facts morph seq,0.9,0.875
+B,L16H1,16,task_word,family,2,landmark-country park-country,facts,0.657,1.0
+B,L16H4,16,task_word,single,1,prev_item,seq,0.561,1.0
+B,L16H8,16,task_word,broad,3,present-past country-currency english-french,facts morph transl,0.699,1.0
+B,L16H9,16,task_word,family,3,english-french english-german english-spanish,transl,0.857,1.0
+B,L16H12,16,task_word,single,1,antonym,word,0.501,0.0
+B,L16H16,16,task_word,single,1,park-country,facts,0.88,1.0
+B,L16H18,16,task_word,family,3,english-french english-german english-spanish,transl,0.994,1.0
+B,L16H25,16,task_word,family,5,country-capital country-currency landmark-country park-country product-company,facts,0.978,1.0
+B,L16H27,16,task_word,broad,3,antonym country-currency product-company,facts word,0.575,0.333
+B,L16H28,16,task_word,single,1,antonym,word,0.57,1.0
+B,L17H0,17,task_word,family,2,country-currency park-country,facts,0.83,1.0
+B,L17H2,17,task_word,single,1,present-past,morph,1.0,1.0
+B,L17H3,17,task_word,broad,6,country-capital country-currency landmark-country park-country next_item prev_item,facts seq,0.861,0.833
+B,L17H4,17,task_word,broad,6,singular-plural country-capital country-currency landmark-country park-country product-company,facts morph,0.899,1.0
+B,L17H5,17,task_word,single,1,product-company,facts,0.97,1.0
+B,L17H7,17,task_word,broad,4,singular-plural present-past country-currency product-company,facts morph,0.835,1.0
+B,L17H15,17,task_word,broad,5,country-capital country-currency product-company english-french english-spanish,facts transl,0.66,0.6
+B,L17H20,17,task_word,broad,4,antonym singular-plural next_item prev_item,morph seq word,0.702,1.0
+B,L17H21,17,task_word,broad,3,singular-plural next_item prev_item,morph seq,0.943,1.0
+B,L17H23,17,task_word,family,3,english-french english-german english-spanish,transl,0.812,1.0
+B,L17H25,17,task_word,family,2,landmark-country park-country,facts,0.765,1.0
+B,L17H26,17,task_word,broad,3,present-past park-country prev_item,facts morph seq,0.646,0.667
+B,L17H28,17,task_word,single,1,prev_item,seq,0.532,0.0
+B,L17H29,17,task_word,family,2,landmark-country product-company,facts,0.56,0.5
+B,L17H31,17,task_word,single,1,singular-plural,morph,0.535,1.0
+B,L18H0,18,task_word,broad,3,antonym present-past park-country,facts morph word,0.724,1.0
+B,L18H8,18,task_word,broad,2,singular-plural next_item,morph seq,0.681,1.0
+B,L18H9,18,task_word,family,2,country-capital product-company,facts,0.765,1.0
+B,L18H14,18,task_word,broad,6,antonym synonym present-past next_item english-french english-spanish,morph seq transl word,0.765,1.0
+B,L18H18,18,task_word,single,1,product-company,facts,0.662,1.0
+B,L18H19,18,task_word,broad,5,landmark-country park-country product-company next_item prev_item,facts seq,0.797,1.0
+B,L18H24,18,task_word,family,4,country-capital country-currency park-country product-company,facts,0.752,1.0
+B,L18H28,18,task_word,single,1,country-capital,facts,0.545,0.0
+B,L19H2,19,task_word,family,2,landmark-country park-country,facts,0.671,1.0
+B,L19H6,19,task_word,broad,2,park-country prev_item,facts seq,0.579,1.0
+B,L19H7,19,task_word,single,1,antonym,word,0.552,0.0
+B,L19H8,19,task_word,broad,6,country-currency landmark-country park-country product-company next_item prev_item,facts seq,0.821,0.833
+B,L19H9,19,task_word,broad,8,singular-plural country-capital country-currency landmark-country park-country product-company next_item prev_item,facts morph seq,0.869,0.875
+B,L19H13,19,task_word,single,1,park-country,facts,0.538,1.0
+B,L19H20,19,task_word,single,1,park-country,facts,0.74,1.0
+B,L19H21,19,task_word,single,1,park-country,facts,0.788,1.0
+B,L19H25,19,task_word,family,3,english-french english-german english-spanish,transl,0.957,1.0
+B,L20H1,20,task_word,family,4,country-capital landmark-country park-country product-company,facts,0.779,1.0
+B,L20H8,20,task_word,family,2,next_item prev_item,seq,0.626,1.0
+B,L20H12,20,task_word,single,1,park-country,facts,0.78,1.0
+B,L20H20,20,task_word,broad,2,landmark-country prev_item,facts seq,0.703,0.5
+B,L20H23,20,task_word,family,2,next_item prev_item,seq,0.568,0.0
+B,L20H28,20,task_word,single,1,singular-plural,morph,0.752,1.0
+B,L20H29,20,task_word,broad,3,landmark-country park-country prev_item,facts seq,0.647,0.667
+B,L21H0,21,task_word,family,2,country-capital country-currency,facts,0.863,1.0
+B,L21H2,21,task_word,family,3,landmark-country park-country product-company,facts,0.782,1.0
+B,L21H5,21,task_word,single,1,product-company,facts,0.532,0.0
+B,L21H9,21,task_word,family,2,landmark-country park-country,facts,0.641,0.5
+B,L21H10,21,task_word,broad,5,singular-plural country-capital landmark-country park-country product-company,facts morph,0.85,1.0
+B,L21H11,21,task_word,broad,3,landmark-country park-country next_item,facts seq,0.576,1.0
+B,L21H12,21,task_word,family,2,landmark-country park-country,facts,0.847,1.0
+B,L21H14,21,task_word,family,2,country-capital country-currency,facts,0.887,1.0
+B,L21H15,21,task_word,family,4,country-capital country-currency landmark-country park-country,facts,0.755,1.0
+B,L21H17,21,task_word,single,1,product-company,facts,0.652,1.0
+B,L21H19,21,task_word,family,2,country-currency park-country,facts,0.625,1.0
+B,L21H25,21,task_word,broad,4,singular-plural country-currency landmark-country park-country,facts morph,0.8,0.75
+B,L21H28,21,task_word,broad,2,present-past prev_item,morph seq,0.932,1.0
+B,L21H29,21,task_word,broad,3,antonym next_item prev_item,seq word,0.828,1.0
+B,L21H30,21,task_word,family,3,landmark-country park-country product-company,facts,0.905,1.0
+B,L22H0,22,task_word,broad,2,landmark-country prev_item,facts seq,0.719,1.0
+B,L22H2,22,task_word,single,1,prev_item,seq,0.769,1.0
+B,L22H8,22,task_word,single,1,prev_item,seq,0.798,1.0
+B,L22H11,22,task_word,broad,6,country-capital country-currency landmark-country park-country product-company next_item,facts seq,0.809,1.0
+B,L22H13,22,task_word,single,1,singular-plural,morph,0.651,1.0
+B,L22H16,22,task_word,broad,5,antonym country-capital landmark-country park-country product-company,facts word,0.707,0.8
+B,L22H19,22,task_word,family,2,country-capital product-company,facts,0.592,0.5
+B,L22H24,22,task_word,broad,2,singular-plural country-currency,facts morph,0.985,1.0
+B,L22H27,22,task_word,broad,6,antonym synonym present-past country-currency next_item prev_item,facts morph seq word,0.725,0.667
+B,L22H28,22,task_word,family,5,country-capital country-currency landmark-country park-country product-company,facts,0.951,1.0
+B,L22H29,22,task_word,family,5,country-capital country-currency landmark-country park-country product-company,facts,0.954,1.0
+B,L23H5,23,task_word,single,1,prev_item,seq,0.619,1.0
+B,L23H6,23,task_word,family,5,country-capital country-currency landmark-country park-country product-company,facts,0.797,1.0
+B,L23H8,23,task_word,broad,5,present-past next_item english-french english-german english-spanish,morph seq transl,0.745,0.8
+B,L23H12,23,task_word,single,1,synonym,word,0.718,1.0
+B,L23H13,23,task_word,family,4,country-capital country-currency landmark-country park-country,facts,0.785,1.0
+B,L23H15,23,task_word,single,1,landmark-country,facts,0.586,0.0
+B,L23H20,23,task_word,broad,2,singular-plural country-currency,facts morph,0.746,0.5
+B,L23H22,23,task_word,single,1,country-currency,facts,0.936,1.0
+B,L23H25,23,task_word,family,4,country-capital country-currency landmark-country park-country,facts,0.678,1.0
+B,L23H28,23,task_word,single,1,antonym,word,0.624,1.0
+B,L23H29,23,task_word,broad,3,landmark-country park-country next_item,facts seq,0.711,1.0
+B,L24H0,24,task_word,single,1,english-french,transl,0.862,1.0
+B,L24H1,24,task_word,single,1,english-spanish,transl,0.996,1.0
+B,L24H2,24,task_word,single,1,landmark-country,facts,0.816,1.0
+B,L24H3,24,task_word,family,3,english-french english-german english-spanish,transl,0.862,1.0
+B,L24H4,24,task_word,single,1,prev_item,seq,0.523,1.0
+B,L24H7,24,task_word,single,1,prev_item,seq,0.906,1.0
+B,L24H17,24,task_word,single,1,country-currency,facts,0.645,1.0
+B,L24H18,24,task_word,family,2,country-currency product-company,facts,0.748,1.0
+B,L24H20,24,task_word,single,1,country-capital,facts,0.556,1.0
+B,L24H22,24,task_word,family,2,park-country product-company,facts,0.843,1.0
+B,L24H23,24,task_word,family,4,country-capital landmark-country park-country product-company,facts,0.632,0.75
+B,L24H25,24,task_word,single,1,prev_item,seq,0.887,1.0
+B,L24H26,24,task_word,single,1,country-capital,facts,0.699,1.0
+B,L25H4,25,task_word,single,1,country-capital,facts,0.874,1.0
+B,L25H7,25,task_word,broad,5,present-past park-country product-company next_item prev_item,facts morph seq,0.885,1.0
+B,L25H12,25,task_word,single,1,antonym,word,0.914,1.0
+B,L25H13,25,task_word,broad,2,synonym prev_item,seq word,0.78,1.0
+B,L25H23,25,task_word,family,3,landmark-country park-country product-company,facts,0.827,1.0
+B,L25H24,25,task_word,family,2,landmark-country park-country,facts,0.754,1.0
+B,L25H29,25,task_word,single,1,product-company,facts,0.714,0.0
+B,L26H7,26,task_word,single,1,english-spanish,transl,0.532,1.0
+B,L26H12,26,task_word,single,1,prev_item,seq,0.563,1.0
+B,L26H27,26,task_word,family,5,country-capital country-currency landmark-country park-country product-company,facts,0.789,0.8
+B,L26H29,26,task_word,single,1,antonym,word,0.75,1.0
+B,L27H6,27,task_word,family,2,landmark-country park-country,facts,0.542,0.0
+B,L27H7,27,task_word,single,1,park-country,facts,0.54,1.0
+B,L27H8,27,task_word,broad,2,park-country next_item,facts seq,0.637,1.0
+B,L27H20,27,task_word,family,2,english-french english-spanish,transl,0.793,1.0
+B,L27H22,27,task_word,family,2,next_item prev_item,seq,0.744,1.0
+B,L28H0,28,task_word,single,1,country-currency,facts,0.917,1.0
+B,L28H9,28,task_word,broad,2,landmark-country prev_item,facts seq,0.549,0.5
+B,L28H10,28,task_word,single,1,landmark-country,facts,0.556,1.0
+B,L28H13,28,task_word,single,1,synonym,word,0.706,1.0
+B,L28H18,28,task_word,single,1,singular-plural,morph,0.633,1.0
+B,L28H20,28,task_word,single,1,prev_item,seq,0.7,1.0
+B,L28H22,28,task_word,family,2,landmark-country park-country,facts,0.58,1.0
+B,L28H23,28,task_word,broad,3,product-company next_item prev_item,facts seq,0.581,1.0
+B,L28H24,28,task_word,family,2,next_item prev_item,seq,0.856,1.0
+B,L28H27,28,task_word,family,2,next_item prev_item,seq,0.947,1.0
+B,L28H30,28,task_word,family,3,landmark-country park-country product-company,facts,0.855,1.0
+B,L29H1,29,task_word,single,1,english-german,transl,0.93,1.0
+B,L29H28,29,task_word,broad,8,singular-plural present-past landmark-country park-country next_item english-french english-german english-spanish,facts morph seq transl,0.777,0.75
+B,L29H30,29,task_word,broad,6,present-past country-capital country-currency landmark-country park-country product-company,facts morph,0.879,1.0
+B,L29H31,29,task_word,broad,8,present-past country-capital country-currency landmark-country park-country product-company next_item prev_item,facts morph seq,0.858,0.875
+B,L30H1,30,task_word,single,1,prev_item,seq,0.519,0.0
+B,L30H12,30,task_word,family,5,country-capital country-currency landmark-country park-country product-company,facts,0.808,1.0
+B,L30H21,30,task_word,single,1,english-spanish,transl,0.638,1.0
+B,L30H22,30,task_word,single,1,english-spanish,transl,0.978,1.0
+B,L30H29,30,task_word,single,1,park-country,facts,0.826,1.0
+B,L30H30,30,task_word,broad,3,landmark-country park-country prev_item,facts seq,0.75,1.0
+B,L31H0,31,task_word,broad,5,country-currency landmark-country park-country next_item prev_item,facts seq,0.639,0.6
+B,L31H1,31,task_word,family,3,landmark-country park-country product-company,facts,0.639,0.667
+B,L31H3,31,task_word,single,1,prev_item,seq,0.634,1.0
+B,L31H6,31,task_word,broad,2,product-company english-german,facts transl,0.795,1.0
+B,L31H7,31,task_word,broad,4,next_item english-french english-german english-spanish,seq transl,0.801,1.0
+B,L31H21,31,task_word,broad,5,landmark-country park-country product-company next_item prev_item,facts seq,0.816,0.8
+B,L31H24,31,task_word,broad,2,singular-plural park-country,facts morph,0.505,1.0
+B,L31H26,31,task_word,family,2,landmark-country park-country,facts,0.593,1.0
+B,L31H30,31,task_word,family,3,landmark-country park-country product-company,facts,0.673,1.0

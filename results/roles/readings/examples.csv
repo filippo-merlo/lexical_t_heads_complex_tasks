@@ -1,0 +1,19 @@
+head,task,half,prompts,tokens
+L14H13,country-capital,A,489,' city' 1.00 | ' cities' 0.98 | 'city' 0.96 | ' Cities' 0.85 | ' ciudad' 0.83 | ' Mayor' 0.61 | '-city' 0.56 | ' diplomatic' 0.45
+L14H13,country-currency,A,343,' currency' 1.00 | ' currencies' 1.00 | 'Currency' 1.00 | ' Currency' 1.00 | ' monetary' 1.00 | ' financial' 1.00 | ' economic' 0.94 | ' finance' 0.80
+L14H13,english-french,A,500,' linguistic' 0.74 | ' language' 0.74 | ' Language' 0.70 | ' translations' 0.67 | ' languages' 0.67 | ' lingu' 0.66 | ' translation' 0.63 | ' bilingual' 0.57
+L14H13,next_item,A,224,' alphabetical' 0.37 | ' calendar' 0.34 | ' calendars' 0.31 | ' Calendar' 0.30 | ' calend' 0.28 | ' alphabet' 0.25 | 'Calendar' 0.24 | ' numbering' 0.22
+L25H23,country-capital,A,489,' Barcelona' 0.89 | ' Mumbai' 0.77 | ' Bangkok' 0.76 | ' Paris' 0.74 | ' Athens' 0.69 | ' Rome' 0.61 | ' Nairobi' 0.57 | ' Naples' 0.57
+L25H23,country-currency,A,343,' Portuguese' 0.99 | ' Japanese' 0.99 | ' Spanish' 0.82 | ' Pakistani' 0.74 | ' Turkish' 0.71 | ' British' 0.70 | ' Korean' 0.64 | ' Brazilian' 0.50
+L25H23,antonym,A,500,' woman' 0.27 | ' healthy' 0.24 | ' peaceful' 0.21 | ':&' 0.19 | ' None' 0.19 | ' conservative' 0.16 | ' piece' 0.16 | ' unhealthy' 0.13
+L31H1,country-capital,A,489,' state' 0.33 | ' city' 0.25 | ' country' 0.24 | 'state' 0.18 | '-b' 0.14 | 'b' 0.13 | '_b' 0.13 | 'city' 0.12
+L31H1,english-german,A,500,'_b' 0.11 | '-b' 0.11 | 'b' 0.10 | '-s' 0.09 | '_s' 0.09 | '\xads' 0.08 | 'ss' 0.07 | '-f' 0.07
+L24H3,country-capital,A,489,' African' 0.21 | ' Africa' 0.19 | 'Africa' 0.18 | ' Africans' 0.17 | ' Belize' 0.12 | ' Caribbean' 0.11 | ' african' 0.11 | ' Ecuador' 0.09
+L24H3,landmark-country,A,500,' German' 0.10 | ' Germany' 0.09 | 'German' 0.09 | ' Germans' 0.09 | 'Germany' 0.09 | ' german' 0.09 | ' germany' 0.09 | ' Deutschland' 0.08
+L24H3,english-french,A,500,' French' 0.95 | ' France' 0.95 | 'French' 0.94 | ' french' 0.94 | 'France' 0.94 | ' француз' 0.94 | ' Paris' 0.94 | ' france' 0.94
+L26H27,country-capital,A,489,' country' 0.83 | ' Country' 0.72 | 'country' 0.67 | ' nation' 0.64 | 'Country' 0.63 | ' city' 0.61 | '-country' 0.58 | ' cities' 0.53
+L26H27,product-company,A,500,' company' 0.83 | ' Company' 0.77 | 'company' 0.72 | ' companies' 0.70 | 'Company' 0.68 | ' COMPANY' 0.64 | ' Companies' 0.60 | '-company' 0.58
+L28H24,next_item,A,224,' next' 0.86 | 'next' 0.79 | 'Next' 0.79 | ' Next' 0.76 | '-next' 0.68 | '.next' 0.66 | '_next' 0.65 | '(next' 0.53
+L28H24,prev_item,A,295,' previously' 0.91 | ' previous' 0.87 | ' Previously' 0.85 | 'Previously' 0.84 | 'Previous' 0.69 | ' Previous' 0.68 | 'previous' 0.66 | '.previous' 0.43
+L24H1,english-french,A,500,' les' 1.00 | ' dé' 1.00 | ' Ré' 0.99 | ' É' 0.99 | ' é' 0.98 | ' ét' 0.98 | ' à' 0.96 | 'é' 0.89
+L24H1,english-german,A,500,' von' 0.98 | ' Die' 0.98 | ' Haupt' 0.98 | ' Das' 0.98 | ' Auf' 0.97 | ' Ein' 0.97 | ' die' 0.94 | ' auf' 0.91
