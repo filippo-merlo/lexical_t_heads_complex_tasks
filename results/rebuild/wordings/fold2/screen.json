@@ -1,19 +1,19 @@
 {
  "per_task": {
-  "antonym": 510,
+  "antonym": 509,
   "synonym": 510,
-  "singular-plural": 511,
-  "present-past": 511,
-  "country-capital": 511,
-  "country-currency": 509,
-  "landmark-country": 511,
+  "singular-plural": 509,
+  "present-past": 507,
+  "country-capital": 510,
+  "country-currency": 511,
+  "landmark-country": 509,
   "park-country": 511,
-  "product-company": 510,
+  "product-company": 511,
   "next_item": 510,
-  "prev_item": 511,
-  "english-french": 511,
-  "english-german": 510,
-  "english-spanish": 508
+  "prev_item": 510,
+  "english-french": 510,
+  "english-german": 511,
+  "english-spanish": 510
  },
  "shared": 509,
  "combos": 511

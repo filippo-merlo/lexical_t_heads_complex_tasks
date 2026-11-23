@@ -1,11 +1,11 @@
 set,scope,n,task,control,random,tasks_folds
-D10,per task,10,0.293,0.062,0.024,28
-D100,per task,100,0.752,0.062,0.125,28
-D120,per task,120,0.731,0.057,0.132,28
-D20,per task,20,0.396,0.082,0.034,28
-D40,per task,40,0.605,0.074,0.101,28
-D60,per task,60,0.716,0.078,0.06,28
-D80,per task,80,0.744,0.065,0.111,28
+D10,per task,10,0.317,0.078,0.022,28
+D100,per task,100,0.767,0.067,0.133,28
+D120,per task,120,0.752,0.053,0.13,28
+D20,per task,20,0.491,0.104,0.028,28
+D40,per task,40,0.633,0.089,0.058,28
+D60,per task,60,0.722,0.062,0.109,28
+D80,per task,80,0.736,0.061,0.148,28
 causal10,per task,10,0.458,0.124,0.016,28
 causal100,per task,100,0.661,0.113,0.148,28
 causal120,per task,120,0.698,0.107,0.149,28
@@ -27,13 +27,13 @@ selected20,per task,20,0.824,0.143,0.069,28
 selected40,per task,40,0.879,0.146,0.163,28
 selected60,per task,60,0.887,0.12,0.268,28
 selected80,per task,80,0.888,0.104,0.365,28
-shared_D10,shared,10,0.116,0.037,0.04,28
-shared_D100,shared,100,0.762,0.079,0.177,28
-shared_D120,shared,120,0.775,0.067,0.207,28
-shared_D20,shared,20,0.477,0.106,0.015,28
-shared_D40,shared,40,0.738,0.08,0.152,28
-shared_D60,shared,60,0.729,0.054,0.067,28
-shared_D80,shared,80,0.74,0.094,0.16,28
+shared_D10,shared,10,0.127,0.031,0.049,28
+shared_D100,shared,100,0.725,0.065,0.201,28
+shared_D120,shared,120,0.718,0.046,0.231,28
+shared_D20,shared,20,0.528,0.08,0.052,28
+shared_D40,shared,40,0.698,0.066,0.085,28
+shared_D60,shared,60,0.702,0.084,0.259,28
+shared_D80,shared,80,0.736,0.088,0.082,28
 shared_causal10,shared,10,0.611,0.198,0.03,28
 shared_causal100,shared,100,0.577,0.178,0.154,28
 shared_causal120,shared,120,0.583,0.17,0.248,28

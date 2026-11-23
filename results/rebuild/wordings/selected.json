@@ -1,267 +1,268 @@
 {
  "1": {
   "per task": {
-   "combo": "DBTM",
+   "combo": "DBTSPML",
    "features": [
     "decodes a list word",
     "non-first",
     "task words",
-    "markers"
+    "stopwords",
+    "punctuation",
+    "markers",
+    "last token"
    ],
-   "score_other_fold": 0.6317,
-   "score_own_fold": 0.6229,
+   "score_other_fold": 0.6225,
+   "score_own_fold": 0.6158,
    "top10_other_fold": [
     [
-     "DBTM",
-     0.6317
-    ],
-    [
-     "DBTPM",
-     0.6263
+     "DBTSPML",
+     0.6225
     ],
     [
      "DBTSM",
-     0.6212
-    ],
-    [
-     "DBTSPM",
-     0.6147
-    ],
-    [
-     "DBTS",
-     0.6035
-    ],
-    [
-     "DBTOSPL",
-     0.5995
-    ],
-    [
-     "DBTP",
-     0.5969
-    ],
-    [
-     "DBS",
-     0.5947
-    ],
-    [
-     "DBP",
-     0.5849
-    ],
-    [
-     "DBTOSP",
-     0.5779
-    ]
-   ],
-   "candidates": [
-    "DBP",
-    "DBTM",
-    "DBTPM",
-    "DBTSM",
-    "DBS",
-    "DBTP",
-    "DBTOSPL",
-    "DBTOSP",
-    "DBTS",
-    "DBTSPM"
-   ]
-  },
-  "shared": {
-   "combo": "DBSM",
-   "features": [
-    "decodes a list word",
-    "non-first",
-    "stopwords",
-    "markers"
-   ],
-   "score_other_fold": 0.5849,
-   "score_own_fold": 0.602,
-   "top10_other_fold": [
-    [
-     "DBSM",
-     0.5849
-    ],
-    [
-     "DBM",
-     0.5751
+     0.6084
     ],
     [
      "DBTM",
-     0.5712
+     0.6067
     ],
     [
-     "DBPM",
-     0.5674
+     "DBTSPM",
+     0.6058
     ],
     [
-     "DBTPL",
-     0.565
+     "DTM",
+     0.6047
     ],
     [
-     "DBTOL",
-     0.5523
+     "DBTPM",
+     0.6035
     ],
     [
-     "DBOML",
-     0.5473
+     "DBTSPL",
+     0.602
     ],
     [
-     "DBTML",
-     0.5399
+     "DBTSL",
+     0.5825
     ],
     [
-     "DBPL",
-     0.521
+     "DBTOSPL",
+     0.5789
     ],
     [
-     "DBSP",
-     0.5119
+     "DBP",
+     0.5514
     ]
    ],
    "candidates": [
-    "DBTML",
-    "DBSM",
-    "DBPM",
-    "DBOML",
+    "DBTSPL",
     "DBTM",
-    "DBTPL",
+    "DBTPM",
+    "DBTSPM",
+    "DBP",
+    "DBTOSPL",
+    "DBTSL",
+    "DBTSM",
+    "DBTSPML",
+    "DTM"
+   ]
+  },
+  "shared": {
+   "combo": "DBM",
+   "features": [
+    "decodes a list word",
+    "non-first",
+    "markers"
+   ],
+   "score_other_fold": 0.6145,
+   "score_own_fold": 0.6064,
+   "top10_other_fold": [
+    [
+     "DBM",
+     0.6145
+    ],
+    [
+     "DBTM",
+     0.5965
+    ],
+    [
+     "DBTPML",
+     0.5921
+    ],
+    [
+     "DBTOML",
+     0.5832
+    ],
+    [
+     "DBOML",
+     0.5734
+    ],
+    [
+     "DBTPL",
+     0.5451
+    ],
+    [
+     "DBTML",
+     0.5425
+    ],
+    [
+     "DTPML",
+     0.5337
+    ],
+    [
+     "DBPML",
+     0.5226
+    ],
+    [
+     "DTPL",
+     0.5168
+    ]
+   ],
+   "candidates": [
+    "DBTM",
     "DBM",
-    "DBTOL",
-    "DBPL",
-    "DBSP"
+    "DBTOML",
+    "DTPML",
+    "DBTML",
+    "DBTPL",
+    "DBPML",
+    "DBTPML",
+    "DBOML",
+    "DTPL"
    ]
   }
  },
  "2": {
   "per task": {
-   "combo": "DBTM",
+   "combo": "DBTSML",
    "features": [
     "decodes a list word",
     "non-first",
     "task words",
-    "markers"
-   ],
-   "score_other_fold": 0.6229,
-   "score_own_fold": 0.6317,
-   "top10_other_fold": [
-    [
-     "DBTM",
-     0.6229
-    ],
-    [
-     "DBTPM",
-     0.6224
-    ],
-    [
-     "DBSPM",
-     0.6192
-    ],
-    [
-     "DBTSM",
-     0.6167
-    ],
-    [
-     "DBTSPM",
-     0.6084
-    ],
-    [
-     "DBTS",
-     0.6
-    ],
-    [
-     "DBP",
-     0.5995
-    ],
-    [
-     "DBTSP",
-     0.5954
-    ],
-    [
-     "DBSP",
-     0.5952
-    ],
-    [
-     "DBS",
-     0.5863
-    ]
-   ],
-   "candidates": [
-    "DBP",
-    "DBTM",
-    "DBTSM",
-    "DBS",
-    "DBTPM",
-    "DBSP",
-    "DBTS",
-    "DBTSPM",
-    "DBSPM",
-    "DBTSP"
-   ]
-  },
-  "shared": {
-   "combo": "DBTPML",
-   "features": [
-    "decodes a list word",
-    "non-first",
-    "task words",
-    "punctuation",
+    "stopwords",
     "markers",
     "last token"
    ],
-   "score_other_fold": 0.6168,
-   "score_own_fold": 0.5646,
+   "score_other_fold": 0.6202,
+   "score_own_fold": 0.6166,
    "top10_other_fold": [
     [
+     "DBTSML",
+     0.6202
+    ],
+    [
      "DBTPML",
-     0.6168
+     0.6165
     ],
     [
-     "DBSM",
-     0.602
+     "DBTM",
+     0.6133
     ],
     [
-     "DTOSPL",
-     0.5838
+     "DBTPM",
+     0.5919
+    ],
+    [
+     "DBTSPL",
+     0.5918
     ],
     [
      "DBTPL",
-     0.5779
+     0.5916
     ],
     [
-     "DBM",
-     0.5758
+     "DBTOSPL",
+     0.589
     ],
     [
-     "DBPM",
-     0.5567
+     "DTSPL",
+     0.5744
     ],
     [
-     "DBTML",
-     0.5433
+     "DBTSL",
+     0.5649
     ],
     [
-     "DTML",
-     0.5303
-    ],
-    [
-     "DBPML",
-     0.5299
-    ],
-    [
-     "DBSP",
-     0.5124
+     "DBSPL",
+     0.5637
     ]
    ],
    "candidates": [
-    "DBTML",
-    "DTOSPL",
+    "DBTSPL",
+    "DBTM",
+    "DBTPM",
     "DBTPL",
-    "DTML",
-    "DBM",
-    "DBPML",
+    "DBTSL",
+    "DTSPL",
     "DBTPML",
-    "DBSM",
-    "DBSP",
-    "DBPM"
+    "DBTOSPL",
+    "DBTSML",
+    "DBSPL"
+   ]
+  },
+  "shared": {
+   "combo": "DBM",
+   "features": [
+    "decodes a list word",
+    "non-first",
+    "markers"
+   ],
+   "score_other_fold": 0.6064,
+   "score_own_fold": 0.6145,
+   "top10_other_fold": [
+    [
+     "DBM",
+     0.6064
+    ],
+    [
+     "DBTM",
+     0.5968
+    ],
+    [
+     "DTPML",
+     0.5772
+    ],
+    [
+     "DBOML",
+     0.5707
+    ],
+    [
+     "DBTOML",
+     0.5503
+    ],
+    [
+     "DBTPL",
+     0.5491
+    ],
+    [
+     "DTML",
+     0.5431
+    ],
+    [
+     "DBTML",
+     0.5263
+    ],
+    [
+     "DBOSP",
+     0.4981
+    ],
+    [
+     "DBPML",
+     0.4598
+    ]
+   ],
+   "candidates": [
+    "DBTM",
+    "DBM",
+    "DBTML",
+    "DBTPL",
+    "DBPML",
+    "DBOSP",
+    "DBTOML",
+    "DTML",
+    "DTPML",
+    "DBOML"
    ]
   }
  }
