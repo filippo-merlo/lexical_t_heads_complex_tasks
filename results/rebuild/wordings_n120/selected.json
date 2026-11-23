@@ -1,0 +1,97 @@
+{
+ "1": {
+  "combo": "BTP",
+  "score_other_fold": 0.6822,
+  "test": 0.6675,
+  "candidates": [
+   [
+    "BTP",
+    0.6822
+   ],
+   [
+    "BTPM",
+    0.6757
+   ],
+   [
+    "BP",
+    0.6734
+   ],
+   [
+    "DBTOSML",
+    0.6666
+   ],
+   [
+    "DBTOSPML",
+    0.6658
+   ],
+   [
+    "DTSPML",
+    0.66
+   ],
+   [
+    "DBTOSPL",
+    0.6468
+   ],
+   [
+    "BPM",
+    0.6379
+   ],
+   [
+    "DBSPML",
+    0.6371
+   ],
+   [
+    "BTM",
+    0.6296
+   ]
+  ]
+ },
+ "2": {
+  "combo": "DBTSPM",
+  "score_other_fold": 0.69,
+  "test": 0.6843,
+  "candidates": [
+   [
+    "DBTSPM",
+    0.69
+   ],
+   [
+    "DBTOSPML",
+    0.6807
+   ],
+   [
+    "DTOSML",
+    0.6525
+   ],
+   [
+    "DBOSML",
+    0.6504
+   ],
+   [
+    "DTSPML",
+    0.65
+   ],
+   [
+    "DBTOSML",
+    0.6472
+   ],
+   [
+    "DTSML",
+    0.6399
+   ],
+   [
+    "DOSML",
+    0.6344
+   ],
+   [
+    "DBSPML",
+    0.6339
+   ],
+   [
+    "DBSML",
+    0.6304
+   ]
+  ]
+ },
+ "selected_test_mean": 0.6759
+}

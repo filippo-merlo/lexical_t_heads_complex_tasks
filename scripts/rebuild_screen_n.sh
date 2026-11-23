@@ -43,7 +43,7 @@ job() {  # gpu pass fold task
     local gpu=$1 pass=$2 fold=$3 task=$4 half; half=$([ "$fold" = 1 ] && echo A || echo B)
     local part=$pass-$task opts names t0=$SECONDS script=scripts/patch.py means=()
     local only=(--task-only shared_screen)
-    [ "$POOL" = additions ] || means=(--mean-wordings "$SCREEN_MEANS")
+    [ "$POOL" = additions ] || [ "$POOL" = transfer ] || means=(--mean-wordings "$SCREEN_MEANS")  # transfer: set per pass
     case $pass in
         quick) opts=(--alphas 2 --max-new-tokens 1 --n-items 10); names=('shared_screen_*') ;;
         full)  opts=("${FULL_OPTS[@]}"); names=("${SHORT[@]}") ;;
