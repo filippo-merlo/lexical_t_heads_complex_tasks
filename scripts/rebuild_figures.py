@@ -21,6 +21,7 @@ five best combinations rank each fold's shortlist.
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -65,22 +66,56 @@ def plot_label(rule: str) -> str:
 # ------------------------------------------------------------------ data
 
 
-def cells(paths) -> pd.Series:
-    """accuracy[(set, kind, fold, task)]; kind task / control / random (random: mean of the draws)."""
-    pt = pd.concat([pd.read_csv(p) for p in paths], ignore_index=True)
+def cells(src) -> pd.Series:
+    """accuracy[(set, kind, fold, task)]; kind task / control / random (random: mean of the draws). ``src``: the
+    per-task report files, or their rows."""
+    pt = src if isinstance(src, pd.DataFrame) else pd.concat([pd.read_csv(p) for p in src], ignore_index=True)
     is_random = pt.set.str.match(r"^random_.+_\d+$")
     pt["base"] = pt.set.where(~is_random, pt.set.str.replace(r"^random_(.+)_\d+$", r"\1", regex=True))
     pt["kind"] = np.where(is_random, "random", pt.source)
     return pt.groupby(["base", "kind", "fold", "task"]).accuracy.mean()
 
 
-ACC = cells([DIR / f"{s}_per_task.csv" for s in ("s1", "s2")])
+# Shared Selected (user 2026-11-23): at a size with its own shared screen (scripts/rebuild_screen_n.py), each
+# fold's pick at that size; at 40 heads the stage-2 pick, which a size without a screen uses too. Per task: the
+# 40-head pick at every size. The same in stage 3: the transfer tests patch every size's stage-2 pick
+# (results/rebuild/transfer_n), and the re-identified tests choose at each size on their pool
+# (results/rebuild/{wordings,examples}_n<N>). Their rows and sets replace those of the 40-head choice.
+R = rt.RESULTS / "rebuild"
+SIZE_SCREEN = {n: R / f"shared_n{n}" for n in SIZES if (R / f"shared_n{n}" / "sel_per_task.csv").exists()}
+SIZED = re.compile(r"^(random_)?shared_selected(\d+)(_\d+)?$")
+
+
+def sized(name: str) -> int | None:
+    m = SIZED.match(name)
+    return int(m.group(2)) if m else None
+
+
+def with_sized(pt: pd.DataFrame, files) -> pd.DataFrame:
+    """``pt`` with the shared Selected rows of every size that ``files`` report replaced by theirs."""
+    new = [pd.read_csv(p) for p in files if p.exists()]
+    if not new:
+        return pt
+    new = pd.concat(new, ignore_index=True)
+    sizes = set(new.set.map(sized))
+    assert None not in sizes, "only shared Selected rows"
+    return pd.concat([pt[~pt.set.map(sized).isin(sizes)], new], ignore_index=True)
+
+
+ACC = cells(with_sized(pd.concat([pd.read_csv(DIR / f"{s}_per_task.csv") for s in ("s1", "s2")], ignore_index=True),
+                       [d / "sel_per_task.csv" for d in SIZE_SCREEN.values()]))
 # Stage 3 (Sec. 6): test -> (results folder, report stage); a test enters once scripts/rebuild_report.py has run.
 SCEN = rt.RESULTS / "rebuild" / "scenarios"
 WPOOL, EPOOL = rt.RESULTS / "rebuild" / "wordings", rt.RESULTS / "rebuild" / "examples"  # re-identified (Secs. 6.1-6.2)
 S3 = {"wt": (SCEN / "wordings_transfer", "s3wt"), "wq": (WPOOL, "s3w-test"), "sum": (SCEN / "summed", "s3sum"),
       "et": (SCEN / "examples_transfer", "s3et"), "eq": (EPOOL, "s3e-test"), "esum": (EPOOL, "s3e-sum")}
-ACC3 = {k: cells([d / f"{st}_per_task.csv"]) for k, (d, st) in S3.items() if (d / f"{st}_per_task.csv").exists()}
+SIZED_S3 = {"wt": [R / "transfer_n" / "wt_per_task.csv"], "et": [R / "transfer_n" / "et_per_task.csv"],
+            "sum": [R / "transfer_n" / "tsum_per_task.csv"],
+            "wq": [R / f"wordings_n{n}" / "test_per_task.csv" for n in SIZES],
+            "eq": [R / f"examples_n{n}" / "test_per_task.csv" for n in SIZES],
+            "esum": [R / f"examples_n{n}" / "sum_per_task.csv" for n in SIZES]}
+ACC3 = {k: cells(with_sized(pd.read_csv(d / f"{st}_per_task.csv"), SIZED_S3[k]))
+        for k, (d, st) in S3.items() if (d / f"{st}_per_task.csv").exists()}
 S3_RULES = ("yangJ", "D", "selected", "causal", "causalnogen")  # the rules carried into Sec. 6
 
 
@@ -112,7 +147,22 @@ def heads(base: Path = DIR) -> dict[int, dict[str, dict[str, set]]]:
     return out
 
 
-SETS = heads()
+def with_sized_sets(sets, prefix: str):
+    """``sets`` with the shared Selected set and its random sets of every size chosen in ``results/rebuild/
+    <prefix><N>`` in place of the 40-head choice's."""
+    for n in SIZES:
+        d = R / f"{prefix}{n}"
+        if not (d / "selected.json").exists():
+            continue
+        for f, by_task in heads(d).items():
+            for t, s in by_task.items():
+                new = {k: v for k, v in s.items() if sized(k) == n}
+                assert len(new) == 4 and all(k in sets[f][t] for k in new), (prefix, n, f, t)
+                sets[f][t].update(new)
+    return sets
+
+
+SETS = with_sized_sets(heads(), "shared_n")
 
 
 def per_layer(s: set) -> np.ndarray:
@@ -270,6 +320,25 @@ def table_selected(scores) -> None:
             if not (scope == "shared" and fold == 2):
                 rows.append("\\midrule" if fold == 2 else "\\addlinespace")
     write("design_selected", rt.tabular("@{}lrrl>{\\raggedright\\arraybackslash}p{5.6cm}rr@{}", header, rows))
+
+
+def table_selected_sizes() -> None:
+    """Shared Selected at every size: each fold's combination, its accuracy on its own test half (mean over the
+    14 tasks), the mean of the folds, its control means and random sets."""
+    sel40 = json.loads((DIR / "selected.json").read_text())
+    header = ["$N$ & Fold 1 & Acc. & Fold 2 & Acc. & Task & Control & Random \\\\"]
+    rows = []
+    for n in SIZES:
+        name = f"shared_selected{n}"
+        if n in SIZE_SCREEN:
+            sel = json.loads((SIZE_SCREEN[n] / "selected.json").read_text())
+            combos = [sel[str(f)]["combo"] for f in (1, 2)]
+        else:
+            combos = [sel40[str(f)]["shared"]["combo"] + ("" if n == SCREEN_N else "$^\\dagger$") for f in (1, 2)]
+        acc = [float(ACC.loc[(name, "task", f)].mean()) for f in (1, 2)]
+        rows.append(f"{n} & {combos[0]} & {rt.num(acc[0])} & {combos[1]} & {rt.num(acc[1])} & {rt.num(mean_over(name))} & "
+                    f"{rt.num(mean_over(name, 'control'))} & {rt.num(mean_over(name, 'random'))} \\\\")
+    write("design_selected_sizes", rt.tabular("@{}rlrlrrrr@{}", header, rows))
 
 
 # ------------------------------------------------------------------ figures
@@ -779,7 +848,7 @@ def table_selected_examples() -> None:
 def table_s3_overlap(sizes=(20, 40, 80, 120)) -> None:
     """Share of heads in common between the re-identified sets and the sets of Sec. 5 of the same rule, scope and
     size, with layer-matched chance; and the share of the example sets' heads in their own random sets."""
-    pools = {"wordings": heads(WPOOL), "examples": heads(EPOOL)}
+    pools = {"wordings": with_sized_sets(heads(WPOOL), "wordings_n"), "examples": with_sized_sets(heads(EPOOL), "examples_n")}
     blocks = (("Re-identified on wordings, with the sets of Sec.~5", "wordings", "sec5"),
               ("Re-identified on example-based prompts, with the sets of Sec.~5", "examples", "sec5"),
               ("Re-identified on example-based prompts, with their random sets", "examples", "random"))
@@ -997,6 +1066,7 @@ def main() -> None:
     table_overlap()
     table_yang_tasks()
     table_selected(scores)
+    table_selected_sizes()
     fig_published()
     fig_ladder()
     fig_controls()
@@ -1007,7 +1077,8 @@ def main() -> None:
     fig_types()
     best = task_best()
     fig_task_best(best)
-    stage3()
+    if "--stage2" not in sys.argv:  # --stage2: Secs. 4-5 only (stage 3 being re-run)
+        stage3()
     for scope, b in best.items():
         print(scope, "best per task:", {t: (r["best"], round(r["acc"], 3)) for t, r in b["tasks"].items()})
     print("screen fold-1 vs fold-2 correlation: per task %.2f, shared %.2f" % corr)

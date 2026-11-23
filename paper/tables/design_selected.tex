@@ -3,28 +3,28 @@
 \toprule
 Scope & Fold & Rank & Combination & Features & Other fold & Own fold \\
 \midrule
-per task & 1 & 1 & \textbf{DBP} & D, non-first, punctuation & 0.63 & 0.62 \\
- &  & 2 & DBTM & D, non-first, task words, markers & 0.60 & 0.61 \\
- &  & 3 & DBTPM & D, non-first, task words, punctuation, markers & 0.60 & 0.59 \\
- &  & 4 & DBTSM & D, non-first, task words, stopwords, markers & 0.59 & 0.60 \\
- &  & 5 & DBS & D, non-first, stopwords & 0.58 & 0.59 \\
+per task & 1 & 1 & \textbf{DBTSPL} & D, non-first, task words, stopwords, punctuation, last token & 0.63 & 0.64 \\
+ &  & 2 & DBTM & D, non-first, task words, markers & 0.63 & 0.62 \\
+ &  & 3 & DBTPM & D, non-first, task words, punctuation, markers & 0.60 & 0.61 \\
+ &  & 4 & DBTSPM & D, non-first, task words, stopwords, punctuation, markers & 0.59 & 0.58 \\
+ &  & 5 & DBP & D, non-first, punctuation & 0.58 & 0.59 \\
 \addlinespace
- & 2 & 1 & \textbf{DBP} & D, non-first, punctuation & 0.62 & 0.63 \\
- &  & 2 & DBTM & D, non-first, task words, markers & 0.61 & 0.60 \\
- &  & 3 & DBTSM & D, non-first, task words, stopwords, markers & 0.60 & 0.59 \\
- &  & 4 & DBS & D, non-first, stopwords & 0.59 & 0.58 \\
- &  & 5 & DBTPM & D, non-first, task words, punctuation, markers & 0.59 & 0.60 \\
+ & 2 & 1 & \textbf{DBTSPL} & D, non-first, task words, stopwords, punctuation, last token & 0.64 & 0.63 \\
+ &  & 2 & DBTM & D, non-first, task words, markers & 0.62 & 0.63 \\
+ &  & 3 & DBTPM & D, non-first, task words, punctuation, markers & 0.61 & 0.60 \\
+ &  & 4 & DBTPL & D, non-first, task words, punctuation, last token & 0.60 & 0.57 \\
+ &  & 5 & DBTSL & D, non-first, task words, stopwords, last token & 0.59 & 0.58 \\
 \midrule
-shared & 1 & 1 & \textbf{DBTML} & D, non-first, task words, markers, last token & 0.60 & 0.59 \\
- &  & 2 & DBSM & D, non-first, stopwords, markers & 0.59 & 0.55 \\
- &  & 3 & DBPM & D, non-first, punctuation, markers & 0.58 & 0.55 \\
- &  & 4 & DBOML & D, non-first, other words, markers, last token & 0.57 & 0.47 \\
- &  & 5 & DBTM & D, non-first, task words, markers & 0.57 & 0.54 \\
+shared & 1 & 1 & \textbf{DBTM} & D, non-first, task words, markers & 0.63 & 0.62 \\
+ &  & 2 & DBM & D, non-first, markers & 0.61 & 0.61 \\
+ &  & 3 & DBTOML & D, non-first, task words, other words, markers, last token & 0.60 & 0.57 \\
+ &  & 4 & DTPML & D, task words, punctuation, markers, last token & 0.58 & 0.55 \\
+ &  & 5 & DBTML & D, non-first, task words, markers, last token & 0.58 & 0.59 \\
 \addlinespace
- & 2 & 1 & \textbf{DBTML} & D, non-first, task words, markers, last token & 0.59 & 0.60 \\
- &  & 2 & DTOSPL & D, task words, other words, stopwords, punctuation, last token & 0.57 & 0.55 \\
- &  & 3 & DBTPL & D, non-first, task words, punctuation, last token & 0.57 & 0.56 \\
- &  & 4 & DTML & D, task words, markers, last token & 0.57 & 0.55 \\
- &  & 5 & DBM & D, non-first, markers & 0.56 & 0.56 \\
+ & 2 & 1 & \textbf{DBTM} & D, non-first, task words, markers & 0.62 & 0.63 \\
+ &  & 2 & DBM & D, non-first, markers & 0.61 & 0.61 \\
+ &  & 3 & DBTML & D, non-first, task words, markers, last token & 0.59 & 0.58 \\
+ &  & 4 & DBTPL & D, non-first, task words, punctuation, last token & 0.58 & 0.58 \\
+ &  & 5 & DBPML & D, non-first, punctuation, markers, last token & 0.58 & 0.57 \\
 \bottomrule
 \end{tabular}
