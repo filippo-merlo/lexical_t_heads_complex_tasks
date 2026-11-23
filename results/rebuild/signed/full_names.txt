@@ -1,8 +1,0 @@
-signed_DBTSPL
-signed_DBTSPL-O
-signed_DBTSPL-Q
-signed_DBTSPL-OQ
-signed_DBTSPL-MQ
-shared_signed_DBTM
-shared_signed_DBTM-O
-shared_signed_DBTM-Q
