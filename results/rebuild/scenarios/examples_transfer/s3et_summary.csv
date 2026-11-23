@@ -1,11 +1,11 @@
 set,scope,n,task,control,random,tasks_folds
-D10,per task,10,0.145,0.029,0.024,28
-D100,per task,100,0.662,0.03,0.208,28
-D120,per task,120,0.623,0.026,0.263,28
-D20,per task,20,0.207,0.036,0.032,28
-D40,per task,40,0.35,0.038,0.09,28
-D60,per task,60,0.523,0.037,0.162,28
-D80,per task,80,0.638,0.033,0.159,28
+D10,per task,10,0.139,0.021,0.012,28
+D100,per task,100,0.643,0.031,0.281,28
+D120,per task,120,0.524,0.022,0.241,28
+D20,per task,20,0.188,0.031,0.039,28
+D40,per task,40,0.419,0.049,0.104,28
+D60,per task,60,0.648,0.047,0.147,28
+D80,per task,80,0.687,0.033,0.178,28
 causal10,per task,10,0.151,0.041,0.027,28
 causal100,per task,100,0.511,0.038,0.237,28
 causal120,per task,120,0.53,0.044,0.245,28
@@ -20,20 +20,20 @@ causalnogen20,per task,20,0.318,0.039,0.054,28
 causalnogen40,per task,40,0.416,0.03,0.146,28
 causalnogen60,per task,60,0.475,0.035,0.198,28
 causalnogen80,per task,80,0.476,0.04,0.223,28
-selected10,per task,10,0.156,0.039,0.024,28
-selected100,per task,100,0.583,0.018,0.373,28
-selected120,per task,120,0.533,0.017,0.494,28
-selected20,per task,20,0.307,0.033,0.083,28
-selected40,per task,40,0.536,0.038,0.156,28
-selected60,per task,60,0.622,0.044,0.323,28
-selected80,per task,80,0.618,0.02,0.377,28
-shared_D10,shared,10,0.136,0.032,0.014,28
-shared_D100,shared,100,0.566,0.02,0.344,28
-shared_D120,shared,120,0.463,0.01,0.378,28
-shared_D20,shared,20,0.243,0.023,0.03,28
-shared_D40,shared,40,0.252,0.014,0.136,28
-shared_D60,shared,60,0.486,0.016,0.233,28
-shared_D80,shared,80,0.572,0.035,0.19,28
+selected10,per task,10,0.146,0.028,0.021,28
+selected100,per task,100,0.653,0.025,0.463,28
+selected120,per task,120,0.604,0.023,0.579,28
+selected20,per task,20,0.325,0.027,0.063,28
+selected40,per task,40,0.59,0.036,0.157,28
+selected60,per task,60,0.653,0.035,0.365,28
+selected80,per task,80,0.641,0.032,0.533,28
+shared_D10,shared,10,0.08,0.032,0.015,28
+shared_D100,shared,100,0.51,0.015,0.35,28
+shared_D120,shared,120,0.434,0.013,0.337,28
+shared_D20,shared,20,0.167,0.024,0.043,28
+shared_D40,shared,40,0.247,0.016,0.101,28
+shared_D60,shared,60,0.397,0.014,0.174,28
+shared_D80,shared,80,0.406,0.011,0.203,28
 shared_causal10,shared,10,0.099,0.016,0.049,28
 shared_causal100,shared,100,0.656,0.039,0.141,28
 shared_causal120,shared,120,0.638,0.04,0.318,28
@@ -48,13 +48,13 @@ shared_causalnogen20,shared,20,0.254,0.034,0.094,28
 shared_causalnogen40,shared,40,0.489,0.033,0.166,28
 shared_causalnogen60,shared,60,0.545,0.027,0.241,28
 shared_causalnogen80,shared,80,0.635,0.026,0.282,28
-shared_selected10,shared,10,0.094,0.059,0.049,28
-shared_selected100,shared,100,0.561,0.028,0.367,28
-shared_selected120,shared,120,0.514,0.018,0.427,28
-shared_selected20,shared,20,0.289,0.035,0.051,28
-shared_selected40,shared,40,0.561,0.035,0.153,28
-shared_selected60,shared,60,0.552,0.027,0.27,28
-shared_selected80,shared,80,0.591,0.034,0.47,28
+shared_selected10,shared,10,0.027,0.021,0.011,28
+shared_selected100,shared,100,0.602,0.026,0.465,28
+shared_selected120,shared,120,0.573,0.025,0.483,28
+shared_selected20,shared,20,0.221,0.033,0.083,28
+shared_selected40,shared,40,0.503,0.034,0.313,28
+shared_selected60,shared,60,0.571,0.033,0.483,28
+shared_selected80,shared,80,0.611,0.023,0.515,28
 shared_yangJ10,shared,10,0.073,0.015,0.021,28
 shared_yangJ100,shared,100,0.341,0.01,0.162,28
 shared_yangJ120,shared,120,0.228,0.009,0.195,28
