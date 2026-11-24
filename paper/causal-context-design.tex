@@ -1,0 +1,162 @@
+% =====================================================================
+%  The causal ranking scored in the prompt the sets are tested in.
+%  Status: DESIGN (24 November 2026). Nothing has been run; Sec. 2 uses the
+%  saved causal scores only (results/heldout/fold{1,2}/fv/cie.npz).
+%  Compile with Tectonic (XeTeX): tex-keep-notes --synctex --keep-logs causal-context-design.tex
+% =====================================================================
+\documentclass[10pt,a4paper]{article}
+
+\usepackage{fontspec}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,tabularx,array}
+\usepackage{float}
+\usepackage[section]{placeins}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage[round,authoryear]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=green!40!black,urlcolor=blue!60!black]{hyperref}
+
+\setlist{nosep,leftmargin=*}
+\captionsetup{font=small,labelfont=bf}
+\renewcommand{\arraystretch}{1.12}
+\setlength{\emergencystretch}{3em}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcommand{\nl}{\textbackslash n}
+\newcommand{\p}[1]{``\texttt{#1}''}
+\newcommand{\zbar}{\bar z}
+\newcommand{\simpledoc}{\texttt{head-sets-simple-design}}
+
+\title{The Causal Ranking Scored in the Prompt It Is Tested In\\[2pt]
+\large Design of a variant of Causal for the head-set study in Llama-3.1-8B-Instruct}
+\author{Filippo Merlo}
+\date{24 November 2026 (design; nothing run)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+In the head-set study (\simpledoc), Causal ranks heads by their causal indirect effect on prompts whose instruction is replaced by uninformative text, as \citet{davidson2025different} do, but every set is tested in the zero-shot prompt \p{ x:}, which has neither the uninformative text nor the question--answer frame. The combination of features our method uses is chosen by patching into \p{ x:}, so part of its lead over Causal could come from where each was scored rather than from what each measures. This document proposes a second causal ranking, scored in \p{ x:} on the same items, with the same means and the same target token, so that only the prompt changes. It is built, patched and scored exactly as Causal, per task and with one set for all tasks, at every set size. The saved causal scores already show that the per-task ranking depends on what replaces the instruction: when it is another task's instruction, the top heads differ from those found with the other two kinds of text more than two halves of the items do. Whether the zero-shot prompt changes the ranking, and whether the heads it picks trigger the task better, is what the variant tests.
+\end{abstract}
+
+% =====================================================================
+\section{Question}\label{sec:question}
+
+\paragraph{Where Causal is scored and where it is tested.} Causal (\simpledoc, Sec.~4.2) scores a head by how much setting its output to the task mean raises the probability of the answer's first token on a prompt that does not give the task (Sec.~2.4 there). That prompt is an instruction-based prompt with the instruction replaced by uninformative text of about the same length and probability, \p{<text> Q: x\nl A:}, and the score is averaged over three kinds of text: token sequences of similar probability, WikiText-103 passages and other tasks' instructions \citep[Sec.~2.1]{davidson2025different}. The sets are then tested by patching into the zero-shot prompt \p{ x:} (\simpledoc, Sec.~3.5). The prompt they are scored in and the prompt they are tested in thus differ in two ways: the uninformative text, and the frame \p{ Q: \dots\nl A:} around the query.
+
+\paragraph{The source study.} \citet{davidson2025different} have the same gap. They test instruction function vectors in ``0-shot (with no instructions)'' (Sec.~2.2), the setting they take as matching the extraction of instruction function vectors, and they note that ``0-shot evaluation differs from the instruction FV baseline prompts, as it contains no instructions'' (Sec.~3.1). Our reproduction keeps their scoring. It adds the second difference, since our zero-shot prompt is Yang et al.'s \p{ x:} rather than a question--answer frame.
+
+\paragraph{Why it matters for the comparison.} Our method identifies heads from unpatched forward passes, but the combination of features it uses is chosen by patching candidate sets into \p{ x:} on the identification half (\simpledoc, Sec.~5.4). The choice is therefore made in the prompt the sets are tested in, and Causal's scores are not. The features themselves come from unpatched instruction-based prompts and the screen only chooses among 511 combinations, so the advantage is limited, but it is not zero. We ask:
+\begin{enumerate}[label=\textbf{Q\arabic*}]
+\item Does scoring the causal effect in \p{ x:} change which heads the causal ranking puts on top?
+\item Do the heads it picks trigger the task better in \p{ x:} than Causal's, at equal set size?
+\item Does it change how Causal compares with our method (Selected)?
+\end{enumerate}
+
+% =====================================================================
+\section{What the saved scores show}\label{sec:known}
+
+The saved causal scores keep the three kinds of uninformative text apart, on both halves of the items. Comparing the top heads of one kind on one half with those of the same or another kind on the other half separates the effect of the kind from that of the items (Table~\ref{tab:kinds}). Two halves agree on about half of each task's top heads when the kind is the same. Equiprobable sequences and WikiText text agree almost as well, so for these two the kind adds little to the noise. Other tasks' instructions agree with either of them clearly less, on about a third of the heads. With one set for all tasks, the kinds do not differ beyond the noise between halves.
+
+\begin{table}[H]
+\centering\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+ & \multicolumn{2}{c}{Per task} & \multicolumn{2}{c}{Shared} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Kind on half $A$ vs kind on half $B$ & $N=20$ & $N=40$ & $N=20$ & $N=40$ \\
+\midrule
+Same kind & 0.50 & 0.47 & 0.58 & 0.63 \\
+Equiprobable vs WikiText & 0.45 & 0.43 & 0.60 & 0.62 \\
+Other-task instruction vs equiprobable or WikiText & 0.36 & 0.36 & 0.59 & 0.52 \\
+Average over the kinds (Causal) vs the same & 0.50 & 0.53 & 0.65 & 0.68 \\
+\bottomrule
+\end{tabular}
+\caption{Share of the top $N$ heads by the causal score that two halves of the items have in common, by the kind of uninformative text each half was scored with (per task: mean over the 14 tasks; shared: within-task ranks averaged over tasks). Each row is the mean over its pairs of kinds, in both directions. From \texttt{results/heldout/fold\{1,2\}/fv/cie.npz}, 20 prompts per task, kind and half.}
+\label{tab:kinds}
+\end{table}
+
+So, per task, which text fills the place of the instruction matters when it is a competing instruction. The zero-shot prompt is a fourth context, with no text and no frame, and it may also pick partly different heads. The table cannot say whether those heads would trigger the task better. The effects are also larger with other tasks' instructions (the 20 top heads average 0.008 in the probability of the answer, against 0.005 with the other two kinds), so the average over the kinds leans towards the heads that override a competing instruction, which the zero-shot prompt never asks of them.
+
+% =====================================================================
+\section{Design}\label{sec:design}
+
+Everything not stated here is as in \simpledoc{}, Secs.~3 and~4.2: Llama-3.1-8B-Instruct, the 14 simple tasks, the item halves and folds, the patching of a set head by head into \p{ x:}, the scoring of a reply, the control mean and the random sets.
+
+\subsection{The score}\label{sec:score}
+
+For a task $t$ and head $(l,h)$, the zero-shot causal score is
+\begin{equation}
+\mathrm{CIE}^{0}_{l,h} = \frac{1}{|I|}\sum_{i\in I}\Big[\, p\big(y_i \mid x^{0}_i;\; z_{l,h}\leftarrow \zbar^{\,t}_{l,h}\big) - p\big(y_i \mid x^{0}_i\big) \Big],
+\end{equation}
+where $x^{0}_i$ is the zero-shot prompt \p{ x:} of item $i$ with the beginning-of-sequence token, exactly as the sets are tested; $y_i$ is the first token of the answer; and $z_{l,h}$ is the head's output at the last token. Everything else is that of Causal:
+\begin{itemize}
+\item \textbf{Items $I$}: the 20 items per task and fold on which Causal's indirect effects are measured, five per question--answer template, all from the identification half (read from the fold's \texttt{items.json}). The same queries are thus scored with and without the uninformative text.
+\item \textbf{Mean $\zbar^{\,t}_{l,h}$}: the mean over the same 100 correctly answered prompts, 25 per question--answer template.
+\item \textbf{Target}: the first token of \p{ <answer>}, the same token as Causal's and as the first-token score of the test.
+\end{itemize}
+Causal averages 60 rows per task (20 queries, three kinds of text); the zero-shot score has 20, one per query (D1).
+
+As an optional second context, the \emph{frame} score replaces $x^{0}_i$ by \p{ Q: x\nl A:} without any text before it. It differs from Causal only in the uninformative text, and from the zero-shot score only in the frame, so the two together say which of the two differences moves the ranking (D2).
+
+\subsection{Rules}\label{sec:rules}
+
+\begin{itemize}
+\item \textbf{Causal (zero-shot)} ranks heads by $\mathrm{CIE}^{0}$, per task or, with one set for all tasks, by within-task ranks averaged over tasks (\simpledoc, Sec.~3.6), at $N\in\{10,20,40,60,80,100,120\}$.
+\item \textbf{Causal (zero-shot) $-$ generic} removes the generic heads, which are found among the 30 top heads of the shared zero-shot ranking with the rule of Sec.~5.5 of \simpledoc{} (D3). Generic heads may matter more here than in Causal: \p{ x:} gives no cue to the form of the answer, so heads that bring in the form of a short answer may score high on every task.
+\item \textbf{Own form, summed} (D4): the 20 top heads of the shared zero-shot ranking, their means summed and added after layer 11 at $\alpha=1$, as Davidson et al.'s own form is run in the head-set study (\simpledoc, Sec.~4.2).
+\end{itemize}
+
+\subsection{Patching and evaluation}\label{sec:patching}
+
+Exactly as Causal in stage~1 of \simpledoc{}: head by head at the last token of \p{ x:}; the means of Yang et al.'s five templates from the identification half (at least ten correctly answered prompts); $\alpha\in\{1,2\}$, cross-fitted; the test items of the other half, at most 100 per task; whole-answer scoring of replies of at most 16 tokens; the control mean of the related task; three random sets per rule, scope and size, with as many heads in each layer. Every reply is saved with the expected answer. Only the main test is run, with the means of the five templates (D5).
+
+\subsection{What is compared}\label{sec:compare}
+
+\begin{itemize}
+\item \textbf{Heads (Q1).} The overlap of Causal (zero-shot) with Causal at every size and scope, with the measure of \simpledoc, Sec.~7.1: between folds, against the chance floor and against each ranking's own agreement between folds. The agreement of the zero-shot ranking between folds is reported too, since a score near zero for most heads would make it noisy. The size of the scores is compared with that of each kind of text. With D2, the frame ranking is compared in the same way.
+\item \textbf{Accuracy (Q2, Q3).} Accuracy at every size, per task and shared: Causal (zero-shot) and its $-$generic form next to Causal, Causal $-$ generic and Selected. The runs of Causal and Selected are reused unchanged; they used the same items, means and test. Controls and task types go in an appendix, as in \simpledoc.
+\end{itemize}
+
+\subsection{Reading the outcomes}\label{sec:outcomes}
+
+\begin{itemize}
+\item \emph{Causal (zero-shot) about equal to Causal}: the place where the effect is measured does not matter for these sets, and Selected's lead over Causal stands as reported.
+\item \emph{Causal (zero-shot) above Causal and closer to Selected}: part of the lead came from the prompt each was scored in. The study would then say that our method beats Davidson et al.'s score as they specify it, and report the zero-shot causal ranking as the stronger causal baseline.
+\item \emph{Causal (zero-shot) below Causal}: measuring the effect against uninformative text gives the better ranking even for tests in \p{ x:}, for instance because a single head moves the answer's probability little when nothing in the prompt points to any task.
+\end{itemize}
+
+% =====================================================================
+\section{Cost}\label{sec:cost}
+
+The scores take 20 prompts of a few tokens per task and fold, each with 1{,}024 heads patched one at a time, and the means are recomputed from 100 prompts; this is minutes of one GPU for both contexts. The patching is the larger part. Stage~1 of \simpledoc{} ran Causal and Yang terms, per task and shared with their random sets, in 1.4~hours on four GPUs; Causal was a bit over half of those runs. Causal (zero-shot) alone should therefore take about three GPU-hours, and with its $-$generic form about six. The summed own form adds a few minutes.
+
+% =====================================================================
+\section{Decisions before running}\label{sec:decisions}
+
+\begin{enumerate}[label=\textbf{D\arabic*}]
+\item \textbf{Items for the score.} (a) The 20 queries of Causal per task and fold (proposed): only the prompt changes. (b) 60 queries, as many rows as Causal averages, which makes the score less noisy but changes two things at once.
+\item \textbf{Frame score.} (a) Compute it and compare its heads only (proposed; minutes). (b) Also patch it, which adds about three GPU-hours and says whether the text or the frame changes accuracy. (c) Leave it out.
+\item \textbf{Generic heads.} Include Causal (zero-shot) $-$ generic (proposed), since Causal $-$ generic is the stronger causal rule with one set for all tasks, or leave it out.
+\item \textbf{Summed own form.} Include it (proposed; it tests Davidson et al.'s own intervention with a score measured where it is tested) or leave it out.
+\item \textbf{Scope.} The main test only (proposed), or also the tests beyond the identification prompts (\simpledoc, Sec.~6: unseen wordings, example-based prompts, one summed vector, unseen tasks).
+\end{enumerate}
+
+% =====================================================================
+\section{Limitations}\label{sec:limits}
+
+\begin{itemize}
+\item The zero-shot score is our design, not part of Davidson et al.'s method. Causal stays the reproduction; the variant is reported beside it.
+\item Like the screen, the zero-shot score uses patched runs on the identification half in the prompt of the test, so it makes the comparison fairer, not cheaper; it needs one patched pass per head and prompt, as Causal does.
+\item The score is measured on items that the model answers correctly under the instructions, not on the items of the test, which are those it answers correctly with one example; this is as in Causal.
+\end{itemize}
+
+\section*{Code}
+\sloppy
+Planned: an option of \texttt{scripts/davidson\_fv.py} that reads a fold's \texttt{items.json}, recomputes the means and writes the zero-shot (and frame) scores to \texttt{results/heldout/fold\{f\}/fv/}; the new rules in \texttt{scripts/rebuild\_sets.py}; a launcher like \texttt{scripts/rebuild\_stage1.sh} with \texttt{--alphas 1 2}. Table~\ref{tab:kinds} is computed from the saved scores and needs no GPU.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}
