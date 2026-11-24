@@ -647,7 +647,7 @@ S3_SCENARIO = {"wt": "Unseen wordings, transfer", "wq": "Unseen wordings, re-ide
                "et": "Example-based prompts, transfer", "eq": "Example-based prompts, re-identified",
                "esum": "Summed vector, sets re-identified on example-based prompts"}
 # Wording groups (Sec. 6.1): Yang et al.'s cloze template and four question-answer templates (Sec. 5), and the
-# six groups of Q wordings, ordered by form.
+# six groups of test wordings (key Q), ordered by form.
 GROUP_FORMS = (("cloze", ("yang-cloze", "cloze-named", "cloze-unnamed")),
                ("question–answer", ("yang-qa", "qa-named", "qa-unnamed")),
                ("label", ("label-named", "label-unnamed")))
@@ -672,7 +672,7 @@ def template_rows(folder: Path, parts: str, report: list[Path], n: int, skip: st
 
 def by_group(n: int = SCREEN_N) -> tuple[dict[str, dict[str, float]], list[str]]:
     """acc[set][group]: mean over the group's wordings, then over tasks and folds, on the tasks that have a mean
-    of every group in both folds (a Q wording gives no mean without 10 correct prompts); and the tasks left out."""
+    of every group in both folds (a test wording gives no mean without 10 correct prompts); and the tasks left out."""
     s5 = template_rows(DIR, "patching_simple.part-s*.csv", [DIR / f"{s}_per_task.csv" for s in ("s1", "s2")], n, skip="s1sum")
     s5["group"] = np.where(s5.mean_wording == "inst0", "yang-cloze", "yang-qa")
     d, st = S3["wt"]
@@ -986,7 +986,7 @@ def alpha2_share() -> dict[str, float]:
 
 
 def stage3() -> None:
-    q_words = "means of the 15 unseen Q wordings"
+    q_words = "means of the 15 test wordings"
     if "wt" in ACC3:
         table_s3_acc("wt", "design_wordings_transfer")
         groups, left_out = by_group()
@@ -997,7 +997,7 @@ def stage3() -> None:
     if "wq" in ACC3:
         table_s3_acc("wq", "design_wordings_reid")
         table_candidates()
-        fig_pair("wt", "wq", ("re-identified on Yang's five + 15 P wordings", "identified on Yang's five (transfer)"),
+        fig_pair("wt", "wq", ("re-identified on Yang's five + 15 identification wordings", "identified on Yang's five (transfer)"),
                  "design_wordings_reid")
     table_s3_types(tuple(k for k in ("wt", "wq") if k in ACC3), "design_wordings_types")
     if "sum" in ACC3:
@@ -1010,7 +1010,7 @@ def stage3() -> None:
         table_selected_examples()
         table_s3_types(("et", "eq"), "design_examples_types")
         table_control_tasks("eq")
-        fig_pair("et", "eq", ("re-identified on the 3 P formats", "identified on Yang's five templates (transfer)"),
+        fig_pair("et", "eq", ("re-identified on the 3 identification formats", "identified on Yang's five templates (transfer)"),
                  "design_examples", ymax=1.0)
     if "esum" in ACC3:
         table_pair("eq", "esum", ("heads", "sum"), "design_summed_examples")

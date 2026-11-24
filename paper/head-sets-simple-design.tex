@@ -122,8 +122,8 @@ The datasets hold between 197 (country--capital) and about 5{,}200 items (Englis
 All prompts are raw text without the chat template, and decoding is greedy. There are three families of prompts that give the task, and one zero-shot prompt.
 \begin{itemize}
 \item \textbf{Five instruction templates} per task, from the six of \citet[App.~A.3.1]{yang2026shared}: the cloze template (\p{The antonym of \{x\} is}) and the first four of the form \p{<instruction> Q: \{x\}\nl A:}. These are used to identify heads and to compute means in Sections~\ref{sec:published} and~\ref{sec:rules}.
-\item \textbf{Thirty further wordings} per task, written by GPT-5.5 and checked by script, in six groups of five: three forms (cloze, question--answer, label) crossed with whether the wording names the task, that is, contains one of \citeauthor{yang2026shared}'s task-descriptive terms or the task's name (App.~\ref{app:prompts}). They are split once, at random within each group, into an identification part P and a test part Q of 15 wordings each. P holds five wordings of each form: three from one of the form's two groups and two from the other, alternating between forms and between tasks, so that P holds eight wordings that name the task on half of the tasks and seven on the others (App.~\ref{app:split}).
-\item \textbf{Six example formats} for example-based prompts at five shots (Table~\ref{tab:formats}), likewise split into three identification formats P and three test formats Q, so that each part holds one labelled format, one arrow-like format and one with a plain separator. Demonstrations are drawn at random among the other items of the same half.
+\item \textbf{Thirty further wordings} per task, written by GPT-5.5 and checked by script (App.~\ref{app:prompts}). They come in three forms (cloze, question--answer and label). Each form has five wordings that name the task, meaning they contain one of \citeauthor{yang2026shared}'s task-descriptive terms or the task's name, and five that do not. This gives six groups of five. The thirty are split once into 15 \emph{identification wordings}, which may be used to identify heads, and 15 \emph{test wordings}, which only supply the means patched in the test. The split is random within each group and gives each part five wordings of each form. A group of five cannot be halved, so for each form one of its two groups gives three wordings to the identification part and the other gives two. Which group gives three alternates between forms and between tasks. As a result, eight of the 15 identification wordings name the task on half of the tasks and seven on the others (App.~\ref{app:split}).
+\item \textbf{Six example formats} for example-based prompts at five shots (Table~\ref{tab:formats}). These are split into three \emph{identification formats} and three \emph{test formats}, so that each part has one format with labels, one with an arrow-like sign and one with a plain separator. The five demonstrations in a prompt are drawn at random from the other items of the same half (Sec.~\ref{sec:heldout}).
 \item \textbf{The zero-shot prompt} \p{ x:} is the prompt that sets are patched into. It contains the query and nothing that gives the task.
 \end{itemize}
 Table~\ref{tab:unpatched} (App.~\ref{app:unpatched}) gives the model's accuracy on every family without a patch.
@@ -134,15 +134,15 @@ Table~\ref{tab:unpatched} (App.~\ref{app:unpatched}) gives the model's accuracy 
 \toprule
  & Format & Prompt (two of five shots shown) & Part \\
 \midrule
-F1 & colon and semicolon \citep[Table~1]{yang2026shared} & \p{ hot: cold; tall: short; wet:} & P \\
-F2 & question--answer \citep[App.~L]{todd2024function} & \p{Q: hot\nl A: cold\nl\nl Q: tall\nl A: short\nl\nl Q: wet\nl A:} & P \\
-F3 & arrow & \p{hot -> cold\nl tall -> short\nl wet ->} & P \\
-F4 & input--output labels & \p{Input: hot\nl Output: cold\nl\nl Input: wet\nl Output:} & Q \\
-F5 & equals & \p{hot = cold\nl tall = short\nl wet =} & Q \\
-F6 & bar & \p{hot | cold\nl tall | short\nl wet |} & Q \\
+F1 & colon and semicolon \citep[Table~1]{yang2026shared} & \p{ hot: cold; tall: short; wet:} & id. \\
+F2 & question--answer \citep[App.~L]{todd2024function} & \p{Q: hot\nl A: cold\nl\nl Q: tall\nl A: short\nl\nl Q: wet\nl A:} & id. \\
+F3 & arrow & \p{hot -> cold\nl tall -> short\nl wet ->} & id. \\
+F4 & input--output labels & \p{Input: hot\nl Output: cold\nl\nl Input: wet\nl Output:} & test \\
+F5 & equals & \p{hot = cold\nl tall = short\nl wet =} & test \\
+F6 & bar & \p{hot | cold\nl tall | short\nl wet |} & test \\
 \bottomrule
 \end{tabularx}
-\caption{Example formats, shown on antonym. P formats are used to identify heads, Q formats only to compute the means patched in the test.}
+\caption{Example formats, shown on antonym. Identification formats (id.) are used to identify heads, test formats only to compute the means patched in the test.}
 \label{tab:formats}
 \end{table}
 
@@ -150,7 +150,7 @@ F6 & bar & \p{hot | cold\nl tall | short\nl wet |} & Q \\
 
 \paragraph{Items.} Each task's items are shuffled once and cut into two halves, $A$ and $B$. In fold~1 everything that depends on items is computed on $A$ and the sets are tested on $B$; fold~2 is the reverse. Reported accuracies are means over the two folds. ``Everything that depends on items'' covers the prompts whose heads are read, the word lists, attention, causal scores, generic heads, and the task and control means.
 
-\paragraph{Prompts.} Heads are never identified on Q wordings or Q formats; these only supply the means patched into the zero-shot prompt. A template or format with fewer than ten correctly answered prompts on the identification half is not used. Every identification pool uses up to 300 correctly answered prompts per task, spread evenly over its remaining templates or formats (60 per template for the five instruction templates), so that heads are identified on the same amount of material from instruction-based and from example-based prompts. The causal score takes 100 prompts for the means, 25 per question--answer template, as \citet{davidson2025different} do, and 20 prompts for the indirect effects of each kind of uninformative text, five per template, where they use 25.
+\paragraph{Prompts.} Heads are never identified on test wordings or test formats; these only supply the means patched into the zero-shot prompt. A template or format with fewer than ten correctly answered prompts on the identification half is not used. Every identification pool uses up to 300 correctly answered prompts per task, spread evenly over its remaining templates or formats (60 per template for the five instruction templates), so that heads are identified on the same amount of material from instruction-based and from example-based prompts. The causal score takes 100 prompts for the means, 25 per question--answer template, as \citet{davidson2025different} do, and 20 prompts for the indirect effects of each kind of uninformative text, five per template, where they use 25.
 
 \paragraph{Cross-fitting.} Some choices are made by accuracy: the scaling $\alpha$ and, in Sec.~\ref{sec:select}, the combination of features. Choosing the best of several candidates on the same items it is then reported on gives an optimistic estimate, because the winner is partly the candidate that happened to do well on those items. We therefore cross-fit. A choice for fold~1 is made on fold~2's accuracy and the reverse. Fold~2 is tested on half $A$, which fold~1 uses only to identify heads and make its choices, so no outcome on the items a fold is scored on enters its choices.
 
@@ -317,7 +317,7 @@ L & last token & the read-out position (the final \p{:}) & same (the final \p{:}
  & Combinations & 511, of which 255 without D & 127, of which 63 without D \\
 \bottomrule
 \end{tabularx}
-\caption{Features from which the rules are built. A combination is named by the letters of its features, so DBTM is D, non-first, task words and markers. S stands for stopwords on instruction-based prompts and for separators on example-based ones; P and Q here are features, not the parts of the wordings (Sec.~\ref{sec:prompts}). In brackets, antonym examples: the list words, and the segments of \citeauthor{yang2026shared}'s template \p{Give me the antonym of the following word. Q: orthodox\nl A:} and of the five-shot prompt F1 of Table~\ref{tab:formats} (\p{ hot: cold; tall: short; wet:}). \p{antonym} is an other word because the list holds only the decoded fragment \p{ant} and list words match whole words.}
+\caption{Features from which the rules are built. A combination is named by the letters of its features, so DBTM is D, non-first, task words and markers. S stands for stopwords on instruction-based prompts and for separators on example-based ones. In brackets, antonym examples: the list words, and the segments of \citeauthor{yang2026shared}'s template \p{Give me the antonym of the following word. Q: orthodox\nl A:} and of the five-shot prompt F1 of Table~\ref{tab:formats} (\p{ hot: cold; tall: short; wet:}). \p{antonym} is an other word because the list holds only the decoded fragment \p{ant} and list words match whole words.}
 \label{tab:features}
 \end{table}
 
@@ -448,10 +448,10 @@ The rules of Sec.~\ref{sec:rules} identify heads on the same five instruction te
 Test & Heads identified on & Means from & Changed \\
 \midrule
 Sec.~\ref{sec:rules} & five instruction templates & five instruction templates & -- \\
-Wordings, transfer & five instruction templates & 15 Q wordings & means \\
-Wordings, re-identified & five templates + 15 P wordings & 15 Q wordings & identification prompts \\
-Examples, transfer & five instruction templates & 3 Q formats & prompting style of the means \\
-Examples, re-identified & 3 P formats & 3 Q formats & prompting style of the identification \\
+Wordings, transfer & five instruction templates & 15 test wordings & means \\
+Wordings, re-identified & five templates + 15 identification wordings & 15 test wordings & identification prompts \\
+Examples, transfer & five instruction templates & 3 test formats & prompting style of the means \\
+Examples, re-identified & 3 identification formats & 3 test formats & prompting style of the identification \\
 Summed vector & as above & as above & intervention \\
 Unseen tasks & the 14 tasks & five templates of each unseen task & tasks \\
 \bottomrule
@@ -462,21 +462,21 @@ Unseen tasks & the 14 tasks & five templates of each unseen task & tasks \\
 
 \subsection{Unseen wordings}\label{sec:wordings}
 
-\paragraph{Transfer.} The sets of Sec.~\ref{sec:rules}, unchanged, are patched with the means of the 15 Q wordings, which played no part in identifying any head or in choosing any list or scale. If a set's heads represent the task rather than the phrasing of the templates they were identified on, its accuracy should hold. Accuracy is also reported by wording group, since forms that do not name the task, or that differ from the question--answer layout, may be harder.
+\paragraph{Transfer.} The sets of Sec.~\ref{sec:rules}, unchanged, are patched with the means of the 15 test wordings, which played no part in identifying any head or in choosing any list or scale. If a set's heads represent the task rather than the phrasing of the templates they were identified on, its accuracy should hold. Accuracy is also reported by wording group, since forms that do not name the task, or that differ from the question--answer layout, may be harder.
 
-\paragraph{Re-identified.} The same rules are run again on the five templates together with the 15 P wordings: the word lists, attention, causal scores and generic heads are recomputed. The causal score is computed on the question--answer templates and P wordings, with the totals of \citet{davidson2025different}, 100 prompts for the means and 20 for each kind of uninformative text, spread evenly over those with at least ten correctly answered prompts on the identification half. Selected is chosen as in Sec.~\ref{sec:select}, but only among the combinations of that section's shortlist, patched in full with the means of the identification pool: per task at 40 heads, 15 combinations over the two folds, and with one set for all tasks at each size, the shortlist of that size, 12 to 16 combinations. The sets are tested with the same Q means. Comparing them with the transferred sets at equal size shows whether heads identified on more varied wordings trigger the task better with unseen wordings. The candidates are also patched at 40 heads with the Q means, both as identified in Sec.~\ref{sec:rules} and re-identified, which shows whether the combination chosen on the P wordings is also the best on the Q wordings. The re-identified sets are compared with the sets of Sec.~\ref{sec:rules} in Sec.~\ref{sec:overlap}.
+\paragraph{Re-identified.} The same rules are run again on the five templates together with the 15 identification wordings: the word lists, attention, causal scores and generic heads are recomputed. The causal score is computed on the question--answer templates and identification wordings, with the totals of \citet{davidson2025different}, 100 prompts for the means and 20 for each kind of uninformative text, spread evenly over those with at least ten correctly answered prompts on the identification half. Selected is chosen as in Sec.~\ref{sec:select}, but only among the combinations of that section's shortlist, patched in full with the means of the identification pool: per task at 40 heads, 15 combinations over the two folds, and with one set for all tasks at each size, the shortlist of that size, 12 to 16 combinations. The sets are tested with the same test-wording means. Comparing them with the transferred sets at equal size shows whether heads identified on more varied wordings trigger the task better with unseen wordings. The candidates are also patched at 40 heads with the test-wording means, both as identified in Sec.~\ref{sec:rules} and re-identified, which shows whether the combination chosen on the identification wordings is also the best on the test wordings. The re-identified sets are compared with the sets of Sec.~\ref{sec:rules} in Sec.~\ref{sec:overlap}.
 
 \subsection{Example-based prompts}\label{sec:examples}
 
-\paragraph{Transfer.} The sets of Sec.~\ref{sec:rules} are patched with the means of the three Q example formats. Given the overlap that \citet{yang2026shared} report between the lexical task heads of the two prompting styles, this tests whether heads identified on instruction-based prompts also trigger the task with the means of example-based prompts.
+\paragraph{Transfer.} The sets of Sec.~\ref{sec:rules} are patched with the means of the three test formats. Given the overlap that \citet{yang2026shared} report between the lexical task heads of the two prompting styles, this tests whether heads identified on instruction-based prompts also trigger the task with the means of example-based prompts.
 
-\paragraph{Re-identified.} Every rule is rebuilt on five-shot prompts of the three P formats. The segments of an example-based prompt differ from those of an instruction (Table~\ref{tab:features}): the first token, the demonstrations' inputs, their outputs, the separators between and around them, the query and the last token. Task words are not used, since demonstrations seldom contain words that describe the task. Selected is chosen as in Sec.~\ref{sec:select} among all 127 combinations of the seven example features, with the means of the P formats: per task at 40 heads, and with one set for all tasks at each size. The causal score is the one \citet{davidson2025different} use for demonstrations, that of \citet{todd2024function}: the effect of a head when the answers are shuffled among the demonstrations, with 100 prompts for the means and 25 for the effect, spread evenly over the three formats. The sets are tested with the same Q means as the transferred ones.
+\paragraph{Re-identified.} Every rule is rebuilt on five-shot prompts of the three identification formats. The segments of an example-based prompt differ from those of an instruction (Table~\ref{tab:features}): the first token, the demonstrations' inputs, their outputs, the separators between and around them, the query and the last token. Task words are not used, since demonstrations seldom contain words that describe the task. Selected is chosen as in Sec.~\ref{sec:select} among all 127 combinations of the seven example features, with the means of the identification formats: per task at 40 heads, and with one set for all tasks at each size. The causal score is the one \citet{davidson2025different} use for demonstrations, that of \citet{todd2024function}: the effect of a head when the answers are shuffled among the demonstrations, with 100 prompts for the means and 25 for the effect, spread evenly over the three formats. The sets are tested with the same test-format means as the transferred ones.
 
 \paragraph{Overlap.} The sets identified on example-based prompts are compared with those identified on instructions in Sec.~\ref{sec:overlap}. \citet{davidson2025different} find few shared heads for the causal score and \citet{yang2026shared} 73\% shared lexical task heads on average; with all rules measured in the same way, the comparison shows whether the difference lies in the rule or in the setting.
 
 \subsection{One summed vector or head by head}\label{sec:summed}
 
-The sets of Sec.~\ref{sec:rules}, with the means of the five templates, and the sets re-identified on example-based prompts, with the Q format means, are added as one summed vector (Sec.~\ref{sec:patching}) and compared with head-by-head patching at the same sizes, means and scaling. If the task information lay only in the direction a set writes, the two interventions would give similar accuracy; if it depends on where each head writes, head by head should be better, and increasingly so for larger sets, which span more layers.
+The sets of Sec.~\ref{sec:rules}, with the means of the five templates, and the sets re-identified on example-based prompts, with the test-format means, are added as one summed vector (Sec.~\ref{sec:patching}) and compared with head-by-head patching at the same sizes, means and scaling. If the task information lay only in the direction a set writes, the two interventions would give similar accuracy; if it depends on where each head writes, head by head should be better, and increasingly so for larger sets, which span more layers.
 
 \subsection{Unseen tasks}\label{sec:unseen}
 
@@ -495,14 +495,14 @@ In every test but the unseen tasks, as in Sec.~\ref{sec:rules}, every accuracy i
 \begin{figure}[tbp]
 \centering
 \includegraphics[width=\textwidth]{figures/design_wordings_transfer.pdf}
-\caption{The sets of Sec.~\ref{sec:rules}, unchanged, patched with the means of the 15 unseen Q wordings (markers), and with the means of Yang et al.'s five templates as in Fig.~\ref{fig:ladder} (thin lines). The numbers are in Table~\ref{tab:wordings-transfer}.}
+\caption{The sets of Sec.~\ref{sec:rules}, unchanged, patched with the means of the 15 test wordings (markers), and with the means of Yang et al.'s five templates as in Fig.~\ref{fig:ladder} (thin lines). The numbers are in Table~\ref{tab:wordings-transfer}.}
 \label{fig:wordings-transfer}
 \end{figure}
 
 \begin{table}[tbp]
 \centering\small
 \input{tables/design_wordings_transfer}
-\caption{Accuracy of every rule with the means of the 15 unseen Q wordings (Fig.~\ref{fig:wordings-transfer}); the best rule of each row in bold. --: the rule does not fill the size on every task. Random sets and control means are in Table~\ref{tab:s3-controls}.}
+\caption{Accuracy of every rule with the means of the 15 test wordings (Fig.~\ref{fig:wordings-transfer}); the best rule of each row in bold. --: the rule does not fill the size on every task. Random sets and control means are in Table~\ref{tab:s3-controls}.}
 \label{tab:wordings-transfer}
 \end{table}
 
@@ -511,41 +511,41 @@ In every test but the unseen tasks, as in Sec.~\ref{sec:rules}, every accuracy i
 \begin{figure}[tbp]
 \centering
 \includegraphics[width=\textwidth]{figures/design_wordings_groups.pdf}
-\caption{Accuracy at 40 heads by the form of the wording whose means are patched. Shaded rows: Yang et al.'s cloze template and their four question--answer templates, the means of Sec.~\ref{sec:rules}. Other rows: the groups of unseen Q wordings, two or three per task, by whether the wording names the task. Mean over the wordings of the group, then over 13 tasks and the two folds: country--currency is left out, since neither of its two Q label wordings without the task's name is answered correctly on ten prompts of an identification half, so neither gives a mean. Yang terms per task does not fill 40 heads on every task. The numbers are in Table~\ref{tab:wordings-groups}.}
+\caption{Accuracy at 40 heads by the form of the wording whose means are patched. Shaded rows: Yang et al.'s cloze template and their four question--answer templates, the means of Sec.~\ref{sec:rules}. Other rows: the groups of test wordings, two or three per task, by whether the wording names the task. Mean over the wordings of the group, then over 13 tasks and the two folds: country--currency is left out, since neither of its two test wordings in the label form without the task's name is answered correctly on ten prompts of an identification half, so neither gives a mean. Yang terms per task does not fill 40 heads on every task. The numbers are in Table~\ref{tab:wordings-groups}.}
 \label{fig:wordings-groups}
 \end{figure}
 
-\paragraph{Unseen wordings, re-identified.} Identified on the five templates together with the 15 P wordings, Selected triggers the task with the unseen wordings' means better than the sets of Sec.~\ref{sec:rules} at every size, in both scopes (Fig.~\ref{fig:wordings-reid}, Table~\ref{tab:wordings-reid}). Per task, it is the best rule from 20 heads on and level with Causal $-$ generic at ten heads; with one set for all tasks, it is the best rule at every size. The combinations change. Per task, the two folds select DBTSPML and DBTSML, both with attention to the markers, instead of DBTSPL. With one set for all tasks, both folds select D with attention to every token but the first and to the markers (DBM) at 40 heads, instead of DBTM; at ten heads they select DBTL, as in Sec.~\ref{sec:select}, and at 100 heads, and in one fold at 120, attention to every token but the first, the task words and the punctuation without D (BTP). The combinations selected on the P wordings at 40 heads are also the best candidates with the Q wordings' means, or within a point of the best (Table~\ref{tab:wordings-candidates}, App.~\ref{app:s3}). Every per-task candidate does better re-identified, and so do most shared ones; DBTM, the shared Selected of Sec.~\ref{sec:rules} at 40 heads, gains about a point, and two shared candidates lose. Among the other rules, Causal $-$ generic gains per task from 20 heads on, from 40 heads on by about as much as Selected; with one set for all tasks it gains at 10, 40 and 60 heads and loses slightly from 80 heads on. Causal changes by a few points per task; with one set for all tasks it gains most at ten heads and loses from 40 heads on. D loses per task from 60 heads on, the more so the larger the set, and changes little with one set for all tasks. Yang terms (J) fills the set on every task up to 40 heads, against 20 for the sets of Sec.~\ref{sec:rules}. The re-identified sets keep from just under half to over four-fifths of the heads of the sets of Sec.~\ref{sec:rules}. The per-task causal rankings keep the fewest, but about as many as they keep between the two halves of the items (Sec.~\ref{sec:overlap}). Identifying heads on more varied wordings thus helps Selected at every size, and Selected remains the best rule with unseen wordings.
+\paragraph{Unseen wordings, re-identified.} Identified on the five templates together with the 15 identification wordings, Selected triggers the task with the unseen wordings' means better than the sets of Sec.~\ref{sec:rules} at every size, in both scopes (Fig.~\ref{fig:wordings-reid}, Table~\ref{tab:wordings-reid}). Per task, it is the best rule from 20 heads on and level with Causal $-$ generic at ten heads; with one set for all tasks, it is the best rule at every size. The combinations change. Per task, the two folds select DBTSPML and DBTSML, both with attention to the markers, instead of DBTSPL. With one set for all tasks, both folds select D with attention to every token but the first and to the markers (DBM) at 40 heads, instead of DBTM; at ten heads they select DBTL, as in Sec.~\ref{sec:select}, and at 100 heads, and in one fold at 120, attention to every token but the first, the task words and the punctuation without D (BTP). The combinations selected on the identification wordings at 40 heads are also the best candidates with the test wordings' means, or within a point of the best (Table~\ref{tab:wordings-candidates}, App.~\ref{app:s3}). Every per-task candidate does better re-identified, and so do most shared ones; DBTM, the shared Selected of Sec.~\ref{sec:rules} at 40 heads, gains about a point, and two shared candidates lose. Among the other rules, Causal $-$ generic gains per task from 20 heads on, from 40 heads on by about as much as Selected; with one set for all tasks it gains at 10, 40 and 60 heads and loses slightly from 80 heads on. Causal changes by a few points per task; with one set for all tasks it gains most at ten heads and loses from 40 heads on. D loses per task from 60 heads on, the more so the larger the set, and changes little with one set for all tasks. Yang terms (J) fills the set on every task up to 40 heads, against 20 for the sets of Sec.~\ref{sec:rules}. The re-identified sets keep from just under half to over four-fifths of the heads of the sets of Sec.~\ref{sec:rules}. The per-task causal rankings keep the fewest, but about as many as they keep between the two halves of the items (Sec.~\ref{sec:overlap}). Identifying heads on more varied wordings thus helps Selected at every size, and Selected remains the best rule with unseen wordings.
 
 \begin{figure}[tbp]
 \centering
 \includegraphics[width=\textwidth]{figures/design_wordings_reid.pdf}
-\caption{The rules re-identified on Yang et al.'s five templates and the 15 P wordings (markers), and the sets of Sec.~\ref{sec:rules} (thin lines, Fig.~\ref{fig:wordings-transfer}), both patched with the means of the 15 unseen Q wordings. The numbers are in Table~\ref{tab:wordings-reid}.}
+\caption{The rules re-identified on Yang et al.'s five templates and the 15 identification wordings (markers), and the sets of Sec.~\ref{sec:rules} (thin lines, Fig.~\ref{fig:wordings-transfer}), both patched with the means of the 15 test wordings. The numbers are in Table~\ref{tab:wordings-reid}.}
 \label{fig:wordings-reid}
 \end{figure}
 
 \begin{table}[tbp]
 \centering\small
 \input{tables/design_wordings_reid}
-\caption{Accuracy of every rule re-identified on Yang et al.'s five templates and the 15 P wordings, with the means of the 15 unseen Q wordings (Fig.~\ref{fig:wordings-reid}); the best rule of each row in bold. --: the rule does not fill the size on every task.}
+\caption{Accuracy of every rule re-identified on Yang et al.'s five templates and the 15 identification wordings, with the means of the 15 test wordings (Fig.~\ref{fig:wordings-reid}); the best rule of each row in bold. --: the rule does not fill the size on every task.}
 \label{tab:wordings-reid}
 \end{table}
 
 \paragraph{Example-based prompts, transfer.} Up to 20 heads, the sets of Sec.~\ref{sec:rules} trigger the task with the means of the three unseen example formats about as well as with the unseen wordings' means, differing by less than a tenth of the items, except the shared Yang terms (J) set, which does better (Fig.~\ref{fig:examples}, Table~\ref{tab:examples}). With larger sets, D does much better with the example formats' means, per task from 40 heads on and with one set for all tasks from 60; Causal and the shared Selected sets do somewhat better, and Causal $-$ generic and the per-task Selected sets about as well as with the wordings' means. Per task, Causal $-$ generic is the best rule at ten heads, D at 80 heads, level with Selected at 60, and Selected at every other size. With one set for all tasks, Selected is the best rule at every size, about level with Causal $-$ generic at 40 heads. At 40 heads, every rule triggers the fact tasks on most items, and the causal rankings, Selected and, per task, D also the morphology tasks. On more than a third of the items, D and Selected per task also trigger the word relations and Selected per task the translations, and with one set for all tasks Selected triggers the word relations and Causal the translations; no set triggers the sequence tasks on more than about a third of the items (Table~\ref{tab:examples-types}, App.~\ref{app:s3}). With the means of example-based prompts, random sets with the same heads per layer also trigger the task more than with the wordings' means, increasingly with the size of the set (Table~\ref{tab:s3-controls-examples}).
 
-\paragraph{Example-based prompts, re-identified.} Rebuilt on five-shot prompts of the three P formats, Selected and the causal rankings trigger the task with the Q formats' means far better than the transferred sets, at every size (Fig.~\ref{fig:examples}, Table~\ref{tab:examples}). D does so per task up to 40 heads and with one set for all tasks from 20 to 80 heads; at the other sizes it gains less, and at ten shared heads nothing. Yang terms (J) gains little per task and, with one set for all tasks, only from 60 heads on. Selected is the best rule at every size per task, and from 20 heads on with one set for all tasks; at ten shared heads, the causal rankings lead. At 40 heads, in both scopes, Selected triggers the task on most items of every task type. Its largest gains over the transferred sets are on the sequence tasks and, with one set for all tasks, also on the translations, which the transferred sets triggered on at most about a third of the items (Table~\ref{tab:examples-types}). The causal rankings trigger the translations less well than the other types. At 40 heads, both folds select the same combinations, and neither contains D (Table~\ref{tab:examples-selected}, App.~\ref{app:s3}): attention to the demonstrations' outputs alone (Y) per task, and together with attention to every token but the first (BY) with one set for all tasks. Combinations with D follow closely in both scopes. At the other sizes, every shared combination selected contains attention to the demonstrations' outputs and half of them also D; the two folds agree only at ten heads, where both select Y. The generic heads differ between the folds. In fold~1, the high group holds more than half of the 30 top causal heads, so no head is removed and Causal $-$ generic is Causal; in fold~2 it holds 14 heads, which are removed (Sec.~\ref{sec:generic}).
+\paragraph{Example-based prompts, re-identified.} Rebuilt on five-shot prompts of the three identification formats, Selected and the causal rankings trigger the task with the test formats' means far better than the transferred sets, at every size (Fig.~\ref{fig:examples}, Table~\ref{tab:examples}). D does so per task up to 40 heads and with one set for all tasks from 20 to 80 heads; at the other sizes it gains less, and at ten shared heads nothing. Yang terms (J) gains little per task and, with one set for all tasks, only from 60 heads on. Selected is the best rule at every size per task, and from 20 heads on with one set for all tasks; at ten shared heads, the causal rankings lead. At 40 heads, in both scopes, Selected triggers the task on most items of every task type. Its largest gains over the transferred sets are on the sequence tasks and, with one set for all tasks, also on the translations, which the transferred sets triggered on at most about a third of the items (Table~\ref{tab:examples-types}). The causal rankings trigger the translations less well than the other types. At 40 heads, both folds select the same combinations, and neither contains D (Table~\ref{tab:examples-selected}, App.~\ref{app:s3}): attention to the demonstrations' outputs alone (Y) per task, and together with attention to every token but the first (BY) with one set for all tasks. Combinations with D follow closely in both scopes. At the other sizes, every shared combination selected contains attention to the demonstrations' outputs and half of them also D; the two folds agree only at ten heads, where both select Y. The generic heads differ between the folds. In fold~1, the high group holds more than half of the 30 top causal heads, so no head is removed and Causal $-$ generic is Causal; in fold~2 it holds 14 heads, which are removed (Sec.~\ref{sec:generic}).
 
 \begin{figure}[tbp]
 \centering
 \includegraphics[width=\textwidth]{figures/design_examples.pdf}
-\caption{Example-based prompts: the rules re-identified on five-shot prompts of the three P formats (markers), and the sets of Sec.~\ref{sec:rules}, identified on Yang et al.'s five templates (thin lines), both patched with the means of the three unseen Q formats. Note the larger accuracy range than in Figs.~\ref{fig:ladder}--\ref{fig:wordings-reid}. The numbers are in Table~\ref{tab:examples}.}
+\caption{Example-based prompts: the rules re-identified on five-shot prompts of the three identification formats (markers), and the sets of Sec.~\ref{sec:rules}, identified on Yang et al.'s five templates (thin lines), both patched with the means of the three test formats. Note the larger accuracy range than in Figs.~\ref{fig:ladder}--\ref{fig:wordings-reid}. The numbers are in Table~\ref{tab:examples}.}
 \label{fig:examples}
 \end{figure}
 
 \begin{table}[tbp]
 \centering\footnotesize\setlength{\tabcolsep}{4pt}
 \input{tables/design_examples}
-\caption{Accuracy of every rule with the means of the three unseen Q formats: the sets of Sec.~\ref{sec:rules}, identified on Yang et al.'s five templates (tr., transfer), and the rules re-identified on the three P formats (re-id.) (Fig.~\ref{fig:examples}). --: the rule does not fill the size on every task. Random sets and control means are in Table~\ref{tab:s3-controls-examples}.}
+\caption{Accuracy of every rule with the means of the three test formats: the sets of Sec.~\ref{sec:rules}, identified on Yang et al.'s five templates (tr., transfer), and the rules re-identified on the three identification formats (re-id.) (Fig.~\ref{fig:examples}). --: the rule does not fill the size on every task. Random sets and control means are in Table~\ref{tab:s3-controls-examples}.}
 \label{tab:examples}
 \end{table}
 
@@ -565,19 +565,19 @@ In every test but the unseen tasks, as in Sec.~\ref{sec:rules}, every accuracy i
 \label{tab:summed}
 \end{table}
 
-\paragraph{One summed vector, example-based prompts.} The sets re-identified on example-based prompts, with the Q formats' means, give a different picture for Selected (Fig.~\ref{fig:summed-examples}, Table~\ref{tab:summed-examples}). As one summed vector, Selected triggers the task almost as well as head by head, at every size per task and from 20 heads on with one set for all tasks, and on every task type (Table~\ref{tab:summed-examples-types}, App.~\ref{app:s3}). At ten shared heads, the causal rankings do better than Selected with both interventions. The causal rankings still lose under the summed vector at every size: with one set for all tasks most on the translations, per task most on the sequence tasks and the word relations. D and Yang terms (J) do about as well as one summed vector as head by head, or better, as with the sets of Sec.~\ref{sec:rules}. The summed vector again takes $\alpha=2$ on fewer task-folds than head by head, but the difference is smaller than with the sets of Sec.~\ref{sec:rules}. This comparison differs from the one above in both the prompts the heads are identified on and the means; which of the two lets Selected's heads work as one vector is not separated here.
+\paragraph{One summed vector, example-based prompts.} The sets re-identified on example-based prompts, with the test formats' means, give a different picture for Selected (Fig.~\ref{fig:summed-examples}, Table~\ref{tab:summed-examples}). As one summed vector, Selected triggers the task almost as well as head by head, at every size per task and from 20 heads on with one set for all tasks, and on every task type (Table~\ref{tab:summed-examples-types}, App.~\ref{app:s3}). At ten shared heads, the causal rankings do better than Selected with both interventions. The causal rankings still lose under the summed vector at every size: with one set for all tasks most on the translations, per task most on the sequence tasks and the word relations. D and Yang terms (J) do about as well as one summed vector as head by head, or better, as with the sets of Sec.~\ref{sec:rules}. The summed vector again takes $\alpha=2$ on fewer task-folds than head by head, but the difference is smaller than with the sets of Sec.~\ref{sec:rules}. This comparison differs from the one above in both the prompts the heads are identified on and the means; which of the two lets Selected's heads work as one vector is not separated here.
 
 \begin{figure}[tbp]
 \centering
 \includegraphics[width=\textwidth]{figures/design_summed_examples.pdf}
-\caption{The rules re-identified on example-based prompts patched head by head (filled markers, Fig.~\ref{fig:examples}) and as one summed vector added after layer 11 (open markers, dashed), with the means of the three unseen Q formats; $\alpha\in\{1,2\}$ cross-fitted for each intervention. Note the larger accuracy range than in Fig.~\ref{fig:summed}. The numbers are in Table~\ref{tab:summed-examples}.}
+\caption{The rules re-identified on example-based prompts patched head by head (filled markers, Fig.~\ref{fig:examples}) and as one summed vector added after layer 11 (open markers, dashed), with the means of the three test formats; $\alpha\in\{1,2\}$ cross-fitted for each intervention. Note the larger accuracy range than in Fig.~\ref{fig:summed}. The numbers are in Table~\ref{tab:summed-examples}.}
 \label{fig:summed-examples}
 \end{figure}
 
 \begin{table}[tbp]
 \centering\footnotesize\setlength{\tabcolsep}{4pt}
 \input{tables/design_summed_examples}
-\caption{Accuracy of every rule re-identified on example-based prompts, patched head by head (heads; Table~\ref{tab:examples}) and as one summed vector (sum), with the means of the three unseen Q formats (Fig.~\ref{fig:summed-examples}). --: the rule does not fill the size on every task. Random sets and control means are in Table~\ref{tab:s3-controls-examples}.}
+\caption{Accuracy of every rule re-identified on example-based prompts, patched head by head (heads; Table~\ref{tab:examples}) and as one summed vector (sum), with the means of the three test formats (Fig.~\ref{fig:summed-examples}). --: the rule does not fill the size on every task. Random sets and control means are in Table~\ref{tab:s3-controls-examples}.}
 \label{tab:summed-examples}
 \end{table}
 
@@ -604,7 +604,7 @@ Selected remains the combination chosen in Sec.~\ref{sec:select}: DBTPL is shown
 
 \subsection{Measure}\label{sec:overlap-measure}
 
-\paragraph{Conditions.} A condition is a rule, the prompts its sets are identified on and a scope. The prompts are Yang et al.'s five templates (the sets of Sec.~\ref{sec:rules}), the five templates together with the 15 P wordings (Sec.~\ref{sec:wordings}) and the three P example formats (Sec.~\ref{sec:examples}); the scope is one set per task or one set for all tasks. At each size, a condition has one set per fold, identified on that fold's identification half, and per task one such set for every task. Sets are compared only at the same size.
+\paragraph{Conditions.} A condition is a rule, the prompts its sets are identified on and a scope. The prompts are Yang et al.'s five templates (the sets of Sec.~\ref{sec:rules}), the five templates together with the 15 identification wordings (Sec.~\ref{sec:wordings}) and the three identification formats (Sec.~\ref{sec:examples}); the scope is one set per task or one set for all tasks. At each size, a condition has one set per fold, identified on that fold's identification half, and per task one such set for every task. Sets are compared only at the same size.
 
 \paragraph{Share in common, chance and stability.} Two sets $S$ and $S'$ of $N$ heads have a share $s=|S\cap S'|/N$ in common. Sets that crowd the same layers share heads by chance alone: two random sets with the same numbers of heads in each layer share $c=\frac{1}{N}\sum_l n_l m_l/H$ on average, where $n_l$ and $m_l$ are the two sets' numbers of heads in layer $l$. A set also changes with the items it is identified on. The \emph{stability} $r$ of a condition is the share its two folds' sets have in common, which are identified on disjoint halves of the items, with its own chance level $c_r$. Two conditions cannot be expected to share more heads than each shares with itself on the other half of the items.
 
@@ -619,7 +619,7 @@ which is 0 when they share no more heads than random sets in the same layers and
 \begin{figure}[tbp]
 \centering
 \includegraphics[width=\textwidth]{figures/design_overlap_40.pdf}
-\caption{Normalized overlap between the conditions at 40 heads (Sec.~\ref{sec:overlap-measure}). Below the diagonal: the share of heads two conditions have in common, a set of one fold against a set of the other, above the layer-matched chance level and relative to the two conditions' stabilities (0: chance; 1: as alike as each condition is with itself on the other half of the items); in bold, the same rule identified on other prompts. Diagonal, in italic: each condition's stability, its fold-1 set against its fold-2 set. Prompts: Yang et al.'s five templates (Sec.~\ref{sec:rules}), the five templates with the 15 P wordings (Sec.~\ref{sec:wordings}) and the three P example formats (Sec.~\ref{sec:examples}). Conditions whose rule does not fill 40 heads on every task are left out. Other sizes: App.~\ref{app:overlap}.}
+\caption{Normalized overlap between the conditions at 40 heads (Sec.~\ref{sec:overlap-measure}). Below the diagonal: the share of heads two conditions have in common, a set of one fold against a set of the other, above the layer-matched chance level and relative to the two conditions' stabilities (0: chance; 1: as alike as each condition is with itself on the other half of the items); in bold, the same rule identified on other prompts. Diagonal, in italic: each condition's stability, its fold-1 set against its fold-2 set. Prompts: Yang et al.'s five templates (Sec.~\ref{sec:rules}), the five templates with the 15 identification wordings (Sec.~\ref{sec:wordings}) and the three identification formats (Sec.~\ref{sec:examples}). Conditions whose rule does not fill 40 heads on every task are left out. Other sizes: App.~\ref{app:overlap}.}
 \label{fig:overlap}
 \end{figure}
 
@@ -627,7 +627,7 @@ which is 0 when they share no more heads than random sets in the same layers and
 
 \paragraph{Between rules.} On the same prompts, Causal and Causal $-$ generic are about as alike as each is with itself on the other half of the items: removing the generic heads changes the causal ranking less than the items do (Fig.~\ref{fig:overlap}, Tables~\ref{tab:ov-rules-pertask} and~\ref{tab:ov-rules-shared}). The other rules mostly fall into two groups. Yang terms and D, which rank heads by what they decode, share more with each other than with the causal rankings, and Selected shares more with the causal rankings than with them; across the two groups, rules share mostly a tenth to a quarter of what their stabilities allow.
 
-\paragraph{Between prompts.} Identified on the templates together with the P wordings, every rule keeps most of what its stability allows of its sets of Sec.~\ref{sec:rules}, Yang terms (J) and the causal rankings about four-fifths or more (bold cells of Fig.~\ref{fig:overlap}, Table~\ref{tab:ov-pools}). Between instruction-based and example-based prompts the rules differ widely. Yang terms (J) keep about three-fifths, and D between two-fifths and a half per task, and with one set for all tasks from about a fifth at 20 heads to over a half at 120. The causal rankings keep from about a tenth to a third. Selected per task keeps less than a tenth, and nothing from 80 heads on; with one set for all tasks it keeps about a third at 20 and 80 heads and nothing at 120. Per task, the combinations selected on the two prompting styles have no feature in common (DBTSPL and Y). The two published findings thus fit one pattern when measured in the same way: heads ranked by what they decode are shared far more between the two prompting styles, as \citet{yang2026shared} find for lexical task heads, the heads of the causal rankings less, as in \citet{davidson2025different}, and those of Selected least.
+\paragraph{Between prompts.} Identified on the templates together with the identification wordings, every rule keeps most of what its stability allows of its sets of Sec.~\ref{sec:rules}, Yang terms (J) and the causal rankings about four-fifths or more (bold cells of Fig.~\ref{fig:overlap}, Table~\ref{tab:ov-pools}). Between instruction-based and example-based prompts the rules differ widely. Yang terms (J) keep about three-fifths, and D between two-fifths and a half per task, and with one set for all tasks from about a fifth at 20 heads to over a half at 120. The causal rankings keep from about a tenth to a third. Selected per task keeps less than a tenth, and nothing from 80 heads on; with one set for all tasks it keeps about a third at 20 and 80 heads and nothing at 120. Per task, the combinations selected on the two prompting styles have no feature in common (DBTSPL and Y). The two published findings thus fit one pattern when measured in the same way: heads ranked by what they decode are shared far more between the two prompting styles, as \citet{yang2026shared} find for lexical task heads, the heads of the causal rankings less, as in \citet{davidson2025different}, and those of Selected least.
 
 \paragraph{One set per task and one for all tasks.} With Selected and the causal rankings, a task's own set shares about half or more of what the stabilities allow with the set for all tasks; with D, from a quarter to over a half, and with Yang terms (J), a sixth to a quarter (Table~\ref{tab:ov-scope}, App.~\ref{app:overlap}). The sets for all tasks of the rules that rank heads by what they decode thus hold less of each task's own heads.
 
@@ -751,7 +751,7 @@ label, does not name it & \p{Word: \{x\}\nl Contrary word:} \\
 \begin{table}[H]
 \centering\footnotesize\setlength{\tabcolsep}{3.5pt}
 \input{tables/design_unpatched}
-\caption{Accuracy without a patch, mean of the two halves, on the first 500 items of each half (all of a half's items on the smaller tasks). Patched items: zero-shot prompts \p{ x:} of items answered correctly with one example, at most 100 per half (smaller half shown), and their accuracy without a patch. Instruction wordings: mean over the five templates of \citet{yang2026shared} and over the 15 P and 15 Q further wordings. $<$30: wordings (of 35, over both halves) with fewer than 30 correctly answered prompts on a half; their means rest on fewer prompts. Example formats: five shots, demonstrations from the item's own half.}
+\caption{Accuracy without a patch, mean of the two halves, on the first 500 items of each half (all of a half's items on the smaller tasks). Patched items: zero-shot prompts \p{ x:} of items answered correctly with one example, at most 100 per half (smaller half shown), and their accuracy without a patch. Instruction wordings: mean over the five templates of \citet{yang2026shared} and over the 15 identification and 15 test wordings. $<$30: wordings (of 35, over both halves) with fewer than 30 correctly answered prompts on a half; their means rest on fewer prompts. Example formats: five shots, demonstrations from the item's own half.}
 \label{tab:unpatched}
 \end{table}
 
@@ -792,56 +792,56 @@ label, does not name it & \p{Word: \{x\}\nl Contrary word:} \\
 \begin{table}[H]
 \centering\footnotesize\setlength{\tabcolsep}{3pt}
 \input{tables/design_s3_controls}
-\caption{Random sets (rand.) and control means (ctrl.) of every rule in the tests of Sec.~\ref{sec:beyond} with instruction-based prompts, at every size: the sets of Sec.~\ref{sec:rules} with the means of the unseen Q wordings, the rules re-identified on Yang et al.'s five templates and the 15 P wordings with the same means, and the sets of Sec.~\ref{sec:rules} added as one summed vector with the means of Yang et al.'s five templates. Mean over the 14 tasks and the two folds; random sets averaged over their three draws first. --: the rule does not fill the size on every task.}
+\caption{Random sets (rand.) and control means (ctrl.) of every rule in the tests of Sec.~\ref{sec:beyond} with instruction-based prompts, at every size: the sets of Sec.~\ref{sec:rules} with the means of the test wordings, the rules re-identified on Yang et al.'s five templates and the 15 identification wordings with the same means, and the sets of Sec.~\ref{sec:rules} added as one summed vector with the means of Yang et al.'s five templates. Mean over the 14 tasks and the two folds; random sets averaged over their three draws first. --: the rule does not fill the size on every task.}
 \label{tab:s3-controls}
 \end{table}
 
 \begin{table}[H]
 \centering\footnotesize\setlength{\tabcolsep}{3pt}
 \input{tables/design_s3_controls_examples}
-\caption{Random sets (rand.) and control means (ctrl.) of every rule in the tests of Sec.~\ref{sec:beyond} with the means of the three unseen Q formats, at every size: the sets of Sec.~\ref{sec:rules} (transfer), the rules re-identified on the three P formats, and the same re-identified sets added as one summed vector. As Table~\ref{tab:s3-controls}.}
+\caption{Random sets (rand.) and control means (ctrl.) of every rule in the tests of Sec.~\ref{sec:beyond} with the means of the three test formats, at every size: the sets of Sec.~\ref{sec:rules} (transfer), the rules re-identified on the three identification formats, and the same re-identified sets added as one summed vector. As Table~\ref{tab:s3-controls}.}
 \label{tab:s3-controls-examples}
 \end{table}
 
 \begin{table}[H]
 \centering\footnotesize
 \input{tables/design_control_tasks_eq}
-\caption{Control means per task at 40 heads, the rules re-identified on example-based prompts with the related task's means of the three unseen Q formats; mean of the two folds. Last row: mean over the 14 tasks (Table~\ref{tab:s3-controls-examples}). Yang: Yang terms (J); Sel.: Selected; C.\,$-$\,gen.: Causal $-$ generic. --: the rule does not fill 40 heads on the task in both folds.}
+\caption{Control means per task at 40 heads, the rules re-identified on example-based prompts with the related task's means of the three test formats; mean of the two folds. Last row: mean over the 14 tasks (Table~\ref{tab:s3-controls-examples}). Yang: Yang terms (J); Sel.: Selected; C.\,$-$\,gen.: Causal $-$ generic. --: the rule does not fill 40 heads on the task in both folds.}
 \label{tab:control-tasks}
 \end{table}
 
 \begin{table}[H]
 \centering\small
 \input{tables/design_wordings_types}
-\caption{Accuracy by task type at 40 heads with the means of the unseen Q wordings, for the sets of Sec.~\ref{sec:rules} (transfer) and the rules re-identified on Yang et al.'s five templates and the 15 P wordings; mean over the tasks of the type and the two folds (as Table~\ref{tab:types}). --: the rule does not fill 40 heads on every task of the type.}
+\caption{Accuracy by task type at 40 heads with the means of the test wordings, for the sets of Sec.~\ref{sec:rules} (transfer) and the rules re-identified on Yang et al.'s five templates and the 15 identification wordings; mean over the tasks of the type and the two folds (as Table~\ref{tab:types}). --: the rule does not fill 40 heads on every task of the type.}
 \label{tab:wordings-types}
 \end{table}
 
 \begin{table}[H]
 \centering\small
 \input{tables/design_wordings_candidates}
-\caption{Unseen wordings, re-identified: the candidate combinations at 40 heads, the shortlist of Sec.~\ref{sec:select} (Table~\ref{tab:selected} shows each fold's first five), with the means of the 15 unseen Q wordings, as identified in Sec.~\ref{sec:rules} and re-identified on Yang et al.'s five templates and the 15 P wordings; ordered by the second. In bold, the combinations selected on the P wordings, and the folds that select them. Letters: D; attention to every token but the first (B), the task words (T), the other words (O), the stopwords (S), the punctuation (P), the markers (M) and the last token (L).}
+\caption{Unseen wordings, re-identified: the candidate combinations at 40 heads, the shortlist of Sec.~\ref{sec:select} (Table~\ref{tab:selected} shows each fold's first five), with the means of the 15 test wordings, as identified in Sec.~\ref{sec:rules} and re-identified on Yang et al.'s five templates and the 15 identification wordings; ordered by the second. In bold, the combinations selected on the identification wordings, and the folds that select them. Letters: D; attention to every token but the first (B), the task words (T), the other words (O), the stopwords (S), the punctuation (P), the markers (M) and the last token (L).}
 \label{tab:wordings-candidates}
 \end{table}
 
 \begin{table}[H]
 \centering\footnotesize
 \input{tables/design_examples_selected}
-\caption{Example-based prompts, re-identified: the five best of the 127 combinations of the seven example features at 40 heads for each fold and scope, ranked by accuracy on the other fold with the means of the three P formats, as Table~\ref{tab:selected}; Selected in bold.}
+\caption{Example-based prompts, re-identified: the five best of the 127 combinations of the seven example features at 40 heads for each fold and scope, ranked by accuracy on the other fold with the means of the three identification formats, as Table~\ref{tab:selected}; Selected in bold.}
 \label{tab:examples-selected}
 \end{table}
 
 \begin{table}[H]
 \centering\small
 \input{tables/design_examples_types}
-\caption{Accuracy by task type at 40 heads with the means of the three unseen Q formats: the sets of Sec.~\ref{sec:rules} (transfer) and the rules re-identified on the three P formats; as Table~\ref{tab:wordings-types}.}
+\caption{Accuracy by task type at 40 heads with the means of the three test formats: the sets of Sec.~\ref{sec:rules} (transfer) and the rules re-identified on the three identification formats; as Table~\ref{tab:wordings-types}.}
 \label{tab:examples-types}
 \end{table}
 
 \begin{table}[H]
 \centering\small
 \input{tables/design_summed_examples_types}
-\caption{Accuracy by task type at 40 heads, the rules re-identified on example-based prompts added as one summed vector with the means of the three unseen Q formats (as Table~\ref{tab:types}).}
+\caption{Accuracy by task type at 40 heads, the rules re-identified on example-based prompts added as one summed vector with the means of the three test formats (as Table~\ref{tab:types}).}
 \label{tab:summed-examples-types}
 \end{table}
 
@@ -862,7 +862,7 @@ label, does not name it & \p{Word: \{x\}\nl Contrary word:} \\
 \begin{table}[H]
 \centering\footnotesize
 \input{tables/design_wordings_groups}
-\caption{Accuracy at 40 heads by the form of the wording whose means are patched (Fig.~\ref{fig:wordings-groups}). Yang: Yang et al.'s cloze template and their four question--answer templates (Sec.~\ref{sec:rules}); named, not: unseen Q wordings that name the task or do not. Mean over the wordings of the group, then over 13 tasks (country--currency left out) and the two folds.}
+\caption{Accuracy at 40 heads by the form of the wording whose means are patched (Fig.~\ref{fig:wordings-groups}). Yang: Yang et al.'s cloze template and their four question--answer templates (Sec.~\ref{sec:rules}); named, not: test wordings that name the task or do not. Mean over the wordings of the group, then over 13 tasks (country--currency left out) and the two folds.}
 \label{tab:wordings-groups}
 \end{table}
 
@@ -899,7 +899,7 @@ label, does not name it & \p{Word: \{x\}\nl Contrary word:} \\
 \begin{table}[H]
 \centering\scriptsize\setlength{\tabcolsep}{3pt}
 \input{tables/design_overlap_stability}
-\caption{Stability of every condition, its fold-1 set against its fold-2 set (layer-matched chance in brackets), and the share of its heads in its own three random sets; mean over tasks (per task) and folds. Prompts: Yang et al.'s five templates (Sec.~\ref{sec:rules}), the five templates with the 15 P wordings (Sec.~\ref{sec:wordings}), the three P example formats (Sec.~\ref{sec:examples}). --: the rule does not fill the size on every task.}
+\caption{Stability of every condition, its fold-1 set against its fold-2 set (layer-matched chance in brackets), and the share of its heads in its own three random sets; mean over tasks (per task) and folds. Prompts: Yang et al.'s five templates (Sec.~\ref{sec:rules}), the five templates with the 15 identification wordings (Sec.~\ref{sec:wordings}), the three identification formats (Sec.~\ref{sec:examples}). --: the rule does not fill the size on every task.}
 \label{tab:ov-stability}
 \end{table}
 

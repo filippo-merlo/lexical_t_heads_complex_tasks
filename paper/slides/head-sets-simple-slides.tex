@@ -157,8 +157,8 @@ Translations & English to French, German, Spanish & dog $\rightarrow$ chien \\
 Prompts & Used for & Example \\
 \midrule
 5 instruction templates & identify heads, means & \texttt{\scriptsize What is the capital of the country? Q: France\nl A:} \\
-30 wordings: 15 P, 15 Q & P identify, Q means & \texttt{\scriptsize Country: France\nl Capital city:} \\
-6 example formats: 3 P, 3 Q & P identify, Q means & \texttt{\scriptsize \ hot: cold; tall: short; wet:} \quad (5 shots) \\
+30 wordings & 15 identify, 15 test & \texttt{\scriptsize Country: France\nl Capital city:} \\
+6 example formats & 3 identify, 3 test & \texttt{\scriptsize \ hot: cold; tall: short; wet:} \quad (5 shots) \\
 Zero-shot prompt, no task & patched into & \texttt{\scriptsize \ France:} \\
 \bottomrule
 \end{tabular}
@@ -736,10 +736,10 @@ Each test changes one thing; the zero-shot prompt stays \texttt{\ x:}.
 Test & Heads identified on & Means from \\
 \midrule
 Main results & 5 instruction templates & the same 5 templates \\
-Wordings, transfer & 5 instruction templates & 15 unseen Q wordings \\
-Wordings, re-identified & 5 templates + 15 P wordings & 15 unseen Q wordings \\
-Examples, transfer & 5 instruction templates & 3 unseen Q example formats \\
-Examples, re-identified & 3 P example formats & 3 unseen Q example formats \\
+Wordings, transfer & 5 instruction templates & 15 test wordings \\
+Wordings, re-identified & \begin{tabular}[t]{@{}l@{}}5 templates +\\ 15 identification wordings\end{tabular} & 15 test wordings \\
+Examples, transfer & 5 instruction templates & 3 test formats \\
+Examples, re-identified & 3 identification formats & 3 test formats \\
 Summed vector & as above & as above, one vector after layer 11 \\
 Unseen tasks & the 14 tasks (shared, 40 heads) & 4 new tasks' own templates \\
 \bottomrule
@@ -751,7 +751,7 @@ Unseen tasks & the 14 tasks (shared, 40 heads) & 4 new tasks' own templates \\
 \centering
 \includegraphics[width=0.72\textwidth]{design_wordings_reid}
 
-\gnote{Both with the means of the 15 unseen Q wordings.}
+\gnote{Both with the means of the 15 test wordings.}
 
 \raggedright\small
 \begin{itemize}
@@ -766,7 +766,7 @@ Unseen tasks & the 14 tasks (shared, 40 heads) & 4 new tasks' own templates \\
 \centering
 \includegraphics[width=0.72\textwidth]{design_examples}
 
-\gnote{Both with the means of the 3 unseen Q formats.}
+\gnote{Both with the means of the 3 test formats.}
 
 \raggedright\small
 \begin{itemize}
@@ -896,7 +896,7 @@ D & \cv{0.33} & \cv{0.35} & \cv{0.25} & \cv{0.25} & \cv{0.62} & \cv{0.63} & \cv{
 \item Identified on examples, \Sel\ works almost as well as one vector.
 \end{itemize}
 \vfill
-\gnote{Heads: patched head by head. Instructions: means of Yang's 5 templates. Examples: means of the Q formats.}
+\gnote{Heads: patched head by head. Instructions: means of Yang's 5 templates. Examples: means of the test formats.}
 \end{frame}
 
 % =====================================================================
@@ -1009,7 +1009,7 @@ not name the task are the hardest. Shared \Causal\ depends most on the form: its
 \centering\textbf{Identified on instructions}\\{\footnotesize means of Yang's 5 templates}\\[4pt]
 \includegraphics[width=\textwidth]{design_summed}
 \column{0.49\textwidth}
-\centering\textbf{Identified on examples}\\{\footnotesize means of the 3 Q formats}\\[4pt]
+\centering\textbf{Identified on examples}\\{\footnotesize means of the 3 test formats}\\[4pt]
 \includegraphics[width=\textwidth]{design_summed_examples}
 \end{columns}
 \vfill
