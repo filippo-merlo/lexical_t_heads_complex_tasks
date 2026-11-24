@@ -778,33 +778,96 @@ Unseen tasks & the 14 tasks (shared, 40 heads) & 4 new tasks' own templates \\
 \end{frame}
 
 % =====================================================================
-\begin{frame}{Instructions vs.\ examples: decoding rules share heads}
-\centering\small
-\begin{tabular}{@{}llccc@{}}
+\begin{frame}{The causal ranking changes half its heads with the items}
+\begin{columns}[c]
+\column{0.47\textwidth}
+\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lccc@{}}
 \toprule
- & & \multicolumn{3}{c}{heads in both sets (chance)} \\
-\cmidrule(lr){3-5}
-Scope & Rule & $N=20$ & $N=40$ & $N=120$ \\
+Per task & $N=20$ & $N=40$ & $N=120$ \\
 \midrule
-Per task & Yang terms (J) & 0.60 (0.05) & -- & -- \\
- & D & 0.38 (0.05) & 0.42 (0.09) & 0.51 (0.19) \\
- & \Sel & 0.15 (0.07) & 0.18 (0.12) & 0.27 (0.27) \\
- & \Causal & 0.13 (0.06) & 0.22 (0.11) & 0.29 (0.19) \\
+Yang terms (J) & 0.96 & -- & -- \\
+D & 0.87 & 0.91 & 0.92 \\
+\Sel & 0.90 & 0.91 & 0.95 \\
+\Causal & 0.50 & 0.52 & 0.50 \\
+\CausalG & 0.49 & 0.49 & 0.46 \\
 \midrule
-Shared & Yang terms (J) & 0.55 (0.09) & 0.54 (0.10) & 0.67 (0.21) \\
- & D & 0.20 (0.06) & 0.40 (0.11) & 0.62 (0.24) \\
- & \Sel & 0.32 (0.11) & 0.29 (0.16) & 0.35 (0.32) \\
- & \Causal & 0.22 (0.11) & 0.33 (0.14) & 0.33 (0.21) \\
+\textcolor{gray}{chance} & \textcolor{gray}{0.06--0.11} & \textcolor{gray}{0.10--0.17} & \textcolor{gray}{0.18--0.32} \\
 \bottomrule
 \end{tabular}
 
-\vspace{0.8em}
-\raggedright
-\begin{itemize}
-\item Decoding rules: many shared heads, as Yang et al.\ find (73\% of lexical task heads).
-\item \Causal\ and \Sel: mostly different heads, as Davidson et al.\ find for function vectors.
+\vspace{0.4em}
+\gnote{Stability: heads the two folds' sets have in common;\\ each fold identifies on its own half of the items.\\ Sets identified on instructions.}
+\column{0.5\textwidth}
+\small
+\begin{itemize}\spaced
+\item Per task, a causal set keeps about \textbf{half} of its heads between the two halves of the items;
+      on English--German hardly more than chance (0.10 vs.\ 0.06 at 40 heads).
+\item The other rules keep nine in ten.
+\item So overlap is read against each set's own stability:
+      $\dfrac{\text{shared} - \text{chance}}{\text{stability} - \text{chance}}$
+      \\ 0 = random heads in the same layers, 1 = as alike as each set with itself.
 \end{itemize}
-\takeaway{The two published findings fit one pattern when measured the same way.}
+\end{columns}
+\end{frame}
+
+% =====================================================================
+\begin{frame}{Instructions vs.\ examples: decoding rules share heads}
+\centering\footnotesize
+\begin{tabular}{@{}llccc@{\hspace{1.6em}}ccc@{}}
+\toprule
+ & & \multicolumn{3}{c}{heads in both sets (chance)} & \multicolumn{3}{c}{normalized by stability} \\
+\cmidrule(lr){3-5}\cmidrule(lr){6-8}
+Scope & Rule & $N=20$ & $N=40$ & $N=120$ & 20 & 40 & 120 \\
+\midrule
+Per task & Yang terms (J) & 0.60 (0.05) & -- & -- & \textbf{0.64} & -- & -- \\
+ & D & 0.38 (0.05) & 0.42 (0.09) & 0.51 (0.19) & 0.41 & 0.41 & 0.46 \\
+ & \Causal & 0.13 (0.06) & 0.22 (0.11) & 0.29 (0.19) & 0.13 & 0.25 & 0.33 \\
+ & \Sel & 0.14 (0.07) & 0.18 (0.12) & 0.27 (0.27) & 0.09 & 0.08 & 0.00 \\
+\midrule
+Shared & Yang terms (J) & 0.53 (0.09) & 0.53 (0.11) & 0.67 (0.21) & \textbf{0.60} & \textbf{0.59} & \textbf{0.68} \\
+ & D & 0.20 (0.06) & 0.40 (0.11) & 0.62 (0.24) & 0.18 & 0.41 & 0.56 \\
+ & \Causal & 0.23 (0.11) & 0.30 (0.14) & 0.33 (0.21) & 0.19 & 0.27 & 0.25 \\
+ & \Sel & 0.33 (0.11) & 0.29 (0.16) & 0.33 (0.32) & 0.34 & 0.17 & 0.01 \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.6em}
+\raggedright\small
+\begin{itemize}
+\item Decoding rules share the most, as Yang et al.\ find (73\% of lexical task heads).
+\item \Causal: mostly different heads, as Davidson et al.\ find; partly its own instability.
+\item \Sel: as different as random heads in the same layers; per task its picks share no feature (DBTSPL, Y).
+\end{itemize}
+\takeaway{Against each set's own stability: Yang terms $>$ D $>$ \Causal\ $>$ \Sel.}
+\end{frame}
+
+% =====================================================================
+\begin{frame}{Between tasks: D is type-specific, Selected and Causal shared}
+\begin{columns}[c]
+\column{0.5\textwidth}
+\centering
+\includegraphics[height=0.86\textheight]{design_overlap_tasks}
+\column{0.48\textwidth}
+\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+40 heads & same type & other types \\
+\midrule
+D & 0.54 & 0.17 \\
+\Sel & 0.71 & 0.44 \\
+\Causal & 0.71 & 0.38 \\
+\CausalG & 0.68 & 0.35 \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.3em}
+\gnote{Normalized overlap between two tasks' own sets,\\ identified on instructions; mean over pairs.}
+\begin{itemize}\spaced
+\item D: heads shared within a task type (translations most), little across types.
+\item \Sel\ and \Causal: many of the same heads for every task; the causal sets of the fact tasks share the most.
+\end{itemize}
+\end{columns}
 \end{frame}
 
 % =====================================================================
@@ -875,7 +938,9 @@ D & 0.30 & 0.84 & 0.45 & \cv{0.12} & \cv{0.43} & 0.02 & 0.08 & 0.25 \\
       against about 61{,}000 patched ones.
 \item It holds with \textbf{unseen wordings}, and on \textbf{four tasks} outside the 14.
 \item On \textbf{example-based prompts}, \Sel\ re-identified triggers 9 items in 10, also as one summed vector.
-      Its heads, like the causal ones, differ from those identified on instructions.
+      Its heads differ from those identified on instructions about as much as random ones;
+      the decoding rules' heads are shared the most.
+\item The \textbf{causal ranking} keeps only about half of its heads per task between two halves of the items.
 \item Lexical task heads with predefined terms trigger few items, almost only facts.
 \end{enumerate}
 \end{frame}
@@ -890,6 +955,7 @@ D & 0.30 & 0.84 & 0.45 & \cv{0.12} & \cv{0.43} & 0.02 & 0.08 & 0.25 \\
 \item The combination is chosen on the same 14 tasks; the unseen-task test has four tasks,
       three of them person$\to$attribute.
 \item \Sel's dense layers make its random sets share up to two-fifths of its heads at 120 heads.
+\item Overlap is read against each set's stability between the two folds: one pair of item halves.
 \item Sets identified on examples: control means reach about a fifth on four tasks.
 \item The 30 further wordings were generated by a language model and checked by script, not by hand.
 \end{itemize}
@@ -992,6 +1058,48 @@ Every rule is weaker at $\alpha=1$.
 \begin{frame}{Backup: accuracy by task type at every size}
 \centering
 \includegraphics[width=0.85\textwidth]{design_types}
+\end{frame}
+
+% =====================================================================
+\begin{frame}{Backup: overlap between rules (40 heads, instructions)}
+\begin{columns}[t]
+\column{0.38\textwidth}
+\centering\footnotesize\setlength{\tabcolsep}{4pt}
+Per task\\[3pt]
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+ & D & Sel. & Caus. & C.$-$g. \\
+\midrule
+D & \textit{.91} & & & \\
+\Sel & .23 & \textit{.91} & & \\
+\Causal & .19 & .27 & \textit{.52} & \\
+\CausalG & .20 & .26 & .96 & \textit{.49} \\
+\bottomrule
+\end{tabular}
+\column{0.58\textwidth}
+\centering\footnotesize\setlength{\tabcolsep}{4pt}
+Shared\\[3pt]
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+ & Y(L) & Y(J) & D & Sel. & Caus. & C.$-$g. \\
+\midrule
+Yang terms (Logit) & \textit{.88} & & & & & \\
+Yang terms (J) & .55 & \textit{.90} & & & & \\
+D & .28 & .39 & \textit{.85} & & & \\
+\Sel & .04 & .10 & .16 & \textit{.97} & & \\
+\Causal & .08 & .15 & .31 & .31 & \textit{.68} & \\
+\CausalG & .14 & .26 & .36 & .27 & .93 & \textit{.55} \\
+\bottomrule
+\end{tabular}
+\end{columns}
+
+\vspace{0.6em}
+\gnote{Normalized overlap (0 = chance, 1 = stability); diagonal, italic: stability. Yang terms (J) does not fill 40 heads per task.}
+\raggedright
+\begin{itemize}
+\item \Causal\ and \CausalG: as alike as each with itself; removing generic heads changes less than the items do.
+\item Decoding rules share most among themselves; \Sel\ shares more with \Causal\ than with them.
+\end{itemize}
 \end{frame}
 
 \end{document}
