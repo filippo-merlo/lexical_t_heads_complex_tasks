@@ -260,33 +260,6 @@ def table_types(n: int = SCREEN_N) -> None:
     write("design_types", rt.tabular("@{}l" + "r" * (len(TYPES) + 1) + "@{}", header, rows))
 
 
-def table_overlap() -> None:
-    """Share of heads in common with Causal of the same scope and size, and layer-matched chance;
-    share of a rule's heads in its random sets."""
-    sizes = (20, 40, 80, 120)
-    header = ["& & \\multicolumn{4}{c}{with Causal (chance)} & \\multicolumn{4}{c}{with its random sets} \\\\",
-              "\\cmidrule(lr){3-6} \\cmidrule(lr){7-10}",
-              "Scope & Rule & " + " & ".join(f"$N={n}$" for n in sizes) + " & " + " & ".join(f"{n}" for n in sizes) + " \\\\"]
-    rows = []
-    for scope, prefix in SCOPES.items():
-        for r in LADDER:
-            with_causal, with_random = [], []
-            for n in sizes:
-                ref = f"{prefix}causal{n}"
-                if r == "causal":
-                    with_causal.append("--")
-                else:
-                    ov = set_stat(r, scope, n, lambda s, nm: len(s[nm] & s[ref]) / n)
-                    ch = set_stat(r, scope, n, lambda s, nm: chance_overlap(s[nm], s[ref]) / n)
-                    with_causal.append("--" if ov is None else f"{rt.num(ov)} ({rt.num(ch)})")
-                rv = set_stat(r, scope, n, lambda s, nm: np.mean([len(s[nm] & s[f'random_{nm}_{i}']) for i in range(3)]) / n)
-                with_random.append(rt.num(rv))
-            rows.append(f"{scope if r == LADDER[0] else ''} & {RULES[r][0]} & " + " & ".join(with_causal + with_random) + " \\\\")
-        if scope == "per task":
-            rows.append("\\midrule")
-    write("design_overlap", rt.tabular("@{}ll" + "r" * 8 + "@{}", header, rows))
-
-
 def table_yang_tasks() -> None:
     """Per-task accuracy of Yang terms (Logit and J) where both folds fill the size; tasks that fill."""
     header = ["& \\multicolumn{" + str(len(SIZES)) + "}{c}{Yang terms (Logit)} & \\multicolumn{" + str(len(SIZES))
@@ -874,43 +847,6 @@ def table_selected_examples() -> None:
     write("design_examples_selected", rt.tabular("@{}lrrl>{\\raggedright\\arraybackslash}p{5.2cm}rr@{}", header, rows))
 
 
-def table_s3_overlap(sizes=(20, 40, 80, 120)) -> None:
-    """Share of heads in common between the re-identified sets and the sets of Sec. 5 of the same rule, scope and
-    size, with layer-matched chance; and the share of the example sets' heads in their own random sets."""
-    pools = {"wordings": with_sized_sets(heads(WPOOL), "wordings_n"), "examples": with_sized_sets(heads(EPOOL), "examples_n")}
-    blocks = (("Re-identified on wordings, with the sets of Sec.~5", "wordings", "sec5"),
-              ("Re-identified on example-based prompts, with the sets of Sec.~5", "examples", "sec5"),
-              ("Re-identified on example-based prompts, with their random sets", "examples", "random"))
-    header = ["Scope & Rule & " + " & ".join(f"$N={n}$" for n in sizes) + " \\\\"]
-    rows = []
-    for b, (title, pool, kind) in enumerate(blocks):
-        rows.append(f"\\multicolumn{{{len(sizes) + 2}}}{{@{{}}l}}{{\\textit{{{title}}}}} \\\\")
-        for scope in SCOPES:
-            for r in S3_RULES:
-                cells_ = []
-                for n in sizes:
-                    if kind == "sec5":
-                        nm = f"{SCOPES[scope]}{r}{n}"
-                        ts = simple.TASKS[:1] if scope == "shared" else simple.TASKS
-                        pairs = [(pools[pool][f][t].get(nm), SETS[f][t].get(nm)) for f in (1, 2) for t in ts]
-                        if any(a is None or s5 is None for a, s5 in pairs):
-                            cells_.append("--")
-                            continue
-                        ov = np.mean([len(a & s5) / n for a, s5 in pairs])
-                        ch = np.mean([chance_overlap(a, s5) / n for a, s5 in pairs])
-                        cells_.append(f"{rt.num(ov)} ({rt.num(ch)})")
-                    else:
-                        rv = set_stat(r, scope, n, lambda s, nm: np.mean([len(s[nm] & s[f'random_{nm}_{i}']) for i in range(3)]) / n,
-                                      sets_of=lambda f, t: pools[pool][f][t])
-                        cells_.append(rt.num(rv))
-                rows.append(f"{scope if r == S3_RULES[0] else ''} & {RULES[r][0]} & " + " & ".join(cells_) + " \\\\")
-            if scope == "per task":
-                rows.append("\\addlinespace")
-        if b < len(blocks) - 1:
-            rows.append("\\midrule")
-    write("design_s3_overlap", rt.tabular("@{}ll" + "r" * len(sizes) + "@{}", header, rows))
-
-
 def table_control_tasks(key: str = "eq", n: int = SCREEN_N) -> None:
     """Control means per task at ``n`` heads in one test, both scopes."""
     header = ["& \\multicolumn{" + str(len(S3_RULES)) + "}{c}{One set per task} & \\multicolumn{" + str(len(S3_RULES))
@@ -1074,7 +1010,6 @@ def stage3() -> None:
         table_selected_examples()
         table_s3_types(("et", "eq"), "design_examples_types")
         table_control_tasks("eq")
-        table_s3_overlap()
         fig_pair("et", "eq", ("re-identified on the 3 P formats", "identified on Yang's five templates (transfer)"),
                  "design_examples", ymax=1.0)
     if "esum" in ACC3:
@@ -1087,13 +1022,401 @@ def stage3() -> None:
         print("alpha = 2 share:", alpha2_share())
 
 
+# ------------------------------------------------------------------ overlap between conditions (Sec. 7)
+#
+# A condition is a rule, the prompts its sets are identified on (pool) and a scope; each has one set per fold and
+# size (and task, per task). For two conditions A, B of the same size, s = |A & B| / N (mean over folds and, per
+# task, tasks), c = the share two random sets with the same heads per layer would have (layer-matched chance), and
+# a condition's stability rho = its fold-1 set against its fold-2 set (identified on the two disjoint item halves),
+# with its own chance. Normalized overlap q = (s - c) / sqrt((rho_A - c_A)(rho_B - c_B)): 0 = no more than random
+# sets in the same layers, 1 = as alike as each condition is with itself on the other half of the items.
+
+OV_POOLS = {"I": "templates", "W": "wordings", "E": "examples"}  # Sec. 5 sets; re-identified (Secs. 6.1, 6.2)
+OV_SIZES = (20, 40, 80, 120)
+OV_DIR = rt.RESULTS / "rebuild" / "overlap"
+T0 = simple.TASKS[0]  # a shared set is the same for every task
+_OVS = {}
+
+
+def ov_sets():
+    if not _OVS:
+        _OVS.update(I=SETS, W=with_sized_sets(heads(WPOOL), "wordings_n"), E=with_sized_sets(heads(EPOOL), "examples_n"))
+    return _OVS
+
+
+def ov_get(cond, fold: int, task: str, n: int):
+    pool, scope, rule = cond
+    return ov_sets()[pool][fold][task].get(f"{SCOPES[scope]}{rule}{n}")
+
+
+def ov_share(a, b, n: int, units):
+    """Mean share in common and layer-matched chance over ``units`` = [((fold_a, task_a), (fold_b, task_b))];
+    None if a set is missing in any unit."""
+    vals = []
+    for (fa, ta), (fb, tb) in units:
+        A, B = ov_get(a, fa, ta, n), ov_get(b, fb, tb, n)
+        if A is None or B is None:
+            return None
+        assert len(A) == len(B) == n
+        vals.append((len(A & B) / n, chance_overlap(A, B) / n))
+    return tuple(np.mean(vals, axis=0))
+
+
+def ov_units(scope: str, task: str | None = None, task_b: str | None = None, stability: bool = False):
+    """Always one set from each fold, so that two conditions built from the same scores of a fold (Causal and
+    Causal - generic, or D and a combination with D) do not share that fold's noise: a comparison averages fold 1
+    against fold 2 and the reverse, stability is fold 1 against fold 2. Per task every task unless one is given."""
+    tasks = [T0] if scope == "shared" and task is None else ([task] if task else simple.TASKS)
+    folds = [(1, 2)] if stability else [(1, 2), (2, 1)]
+    return [((fa, t), (fb, task_b or t)) for fa, fb in folds for t in tasks]
+
+
+def ov_q(s, ra, rb):
+    if s is None or ra is None or rb is None:
+        return None
+    den = (ra[0] - ra[1]) * (rb[0] - rb[1])
+    return float((s[0] - s[1]) / np.sqrt(den)) if den > 0 else None
+
+
+def ov_conditions(scope: str) -> list[tuple[str, str, str]]:
+    """Conditions with a set at some size of OV_SIZES on every task and fold, in display order."""
+    out = []
+    for p in OV_POOLS:
+        for r in LADDER:
+            c = (p, scope, r)
+            if any(ov_share(c, c, n, ov_units(scope)) is not None for n in OV_SIZES):
+                out.append(c)
+    return out
+
+
+def overlap_rows() -> pd.DataFrame:
+    """Every comparison at every size of SIZES; written to results/rebuild/overlap/overlap.csv."""
+    rows = []
+    stab = {}
+    for scope in SCOPES:
+        conds = ov_conditions(scope)
+        for n in SIZES:
+            for c in conds:
+                rho = ov_share(c, c, n, ov_units(scope, stability=True))
+                stab[(c, n)] = rho
+                rnd = None
+                if rho is not None:
+                    pre = f"random_{SCOPES[scope]}{c[2]}{n}"
+                    rnd = float(np.mean([len(ov_get(c, f, t, n) & ov_sets()[c[0]][f][t][f"{pre}_{i}"]) / n
+                                         for f in (1, 2) for t in ([T0] if scope == "shared" else simple.TASKS)
+                                         for i in range(3)]))
+                rows.append(dict(kind="stability", scope=scope, n=n, pool_a=c[0], rule_a=c[2],
+                                 share=None if rho is None else rho[0], chance=None if rho is None else rho[1],
+                                 random_share=rnd))
+            for i, a in enumerate(conds):  # comparisons 2 (same pool) and 3 (same rule), and the other pairs
+                for b in conds[i + 1:]:
+                    s = ov_share(a, b, n, ov_units(scope))
+                    kind = "rules" if a[0] == b[0] else ("pools" if a[2] == b[2] else "other")
+                    rows.append(dict(kind=kind, scope=scope, n=n, pool_a=a[0], rule_a=a[2], pool_b=b[0], rule_b=b[2],
+                                     share=None if s is None else s[0], chance=None if s is None else s[1],
+                                     q=ov_q(s, stab[(a, n)], stab[(b, n)])))
+    for n in SIZES:  # comparison 4: a task's own set against the set for all tasks, same rule and pool
+        for p in OV_POOLS:
+            for r in LADDER:
+                a, b = (p, "per task", r), (p, "shared", r)
+                s = ov_share(a, b, n, ov_units("per task"))
+                rows.append(dict(kind="scope", scope="per task", n=n, pool_a=p, rule_a=r, pool_b=p, rule_b=r,
+                                 share=None if s is None else s[0], chance=None if s is None else s[1],
+                                 q=ov_q(s, stab.get((a, n)), stab.get((b, n)))))
+    for n in SIZES:  # comparison 5: task against task, same rule and pool, per task
+        for p in OV_POOLS:
+            for r in LADDER:
+                c = (p, "per task", r)
+                for t in simple.TASKS:  # each task's own stability, reported; not used as its ceiling
+                    s = ov_share(c, c, n, ov_units("per task", t, stability=True))
+                    rows.append(dict(kind="task_stability", scope="per task", n=n, pool_a=p, rule_a=r, task_a=t,
+                                     share=None if s is None else s[0], chance=None if s is None else s[1]))
+                # Ceiling: the rule's stability over all 14 tasks, as for comparisons 2-4; a single task's stability
+                # can lie near chance (per-task Causal on English-German), which would make its ratio meaningless.
+                for i, t in enumerate(simple.TASKS):
+                    for t2 in simple.TASKS[i + 1:]:
+                        s = ov_share(c, c, n, ov_units("per task", t, t2))
+                        rows.append(dict(kind="tasks", scope="per task", n=n, pool_a=p, rule_a=r, pool_b=p, rule_b=r,
+                                         task_a=t, task_b=t2, share=None if s is None else s[0],
+                                         chance=None if s is None else s[1], q=ov_q(s, stab.get((c, n)), stab.get((c, n))),
+                                         same_type=any(t in ts and t2 in ts for ts in TYPES.values())))
+    df = pd.DataFrame(rows)
+    OV_DIR.mkdir(parents=True, exist_ok=True)
+    df.to_csv(OV_DIR / "overlap.csv", index=False)
+    return df
+
+
+def ov_cell(df, **kw):
+    m = df
+    for k, v in kw.items():
+        m = m[m[k] == v]
+    assert len(m) <= 1, kw
+    return None if m.empty else m.iloc[0]
+
+
+def ov_label(c) -> str:
+    return plot_label(c[2]).replace("Yang terms ", "Yang ")
+
+
+OV_CMAP = LinearSegmentedColormap.from_list("blue", [rt.SURFACE, "#cde2fb", "#86b6ef", "#3987e5", "#1c5cab", "#0d366b"])
+
+
+def ov_short(v) -> str:
+    """Two decimals without the leading zero, typeset minus: cells of the overlap figures."""
+    if v is None or pd.isna(v):
+        return "--"
+    t = f"{v:.2f}"
+    t = "0.00" if t == "-0.00" else t
+    return t.replace("0.", ".", 1).replace("-", "\u2212")
+
+
+def ov_colorbar(fig, rect, label: str) -> None:
+    cax = fig.add_axes(rect)
+    cb = fig.colorbar(plt.cm.ScalarMappable(cmap=OV_CMAP, norm=plt.Normalize(0, 1)), cax=cax, orientation="horizontal")
+    cb.set_label(label, fontsize=6.5)
+    cax.xaxis.set_label_position("top")
+    cb.outline.set_visible(False)
+    cb.ax.tick_params(labelsize=6, length=0)
+
+
+def fig_overlap(df: pd.DataFrame, n: int) -> None:
+    """Normalized overlap of every pair of conditions (lower triangle) and their stability (diagonal), per scope;
+    conditions without a set of this size on every task and fold are left out."""
+    stab = df[(df.kind == "stability") & (df.n == n)]
+    pairs = df[df.kind.isin(["rules", "pools", "other"]) & (df.n == n)]
+    shown = {scope: [c for c in ov_conditions(scope)
+                     if (r := ov_cell(stab, scope=scope, pool_a=c[0], rule_a=c[2])) is not None and pd.notna(r.share)]
+             for scope in SCOPES}
+    fig, axes = plt.subplots(2, 1, figsize=(6.5, 8.7),
+                             gridspec_kw={"hspace": 0.36, "height_ratios": [len(shown[s]) for s in SCOPES]})
+    for j, (ax, scope) in enumerate(zip(axes, SCOPES)):
+        conds = shown[scope]
+        k = len(conds)
+        grid = np.full((k, k), np.nan)
+        for a in range(k):
+            for b in range(a):
+                ca, cb = conds[b], conds[a]  # pairs are stored in display order
+                r = ov_cell(pairs, scope=scope, pool_a=ca[0], rule_a=ca[2], pool_b=cb[0], rule_b=cb[2])
+                grid[a, b] = r.q if r is not None and pd.notna(r.q) else np.nan
+        ax.imshow(np.clip(np.nan_to_num(grid, nan=0), 0, 1), cmap=OV_CMAP, vmin=0, vmax=1, interpolation="nearest")
+        for a in range(k):
+            for b in range(a + 1, k):
+                ax.add_patch(plt.Rectangle((b - 0.5, a - 0.5), 1, 1, color=rt.SURFACE, zorder=2))
+            for b in range(a):
+                v = grid[a, b]
+                ax.text(b, a, ov_short(v), ha="center", va="center", fontsize=5.8, zorder=3,
+                        color=rt.SURFACE if (not np.isnan(v) and v > 0.55) else rt.INK,
+                        fontweight="bold" if conds[a][2] == conds[b][2] else "normal")
+            st = ov_cell(stab, scope=scope, pool_a=conds[a][0], rule_a=conds[a][2])
+            ax.add_patch(plt.Rectangle((a - 0.5, a - 0.5), 1, 1, facecolor=rt.GRIDLINE, edgecolor="none", zorder=2))
+            ax.text(a, a, ov_short(st.share), ha="center", va="center", fontsize=5.8, fontstyle="italic", color=rt.INK_2,
+                    zorder=3)
+        starts = [i for i in range(k) if i == 0 or conds[i][0] != conds[i - 1][0]]
+        for i in starts[1:]:
+            ax.plot([i - 0.5, i - 0.5], [i - 0.5, k - 0.5], color=rt.INK_2, lw=0.8, zorder=4)
+            ax.plot([-0.5, i - 0.5], [i - 0.5, i - 0.5], color=rt.INK_2, lw=0.8, zorder=4)
+        labels = [ov_label(c) for c in conds]
+        ax.set_xticks(range(k))
+        ax.set_xticklabels(labels, rotation=60, ha="right", rotation_mode="anchor", fontsize=6.5)
+        ax.set_yticks(range(k))
+        ax.set_yticklabels(labels, fontsize=6.5)
+        ax.tick_params(length=0)
+        for s0, s1 in zip(starts, starts[1:] + [k]):
+            mid = (s0 + s1 - 1) / 2
+            ax.annotate(OV_POOLS[conds[s0][0]], (0, mid), xycoords=("axes fraction", "data"), xytext=(-62, 0),
+                        textcoords="offset points", rotation=90, ha="center", va="center", fontsize=7, color=rt.INK)
+            ax.annotate(OV_POOLS[conds[s0][0]], (mid, 0), xycoords=("data", "axes fraction"), xytext=(0, -58),
+                        textcoords="offset points", ha="center", va="center", fontsize=7, color=rt.INK)
+        ax.set_xlim(-0.5, k - 0.5)
+        ax.set_ylim(k - 0.5, -0.5)
+        ax.grid(False)
+        ax.spines[:].set_visible(False)
+        ax.set_title(f"({'ab'[j]}) {'One set per task' if scope == 'per task' else 'One set for all 14 tasks'}, $N={n}$",
+                     loc="left")
+    fig.subplots_adjust(left=0.2, right=0.97, top=0.97, bottom=0.115)
+    fig.canvas.draw()  # the equal-aspect axes take their final box here
+    pos = axes[1].get_position()  # the colorbar goes into the empty upper triangle of panel (b)
+    ov_colorbar(fig, (pos.x1 - 0.33, pos.y1 - 0.035, 0.3, 0.008),
+                "below the diagonal: normalized overlap\n(0 = layer-matched chance, 1 = stability)")
+    fig.savefig(rt.FIGURES / f"design_overlap_{n}.pdf")
+    plt.close(fig)
+
+
+def fig_overlap_tasks(df: pd.DataFrame, n: int = SCREEN_N, pool: str = "I") -> None:
+    """Task against task, normalized overlap, per rule that fills the size per task; diagonal: each task's own
+    stability."""
+    tasks = [t for ts in TYPES.values() for t in ts]
+    sub = df[(df.kind == "tasks") & (df.n == n) & (df.pool_a == pool)]
+    rules = [r for r in LADDER if sub[sub.rule_a == r].q.notna().any()]
+    fig, axes = plt.subplots(2, 2, figsize=(6.5, 6.8), gridspec_kw={"hspace": 0.1, "wspace": 0.06})
+    breaks = np.cumsum([len(ts) for ts in TYPES.values()])[:-1]
+    for j, (ax, r) in enumerate(zip(axes.flat, rules)):
+        g = np.full((len(tasks), len(tasks)), np.nan)
+        for _, row in sub[sub.rule_a == r].iterrows():
+            a, b = sorted((tasks.index(row.task_a), tasks.index(row.task_b)), reverse=True)
+            g[a, b] = row.q
+        ax.imshow(np.clip(np.nan_to_num(g, nan=0), 0, 1), cmap=OV_CMAP, vmin=0, vmax=1, interpolation="nearest")
+        own = df[(df.kind == "task_stability") & (df.n == n) & (df.pool_a == pool) & (df.rule_a == r)].set_index("task_a")
+        for a in range(len(tasks)):
+            for b in range(a + 1, len(tasks)):
+                ax.add_patch(plt.Rectangle((b - 0.5, a - 0.5), 1, 1, color=rt.SURFACE, zorder=2))
+            ax.add_patch(plt.Rectangle((a - 0.5, a - 0.5), 1, 1, facecolor=rt.GRIDLINE, edgecolor="none", zorder=2))
+            ax.text(a, a, ov_short(own.loc[tasks[a], "share"]), ha="center", va="center", fontsize=4.8,
+                    fontstyle="italic", color=rt.INK_2, zorder=3)
+        for y in breaks:
+            ax.plot([y - 0.5, y - 0.5], [y - 0.5, len(tasks) - 0.5], color=rt.INK_2, lw=0.6, zorder=3)
+            ax.plot([-0.5, y - 0.5], [y - 0.5, y - 0.5], color=rt.INK_2, lw=0.6, zorder=3)
+        ax.set_xticks(range(len(tasks)))
+        ax.set_yticks(range(len(tasks)))
+        names = [rt.plot_name("simple", t) for t in tasks]
+        ax.set_xticklabels(names if j >= 2 else [], rotation=60, ha="right", rotation_mode="anchor", fontsize=6)
+        ax.set_yticklabels(names if j % 2 == 0 else [], fontsize=6)
+        ax.tick_params(length=0)
+        ax.grid(False)
+        ax.spines[:].set_visible(False)
+        ax.set_title(f"({'abcd'[j]}) {plot_label(r)}", loc="left", fontsize=8)
+    for ax in list(axes.flat)[len(rules):]:
+        ax.set_visible(False)
+    ov_colorbar(fig, (0.75, 0.9, 0.22, 0.01), "normalized overlap")
+    fig.subplots_adjust(left=0.17, right=0.99, top=0.965, bottom=0.135)
+    fig.savefig(rt.FIGURES / "design_overlap_tasks.pdf")
+    plt.close(fig)
+
+
+def ov_fmt(r, what: str) -> str:
+    if r is None or pd.isna(r.share):
+        return "--"
+    return f"{rt.num(r.share)} ({rt.num(r.chance)})" if what == "share" else rt.num(r.q)
+
+
+def table_overlap_stability(df: pd.DataFrame) -> None:
+    """Comparison 1: each condition's fold-1 set against its fold-2 set (chance), and its share in its random sets."""
+    sub = df[df.kind == "stability"]
+    header = ["Scope & Prompts & Rule & " + " & ".join(f"{n}" for n in SIZES) + " \\\\"]
+    rows = []
+    for block, col in (("Stability: fold 1 against fold 2 (chance)", "share"), ("Share in its own random sets", "random")):
+        rows.append(f"\\multicolumn{{{len(SIZES) + 3}}}{{@{{}}l}}{{\\textit{{{block}}}}} \\\\")
+        for scope in SCOPES:
+            for i, c in enumerate(ov_conditions(scope)):
+                cells_ = []
+                for n in SIZES:
+                    r = ov_cell(sub, scope=scope, n=n, pool_a=c[0], rule_a=c[2])
+                    if col == "share":
+                        cells_.append("--" if r is None or pd.isna(r.share) else f"{rt.num(r.share)} ({rt.num(r.chance)})")
+                    else:
+                        cells_.append(rt.num(None if r is None else r.random_share))
+                first_of_pool = i == 0 or ov_conditions(scope)[i - 1][0] != c[0]
+                rows.append(f"{scope if i == 0 else ''} & {OV_POOLS[c[0]] if first_of_pool else ''} & {RULES[c[2]][0]} & "
+                            + " & ".join(cells_) + " \\\\")
+            rows.append("\\addlinespace")
+        rows.pop()
+        rows.append("\\midrule")
+    rows.pop()
+    write("design_overlap_stability", rt.tabular("@{}lll" + "r" * len(SIZES) + "@{}", header, rows))
+
+
+def ov_table(df, kind: str, pairs, name: str) -> None:
+    """Share in common (chance) and normalized overlap at OV_SIZES; ``pairs`` = [(scope, label_1, label_2, query)]."""
+    header = ["& & & \\multicolumn{4}{c}{Share in common (chance)} & \\multicolumn{4}{c}{Normalized} \\\\",
+              "\\cmidrule(lr){4-7} \\cmidrule(lr){8-11}",
+              "Scope & & & " + " & ".join(f"$N={n}$" for n in OV_SIZES) + " & " + " & ".join(f"{n}" for n in OV_SIZES) + " \\\\"]
+    rows = []
+    last = None
+    for scope, l1, l2, query in pairs:
+        if last is not None and scope != last[0]:
+            rows.append("\\midrule")
+        elif last is not None and l1 != last[1]:
+            rows.append("\\addlinespace")
+        cells_ = [ov_cell(df[df.kind == kind], scope=scope, n=n, **query) for n in OV_SIZES]
+        rows.append(f"{scope if last is None or scope != last[0] else ''} & {l1 if last is None or l1 != last[1] or scope != last[0] else ''}"
+                    f" & {l2} & " + " & ".join(ov_fmt(r, "share") for r in cells_) + " & "
+                    + " & ".join(ov_fmt(r, "q") for r in cells_) + " \\\\")
+        last = (scope, l1)
+    write(name, rt.tabular("@{}lll" + "r" * 8 + "@{}", header, rows))
+
+
+def table_overlap_tasks(df: pd.DataFrame) -> None:
+    """Comparison 5 summary: mean normalized overlap over pairs of tasks of the same type and of different types."""
+    sub = df[df.kind == "tasks"]
+    header = ["& & \\multicolumn{4}{c}{Same task type} & \\multicolumn{4}{c}{Different task types} \\\\",
+              "\\cmidrule(lr){3-6} \\cmidrule(lr){7-10}",
+              "Prompts & Rule & " + " & ".join(f"$N={n}$" for n in OV_SIZES) + " & " + " & ".join(f"{n}" for n in OV_SIZES) + " \\\\"]
+    rows = []
+    for p in OV_POOLS:
+        for i, r in enumerate([r for r in LADDER if sub[(sub.pool_a == p) & (sub.rule_a == r) & sub.n.isin(OV_SIZES)].q.notna().any()]):
+            cells_ = []
+            for same in (True, False):
+                for n in OV_SIZES:
+                    m = sub[(sub.pool_a == p) & (sub.rule_a == r) & (sub.n == n) & (sub.same_type == same)]
+                    cells_.append(rt.num(m.q.mean()) if len(m) and m.q.notna().all() else "--")
+            rows.append(f"{OV_POOLS[p] if i == 0 else ''} & {RULES[r][0]} & " + " & ".join(cells_) + " \\\\")
+        rows.append("\\addlinespace")
+    rows.pop()
+    write("design_overlap_tasks", rt.tabular("@{}ll" + "r" * 8 + "@{}", header, rows))
+
+
+def table_overlap_task_stability(df: pd.DataFrame, n: int = SCREEN_N) -> None:
+    """Each task's own stability at ``n`` heads, per prompts and rule (fold 1 against fold 2)."""
+    sub = df[(df.kind == "task_stability") & (df.n == n)]
+    rules = [r for r in ("D", "selected", "causal", "causalnogen")]
+    header = [" & " + " & ".join(f"\\multicolumn{{{len(rules)}}}{{c}}{{{OV_POOLS[p]}}}" for p in OV_POOLS) + " \\\\",
+              " ".join(f"\\cmidrule(lr){{{2 + i * len(rules)}-{1 + (i + 1) * len(rules)}}}" for i in range(len(OV_POOLS))),
+              "Task & " + " & ".join(ABBREV[r] for _ in OV_POOLS for r in rules) + " \\\\"]
+    rows = []
+    for ts in TYPES.values():
+        for t in ts:
+            vals = [ov_cell(sub, pool_a=p, rule_a=r, task_a=t) for p in OV_POOLS for r in rules]
+            rows.append(f"{rt.tex_name('simple', t)} & " + " & ".join(rt.num(None if v is None else v.share) for v in vals) + " \\\\")
+    rows.append("\\midrule")
+    rows.append("Chance & " + " & ".join(rt.num(sub[(sub.pool_a == p) & (sub.rule_a == r)].chance.mean())
+                                         for p in OV_POOLS for r in rules) + " \\\\")
+    write("design_overlap_task_stability", rt.tabular("@{}l" + "r" * (len(rules) * len(OV_POOLS)) + "@{}", header, rows))
+
+
+def ov_tex(rule: str) -> str:
+    """Rule name in the pair column of the rule tables, shortened to fit the page."""
+    return RULES[rule][0].replace("Yang terms ", "Yang ")
+
+
+def overlap() -> None:
+    df = overlap_rows()
+    table_overlap_stability(df)
+    table_overlap_task_stability(df)
+    for scope in SCOPES:  # one table per scope, each fits a page
+        conds = ov_conditions(scope)
+        rules_pairs = []
+        for p in OV_POOLS:
+            cs = [c for c in conds if c[0] == p]
+            rules_pairs += [(scope, OV_POOLS[p], f"{ov_tex(a[2])} -- {ov_tex(b[2])}",
+                             dict(pool_a=p, rule_a=a[2], pool_b=p, rule_b=b[2])) for i, a in enumerate(cs) for b in cs[i + 1:]]
+        ov_table(df, "rules", rules_pairs, f"design_overlap_rules_{scope.replace(' ', '')}")
+    pool_pairs = []
+    for scope in SCOPES:
+        conds = ov_conditions(scope)
+        for r in LADDER:
+            cs = [c for c in conds if c[2] == r]
+            pool_pairs += [(scope, RULES[r][0], f"{OV_POOLS[a[0]]} -- {OV_POOLS[b[0]]}",
+                            dict(pool_a=a[0], rule_a=r, pool_b=b[0], rule_b=r)) for i, a in enumerate(cs) for b in cs[i + 1:]]
+    ov_table(df, "pools", pool_pairs, "design_overlap_pools")
+    scope_pairs = [("per task", OV_POOLS[p], RULES[r][0], dict(pool_a=p, rule_a=r))
+                   for p in OV_POOLS for r in LADDER
+                   if df[(df.kind == "scope") & (df.pool_a == p) & (df.rule_a == r) & df.n.isin(OV_SIZES)].share.notna().any()]
+    ov_table(df, "scope", scope_pairs, "design_overlap_scope")
+    table_overlap_tasks(df)
+    for n in OV_SIZES:
+        fig_overlap(df, n)
+    fig_overlap_tasks(df)
+
+
 def main() -> None:
+    if "--overlap" in sys.argv:  # Sec. 7 only
+        overlap()
+        return
     scores = {fold: screen_scores(fold) for fold in (1, 2)}
     table_own()
     table_ladder()
     table_controls()
     table_types()
-    table_overlap()
     table_yang_tasks()
     table_selected(scores)
     table_selected_sizes()
@@ -1109,6 +1432,7 @@ def main() -> None:
     fig_task_best(best)
     if "--stage2" not in sys.argv:  # --stage2: Secs. 4-5 only (stage 3 being re-run)
         stage3()
+        overlap()
     for scope, b in best.items():
         print(scope, "best per task:", {t: (r["best"], round(r["acc"], 3)) for t, r in b["tasks"].items()})
     print("screen fold-1 vs fold-2 correlation: per task %.2f, shared %.2f" % corr)
