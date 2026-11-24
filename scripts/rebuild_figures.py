@@ -39,7 +39,7 @@ from matplotlib.lines import Line2D  # noqa: E402
 from lth import simple  # noqa: E402
 from rebuild_select import screen_scores  # noqa: E402
 from rebuild_shortlist import has_quick, quick_per_task, quick_scores  # noqa: E402
-from rebuild_sets import FEATURES, SCREEN_N, SIZES  # noqa: E402
+from rebuild_sets import FEATURES, KINDS, SCREEN_N, SIZES, rankdata  # noqa: E402
 
 DIR = rt.RESULTS / "rebuild" / "additions"
 N_HEADS, N_LAYERS = 32, 32
@@ -50,8 +50,39 @@ TYPES = {"word relations": ("antonym", "synonym"), "morphology": ("singular-plur
 # all adjacent pairs pass), lexical blue and causal orange as in the project's earlier figures.
 RULES = {"yangL": ("Yang terms (Logit)", rt.BLUE, "o"), "causal": ("Causal", rt.ORANGE, "v"),
          "selected": ("Selected", rt.AQUA, "D"), "yangJ": ("Yang terms (J)", rt.YELLOW, "s"),
-         "D": ("D", rt.MAGENTA, "^"), "causalnogen": ("Causal $-$ generic", rt.GREEN, "P")}
-LADDER = ("yangL", "yangJ", "D", "selected", "causal", "causalnogen")  # order of Table 3
+         "D": ("D", rt.MAGENTA, "^"), "causalnogen": ("Causal $-$ generic", rt.GREEN, "P"),
+         "causalzs": ("Causal (zero-shot)", rt.ORANGE, "v"),
+         "causalzsnogen": ("Causal (zero-shot) $-$ generic", rt.GREEN, "P")}
+LADDER = ("yangL", "yangJ", "D", "selected", "causal", "causalnogen", "causalzs", "causalzsnogen")  # order of Table 3
+# Step 6 (Sec. 5.6): the causal score measured in the zero-shot prompt; drawn dashed, in its counterpart's colour.
+ZERO_SHOT = ("causalzs", "causalzsnogen")
+# Two-level table headers: rule -> (group, column); consecutive rules of a group share a spanning label.
+HEADER = {"yangL": ("Yang terms", "Logit"), "yangJ": ("Yang terms", "J"), "D": ("", "D"), "selected": ("", "Selected"),
+          "causal": ("Causal", "as ranked"), "causalnogen": ("Causal", "$-$ generic"),
+          "causalzs": ("Causal (zero-shot)", "as ranked"), "causalzsnogen": ("Causal (zero-shot)", "$-$ generic")}
+
+
+def line_style(rule: str) -> str:
+    return "--" if rule in ZERO_SHOT else "-"
+
+
+def group_header(rules, lead: int, width: int = 1) -> list[str]:
+    """Header rows of a table whose first ``lead`` columns are labels and whose rules take ``width`` columns each:
+    the group labels spanning their rules (with rules under them), then the column labels."""
+    top, rules_, col = [], [], lead + 1
+    i = 0
+    while i < len(rules):
+        g = HEADER[rules[i]][0]
+        j = i
+        while j + 1 < len(rules) and g and HEADER[rules[j + 1]][0] == g:
+            j += 1
+        span = (j - i + 1) * width
+        top.append(f"\\multicolumn{{{span}}}{{c}}{{{g}}}" if g else (" & ".join([""] * span) if span > 1 else ""))
+        if g:
+            rules_.append(f"\\cmidrule(lr){{{col}-{col + span - 1}}}")
+        col += span
+        i = j + 1
+    return [" & " * (lead - 1) + " & " + " & ".join(top) + " \\\\", " ".join(rules_)]
 SCOPES = {"per task": "", "shared": "shared_"}
 FEATURE_NAMES = {c: name for c, (name, _) in FEATURES.items()}
 CONTROL_STYLE = rt.CONTROL_STYLE
@@ -102,7 +133,9 @@ def with_sized(pt: pd.DataFrame, files) -> pd.DataFrame:
     return pd.concat([pt[~pt.set.map(sized).isin(sizes)], new], ignore_index=True)
 
 
-ACC = cells(with_sized(pd.concat([pd.read_csv(DIR / f"{s}_per_task.csv") for s in ("s1", "s2")], ignore_index=True),
+# Stages: s1 (Sec. 4), s2 (Sec. 5), zs (Causal (zero-shot), Sec. 5.6; scripts/rebuild_causal_zs.sh).
+ACC = cells(with_sized(pd.concat([pd.read_csv(DIR / f"{s}_per_task.csv") for s in ("s1", "s2", "zs")
+                                  if (DIR / f"{s}_per_task.csv").exists()], ignore_index=True),
                        [d / "sel_per_task.csv" for d in SIZE_SCREEN.values()]))
 # Stage 3 (Sec. 6): test -> (results folder, report stage); a test enters once scripts/rebuild_report.py has run.
 SCEN = rt.RESULTS / "rebuild" / "scenarios"
@@ -209,13 +242,18 @@ def table_own() -> None:
         f"Instruction function vector & shared & 20 & summed after layer 11, $\\alpha=1$ & "
         f"{rt.num(mean_over('shared_davidson_own'))} & {rt.num(mean_over('shared_davidson_own', 'control'))} & "
         f"{rt.num(mean_over('shared_davidson_own', 'random'))} \\\\"]
+    if mean_over("shared_davidson_zs") is not None:  # the same, ranked by the zero-shot score (Sec. 5.6)
+        rows.append(
+            f"\\quad zero-shot score (Sec.~\\ref{{sec:causal-zs}}) & shared & 20 & summed after layer 11, "
+            f"$\\alpha=1$ & {rt.num(mean_over('shared_davidson_zs'))} & {rt.num(mean_over('shared_davidson_zs', 'control'))} & "
+            f"{rt.num(mean_over('shared_davidson_zs', 'random'))} \\\\")
     write("design_own", rt.tabular("@{}llllrrr@{}", ["Method & Scope & Heads & Intervention & Task & Control & Random \\\\"],
                                    rows))
 
 
 def table_ladder() -> None:
     """Task-mean accuracy of every rule at every size, both scopes."""
-    header = ["$N$ & " + " & ".join(RULES[r][0] for r in LADDER) + " \\\\"]
+    header = group_header(LADDER, 1) + ["$N$ & " + " & ".join(HEADER[r][1] for r in LADDER) + " \\\\"]
     rows = []
     for scope, prefix in SCOPES.items():
         rows.append(f"\\multicolumn{{{len(LADDER) + 1}}}{{@{{}}l}}{{\\textit{{{scope.capitalize()}}}}} \\\\")
@@ -230,20 +268,28 @@ def table_ladder() -> None:
 
 
 def table_controls() -> None:
-    """Random sets and control means of every rule at every size."""
-    header = ["& & " + " & ".join(f"\\multicolumn{{2}}{{c}}{{{RULES[r][0]}}}" for r in LADDER) + " \\\\",
-              " ".join(f"\\cmidrule(lr){{{3 + 2 * i}-{4 + 2 * i}}}" for i in range(len(LADDER))),
-              "Scope & $N$ & " + " & ".join("rand. & ctrl." for _ in LADDER) + " \\\\"]
+    """Random sets and control means of every rule at every size; the rules in two blocks of four, one under the
+    other, so that the table fits the page."""
+    half = (len(LADDER) + 1) // 2
+
+    def block_header(rules) -> list[str]:
+        return ["& & " + " & ".join(f"\\multicolumn{{2}}{{c}}{{{RULES[r][0]}}}" for r in rules) + " \\\\",
+                " ".join(f"\\cmidrule(lr){{{3 + 2 * i}-{4 + 2 * i}}}" for i in range(len(rules))),
+                "Scope & $N$ & " + " & ".join("rand. & ctrl." for _ in rules) + " \\\\"]
+
     rows = []
-    for scope, prefix in SCOPES.items():
-        for n in SIZES:
-            vals = []
-            for r in LADDER:
-                vals += [rt.num(mean_over(f"{prefix}{r}{n}", "random")), rt.num(mean_over(f"{prefix}{r}{n}", "control"))]
-            rows.append(f"{scope if n == SIZES[0] else ''} & {n} & " + " & ".join(vals) + " \\\\")
-        if scope == "per task":
-            rows.append("\\midrule")
-    write("design_controls", rt.tabular("@{}lr" + "rr" * len(LADDER) + "@{}", header, rows))
+    for b, rules in enumerate((LADDER[:half], LADDER[half:])):
+        if b:
+            rows += ["\\midrule[\\heavyrulewidth]", *block_header(rules), "\\midrule"]
+        for scope, prefix in SCOPES.items():
+            for n in SIZES:
+                vals = []
+                for r in rules:
+                    vals += [rt.num(mean_over(f"{prefix}{r}{n}", "random")), rt.num(mean_over(f"{prefix}{r}{n}", "control"))]
+                rows.append(f"{scope if n == SIZES[0] else ''} & {n} & " + " & ".join(vals) + " \\\\")
+            if scope == "per task":
+                rows.append("\\addlinespace")
+    write("design_controls", rt.tabular("@{}lr" + "rr" * half + "@{}", block_header(LADDER[:half]), rows))
 
 
 def table_types(n: int = SCREEN_N) -> None:
@@ -258,6 +304,63 @@ def table_types(n: int = SCREEN_N) -> None:
         if scope == "per task":
             rows.append("\\midrule")
     write("design_types", rt.tabular("@{}l" + "r" * (len(TYPES) + 1) + "@{}", header, rows))
+
+
+CONTEXTS = {"equiprobable": "Equiprobable sequences", "wikitext": "WikiText-103 text",
+            "other_task": "Other tasks' instructions", "causal": "Causal: mean over the three",
+            "frame": "Frame only, \\p{ Q: x\\nl A:}", "zero": "Zero-shot prompt \\p{ x:}"}
+
+
+def context_score(fv, f: int, t: str, c: str) -> np.ndarray:
+    cie, ctx = fv[f]
+    if c == "causal":
+        return np.mean([cie[f"{t}/{k}"] for k in KINDS], axis=0).ravel()
+    return (cie if c in KINDS else ctx)[f"{t}/{c}"].ravel()
+
+
+def table_causal_kinds() -> None:
+    """Sec. 5.6: the share of the top N heads by the causal score that the two halves of the items have in common,
+    by the prompt the score is measured in (fold 1's score on half A against fold 2's on half B, both directions
+    for two different prompts), and the size of the scores (mean of the 20 largest)."""
+    root = rt.RESULTS / "heldout"
+    if not all((root / f"fold{f}" / "fv" / "cie_context.npz").exists() for f in (1, 2)):
+        return
+    fv = {f: (np.load(root / f"fold{f}" / "fv" / "cie.npz"), np.load(root / f"fold{f}" / "fv" / "cie_context.npz"))
+          for f in (1, 2)}
+    sc = {(f, t, c): context_score(fv, f, t, c) for f in (1, 2) for t in simple.TASKS for c in CONTEXTS}
+
+    def tops(f, c, n, shared):
+        if shared:
+            r = np.mean([rankdata(-sc[(f, t, c)]) for t in simple.TASKS], axis=0)
+            return {None: set(np.argsort(r, kind="stable")[:n])}
+        return {t: set(np.argsort(-sc[(f, t, c)], kind="stable")[:n]) for t in simple.TASKS}
+
+    def share(pairs, n, shared):
+        vals = []
+        for a, b in pairs:
+            ta, tb = tops(1, a, n, shared), tops(2, b, n, shared)
+            vals += [len(ta[k] & tb[k]) / n for k in ta]
+        return float(np.mean(vals))
+
+    cols = [(False, 20), (False, 40), (True, 20), (True, 40)]
+    header = ["& \\multicolumn{2}{c}{Per task} & \\multicolumn{2}{c}{Shared} & \\\\",
+              "\\cmidrule(lr){2-3} \\cmidrule(lr){4-5}",
+              "Prompt the score is measured in & $N=20$ & $N=40$ & $N=20$ & $N=40$ & Top-20 effect \\\\"]
+    rows = ["\\multicolumn{6}{@{}l}{\\textit{Same prompt on both halves}} \\\\"]
+    for c, label in CONTEXTS.items():
+        eff = np.mean([np.sort(sc[(f, t, c)])[-20:].mean() for f in (1, 2) for t in simple.TASKS])
+        rows.append(f"{label} & " + " & ".join(rt.num(share([(c, c)], n, sh)) for sh, n in cols) + f" & {eff:.4f} \\\\")
+        if c == "other_task":
+            rows.append("\\addlinespace")
+    rows += ["\\midrule", "\\multicolumn{6}{@{}l}{\\textit{Different prompts on the two halves}} \\\\"]
+    pairs = {"Equiprobable -- WikiText": [("equiprobable", "wikitext")],
+             "Other tasks' instructions -- equiprobable or WikiText": [("other_task", "equiprobable"), ("other_task", "wikitext")],
+             "Frame only -- Causal": [("frame", "causal")], "Zero-shot -- Causal": [("zero", "causal")],
+             "Zero-shot -- frame only": [("zero", "frame")]}
+    for label, ps in pairs.items():
+        both = ps + [(b, a) for a, b in ps]
+        rows.append(f"{label} & " + " & ".join(rt.num(share(both, n, sh)) for sh, n in cols) + " & \\\\")
+    write("design_causal_kinds", rt.tabular("@{}lrrrrr@{}", header, rows))
 
 
 def table_yang_tasks() -> None:
@@ -359,19 +462,19 @@ def fig_published() -> None:
 
 
 def fig_ladder() -> None:
-    fig, axes = plt.subplots(1, 2, figsize=(6.5, 2.7), sharey=True)
+    fig, axes = plt.subplots(1, 2, figsize=(6.5, 2.95), sharey=True)
     for ax, (scope, prefix) in zip(axes, SCOPES.items()):
         for r in LADDER:
             label, col, mk = RULES[r]
-            curve(ax, lambda n: f"{prefix}{r}{n}", color=col, marker=mk, ms=4, label=plot_label(r),
+            curve(ax, lambda n: f"{prefix}{r}{n}", color=col, marker=mk, ms=4, label=plot_label(r), ls=line_style(r),
                   lw=1.8 if r == "selected" else 1.2, zorder=3 if r == "selected" else 2)
         ax.set_title(f"({'ab'[list(SCOPES).index(scope)]}) {'One set per task' if scope == 'per task' else 'One set for all 14 tasks'}",
                      loc="left")
         axes_style(ax, ylabel=ax is axes[0])
     handles, labels = axes[1].get_legend_handles_labels()
-    fig.legend(handles, labels, loc="lower center", ncol=6, bbox_to_anchor=(0.5, -0.01), handlelength=1.8,
+    fig.legend(handles, labels, loc="lower center", ncol=4, bbox_to_anchor=(0.5, -0.01), handlelength=2.4,
                columnspacing=1.2)
-    fig.tight_layout(rect=(0, 0.08, 1, 1))
+    fig.tight_layout(rect=(0, 0.13, 1, 1))
     fig.savefig(rt.FIGURES / "design_ladder.pdf")
     plt.close(fig)
 
@@ -610,7 +713,7 @@ def fig_layers(n: int = SCREEN_N) -> None:
 
 
 def fig_types() -> None:
-    fig, axes = plt.subplots(2, len(TYPES), figsize=(6.5, 3.4), sharex=True, sharey=True)
+    fig, axes = plt.subplots(2, len(TYPES), figsize=(6.5, 3.7), sharex=True, sharey=True)
     for i, (scope, prefix) in enumerate(SCOPES.items()):
         for j, (tname, ts) in enumerate(TYPES.items()):
             ax = axes[i, j]
@@ -622,7 +725,7 @@ def fig_types() -> None:
                     if v is not None:
                         xs.append(n)
                         ys.append(v)
-                ax.plot(xs, ys, color=col, marker=mk, ms=2.8, lw=1.0, label=plot_label(r))
+                ax.plot(xs, ys, color=col, marker=mk, ms=2.8, lw=1.0, ls=line_style(r), label=plot_label(r))
             ax.set_xticks((10, 60, 120))
             ax.set_ylim(0, 1)
             ax.spines[["top", "right"]].set_visible(False)
@@ -633,9 +736,9 @@ def fig_types() -> None:
             if i == 1:
                 ax.set_xlabel("$N$")
     handles, labels = axes[0, 0].get_legend_handles_labels()
-    fig.legend(handles, labels, loc="lower center", ncol=6, bbox_to_anchor=(0.5, -0.01), handlelength=1.6,
+    fig.legend(handles, labels, loc="lower center", ncol=4, bbox_to_anchor=(0.5, -0.01), handlelength=2.2,
                columnspacing=1.0)
-    fig.tight_layout(rect=(0, 0.07, 1, 1))
+    fig.tight_layout(rect=(0, 0.11, 1, 1))
     fig.savefig(rt.FIGURES / "design_types.pdf")
     plt.close(fig)
 
@@ -1306,7 +1409,7 @@ def table_overlap_stability(df: pd.DataFrame) -> None:
                     else:
                         cells_.append(rt.num(None if r is None else r.random_share))
                 first_of_pool = i == 0 or ov_conditions(scope)[i - 1][0] != c[0]
-                rows.append(f"{scope if i == 0 else ''} & {OV_POOLS[c[0]] if first_of_pool else ''} & {RULES[c[2]][0]} & "
+                rows.append(f"{scope if i == 0 else ''} & {OV_POOLS[c[0]] if first_of_pool else ''} & {ov_tex(c[2]) if c[2] in ZERO_SHOT else RULES[c[2]][0]} & "
                             + " & ".join(cells_) + " \\\\")
             rows.append("\\addlinespace")
         rows.pop()
@@ -1375,7 +1478,17 @@ def table_overlap_task_stability(df: pd.DataFrame, n: int = SCREEN_N) -> None:
 
 def ov_tex(rule: str) -> str:
     """Rule name in the pair column of the rule tables, shortened to fit the page."""
+    if rule in ZERO_SHOT:  # Causal (zero-shot) as Causal_0, so that the pair column fits the page
+        return "Causal$_0$" + (" $-$ gen." if rule.endswith("nogen") else "")
     return RULES[rule][0].replace("Yang terms ", "Yang ")
+
+
+def zs_pair_shown(a: str, b: str) -> bool:
+    """The rule tables compare a zero-shot rule (Sec. 5.6) only with the causal rankings, Selected and each other."""
+    if a not in ZERO_SHOT and b not in ZERO_SHOT:
+        return True
+    other = b if a in ZERO_SHOT else a
+    return other in ("causal", "causalnogen", "selected") + ZERO_SHOT
 
 
 def overlap() -> None:
@@ -1388,7 +1501,8 @@ def overlap() -> None:
         for p in OV_POOLS:
             cs = [c for c in conds if c[0] == p]
             rules_pairs += [(scope, OV_POOLS[p], f"{ov_tex(a[2])} -- {ov_tex(b[2])}",
-                             dict(pool_a=p, rule_a=a[2], pool_b=p, rule_b=b[2])) for i, a in enumerate(cs) for b in cs[i + 1:]]
+                             dict(pool_a=p, rule_a=a[2], pool_b=p, rule_b=b[2])) for i, a in enumerate(cs) for b in cs[i + 1:]
+                            if zs_pair_shown(a[2], b[2])]
         ov_table(df, "rules", rules_pairs, f"design_overlap_rules_{scope.replace(' ', '')}")
     pool_pairs = []
     for scope in SCOPES:
@@ -1417,6 +1531,7 @@ def main() -> None:
     table_ladder()
     table_controls()
     table_types()
+    table_causal_kinds()
     table_yang_tasks()
     table_selected(scores)
     table_selected_sizes()

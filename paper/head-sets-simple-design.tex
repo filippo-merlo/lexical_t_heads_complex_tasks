@@ -39,7 +39,7 @@
 \maketitle
 
 \begin{abstract}
-Prior work has proposed that language models form internal representations of the tasks their prompts specify, and that part of such a task representation can be found in the outputs of a small number of attention heads: averaged over prompts of a task and patched into a zero-shot prompt, these outputs can trigger the task. Two recent studies that compare tasks given by instructions and by examples identify such heads in different ways. One ranks heads by their causal indirect effect on the answer, which takes a patched forward pass for every head and prompt. The other decodes head outputs in the vocabulary and keeps lexical task heads, whose top tokens match predefined task-descriptive terms. We follow this line of work and ask whether heads that trigger a task can be identified from unpatched forward passes about as well as by their causal effect. Our method reads each head through the layers that follow it with Head-JLens, takes the task words from what the heads decode rather than from a predefined list, and adds where the last token attends in the prompt, combining these features as chosen on held-out items. On 14 simple tasks in Llama-3.1-8B-Instruct, with sets of equal size identified and tested on separate items, lexical task heads trigger the task on few items. Our method does better than the causal ranking at most sizes, with one set per task and with one set for all tasks, also on wordings never used to identify heads. Identified on example-based prompts, it triggers the task with unseen example formats on most items, and its heads, like those of the causal ranking, are mostly different from those identified on instructions. One set of heads that our method identifies on the 14 tasks also triggers four tasks outside them about as well as it triggers the 14. Summed into one vector, as in a function vector, the sets identified on instructions trigger the task less well than patched head by head from about 20 heads on, while the set our method identifies on example-based prompts does almost as well. On these tasks, heads that trigger a task can thus be identified about as well from what they decode and where they attend as from their causal effect, and far more cheaply once the combination of features is fixed.
+Prior work has proposed that language models form internal representations of the tasks their prompts specify, and that part of such a task representation can be found in the outputs of a small number of attention heads: averaged over prompts of a task and patched into a zero-shot prompt, these outputs can trigger the task. Two recent studies that compare tasks given by instructions and by examples identify such heads in different ways. One ranks heads by their causal indirect effect on the answer, which takes a patched forward pass for every head and prompt. The other decodes head outputs in the vocabulary and keeps lexical task heads, whose top tokens match predefined task-descriptive terms. We follow this line of work and ask whether heads that trigger a task can be identified from unpatched forward passes about as well as by their causal effect. Our method reads each head through the layers that follow it with Head-JLens, takes the task words from what the heads decode rather than from a predefined list, and adds where the last token attends in the prompt, combining these features as chosen on held-out items. On 14 simple tasks in Llama-3.1-8B-Instruct, with sets of equal size identified and tested on separate items, lexical task heads trigger the task on few items. Our method does better than the causal ranking at most sizes, with one set per task and with one set for all tasks, also on wordings never used to identify heads. This lead does not come from where the causal score is measured: measured in the zero-shot prompt the sets are tested in, the causal ranking is weaker. Identified on example-based prompts, it triggers the task with unseen example formats on most items, and its heads, like those of the causal ranking, are mostly different from those identified on instructions. One set of heads that our method identifies on the 14 tasks also triggers four tasks outside them about as well as it triggers the 14. Summed into one vector, as in a function vector, the sets identified on instructions trigger the task less well than patched head by head from about 20 heads on, while the set our method identifies on example-based prompts does almost as well. On these tasks, heads that trigger a task can thus be identified about as well from what they decode and where they attend as from their causal effect, and far more cheaply once the combination of features is fixed.
 \end{abstract}
 
 % =====================================================================
@@ -220,7 +220,7 @@ All accuracies are on the test half, averaged over the template means, the 14 ta
 \begin{table}[tbp]
 \centering\footnotesize\setlength{\tabcolsep}{4pt}
 \input{tables/design_own}
-\caption{The two methods in their own form. Control: the same heads patched with the related task's means. Random: sets with as many heads in each layer. The rows differ in size, scope and intervention and are not compared with each other.}
+\caption{The two methods in their own form. Control: the same heads patched with the related task's means. Random: sets with as many heads in each layer. The first two rows differ in size, scope and intervention and are not compared with each other; the third differs from the second only in the score that ranks the heads (Sec.~\ref{sec:causal-zs}).}
 \label{tab:own}
 \end{table}
 
@@ -253,9 +253,10 @@ Starting from the published rules, we change one thing at a time (Table~\ref{tab
 3 & attention to each prompt segment & where a head reads from (Sec.~\ref{sec:bg-attention}) & one rule per segment \\
 4 & best combination of features & combines decoding and attention, chosen on held-out accuracy & Selected \\
 5 & generic heads removed from the causal ranking & separates task-specific heads from heads that help every task alike & Causal $-$ generic \\
+6 & causal score measured in the zero-shot prompt & scores heads in the prompt the sets are tested in (Sec.~\ref{sec:causal-zs}) & Causal (zero-shot) \\
 \bottomrule
 \end{tabularx}
-\caption{The steps from the published rules to ours. Steps 1--4 start from lexical task heads, step 5 from the causal ranking.}
+\caption{The steps from the published rules to ours. Steps 1--4 start from lexical task heads, steps 5 and 6 from the causal ranking; Causal (zero-shot) $-$ generic takes both.}
 \label{tab:ladder}
 \end{table}
 
@@ -342,12 +343,27 @@ g_{l,h} = \frac{1}{\binom{|T|}{2}} \sum_{t<t'} \cos\big(n_{t}(l,h),\, n_{t'}(l,h
 \end{equation}
 where $n_t(l,h)$ counts how often each token is among the head's ten highest J-head tokens on task $t$'s identification prompts. Among the 30 top heads of the shared causal ranking, the sorted generic scores are split into a high and a low group with the least spread within each group. The high group are the generic heads, unless it holds more than half of the 30. \textbf{Causal $-$ generic} removes them from the causal ranking before the top $N$ is taken. The step tests whether the causal ranking carries task-specific information once heads that help every task alike are set aside.
 
+\subsection{The causal score in the zero-shot prompt}\label{sec:causal-zs}
+
+Causal scores heads in a prompt that differs from the one its sets are tested in. Its indirect effects are measured on instruction-based prompts whose instruction is replaced by uninformative text, \p{<text> Q: x\nl A:} (Sec.~\ref{sec:bg-cie}), while every set is patched into the zero-shot prompt \p{ x:}, which has neither the text nor the question--answer frame. \citet{davidson2025different} also evaluate instruction function vectors in ``0-shot (with no instructions)'' (Sec.~2.2), and note that this setting ``differs from the instruction FV baseline prompts, as it contains no instructions'' (Sec.~3.1). Selected, in contrast, is chosen by patching its candidates into \p{ x:} (Sec.~\ref{sec:select}). \textbf{Causal (zero-shot)} measures the same indirect effect in the prompt of the test,
+\begin{equation}
+\mathrm{CIE}^{0}_{l,h} = \frac{1}{|I|}\sum_{i\in I}\Big[\, p\big(y_i \mid x^{0}_i;\; z_{l,h}\leftarrow \zbar^{\,t}_{l,h}\big) - p\big(y_i \mid x^{0}_i\big) \Big],
+\end{equation}
+where $x^{0}_i$ is the zero-shot prompt of item $i$. Everything else is Causal's: the same 20 items per task and fold, five per question--answer template of the identification half, the same mean over 100 prompts, and the same first token of the answer as target. The code that computes the new score reproduces Causal's scores exactly when given Causal's prompts, so the two rankings differ only in the prompt. Causal averages 60 indirect effects per head and task, one per item and kind of text; the zero-shot score averages 20. \textbf{Causal (zero-shot) $-$ generic} removes the generic heads found by the rule of Sec.~\ref{sec:generic} among the 30 top heads of the shared zero-shot ranking. Both rules are run at every size and in both scopes, with their control means and random sets, and the own form of Sec.~\ref{sec:davidson} is run again with the 20 top heads by the zero-shot score averaged over tasks (Table~\ref{tab:own}). To tell the effect of the uninformative text from that of the frame, the score is also measured in the frame alone, \p{ Q: x\nl A:} with nothing before it; this ranking is compared by its heads only (Table~\ref{tab:causal-kinds}).
+
+\begin{table}[tbp]
+\centering\small
+\input{tables/design_causal_kinds}
+\caption{The causal score by the prompt it is measured in. Share of the top $N$ heads that the score on one half of the items has in common with the score on the other half: per task, mean over the 14 tasks; shared, within-task ranks averaged over tasks. Same prompt: each prompt's stability. Different prompts: mean over both directions and, for other tasks' instructions, over the two kinds it is compared with. Top-20 effect: mean of the 20 largest indirect effects of a task, an increase in the probability of the answer's first token, averaged over tasks and halves. 20 items per task and half.}
+\label{tab:causal-kinds}
+\end{table}
+
 \subsection{Results}\label{sec:rules-results}
 
 \begin{figure}[tbp]
 \centering
 \includegraphics[width=\textwidth]{figures/design_ladder.pdf}
-\caption{Every rule of the ladder (Table~\ref{tab:ladder}) at every size: accuracy on the test half, mean over the 14 tasks and the two folds. Yang terms appears only at sizes it fills on every task. With one set for all tasks, Selected is the combination chosen at each size (Table~\ref{tab:selected-sizes}). The numbers are in Table~\ref{tab:ladder-acc}.}
+\caption{Every rule of the ladder (Table~\ref{tab:ladder}) at every size: accuracy on the test half, mean over the 14 tasks and the two folds. Yang terms appears only at sizes it fills on every task. With one set for all tasks, Selected is the combination chosen at each size (Table~\ref{tab:selected-sizes}). Dashed: the causal score measured in the zero-shot prompt (Sec.~\ref{sec:causal-zs}), in the colour of its counterpart. The numbers are in Table~\ref{tab:ladder-acc}.}
 \label{fig:ladder}
 \end{figure}
 
@@ -364,6 +380,7 @@ where $n_t(l,h)$ counts how often each token is among the head's ten highest J-h
 \item \emph{Task words from the data} (step 2): D fills every size and is above both Yang terms rules at every size per task, and at every size but 100 with one set for all tasks. Per task it is highest at 60 to 80 heads and lower with larger sets; with one set for all tasks it levels off from 40 heads.
 \item \emph{Attention} (steps 3--4): Selected is the best per-task rule from 20 to 120 heads. It rises up to 60 heads and then stays level, while Causal keeps rising but stays below it. With one set for all tasks, where its combination is chosen at each size, Selected is the best rule from 10 to 100 heads and level with Causal $-$ generic at 120.
 \item \emph{Generic heads removed} (step 5) raises the causal ranking at every size with one set for all tasks, and per task up to 60 heads; beyond, it is slightly below Causal. At ten heads, Causal $-$ generic is the best rule per task. The generic heads are seven in fold~1 and eight in fold~2, four of them in both (L13H2, L15H5, L16H29, L31H14). Removing them changes the causal ranking less than identifying it on the other half of the items does (Sec.~\ref{sec:overlap}).
+\item \emph{Scored in the zero-shot prompt} (step 6) lowers the causal ranking at every size, most with one set for all tasks. Per task, Causal (zero-shot) levels off from 60 heads while Causal keeps rising; removing its generic heads helps it only with one set for all tasks and keeps it below Causal $-$ generic. In the zero-shot prompt a single head moves the probability of the answer much less than with uninformative text, and on the translations hardly at all (Table~\ref{tab:causal-kinds}). The ranking is less stable between the two halves of the items and partly different from Causal's. Measured in the frame alone, it stays almost as close to Causal as Causal is to itself, so the change comes from leaving out the question--answer frame rather than the uninformative text. By task type, it is above Causal per task on the translations and below it on morphology and the sequences (Table~\ref{tab:types}). The instruction function vector ranked by the zero-shot score is also below its own form (Table~\ref{tab:own}). Selected's lead over the causal ranking thus does not come from the prompt the causal score is measured in: measured in the prompt of the test, the causal ranking is weaker.
 \end{itemize}
 
 \begin{table}[tbp]
@@ -434,7 +451,7 @@ Chosen at each size, the shared combination changes with the size (Table~\ref{ta
 \label{tab:types}
 \end{table}
 
-\paragraph{By task type.} Every rule that fills the set on the fact tasks triggers them. The sequence tasks are the hardest: at 40 heads no rule reaches a quarter of their items, and only the causal rankings reach about two-fifths at 120 heads per task (Table~\ref{tab:types}; Fig.~\ref{fig:types} in App.~\ref{app:types}). The rules differ most on translations and word relations. Per task, only Selected triggers the translations, at about the level of its word relations, while both causal rankings stay near zero up to 40 heads; with one set for all tasks they trigger them better. On word relations, Selected and Causal $-$ generic lead per task, and Selected leads with one set for all tasks. With one set for all tasks, D and Yang terms trigger almost only the fact tasks.
+\paragraph{By task type.} Every rule that fills the set on the fact tasks triggers them. The sequence tasks are the hardest: at 40 heads no rule reaches a quarter of their items, and only Causal and Causal $-$ generic reach about two-fifths at 120 heads per task, while the zero-shot causal rankings stay near zero at every size (Table~\ref{tab:types}; Fig.~\ref{fig:types} in App.~\ref{app:types}). The rules differ most on translations and word relations. Per task, only Selected triggers the translations well, at about the level of its word relations, while Causal and Causal $-$ generic stay near zero up to 40 heads and the zero-shot causal rankings reach at most two-fifths; with one set for all tasks the causal rankings trigger them better. On word relations, Selected and Causal $-$ generic lead per task, and Selected leads with one set for all tasks. With one set for all tasks, D and Yang terms trigger almost only the fact tasks.
 
 % =====================================================================
 \section{Beyond the prompts the heads were identified on}\label{sec:beyond}
@@ -625,7 +642,7 @@ which is 0 when they share no more heads than random sets in the same layers and
 
 \paragraph{Stability.} D, Yang terms and Selected keep most of their heads between the two halves of the items, the causal rankings about half of them per task and somewhat more with one set for all tasks (diagonal of Fig.~\ref{fig:overlap}, Table~\ref{tab:ov-stability}). Per task, the causal rankings are least stable on the translations: identified on the templates, the two halves' sets of English--German share hardly more heads than chance (Table~\ref{tab:ov-task-stability}). With one set for all tasks, Selected is less stable at the sizes where the two folds select different combinations, most with example-based prompts from 60 heads on.
 
-\paragraph{Between rules.} On the same prompts, Causal and Causal $-$ generic are about as alike as each is with itself on the other half of the items: removing the generic heads changes the causal ranking less than the items do (Fig.~\ref{fig:overlap}, Tables~\ref{tab:ov-rules-pertask} and~\ref{tab:ov-rules-shared}). The other rules mostly fall into two groups. Yang terms and D, which rank heads by what they decode, share more with each other than with the causal rankings, and Selected shares more with the causal rankings than with them; across the two groups, rules share mostly a tenth to a quarter of what their stabilities allow.
+\paragraph{Between rules.} On the same prompts, Causal and Causal $-$ generic are about as alike as each is with itself on the other half of the items: removing the generic heads changes the causal ranking less than the items do (Fig.~\ref{fig:overlap}, Tables~\ref{tab:ov-rules-pertask} and~\ref{tab:ov-rules-shared}). Measuring the score in the zero-shot prompt changes it more: Causal (zero-shot) keeps fewer of its heads between the halves than Causal, about two-fifths per task, and shares with Causal a little more than half of what the two stabilities allow per task and about half to three-quarters with one set for all tasks. The other rules mostly fall into two groups. Yang terms and D, which rank heads by what they decode, share more with each other than with the causal rankings, and Selected shares more with the causal rankings than with them; across the two groups, rules share mostly a tenth to a quarter of what their stabilities allow.
 
 \paragraph{Between prompts.} Identified on the templates together with the identification wordings, every rule keeps most of what its stability allows of its sets of Sec.~\ref{sec:rules}, Yang terms (J) and the causal rankings about four-fifths or more (bold cells of Fig.~\ref{fig:overlap}, Table~\ref{tab:ov-pools}). Between instruction-based and example-based prompts the rules differ widely. Yang terms (J) keep about three-fifths, and D between two-fifths and a half per task, and with one set for all tasks from about a fifth at 20 heads to over a half at 120. The causal rankings keep from about a tenth to a third. Selected per task keeps less than a tenth, and nothing from 80 heads on; with one set for all tasks it keeps about a third at 20 and 80 heads and nothing at 120. Per task, the combinations selected on the two prompting styles have no feature in common (DBTSPL and Y). The two published findings thus fit one pattern when measured in the same way: heads ranked by what they decode are shared far more between the two prompting styles, as \citet{yang2026shared} find for lexical task heads, the heads of the causal rankings less, as in \citet{davidson2025different}, and those of Selected least.
 
@@ -657,7 +674,9 @@ which is 0 when they share no more heads than random sets in the same layers and
 
 \paragraph{Cost of the screen.} The cost of a rule built from decoding and attention is that of applying it once its combination of features is fixed (Sec.~\ref{sec:intro}). Choosing the combination still takes many patched runs: every candidate set on ten items per task, the shortlist on all items of both folds and, for the shared set, again at each size.
 
-\paragraph{Generic heads.} They are defined among the top heads of the shared causal ranking and removed only from it; whether heads of the same kind harm other rules is not tested. The cut at half of the 30 top heads can fall on either side of a nearly equal split: on example-based prompts, the two folds have almost the same top heads, but fold~1 removes none and fold~2 removes 14 (Sec.~\ref{sec:beyond-results}).
+\paragraph{Generic heads.} They are defined among the top heads of the shared causal ranking and removed only from it; whether heads of the same kind harm other rules is not tested. The cut at half of the 30 top heads can fall on either side of a nearly equal split: on example-based prompts, the two folds have almost the same top heads, but fold~1 removes none and fold~2 removes 14 (Sec.~\ref{sec:beyond-results}); with the zero-shot score, fold~1 removes none and fold~2 removes 12.
+
+\paragraph{Causal score in the zero-shot prompt.} The zero-shot score averages 20 indirect effects per head and task, against 60 for Causal, and in the zero-shot prompt a single head moves the probability of the answer little on most tasks. Part of its lower accuracy may therefore come from noise rather than from the prompt; the score is not repeated on more items.
 
 \paragraph{Random sets.} Random sets keep the number of heads in each layer. When a rule fills a few layers densely, as Selected does around layer 13, its random sets are drawn largely from the same heads and share a third to two-fifths of them with it at 120 heads. At large sizes they test the choice of heads within those layers less strictly than at small ones: with the means of example-based prompts, the random sets of Selected's sets transferred from instructions trigger the task about as well as the sets themselves at 120 heads.
 
@@ -783,7 +802,7 @@ label, does not name it & \p{Word: \{x\}\nl Contrary word:} \\
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/design_types.pdf}
-\caption{Accuracy of every rule by task type and size, mean over the tasks of the type and the two folds. A rule is shown at sizes it fills on every task of the type.}
+\caption{Accuracy of every rule by task type and size, mean over the tasks of the type and the two folds. A rule is shown at sizes it fills on every task of the type. Dashed: the causal score measured in the zero-shot prompt (Sec.~\ref{sec:causal-zs}).}
 \label{fig:types}
 \end{figure}
 
@@ -897,9 +916,9 @@ label, does not name it & \p{Word: \{x\}\nl Contrary word:} \\
 \end{figure}
 
 \begin{table}[H]
-\centering\scriptsize\setlength{\tabcolsep}{3pt}
+\centering\scriptsize\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{1.0}
 \input{tables/design_overlap_stability}
-\caption{Stability of every condition, its fold-1 set against its fold-2 set (layer-matched chance in brackets), and the share of its heads in its own three random sets; mean over tasks (per task) and folds. Prompts: Yang et al.'s five templates (Sec.~\ref{sec:rules}), the five templates with the 15 identification wordings (Sec.~\ref{sec:wordings}), the three identification formats (Sec.~\ref{sec:examples}). --: the rule does not fill the size on every task.}
+\caption{Stability of every condition, its fold-1 set against its fold-2 set (layer-matched chance in brackets), and the share of its heads in its own three random sets; mean over tasks (per task) and folds. Prompts: Yang et al.'s five templates (Sec.~\ref{sec:rules}), the five templates with the 15 identification wordings (Sec.~\ref{sec:wordings}), the three identification formats (Sec.~\ref{sec:examples}). Causal$_0$: Causal (zero-shot) (Sec.~\ref{sec:causal-zs}). --: the rule does not fill the size on every task.}
 \label{tab:ov-stability}
 \end{table}
 
@@ -913,7 +932,7 @@ label, does not name it & \p{Word: \{x\}\nl Contrary word:} \\
 \begin{table}[H]
 \centering\scriptsize\setlength{\tabcolsep}{3pt}
 \input{tables/design_overlap_rules_pertask}
-\caption{Two rules identified on the same prompts, one set per task: share of heads in common, a set of one fold against a set of the other, averaged over both orders, tasks and folds (layer-matched chance in brackets), and normalized overlap (Sec.~\ref{sec:overlap-measure}).}
+\caption{Two rules identified on the same prompts, one set per task: share of heads in common, a set of one fold against a set of the other, averaged over both orders, tasks and folds (layer-matched chance in brackets), and normalized overlap (Sec.~\ref{sec:overlap-measure}). Causal$_0$: Causal (zero-shot) (Sec.~\ref{sec:causal-zs}), compared only with the causal rankings and Selected.}
 \label{tab:ov-rules-pertask}
 \end{table}
 
