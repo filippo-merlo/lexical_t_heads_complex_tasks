@@ -761,6 +761,35 @@ def table_pair(key_a: str | None, key_b: str, cols: tuple[str, str], name: str) 
     write(name, rt.tabular("@{}r" + "rr" * len(S3_RULES) + "@{}", header, rows))
 
 
+def table_summed_pick40() -> None:
+    """Shared Selected at every size against the 40-head pick (the stage-2 combination, its ranking cut at every
+    size), each patched head by head and as one summed vector with Yang's five templates' means; the 40-head
+    pick also with its random sets and control means as one summed vector. The 40-head pick's rows are those
+    of the stage-2 and summed reports before the size picks replace them (``with_sized``)."""
+    acc40 = cells([DIR / f"{s}_per_task.csv" for s in ("s1", "s2")])
+    d, st = S3["sum"]
+    sum40 = cells([d / f"{st}_per_task.csv"])
+    sel40 = json.loads((DIR / "selected.json").read_text())
+    pick40 = sorted({sel40[str(f)]["shared"]["combo"] for f in (1, 2)})
+    assert len(pick40) == 1, pick40
+    header = ["& \\multicolumn{3}{c}{Selected at $N$} & \\multicolumn{4}{c}{" + pick40[0] + " (40-head pick)} \\\\",
+              "\\cmidrule(lr){2-4} \\cmidrule(lr){5-8}",
+              "$N$ & Folds 1 / 2 & heads & sum & heads & sum & rand. & ctrl. \\\\"]
+    rows = []
+    for n in SIZES:
+        name = f"shared_selected{n}"
+        if n in SIZE_SCREEN:
+            sel = json.loads((SIZE_SCREEN[n] / "selected.json").read_text())
+            combos = [sel[str(f)]["combo"] for f in (1, 2)]
+        else:
+            combos = [sel40[str(f)]["shared"]["combo"] for f in (1, 2)]
+        picks = combos[0] if combos[0] == combos[1] else " / ".join(combos)
+        rows.append(f"{n} & {picks} & {rt.num(mean_over(name))} & {rt.num(mean_over(name, acc=ACC3['sum']))} & "
+                    f"{rt.num(mean_over(name, acc=acc40))} & {rt.num(mean_over(name, acc=sum40))} & "
+                    f"{rt.num(mean_over(name, 'random', acc=sum40))} & {rt.num(mean_over(name, 'control', acc=sum40))} \\\\")
+    write("design_summed_pick40", rt.tabular("@{}rlrrrrrr@{}", header, rows))
+
+
 def table_s3_controls(keys: tuple[str, ...], name: str) -> None:
     """Random sets and control means of the S3 rules in the given stage-3 tests, every size."""
     header = ["& & " + " & ".join(f"\\multicolumn{{2}}{{c}}{{{short_label(r)}}}" for r in S3_RULES) + " \\\\",
@@ -1037,6 +1066,7 @@ def stage3() -> None:
     table_s3_types(tuple(k for k in ("wt", "wq") if k in ACC3), "design_wordings_types")
     if "sum" in ACC3:
         table_pair(None, "sum", ("heads", "sum"), "design_summed")
+        table_summed_pick40()
         table_s3_types(("sum",), "design_summed_types")
         fig_summed()
     if "et" in ACC3 and "eq" in ACC3:
