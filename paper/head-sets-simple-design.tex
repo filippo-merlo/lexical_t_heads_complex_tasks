@@ -296,28 +296,28 @@ where $a_{l,h}(p)_{n,j}$ is the attention from the last position $n$ to position
 
 \begin{table}[tbp]
 \centering\small
-\begin{tabularx}{\textwidth}{@{}lLL@{}}
+\begin{tabularx}{\textwidth}{@{}cl>{\hsize=1.1\hsize}L>{\hsize=0.9\hsize}L@{}}
 \toprule
-Feature & Instruction-based prompts & Example-based prompts (Sec.~\ref{sec:examples}) \\
+ & Feature & Instruction-based prompts & Example-based prompts (Sec.~\ref{sec:examples}) \\
 \midrule
-D & decodes a word of the task's list & same \\
-non-first & attention to every token but the first & same \\
-task words & instruction tokens matching the list & -- \\
-other words & remaining content words of the instruction & -- \\
-stopwords & stopwords of the instruction & -- \\
-punctuation & tokens without a letter or digit & -- \\
-markers & scaffold around the query & -- \\
-inputs & -- & the demonstrations' inputs \\
-outputs & -- & the demonstrations' outputs \\
-separators & -- & tokens between and around demonstrations (\p{:}, \p{;}, \p{Q:}, \p{A:}, \p{->}, \p{=}, \p{|}, labels, newlines) \\
-query & the query $x$ & same \\
-last token & the read-out position & same \\
+D & decodes a list word & the head's top ten J-head tokens contain a word of the task's list (\p{opposite}, \p{reverse}, \p{word}) & same \\
+B & non-first & attention to every token but the first (\p{<|begin\_of\_text|>}) & same \\
+T & task words & instruction tokens matching the list (\p{word}) & -- \\
+O & other words & remaining content words of the instruction (\p{Give}, \p{antonym}, \p{following}) & -- \\
+S & stopwords & stopwords of the instruction (\p{me}, \p{the}, \p{of}) & -- \\
+P & punctuation & tokens without a letter or digit (\p{.}) & -- \\
+M & markers & scaffold around the query (\p{ Q}, \p{:}, \p{\nl}, \p{A}); in label wordings, the labels & -- \\
+X & inputs & -- & the demonstrations' inputs (\p{hot}, \p{tall}) \\
+Y & outputs & -- & the demonstrations' outputs (\p{cold}, \p{short}) \\
+S & separators & -- & tokens between and around demonstrations (\p{:}, \p{;}, \p{Q:}, \p{A:}, \p{->}, \p{=}, \p{|}, labels, newlines) \\
+Q & query & the query $x$ (\p{orthodox}) & same (\p{wet}) \\
+L & last token & the read-out position (the final \p{:}) & same (the final \p{:}) \\
 \midrule
-Features & 9 & 7 \\
-Combinations & 511, of which 255 without D & 127, of which 63 without D \\
+ & Features & 9 & 7 \\
+ & Combinations & 511, of which 255 without D & 127, of which 63 without D \\
 \bottomrule
 \end{tabularx}
-\caption{Features from which the rules are built.}
+\caption{Features from which the rules are built. A combination is named by the letters of its features, so DBTM is D, non-first, task words and markers. S stands for stopwords on instruction-based prompts and for separators on example-based ones; P and Q here are features, not the parts of the wordings (Sec.~\ref{sec:prompts}). In brackets, antonym examples: the list words, and the segments of \citeauthor{yang2026shared}'s template \p{Give me the antonym of the following word. Q: orthodox\nl A:} and of the five-shot prompt F1 of Table~\ref{tab:formats} (\p{ hot: cold; tall: short; wet:}). \p{antonym} is an other word because the list holds only the decoded fragment \p{ant} and list words match whole words.}
 \label{tab:features}
 \end{table}
 
