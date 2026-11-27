@@ -14,6 +14,7 @@
 #             -> test (Q-wording means, control means, random sets) -> results/rebuild/wordings_n<N>
 #   transfer  every size's stage-2 pick but 40 (N is ignored): wt (Q-wording means), et (Q-format means), tsum
 #             (summed, Yang's five template means) -> results/rebuild/transfer_n
+#   lrp       as additions with the AttnLRP features (scripts/lrp_screen_sets.py) -> results/rebuild/lrp_shared_n<N>
 #   POOL=examples scripts/rebuild_screen_n.sh 80 0 2 3 5
 set -uo pipefail
 cd "$(dirname "$0")/.."
@@ -27,10 +28,11 @@ GPUS=("$@")
 POOL=${POOL:-additions}
 case $POOL in
     additions) DIR=results/rebuild/shared_n$N; TAG=n$N; SCREEN_MEANS=rule ;;
+    lrp)       DIR=results/rebuild/lrp_shared_n$N; TAG=lrp_n$N; SCREEN_MEANS=rule ;;  # D + AttnLRP features (lrp_screen_sets.py)
     examples)  DIR=results/rebuild/examples_n$N; TAG=examples_n$N; SCREEN_MEANS=fmtP; TEST_MEANS=fmtQ ;;
     wordings)  DIR=results/rebuild/wordings_n$N; TAG=wordings_n$N; SCREEN_MEANS=pool; TEST_MEANS=Q ;;
     transfer)  DIR=results/rebuild/transfer_n; TAG=transfer_n ;;
-    *) echo "POOL: additions, examples, wordings or transfer" >&2; exit 2 ;;
+    *) echo "POOL: additions, lrp, examples, wordings or transfer" >&2; exit 2 ;;
 esac
 TASKS=(antonym synonym singular-plural present-past country-capital country-currency landmark-country
        park-country product-company next_item prev_item english-french english-german english-spanish)
@@ -43,7 +45,7 @@ job() {  # gpu pass fold task
     local gpu=$1 pass=$2 fold=$3 task=$4 half; half=$([ "$fold" = 1 ] && echo A || echo B)
     local part=$pass-$task opts names t0=$SECONDS script=scripts/patch.py means=()
     local only=(--task-only shared_screen)
-    [ "$POOL" = additions ] || [ "$POOL" = transfer ] || means=(--mean-wordings "$SCREEN_MEANS")  # transfer: set per pass
+    [ "$POOL" = additions ] || [ "$POOL" = lrp ] || [ "$POOL" = transfer ] || means=(--mean-wordings "$SCREEN_MEANS")  # transfer: set per pass
     case $pass in
         quick) opts=(--alphas 2 --max-new-tokens 1 --n-items 10); names=('shared_screen_*') ;;
         full)  opts=("${FULL_OPTS[@]}"); names=("${SHORT[@]}") ;;
@@ -98,7 +100,7 @@ say "shortlist: ${SHORT[*]}"
 phase full || { say "STOPPED: full pass incomplete"; exit 1; }
 $PY scripts/rebuild_screen_n.py select --n "$N" --pool "$POOL" || { say "STOPPED: selection"; exit 1; }
 case $POOL in
-    additions) phase sel || { say "STOPPED: Selected run incomplete"; exit 1; }; report sel ;;
+    additions|lrp) phase sel || { say "STOPPED: Selected run incomplete"; exit 1; }; report sel ;;
     examples)  phase test sum || { say "STOPPED: Selected runs incomplete"; exit 1; }; report test; report sum ;;
     wordings)  phase test || { say "STOPPED: Selected run incomplete"; exit 1; }; report test ;;
 esac

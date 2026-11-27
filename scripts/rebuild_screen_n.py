@@ -42,6 +42,11 @@ Stage 3 with the shared Selected chosen at each size (user 2026-11-23), ``--pool
   patches them with the Q-wording means (part wt), the Q-format means (part et) and summed with Yang et al.'s
   five template means (part tsum).
 
+- ``lrp`` (user 2026-11-27, shared scope only): the same screen as ``additions`` with D unchanged and every
+  attention feature replaced by its AttnLRP twin (``results/rebuild/lrp_screen/fold<f>/features.npz``,
+  ``scripts/lrp_screen_sets.py``), Yang et al.'s five template means, then the pick with control means and
+  random sets (part sel). ``results/rebuild/lrp_shared_n<N>/``.
+
 Each pool's sets are checked first: at 40 heads the same code gives the pool's stored ``shared_screen_<combo>``.
 
     .venv/bin/python scripts/rebuild_screen_n.py sets --n 80
@@ -72,7 +77,8 @@ K = 10
 R = RESULTS / "rebuild"
 POOLS = {"additions": (R / "additions", "shared_n", FEATURES, COMBOS),  # features and stored sets, output prefix
          "wordings": (R / "wordings", "wordings_n", FEATURES, COMBOS),
-         "examples": (R / "examples", "examples_n", EX_FEATURES, combos(EX_FEATURES))}
+         "examples": (R / "examples", "examples_n", EX_FEATURES, combos(EX_FEATURES)),
+         "lrp": (R / "lrp_screen", "lrp_shared_n", FEATURES, COMBOS)}  # D + AttnLRP twins (lrp_screen_sets.py)
 ADD, PREFIX, FEATS, COMBS = POOLS["additions"]
 TRANSFER = R / "transfer_n"
 
