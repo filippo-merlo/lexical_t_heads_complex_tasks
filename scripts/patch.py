@@ -110,14 +110,15 @@ def head_sets(heads: dict) -> dict[str, list[tuple[int, int]]]:
 
 
 def generate_patched(lm, prompts: list[list[int]], heads, mean, alphas, max_new_tokens: int, max_rows: int,
-                     stop=None) -> dict[tuple[int, float], list[int]]:
+                     stop=None, additive=False) -> dict[tuple[int, float], list[int]]:
     """``(prompt index, alpha)`` -> the greedy reply (token ids) to that prompt with the heads
-    patched at its last token; every prompt under every alpha, shortest prompts first."""
+    patched at its last token; every prompt under every alpha, shortest prompts first.
+    ``additive``: add ``alpha * mean`` to the heads' own outputs instead of replacing them."""
     pairs = sorted(((p, a) for p in range(len(prompts)) for a in alphas), key=lambda pa: len(prompts[pa[0]]))
     replies = {}
     for batch in lm.token_batches([len(prompts[p]) for p, _ in pairs], max_new_tokens, max_rows):
         chosen = [pairs[r] for r in batch]
-        edits = lm.mean_patch(heads, mean, [a for _, a in chosen], prompt_only=True)
+        edits = lm.mean_patch(heads, mean, [a for _, a in chosen], prompt_only=True, additive=additive)
         replies.update(zip(chosen, lm.generate_batch([prompts[p] for p, _ in chosen], max_new_tokens,
                                                      edits=edits, stop=stop)))
     return replies
@@ -137,7 +138,7 @@ def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple", s
                set_list=False, same_style=False, alphas=ALPHAS, half=None, wrong_control=False,
                max_new_tokens=None, task_only=(), set_alphas=None, names=None, mean_wordings="rule",
                example_wordings=None, mean_styles=None, control_same_wording=False, min_mean_prompts=1,
-               n_items=None):
+               n_items=None, additive=False):
     """Yang et al.'s ``fix_corrupted_prompts_vary_prompt_instances_average_new``, with each
     style's heads (``intervention_component_prompt_type``) patched with the means of each
     style (``prompt_type_fix``), one source wording at a time, and their control.
@@ -283,7 +284,7 @@ def run_simple(lm, heads_json, rows, log, tasks=simple.TASKS, family="simple", s
                 condition = dict(family=family, task=task, style=style, heads=name, source=source,
                                  mean_style=mean_style, mean_wording=wording)
                 replies = generate_patched(lm, patched, heads, mean, set_alpha, max_new_tokens,
-                                           PATCH_ROWS["simple"], stop=stop)
+                                           PATCH_ROWS["simple"], stop=stop, additive=additive)
                 for alpha in set_alpha:
                     hits = tokens = 0
                     for p, i in enumerate(fixed):
@@ -436,7 +437,12 @@ def main() -> None:
                         help="rebuild: no mean over fewer correctly answered prompts (default 1)")
     parser.add_argument("--n-items", type=int, default=None,
                         help="two-stage screen: patch a seeded random sample of this many test items per task")
+    parser.add_argument("--additive", action="store_true",
+                        help="simple tasks: add alpha * mean to each head's own output instead of replacing it "
+                             "(Pham et al. 2026)")
     args = parser.parse_args()
+    if args.additive and args.family in COMPLEX_FAMILIES:
+        parser.error("--additive is for the simple tasks only")
     gpu.pin(args.gpu)
     sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -455,7 +461,7 @@ def main() -> None:
                    args.max_new_tokens, tuple(args.task_only),
                    json.loads(args.set_alphas.read_text()) if args.set_alphas else None, args.names,
                    args.mean_wordings, args.example_wordings, args.mean_styles, args.control_same_wording,
-                   args.min_mean_prompts, args.n_items)
+                   args.min_mean_prompts, args.n_items, additive=args.additive)
     name = args.family + "".join("_" + level.replace("/", "-") for level in args.levels or [])
     if args.tasks:
         name += f".part-{args.part}"

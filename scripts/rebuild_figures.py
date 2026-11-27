@@ -48,22 +48,30 @@ TYPES = {"word relations": ("antonym", "synonym"), "morphology": ("singular-plur
          "sequences": ("next_item", "prev_item"), "translations": ("english-french", "english-german", "english-spanish")}
 # Rule -> (label, colour, marker). Colours: the validated categorical order (dataviz validator, light:
 # all adjacent pairs pass), lexical blue and causal orange as in the project's earlier figures.
+# Plum for T / LRP-T: against each of the six colours above, CVD separation >= 12.8 and normal-vision >= 23 (dataviz
+# validator, light surface); the categorical slots 7-8 (violet, red) fail against blue and orange.
+PLUM = "#9b2d6f"
 RULES = {"yangL": ("Yang terms (Logit)", rt.BLUE, "o"), "causal": ("Causal", rt.ORANGE, "v"),
          "selected": ("Selected", rt.AQUA, "D"), "yangJ": ("Yang terms (J)", rt.YELLOW, "s"),
          "D": ("D", rt.MAGENTA, "^"), "causalnogen": ("Causal $-$ generic", rt.GREEN, "P"),
          "causalzs": ("Causal (zero-shot)", rt.ORANGE, "v"),
-         "causalzsnogen": ("Causal (zero-shot) $-$ generic", rt.GREEN, "P")}
-LADDER = ("yangL", "yangJ", "D", "selected", "causal", "causalnogen", "causalzs", "causalzsnogen")  # order of Table 3
+         "causalzsnogen": ("Causal (zero-shot) $-$ generic", rt.GREEN, "P"),
+         "T": ("T", PLUM, "X"), "lrpT": ("LRP-T", PLUM, "X")}
+LADDER = ("yangL", "yangJ", "D", "T", "lrpT", "selected", "causal", "causalnogen", "causalzs", "causalzsnogen")
 # Step 6 (Sec. 5.6): the causal score measured in the zero-shot prompt; drawn dashed, in its counterpart's colour.
 ZERO_SHOT = ("causalzs", "causalzsnogen")
+# Step 7 (Sec. 5.7): attention to the task words weighted by its AttnLRP relevance (LRP-T, solid) and plain (T, the
+# step-3 rule of that segment, dashed), one hue.
+DASHED = ZERO_SHOT + ("T",)
 # Two-level table headers: rule -> (group, column); consecutive rules of a group share a spanning label.
 HEADER = {"yangL": ("Yang terms", "Logit"), "yangJ": ("Yang terms", "J"), "D": ("", "D"), "selected": ("", "Selected"),
           "causal": ("Causal", "as ranked"), "causalnogen": ("Causal", "$-$ generic"),
-          "causalzs": ("Causal (zero-shot)", "as ranked"), "causalzsnogen": ("Causal (zero-shot)", "$-$ generic")}
+          "causalzs": ("Causal (zero-shot)", "as ranked"), "causalzsnogen": ("Causal (zero-shot)", "$-$ generic"),
+          "T": ("Task words", "T"), "lrpT": ("Task words", "LRP-T")}
 
 
 def line_style(rule: str) -> str:
-    return "--" if rule in ZERO_SHOT else "-"
+    return "--" if rule in DASHED else "-"
 
 
 def group_header(rules, lead: int, width: int = 1) -> list[str]:
@@ -133,8 +141,9 @@ def with_sized(pt: pd.DataFrame, files) -> pd.DataFrame:
     return pd.concat([pt[~pt.set.map(sized).isin(sizes)], new], ignore_index=True)
 
 
-# Stages: s1 (Sec. 4), s2 (Sec. 5), zs (Causal (zero-shot), Sec. 5.6; scripts/rebuild_causal_zs.sh).
-ACC = cells(with_sized(pd.concat([pd.read_csv(DIR / f"{s}_per_task.csv") for s in ("s1", "s2", "zs")
+# Stages: s1 (Sec. 4), s2 (Sec. 5), zs (Causal (zero-shot), Sec. 5.6; scripts/rebuild_causal_zs.sh), lrp (T and
+# LRP-T, Sec. 5.7; scripts/rebuild_lrp.sh).
+ACC = cells(with_sized(pd.concat([pd.read_csv(DIR / f"{s}_per_task.csv") for s in ("s1", "s2", "zs", "lrp")
                                   if (DIR / f"{s}_per_task.csv").exists()], ignore_index=True),
                        [d / "sel_per_task.csv" for d in SIZE_SCREEN.values()]))
 # Stage 3 (Sec. 6): test -> (results folder, report stage); a test enters once scripts/rebuild_report.py has run.
@@ -480,7 +489,7 @@ def fig_ladder() -> None:
 
 
 def fig_controls() -> None:
-    rules = ("yangJ", "D", "selected", "causalnogen")
+    rules = ("yangJ", "D", "lrpT", "selected", "causalnogen")
     fig, axes = plt.subplots(2, len(rules), figsize=(6.5, 3.6), sharex=True, sharey=True)
     for i, (scope, prefix) in enumerate(SCOPES.items()):
         for j, r in enumerate(rules):
@@ -1350,7 +1359,7 @@ def fig_overlap_tasks(df: pd.DataFrame, n: int = SCREEN_N, pool: str = "I") -> N
     stability."""
     tasks = [t for ts in TYPES.values() for t in ts]
     sub = df[(df.kind == "tasks") & (df.n == n) & (df.pool_a == pool)]
-    rules = [r for r in LADDER if sub[sub.rule_a == r].q.notna().any()]
+    rules = [r for r in ("D", "selected", "causal", "causalnogen") if sub[sub.rule_a == r].q.notna().any()]  # 2x2 panels
     fig, axes = plt.subplots(2, 2, figsize=(6.5, 6.8), gridspec_kw={"hspace": 0.1, "wspace": 0.06})
     breaks = np.cumsum([len(ts) for ts in TYPES.values()])[:-1]
     for j, (ax, r) in enumerate(zip(axes.flat, rules)):
@@ -1483,8 +1492,15 @@ def ov_tex(rule: str) -> str:
     return RULES[rule][0].replace("Yang terms ", "Yang ")
 
 
+LRP_RULES = ("T", "lrpT")
+
+
 def zs_pair_shown(a: str, b: str) -> bool:
-    """The rule tables compare a zero-shot rule (Sec. 5.6) only with the causal rankings, Selected and each other."""
+    """The rule tables compare a zero-shot rule (Sec. 5.6) only with the causal rankings, Selected and each other, and
+    T and LRP-T (Sec. 5.7) only as LRP-T against T, D, Selected, Causal and Causal (zero-shot)."""
+    if a in LRP_RULES or b in LRP_RULES:
+        other = b if a == "lrpT" else a if b == "lrpT" else None
+        return other in ("T", "D", "selected", "causal", "causalzs")
     if a not in ZERO_SHOT and b not in ZERO_SHOT:
         return True
     other = b if a in ZERO_SHOT else a

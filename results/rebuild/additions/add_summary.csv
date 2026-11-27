@@ -1,0 +1,5 @@
+set,scope,n,task,control,random,tasks_folds
+lrpT40,per task,40,0.67,0.028,0.068,28
+selected40,per task,40,0.587,0.027,0.074,28
+shared_lrpT40,shared,40,0.542,0.042,0.091,28
+shared_selected40,shared,40,0.594,0.036,0.069,28
