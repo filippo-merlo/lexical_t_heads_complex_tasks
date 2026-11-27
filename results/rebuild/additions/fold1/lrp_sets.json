@@ -1,0 +1,1219 @@
+{
+ "fold": 1,
+ "choosing_half": "A",
+ "sets": [
+  {
+   "scope": "per_task",
+   "task": "antonym",
+   "n": 10,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 5,
+   "common_causal": 2,
+   "common_causalzs": 2,
+   "common_selected": 6
+  },
+  {
+   "scope": "per_task",
+   "task": "synonym",
+   "n": 10,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 11.5,
+   "common_T": 4,
+   "common_causal": 6,
+   "common_causalzs": 2,
+   "common_selected": 5
+  },
+  {
+   "scope": "per_task",
+   "task": "singular-plural",
+   "n": 10,
+   "layer_median_lrpT": 14.5,
+   "layer_median_T": 14.5,
+   "common_T": 8,
+   "common_causal": 7,
+   "common_causalzs": 0,
+   "common_selected": 4
+  },
+  {
+   "scope": "per_task",
+   "task": "present-past",
+   "n": 10,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 13.5,
+   "common_T": 5,
+   "common_causal": 3,
+   "common_causalzs": 0,
+   "common_selected": 3
+  },
+  {
+   "scope": "per_task",
+   "task": "country-capital",
+   "n": 10,
+   "layer_median_lrpT": 15.0,
+   "layer_median_T": 15.0,
+   "common_T": 6,
+   "common_causal": 8,
+   "common_causalzs": 5,
+   "common_selected": 4
+  },
+  {
+   "scope": "per_task",
+   "task": "country-currency",
+   "n": 10,
+   "layer_median_lrpT": 15.0,
+   "layer_median_T": 14.0,
+   "common_T": 7,
+   "common_causal": 1,
+   "common_causalzs": 1,
+   "common_selected": 4
+  },
+  {
+   "scope": "per_task",
+   "task": "landmark-country",
+   "n": 10,
+   "layer_median_lrpT": 15.5,
+   "layer_median_T": 14.5,
+   "common_T": 5,
+   "common_causal": 5,
+   "common_causalzs": 3,
+   "common_selected": 3
+  },
+  {
+   "scope": "per_task",
+   "task": "park-country",
+   "n": 10,
+   "layer_median_lrpT": 14.5,
+   "layer_median_T": 14.0,
+   "common_T": 4,
+   "common_causal": 7,
+   "common_causalzs": 5,
+   "common_selected": 4
+  },
+  {
+   "scope": "per_task",
+   "task": "product-company",
+   "n": 10,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 14.5,
+   "common_T": 6,
+   "common_causal": 7,
+   "common_causalzs": 3,
+   "common_selected": 5
+  },
+  {
+   "scope": "per_task",
+   "task": "next_item",
+   "n": 10,
+   "layer_median_lrpT": 13.5,
+   "layer_median_T": 13.5,
+   "common_T": 5,
+   "common_causal": 1,
+   "common_causalzs": 0,
+   "common_selected": 3
+  },
+  {
+   "scope": "per_task",
+   "task": "prev_item",
+   "n": 10,
+   "layer_median_lrpT": 13.5,
+   "layer_median_T": 13.5,
+   "common_T": 5,
+   "common_causal": 1,
+   "common_causalzs": 1,
+   "common_selected": 5
+  },
+  {
+   "scope": "per_task",
+   "task": "english-french",
+   "n": 10,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 14.0,
+   "common_T": 6,
+   "common_causal": 3,
+   "common_causalzs": 0,
+   "common_selected": 2
+  },
+  {
+   "scope": "per_task",
+   "task": "english-german",
+   "n": 10,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 14.0,
+   "common_T": 5,
+   "common_causal": 3,
+   "common_causalzs": 2,
+   "common_selected": 3
+  },
+  {
+   "scope": "per_task",
+   "task": "english-spanish",
+   "n": 10,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 14.0,
+   "common_T": 4,
+   "common_causal": 3,
+   "common_causalzs": 3,
+   "common_selected": 5
+  },
+  {
+   "scope": "shared",
+   "task": "all",
+   "n": 10,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 4,
+   "common_causal": 3,
+   "common_causalzs": 2,
+   "common_selected": 3
+  },
+  {
+   "scope": "per_task",
+   "task": "antonym",
+   "n": 20,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 11.0,
+   "common_T": 8,
+   "common_causal": 5,
+   "common_causalzs": 3,
+   "common_selected": 6
+  },
+  {
+   "scope": "per_task",
+   "task": "synonym",
+   "n": 20,
+   "layer_median_lrpT": 12.5,
+   "layer_median_T": 12.5,
+   "common_T": 9,
+   "common_causal": 9,
+   "common_causalzs": 4,
+   "common_selected": 7
+  },
+  {
+   "scope": "per_task",
+   "task": "singular-plural",
+   "n": 20,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 14.0,
+   "common_T": 13,
+   "common_causal": 11,
+   "common_causalzs": 1,
+   "common_selected": 9
+  },
+  {
+   "scope": "per_task",
+   "task": "present-past",
+   "n": 20,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 13.0,
+   "common_T": 8,
+   "common_causal": 6,
+   "common_causalzs": 0,
+   "common_selected": 6
+  },
+  {
+   "scope": "per_task",
+   "task": "country-capital",
+   "n": 20,
+   "layer_median_lrpT": 15.0,
+   "layer_median_T": 14.0,
+   "common_T": 8,
+   "common_causal": 11,
+   "common_causalzs": 8,
+   "common_selected": 10
+  },
+  {
+   "scope": "per_task",
+   "task": "country-currency",
+   "n": 20,
+   "layer_median_lrpT": 15.0,
+   "layer_median_T": 13.5,
+   "common_T": 10,
+   "common_causal": 3,
+   "common_causalzs": 3,
+   "common_selected": 11
+  },
+  {
+   "scope": "per_task",
+   "task": "landmark-country",
+   "n": 20,
+   "layer_median_lrpT": 15.0,
+   "layer_median_T": 14.0,
+   "common_T": 11,
+   "common_causal": 9,
+   "common_causalzs": 7,
+   "common_selected": 5
+  },
+  {
+   "scope": "per_task",
+   "task": "park-country",
+   "n": 20,
+   "layer_median_lrpT": 15.0,
+   "layer_median_T": 14.5,
+   "common_T": 9,
+   "common_causal": 11,
+   "common_causalzs": 8,
+   "common_selected": 6
+  },
+  {
+   "scope": "per_task",
+   "task": "product-company",
+   "n": 20,
+   "layer_median_lrpT": 14.5,
+   "layer_median_T": 14.0,
+   "common_T": 13,
+   "common_causal": 12,
+   "common_causalzs": 9,
+   "common_selected": 10
+  },
+  {
+   "scope": "per_task",
+   "task": "next_item",
+   "n": 20,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 13.0,
+   "common_T": 11,
+   "common_causal": 4,
+   "common_causalzs": 0,
+   "common_selected": 6
+  },
+  {
+   "scope": "per_task",
+   "task": "prev_item",
+   "n": 20,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 14.0,
+   "common_T": 13,
+   "common_causal": 6,
+   "common_causalzs": 1,
+   "common_selected": 10
+  },
+  {
+   "scope": "per_task",
+   "task": "english-french",
+   "n": 20,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 14.0,
+   "common_T": 12,
+   "common_causal": 4,
+   "common_causalzs": 0,
+   "common_selected": 7
+  },
+  {
+   "scope": "per_task",
+   "task": "english-german",
+   "n": 20,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 14.0,
+   "common_T": 11,
+   "common_causal": 4,
+   "common_causalzs": 3,
+   "common_selected": 7
+  },
+  {
+   "scope": "per_task",
+   "task": "english-spanish",
+   "n": 20,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 14.0,
+   "common_T": 9,
+   "common_causal": 3,
+   "common_causalzs": 4,
+   "common_selected": 8
+  },
+  {
+   "scope": "shared",
+   "task": "all",
+   "n": 20,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 7,
+   "common_causal": 6,
+   "common_causalzs": 3,
+   "common_selected": 7
+  },
+  {
+   "scope": "per_task",
+   "task": "antonym",
+   "n": 40,
+   "layer_median_lrpT": 12.5,
+   "layer_median_T": 11.5,
+   "common_T": 14,
+   "common_causal": 12,
+   "common_causalzs": 7,
+   "common_selected": 11
+  },
+  {
+   "scope": "per_task",
+   "task": "synonym",
+   "n": 40,
+   "layer_median_lrpT": 12.0,
+   "layer_median_T": 13.0,
+   "common_T": 17,
+   "common_causal": 18,
+   "common_causalzs": 12,
+   "common_selected": 16
+  },
+  {
+   "scope": "per_task",
+   "task": "singular-plural",
+   "n": 40,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 14.0,
+   "common_T": 24,
+   "common_causal": 18,
+   "common_causalzs": 6,
+   "common_selected": 24
+  },
+  {
+   "scope": "per_task",
+   "task": "present-past",
+   "n": 40,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 13.0,
+   "common_T": 15,
+   "common_causal": 12,
+   "common_causalzs": 5,
+   "common_selected": 15
+  },
+  {
+   "scope": "per_task",
+   "task": "country-capital",
+   "n": 40,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 14.0,
+   "common_T": 24,
+   "common_causal": 16,
+   "common_causalzs": 13,
+   "common_selected": 23
+  },
+  {
+   "scope": "per_task",
+   "task": "country-currency",
+   "n": 40,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 13.5,
+   "common_T": 22,
+   "common_causal": 8,
+   "common_causalzs": 4,
+   "common_selected": 21
+  },
+  {
+   "scope": "per_task",
+   "task": "landmark-country",
+   "n": 40,
+   "layer_median_lrpT": 15.0,
+   "layer_median_T": 14.0,
+   "common_T": 17,
+   "common_causal": 14,
+   "common_causalzs": 13,
+   "common_selected": 14
+  },
+  {
+   "scope": "per_task",
+   "task": "park-country",
+   "n": 40,
+   "layer_median_lrpT": 15.0,
+   "layer_median_T": 14.5,
+   "common_T": 15,
+   "common_causal": 19,
+   "common_causalzs": 13,
+   "common_selected": 17
+  },
+  {
+   "scope": "per_task",
+   "task": "product-company",
+   "n": 40,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 14.0,
+   "common_T": 22,
+   "common_causal": 18,
+   "common_causalzs": 15,
+   "common_selected": 21
+  },
+  {
+   "scope": "per_task",
+   "task": "next_item",
+   "n": 40,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 18,
+   "common_causal": 10,
+   "common_causalzs": 1,
+   "common_selected": 11
+  },
+  {
+   "scope": "per_task",
+   "task": "prev_item",
+   "n": 40,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 14.0,
+   "common_T": 21,
+   "common_causal": 12,
+   "common_causalzs": 3,
+   "common_selected": 16
+  },
+  {
+   "scope": "per_task",
+   "task": "english-french",
+   "n": 40,
+   "layer_median_lrpT": 13.5,
+   "layer_median_T": 14.0,
+   "common_T": 22,
+   "common_causal": 7,
+   "common_causalzs": 4,
+   "common_selected": 19
+  },
+  {
+   "scope": "per_task",
+   "task": "english-german",
+   "n": 40,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 14.0,
+   "common_T": 20,
+   "common_causal": 4,
+   "common_causalzs": 6,
+   "common_selected": 16
+  },
+  {
+   "scope": "per_task",
+   "task": "english-spanish",
+   "n": 40,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 17,
+   "common_causal": 5,
+   "common_causalzs": 5,
+   "common_selected": 17
+  },
+  {
+   "scope": "shared",
+   "task": "all",
+   "n": 40,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 13.5,
+   "common_T": 18,
+   "common_causal": 15,
+   "common_causalzs": 9,
+   "common_selected": 17
+  },
+  {
+   "scope": "per_task",
+   "task": "antonym",
+   "n": 60,
+   "layer_median_lrpT": 12.0,
+   "layer_median_T": 11.0,
+   "common_T": 27,
+   "common_causal": 17,
+   "common_causalzs": 14,
+   "common_selected": 20
+  },
+  {
+   "scope": "per_task",
+   "task": "synonym",
+   "n": 60,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 12.0,
+   "common_T": 24,
+   "common_causal": 23,
+   "common_causalzs": 14,
+   "common_selected": 22
+  },
+  {
+   "scope": "per_task",
+   "task": "singular-plural",
+   "n": 60,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 13.0,
+   "common_T": 34,
+   "common_causal": 27,
+   "common_causalzs": 14,
+   "common_selected": 32
+  },
+  {
+   "scope": "per_task",
+   "task": "present-past",
+   "n": 60,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 13.0,
+   "common_T": 27,
+   "common_causal": 19,
+   "common_causalzs": 8,
+   "common_selected": 23
+  },
+  {
+   "scope": "per_task",
+   "task": "country-capital",
+   "n": 60,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 13.0,
+   "common_T": 35,
+   "common_causal": 24,
+   "common_causalzs": 14,
+   "common_selected": 36
+  },
+  {
+   "scope": "per_task",
+   "task": "country-currency",
+   "n": 60,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 13.5,
+   "common_T": 35,
+   "common_causal": 16,
+   "common_causalzs": 7,
+   "common_selected": 31
+  },
+  {
+   "scope": "per_task",
+   "task": "landmark-country",
+   "n": 60,
+   "layer_median_lrpT": 15.0,
+   "layer_median_T": 14.0,
+   "common_T": 25,
+   "common_causal": 19,
+   "common_causalzs": 16,
+   "common_selected": 21
+  },
+  {
+   "scope": "per_task",
+   "task": "park-country",
+   "n": 60,
+   "layer_median_lrpT": 15.0,
+   "layer_median_T": 15.0,
+   "common_T": 26,
+   "common_causal": 26,
+   "common_causalzs": 24,
+   "common_selected": 26
+  },
+  {
+   "scope": "per_task",
+   "task": "product-company",
+   "n": 60,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 13.0,
+   "common_T": 33,
+   "common_causal": 24,
+   "common_causalzs": 20,
+   "common_selected": 29
+  },
+  {
+   "scope": "per_task",
+   "task": "next_item",
+   "n": 60,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 30,
+   "common_causal": 12,
+   "common_causalzs": 3,
+   "common_selected": 22
+  },
+  {
+   "scope": "per_task",
+   "task": "prev_item",
+   "n": 60,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 14.0,
+   "common_T": 31,
+   "common_causal": 19,
+   "common_causalzs": 6,
+   "common_selected": 27
+  },
+  {
+   "scope": "per_task",
+   "task": "english-french",
+   "n": 60,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 32,
+   "common_causal": 12,
+   "common_causalzs": 7,
+   "common_selected": 28
+  },
+  {
+   "scope": "per_task",
+   "task": "english-german",
+   "n": 60,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 27,
+   "common_causal": 7,
+   "common_causalzs": 8,
+   "common_selected": 26
+  },
+  {
+   "scope": "per_task",
+   "task": "english-spanish",
+   "n": 60,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 27,
+   "common_causal": 9,
+   "common_causalzs": 7,
+   "common_selected": 28
+  },
+  {
+   "scope": "shared",
+   "task": "all",
+   "n": 60,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 13.0,
+   "common_T": 27,
+   "common_causal": 21,
+   "common_causalzs": 14,
+   "common_selected": 24
+  },
+  {
+   "scope": "per_task",
+   "task": "antonym",
+   "n": 80,
+   "layer_median_lrpT": 12.0,
+   "layer_median_T": 11.0,
+   "common_T": 41,
+   "common_causal": 29,
+   "common_causalzs": 19,
+   "common_selected": 32
+  },
+  {
+   "scope": "per_task",
+   "task": "synonym",
+   "n": 80,
+   "layer_median_lrpT": 12.5,
+   "layer_median_T": 11.0,
+   "common_T": 35,
+   "common_causal": 28,
+   "common_causalzs": 18,
+   "common_selected": 32
+  },
+  {
+   "scope": "per_task",
+   "task": "singular-plural",
+   "n": 80,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 46,
+   "common_causal": 31,
+   "common_causalzs": 19,
+   "common_selected": 43
+  },
+  {
+   "scope": "per_task",
+   "task": "present-past",
+   "n": 80,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 13.0,
+   "common_T": 37,
+   "common_causal": 28,
+   "common_causalzs": 16,
+   "common_selected": 34
+  },
+  {
+   "scope": "per_task",
+   "task": "country-capital",
+   "n": 80,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 13.5,
+   "common_T": 40,
+   "common_causal": 32,
+   "common_causalzs": 21,
+   "common_selected": 43
+  },
+  {
+   "scope": "per_task",
+   "task": "country-currency",
+   "n": 80,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 13.0,
+   "common_T": 43,
+   "common_causal": 19,
+   "common_causalzs": 11,
+   "common_selected": 36
+  },
+  {
+   "scope": "per_task",
+   "task": "landmark-country",
+   "n": 80,
+   "layer_median_lrpT": 15.0,
+   "layer_median_T": 14.0,
+   "common_T": 35,
+   "common_causal": 24,
+   "common_causalzs": 24,
+   "common_selected": 27
+  },
+  {
+   "scope": "per_task",
+   "task": "park-country",
+   "n": 80,
+   "layer_median_lrpT": 15.0,
+   "layer_median_T": 14.5,
+   "common_T": 35,
+   "common_causal": 33,
+   "common_causalzs": 30,
+   "common_selected": 36
+  },
+  {
+   "scope": "per_task",
+   "task": "product-company",
+   "n": 80,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 14.0,
+   "common_T": 43,
+   "common_causal": 28,
+   "common_causalzs": 22,
+   "common_selected": 42
+  },
+  {
+   "scope": "per_task",
+   "task": "next_item",
+   "n": 80,
+   "layer_median_lrpT": 13.5,
+   "layer_median_T": 13.0,
+   "common_T": 41,
+   "common_causal": 17,
+   "common_causalzs": 8,
+   "common_selected": 29
+  },
+  {
+   "scope": "per_task",
+   "task": "prev_item",
+   "n": 80,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 14.0,
+   "common_T": 43,
+   "common_causal": 24,
+   "common_causalzs": 9,
+   "common_selected": 37
+  },
+  {
+   "scope": "per_task",
+   "task": "english-french",
+   "n": 80,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 42,
+   "common_causal": 15,
+   "common_causalzs": 14,
+   "common_selected": 36
+  },
+  {
+   "scope": "per_task",
+   "task": "english-german",
+   "n": 80,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 38,
+   "common_causal": 12,
+   "common_causalzs": 10,
+   "common_selected": 34
+  },
+  {
+   "scope": "per_task",
+   "task": "english-spanish",
+   "n": 80,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 38,
+   "common_causal": 13,
+   "common_causalzs": 11,
+   "common_selected": 33
+  },
+  {
+   "scope": "shared",
+   "task": "all",
+   "n": 80,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 13.0,
+   "common_T": 32,
+   "common_causal": 25,
+   "common_causalzs": 21,
+   "common_selected": 28
+  },
+  {
+   "scope": "per_task",
+   "task": "antonym",
+   "n": 100,
+   "layer_median_lrpT": 12.0,
+   "layer_median_T": 11.0,
+   "common_T": 54,
+   "common_causal": 33,
+   "common_causalzs": 25,
+   "common_selected": 44
+  },
+  {
+   "scope": "per_task",
+   "task": "synonym",
+   "n": 100,
+   "layer_median_lrpT": 12.5,
+   "layer_median_T": 11.0,
+   "common_T": 51,
+   "common_causal": 38,
+   "common_causalzs": 28,
+   "common_selected": 38
+  },
+  {
+   "scope": "per_task",
+   "task": "singular-plural",
+   "n": 100,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 59,
+   "common_causal": 42,
+   "common_causalzs": 25,
+   "common_selected": 55
+  },
+  {
+   "scope": "per_task",
+   "task": "present-past",
+   "n": 100,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 13.0,
+   "common_T": 44,
+   "common_causal": 34,
+   "common_causalzs": 20,
+   "common_selected": 41
+  },
+  {
+   "scope": "per_task",
+   "task": "country-capital",
+   "n": 100,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 13.0,
+   "common_T": 54,
+   "common_causal": 39,
+   "common_causalzs": 32,
+   "common_selected": 52
+  },
+  {
+   "scope": "per_task",
+   "task": "country-currency",
+   "n": 100,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 59,
+   "common_causal": 24,
+   "common_causalzs": 18,
+   "common_selected": 45
+  },
+  {
+   "scope": "per_task",
+   "task": "landmark-country",
+   "n": 100,
+   "layer_median_lrpT": 15.0,
+   "layer_median_T": 14.0,
+   "common_T": 42,
+   "common_causal": 30,
+   "common_causalzs": 35,
+   "common_selected": 37
+  },
+  {
+   "scope": "per_task",
+   "task": "park-country",
+   "n": 100,
+   "layer_median_lrpT": 15.0,
+   "layer_median_T": 14.0,
+   "common_T": 46,
+   "common_causal": 36,
+   "common_causalzs": 37,
+   "common_selected": 41
+  },
+  {
+   "scope": "per_task",
+   "task": "product-company",
+   "n": 100,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 14.0,
+   "common_T": 54,
+   "common_causal": 38,
+   "common_causalzs": 31,
+   "common_selected": 50
+  },
+  {
+   "scope": "per_task",
+   "task": "next_item",
+   "n": 100,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 56,
+   "common_causal": 25,
+   "common_causalzs": 14,
+   "common_selected": 40
+  },
+  {
+   "scope": "per_task",
+   "task": "prev_item",
+   "n": 100,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 14.0,
+   "common_T": 53,
+   "common_causal": 30,
+   "common_causalzs": 18,
+   "common_selected": 43
+  },
+  {
+   "scope": "per_task",
+   "task": "english-french",
+   "n": 100,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 52,
+   "common_causal": 24,
+   "common_causalzs": 18,
+   "common_selected": 48
+  },
+  {
+   "scope": "per_task",
+   "task": "english-german",
+   "n": 100,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 53,
+   "common_causal": 17,
+   "common_causalzs": 17,
+   "common_selected": 43
+  },
+  {
+   "scope": "per_task",
+   "task": "english-spanish",
+   "n": 100,
+   "layer_median_lrpT": 12.5,
+   "layer_median_T": 13.0,
+   "common_T": 51,
+   "common_causal": 16,
+   "common_causalzs": 20,
+   "common_selected": 40
+  },
+  {
+   "scope": "shared",
+   "task": "all",
+   "n": 100,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 13.0,
+   "common_T": 46,
+   "common_causal": 37,
+   "common_causalzs": 30,
+   "common_selected": 42
+  },
+  {
+   "scope": "per_task",
+   "task": "antonym",
+   "n": 120,
+   "layer_median_lrpT": 12.5,
+   "layer_median_T": 10.5,
+   "common_T": 60,
+   "common_causal": 40,
+   "common_causalzs": 30,
+   "common_selected": 55
+  },
+  {
+   "scope": "per_task",
+   "task": "synonym",
+   "n": 120,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 11.0,
+   "common_T": 59,
+   "common_causal": 47,
+   "common_causalzs": 35,
+   "common_selected": 46
+  },
+  {
+   "scope": "per_task",
+   "task": "singular-plural",
+   "n": 120,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 68,
+   "common_causal": 49,
+   "common_causalzs": 35,
+   "common_selected": 63
+  },
+  {
+   "scope": "per_task",
+   "task": "present-past",
+   "n": 120,
+   "layer_median_lrpT": 13.5,
+   "layer_median_T": 13.0,
+   "common_T": 57,
+   "common_causal": 41,
+   "common_causalzs": 26,
+   "common_selected": 52
+  },
+  {
+   "scope": "per_task",
+   "task": "country-capital",
+   "n": 120,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 13.0,
+   "common_T": 63,
+   "common_causal": 43,
+   "common_causalzs": 38,
+   "common_selected": 59
+  },
+  {
+   "scope": "per_task",
+   "task": "country-currency",
+   "n": 120,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 68,
+   "common_causal": 28,
+   "common_causalzs": 19,
+   "common_selected": 56
+  },
+  {
+   "scope": "per_task",
+   "task": "landmark-country",
+   "n": 120,
+   "layer_median_lrpT": 15.0,
+   "layer_median_T": 14.0,
+   "common_T": 56,
+   "common_causal": 35,
+   "common_causalzs": 42,
+   "common_selected": 47
+  },
+  {
+   "scope": "per_task",
+   "task": "park-country",
+   "n": 120,
+   "layer_median_lrpT": 15.0,
+   "layer_median_T": 14.0,
+   "common_T": 55,
+   "common_causal": 45,
+   "common_causalzs": 42,
+   "common_selected": 51
+  },
+  {
+   "scope": "per_task",
+   "task": "product-company",
+   "n": 120,
+   "layer_median_lrpT": 14.0,
+   "layer_median_T": 13.0,
+   "common_T": 67,
+   "common_causal": 44,
+   "common_causalzs": 38,
+   "common_selected": 58
+  },
+  {
+   "scope": "per_task",
+   "task": "next_item",
+   "n": 120,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 67,
+   "common_causal": 31,
+   "common_causalzs": 20,
+   "common_selected": 52
+  },
+  {
+   "scope": "per_task",
+   "task": "prev_item",
+   "n": 120,
+   "layer_median_lrpT": 15.0,
+   "layer_median_T": 14.0,
+   "common_T": 62,
+   "common_causal": 38,
+   "common_causalzs": 26,
+   "common_selected": 52
+  },
+  {
+   "scope": "per_task",
+   "task": "english-french",
+   "n": 120,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 64,
+   "common_causal": 29,
+   "common_causalzs": 22,
+   "common_selected": 55
+  },
+  {
+   "scope": "per_task",
+   "task": "english-german",
+   "n": 120,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 66,
+   "common_causal": 24,
+   "common_causalzs": 24,
+   "common_selected": 52
+  },
+  {
+   "scope": "per_task",
+   "task": "english-spanish",
+   "n": 120,
+   "layer_median_lrpT": 12.5,
+   "layer_median_T": 12.0,
+   "common_T": 67,
+   "common_causal": 23,
+   "common_causalzs": 25,
+   "common_selected": 52
+  },
+  {
+   "scope": "shared",
+   "task": "all",
+   "n": 120,
+   "layer_median_lrpT": 13.0,
+   "layer_median_T": 13.0,
+   "common_T": 57,
+   "common_causal": 44,
+   "common_causalzs": 34,
+   "common_selected": 54
+  }
+ ],
+ "target_rank": {
+  "antonym": {
+   "top1": 0.9666666666666667,
+   "top5": 0.9966666666666667
+  },
+  "synonym": {
+   "top1": 0.9533333333333334,
+   "top5": 0.9966666666666667
+  },
+  "singular-plural": {
+   "top1": 1.0,
+   "top5": 1.0
+  },
+  "present-past": {
+   "top1": 0.9866666666666667,
+   "top5": 1.0
+  },
+  "country-capital": {
+   "top1": 0.9966666666666667,
+   "top5": 1.0
+  },
+  "country-currency": {
+   "top1": 0.9866666666666667,
+   "top5": 1.0
+  },
+  "landmark-country": {
+   "top1": 0.9833333333333333,
+   "top5": 1.0
+  },
+  "park-country": {
+   "top1": 0.9933333333333333,
+   "top5": 1.0
+  },
+  "product-company": {
+   "top1": 1.0,
+   "top5": 1.0
+  },
+  "next_item": {
+   "top1": 0.9433962264150944,
+   "top5": 1.0
+  },
+  "prev_item": {
+   "top1": 0.9919028340080972,
+   "top5": 1.0
+  },
+  "english-french": {
+   "top1": 0.7466666666666667,
+   "top5": 0.9366666666666666
+  },
+  "english-german": {
+   "top1": 0.53,
+   "top5": 0.8166666666666667
+  },
+  "english-spanish": {
+   "top1": 0.8733333333333333,
+   "top5": 0.99
+  }
+ }
+}

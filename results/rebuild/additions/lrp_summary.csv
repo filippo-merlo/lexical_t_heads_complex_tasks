@@ -1,0 +1,29 @@
+set,scope,n,task,control,random,tasks_folds
+T10,per task,10,0.22,0.024,0.02,28
+T100,per task,100,0.553,0.03,0.219,28
+T120,per task,120,0.578,0.052,0.284,28
+T20,per task,20,0.308,0.039,0.027,28
+T40,per task,40,0.463,0.048,0.069,28
+T60,per task,60,0.505,0.043,0.144,28
+T80,per task,80,0.532,0.039,0.208,28
+lrpT10,per task,10,0.339,0.046,0.023,28
+lrpT100,per task,100,0.736,0.027,0.112,28
+lrpT120,per task,120,0.728,0.025,0.105,28
+lrpT20,per task,20,0.533,0.041,0.036,28
+lrpT40,per task,40,0.696,0.026,0.07,28
+lrpT60,per task,60,0.723,0.026,0.097,28
+lrpT80,per task,80,0.739,0.026,0.117,28
+shared_T10,shared,10,0.025,0.017,0.011,28
+shared_T100,shared,100,0.558,0.031,0.383,28
+shared_T120,shared,120,0.522,0.03,0.409,28
+shared_T20,shared,20,0.224,0.04,0.012,28
+shared_T40,shared,40,0.413,0.036,0.033,28
+shared_T60,shared,60,0.431,0.033,0.163,28
+shared_T80,shared,80,0.517,0.033,0.328,28
+shared_lrpT10,shared,10,0.226,0.064,0.013,28
+shared_lrpT100,shared,100,0.661,0.026,0.102,28
+shared_lrpT120,shared,120,0.669,0.024,0.11,28
+shared_lrpT20,shared,20,0.315,0.092,0.015,28
+shared_lrpT40,shared,40,0.576,0.03,0.101,28
+shared_lrpT60,shared,60,0.595,0.032,0.07,28
+shared_lrpT80,shared,80,0.612,0.031,0.073,28
