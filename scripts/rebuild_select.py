@@ -55,6 +55,7 @@ from rebuild_sets import (COMBOS, FEATURES, FOLDS, OUT, SCREEN_N, SIZES, order_o
 
 POOLS = {"additions": ("patching_simple.part-s2-*.csv", ""),
          "tfidf_screen": ("patching_simple.part-s2-screen-*.csv", "tfidf_screen/"),  # rebuild_tfidf_sets.py --screen
+         "lrp_screen": ("patching_simple.part-s2-screen-*.csv", "lrp_screen/"),  # lrp_screen_sets.py
          "wordings": ("patching_simple.part-s3w-screen-*.csv", "wordings/"),
          "examples": ("patching_simple.part-s3e-screen-*.csv", "examples/")}  # screen files, random-set key prefix
 

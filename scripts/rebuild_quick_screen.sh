@@ -12,7 +12,8 @@
 #          -> results/rebuild/<pool>/fold<f>/patching_simple.part-<s2-screen|s3e-screen>-<task>.csv
 #   then   scripts/rebuild_select.py --pool <pool> --shortlist (fold f chooses among its shortlist)
 # Pools: additions (stage 2: Yang et al.'s five templates, their means) and examples (stage 3.4: the P example
-# formats, their means). One queue of (fold, task) jobs over the GPUs; a job whose output exists is skipped.
+# formats, their means); tfidf_screen and lrp_screen are stage-2 variants (same prompts and means).
+# One queue of (fold, task) jobs over the GPUs; a job whose output exists is skipped.
 #   scripts/rebuild_quick_screen.sh POOL PHASE GPU...     PHASE: quick | full | all (quick, shortlist, full, select)
 #   TASKS="antonym" scripts/rebuild_quick_screen.sh additions quick 0 2     (some tasks only, e.g. to time it)
 set -uo pipefail
@@ -30,8 +31,9 @@ read -r -a TASK_LIST <<< "${TASKS:-${ALL_TASKS[*]}}"
 case $POOL in
     additions) MEANS=rule; QUICK=quick-s2; FULL=s2-screen ;;
     tfidf_screen) MEANS=rule; QUICK=quick-s2; FULL=s2-screen ;;  # stage 2 with TF-IDF lists (rebuild_tfidf_sets.py --screen)
+    lrp_screen) MEANS=rule; QUICK=quick-s2; FULL=s2-screen ;;  # stage 2 with AttnLRP features (lrp_screen_sets.py)
     examples)  MEANS=fmtP; QUICK=quick-s3e; FULL=s3e-screen ;;
-    *) echo "pool: additions, tfidf_screen or examples" >&2; exit 2 ;;
+    *) echo "pool: additions, tfidf_screen, lrp_screen or examples" >&2; exit 2 ;;
 esac
 COMMON=(--family simple --set-list --same-style --mean-styles rule --control-same-wording --min-mean-prompts 10
         --mean-wordings "$MEANS" --task-only screen shared_screen)

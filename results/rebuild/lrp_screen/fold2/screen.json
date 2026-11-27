@@ -1,0 +1,20 @@
+{
+ "per_task": {
+  "antonym": 509,
+  "synonym": 510,
+  "singular-plural": 508,
+  "present-past": 509,
+  "country-capital": 511,
+  "country-currency": 492,
+  "landmark-country": 501,
+  "park-country": 503,
+  "product-company": 502,
+  "next_item": 505,
+  "prev_item": 499,
+  "english-french": 508,
+  "english-german": 510,
+  "english-spanish": 510
+ },
+ "shared": 496,
+ "combos": 511
+}
