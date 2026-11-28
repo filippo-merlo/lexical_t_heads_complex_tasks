@@ -1,5 +1,5 @@
 """Add vs replace at 40 heads (``scripts/rebuild_add.sh``): check-1 accuracy (alpha cross-fitted) of LRP-T and
-Selected, per task and shared, with alpha * mean added to each head's own output (``add`` stage) next to the same
+Combined, per task and shared, with alpha * mean added to each head's own output (``add`` stage) next to the same
 sets with it replacing the output (``lrp`` and ``s2`` stages), over the 14 tasks and both folds; then per task.
 No GPU.
 
@@ -20,7 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from lth import RESULTS  # noqa: E402
 
 DIR = RESULTS / "rebuild" / "additions"
-SETS = {"lrpT40": "LRP-T", "selected40": "Selected", "shared_lrpT40": "LRP-T", "shared_selected40": "Selected"}
+SETS = {"lrpT40": "LRP-T", "selected40": "Combined", "shared_lrpT40": "LRP-T", "shared_selected40": "Combined"}
 REPLACE = {"lrpT40": "lrp", "shared_lrpT40": "lrp", "selected40": "s2", "shared_selected40": "s2"}
 
 

@@ -52,7 +52,7 @@ TYPES = {"word relations": ("antonym", "synonym"), "morphology": ("singular-plur
 # validator, light surface); the categorical slots 7-8 (violet, red) fail against blue and orange.
 PLUM = "#9b2d6f"
 RULES = {"yangL": ("Yang terms (Logit)", rt.BLUE, "o"), "causal": ("Causal", rt.ORANGE, "v"),
-         "selected": ("Selected", rt.AQUA, "D"), "yangJ": ("Yang terms (J)", rt.YELLOW, "s"),
+         "selected": ("Combined", rt.AQUA, "D"), "yangJ": ("Yang terms (J)", rt.YELLOW, "s"),
          "D": ("D", rt.MAGENTA, "^"), "causalnogen": ("Causal $-$ generic", rt.GREEN, "P"),
          "causalzs": ("Causal (zero-shot)", rt.ORANGE, "v"),
          "causalzsnogen": ("Causal (zero-shot) $-$ generic", rt.GREEN, "P"),
@@ -64,7 +64,7 @@ ZERO_SHOT = ("causalzs", "causalzsnogen")
 # step-3 rule of that segment, dashed), one hue.
 DASHED = ZERO_SHOT + ("T",)
 # Two-level table headers: rule -> (group, column); consecutive rules of a group share a spanning label.
-HEADER = {"yangL": ("Yang terms", "Logit"), "yangJ": ("Yang terms", "J"), "D": ("", "D"), "selected": ("", "Selected"),
+HEADER = {"yangL": ("Yang terms", "Logit"), "yangJ": ("Yang terms", "J"), "D": ("", "D"), "selected": ("", "Combined"),
           "causal": ("Causal", "as ranked"), "causalnogen": ("Causal", "$-$ generic"),
           "causalzs": ("Causal (zero-shot)", "as ranked"), "causalzsnogen": ("Causal (zero-shot)", "$-$ generic"),
           "T": ("Task words", "T"), "lrpT": ("Task words", "LRP-T")}
@@ -115,7 +115,7 @@ def cells(src) -> pd.Series:
     return pt.groupby(["base", "kind", "fold", "task"]).accuracy.mean()
 
 
-# Shared Selected (user 2026-11-23): at a size with its own shared screen (scripts/rebuild_screen_n.py), each
+# Shared Combined (user 2026-11-23): at a size with its own shared screen (scripts/rebuild_screen_n.py), each
 # fold's pick at that size; at 40 heads the stage-2 pick, which a size without a screen uses too. Per task: the
 # 40-head pick at every size. The same in stage 3: the transfer tests patch every size's stage-2 pick
 # (results/rebuild/transfer_n), and the re-identified tests choose at each size on their pool
@@ -131,13 +131,13 @@ def sized(name: str) -> int | None:
 
 
 def with_sized(pt: pd.DataFrame, files) -> pd.DataFrame:
-    """``pt`` with the shared Selected rows of every size that ``files`` report replaced by theirs."""
+    """``pt`` with the shared Combined rows of every size that ``files`` report replaced by theirs."""
     new = [pd.read_csv(p) for p in files if p.exists()]
     if not new:
         return pt
     new = pd.concat(new, ignore_index=True)
     sizes = set(new.set.map(sized))
-    assert None not in sizes, "only shared Selected rows"
+    assert None not in sizes, "only shared Combined rows"
     return pd.concat([pt[~pt.set.map(sized).isin(sizes)], new], ignore_index=True)
 
 
@@ -190,7 +190,7 @@ def heads(base: Path = DIR) -> dict[int, dict[str, dict[str, set]]]:
 
 
 def with_sized_sets(sets, prefix: str):
-    """``sets`` with the shared Selected set and its random sets of every size chosen in ``results/rebuild/
+    """``sets`` with the shared Combined set and its random sets of every size chosen in ``results/rebuild/
     <prefix><N>`` in place of the 40-head choice's."""
     for n in SIZES:
         d = R / f"{prefix}{n}"
@@ -408,7 +408,7 @@ def table_selected(scores) -> None:
 
 
 def table_selected_sizes() -> None:
-    """Shared Selected at every size: each fold's combination, its accuracy on its own test half (mean over the
+    """Shared Combined at every size: each fold's combination, its accuracy on its own test half (mean over the
     14 tasks), the mean of the folds, its control means and random sets."""
     sel40 = json.loads((DIR / "selected.json").read_text())
     header = ["$N$ & Fold 1 & Acc. & Fold 2 & Acc. & Task & Control & Random \\\\"]
@@ -574,9 +574,9 @@ def fig_features(effects) -> None:
 def task_best(top_k: int = 10):
     """Per scope and task: the best of the 511 combinations at 40 heads (accuracy on the test half with
     cross-fitted alpha, mean over the two folds; ties to fewer features), the share of the task's
-    ``top_k`` best combinations that contain each feature, and the accuracies of the best and of Selected.
+    ``top_k`` best combinations that contain each feature, and the accuracies of the best and of Combined.
     Descriptive: the best is chosen on the accuracies it is shown with, so it is not held out. With a
-    two-stage screen, every accuracy (Selected's too) is the quick pass's, mean over the two folds."""
+    two-stage screen, every accuracy (Combined's too) is the quick pass's, mean over the two folds."""
     from rebuild_sets import COMBOS
     sel = json.loads((DIR / "selected.json").read_text())
     quick = {f: quick_per_task(f, "additions") for f in (1, 2)} if QUICK else None
@@ -616,7 +616,7 @@ def fig_task_best(best, top_k: int = 10) -> None:
                     color=rt.INK)
             ax.text(len(order) + 1.05, i, f"{b['tasks'][t]['selected']:.2f}", va="center", ha="left",
                     fontsize=6.8, color=rt.INK_2)
-        # Selected: one combination for every task, below the tasks
+        # Combined: one combination for every task, below the tasks
         ys = len(tasks) + 0.4
         xs = [k for k, f in enumerate(order) if f in b["selected"]]
         ax.scatter(xs, [ys] * len(xs), s=22, color=rt.INK, edgecolor=rt.SURFACE, lw=1.0, zorder=3, clip_on=False)
@@ -632,12 +632,12 @@ def fig_task_best(best, top_k: int = 10) -> None:
         ax.xaxis.tick_top()
         ax.tick_params(axis="x", length=0, pad=2)
         ax.set_yticks(list(range(len(tasks))) + [ys])
-        ax.set_yticklabels([rt.plot_name("simple", t) for t in tasks] + ["Selected"])
+        ax.set_yticklabels([rt.plot_name("simple", t) for t in tasks] + ["Combined"])
         ax.tick_params(axis="y", length=0)
         ax.grid(False)
         ax.spines[:].set_visible(False)
         ax.text(len(order) - 0.1, -0.85, "best", ha="left", va="bottom", fontsize=6.8, color=rt.INK)
-        ax.text(len(order) + 1.05, -0.85, "Sel.", ha="left", va="bottom", fontsize=6.8, color=rt.INK_2)
+        ax.text(len(order) + 1.05, -0.85, "Comb.", ha="left", va="bottom", fontsize=6.8, color=rt.INK_2)
         ax.set_title(f"({'ab'[j]}) {'One set per task' if scope == 'per task' else 'One set for all 14 tasks'}, "
                      f"$N={SCREEN_N}$" + (", quick pass" if QUICK else ""), loc="left", pad=86)
     handles = [Line2D([], [], ls="", marker="o", ms=4.5, color=rt.INK, mec=rt.SURFACE,
@@ -671,7 +671,7 @@ def fig_screen(scores) -> tuple[float, float]:
         for c in {sel["1"][scope]["combo"], sel["2"][scope]["combo"]}:
             ax.scatter([scores[1][scope][c]], [scores[2][scope][c]], s=46, facecolor="none", edgecolor=rt.AQUA, lw=1.6,
                        zorder=4)
-            ax.annotate(f"Selected: {c}", (scores[1][scope][c], scores[2][scope][c]), xytext=(-8, 8),
+            ax.annotate(f"Combined: {c}", (scores[1][scope][c], scores[2][scope][c]), xytext=(-8, 8),
                         textcoords="offset points", ha="right", fontsize=7, color=rt.INK)
         ax.set_title(f"({'ab'[list(SCOPES).index(scope)]}) {scope}, all {len(combos)} combinations at $N={SCREEN_N}$"
                      + ("\nquick pass: first token, $\\alpha=2$, 10 items" if QUICK else ""), loc="left")
@@ -819,7 +819,7 @@ def table_s3_acc(key: str, name: str) -> None:
     write(name, rt.tabular("@{}r" + "r" * len(S3_RULES) + "@{}", header, rows))
 
 
-ABBREV = {"yangJ": "Yang", "D": "D", "selected": "Sel.", "causal": "Causal", "causalnogen": "C.$-$gen."}  # narrow tables
+ABBREV = {"yangJ": "Yang", "D": "D", "selected": "Comb.", "causal": "Causal", "causalnogen": "C.$-$gen."}  # narrow tables
 
 
 def short_label(rule: str) -> str:
@@ -847,7 +847,7 @@ def table_pair(key_a: str | None, key_b: str, cols: tuple[str, str], name: str) 
 
 
 def table_summed_pick40() -> None:
-    """Shared Selected at every size against the 40-head pick (the stage-2 combination, its ranking cut at every
+    """Shared Combined at every size against the 40-head pick (the stage-2 combination, its ranking cut at every
     size), each patched head by head and as one summed vector with Yang's five templates' means; the 40-head
     pick also with its random sets and control means as one summed vector. The 40-head pick's rows are those
     of the stage-2 and summed reports before the size picks replace them (``with_sized``)."""
@@ -857,7 +857,7 @@ def table_summed_pick40() -> None:
     sel40 = json.loads((DIR / "selected.json").read_text())
     pick40 = sorted({sel40[str(f)]["shared"]["combo"] for f in (1, 2)})
     assert len(pick40) == 1, pick40
-    header = ["& \\multicolumn{3}{c}{Selected at $N$} & \\multicolumn{4}{c}{" + pick40[0] + " (40-head pick)} \\\\",
+    header = ["& \\multicolumn{3}{c}{Combined at $N$} & \\multicolumn{4}{c}{" + pick40[0] + " (40-head pick)} \\\\",
               "\\cmidrule(lr){2-4} \\cmidrule(lr){5-8}",
               "$N$ & Folds 1 / 2 & heads & sum & heads & sum & rand. & ctrl. \\\\"]
     rows = []
@@ -922,7 +922,7 @@ def table_candidates() -> None:
     """Sec. 6.1, re-identified: the candidate combinations (the ten best of Sec. 5.4 of each fold and scope) at 40
     heads with the Q-wording means, as identified in Sec. 5 and re-identified; which fold selected each."""
     sel = json.loads((WPOOL / "selected.json").read_text())
-    header = ["Scope & Combination & Selected in fold & Sec.~5 sets & re-identified \\\\"]
+    header = ["Scope & Combination & Chosen in fold & Sec.~5 sets & re-identified \\\\"]
     rows = []
     for scope, prefix in (("per task", "screen_"), ("shared", "shared_screen_")):
         cands = sorted({c for f in "12" for c in sel[f][scope]["candidates"]})
@@ -1496,8 +1496,8 @@ LRP_RULES = ("T", "lrpT")
 
 
 def zs_pair_shown(a: str, b: str) -> bool:
-    """The rule tables compare a zero-shot rule (Sec. 5.6) only with the causal rankings, Selected and each other, and
-    T and LRP-T (Sec. 5.7) only as LRP-T against T, D, Selected, Causal and Causal (zero-shot)."""
+    """The rule tables compare a zero-shot rule (Sec. 5.6) only with the causal rankings, Combined and each other, and
+    T and LRP-T (Sec. 5.7) only as LRP-T against T, D, Combined, Causal and Causal (zero-shot)."""
     if a in LRP_RULES or b in LRP_RULES:
         other = b if a == "lrpT" else a if b == "lrpT" else None
         return other in ("T", "D", "selected", "causal", "causalzs")

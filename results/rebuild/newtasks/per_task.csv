@@ -1,20 +1,20 @@
 rule,set,alpha,fold,task,accuracy,control,random
-Selected (DBTM),shared_selected40,1.0,1,person-occupation,0.466,0.248,0.1
-Selected (DBTM),shared_selected40,1.0,1,person-sport,0.226,0.214,0.0293
-Selected (DBTM),shared_selected40,1.0,1,person-instrument,0.218,0.094,0.1033
-Selected (DBTM),shared_selected40,1.0,1,capitalize,0.538,0.008,0.028
-Selected (DBTM),shared_selected40,1.0,2,person-occupation,0.37,0.2,0.0993
-Selected (DBTM),shared_selected40,1.0,2,person-sport,0.208,0.176,0.0567
-Selected (DBTM),shared_selected40,1.0,2,person-instrument,0.214,0.092,0.1347
-Selected (DBTM),shared_selected40,1.0,2,capitalize,0.474,0.008,0.0647
-Selected (DBTM),shared_selected40,2.0,1,person-occupation,0.5,0.018,0.1447
-Selected (DBTM),shared_selected40,2.0,1,person-sport,0.78,0.17,0.0407
-Selected (DBTM),shared_selected40,2.0,1,person-instrument,0.214,0.036,0.138
-Selected (DBTM),shared_selected40,2.0,1,capitalize,0.88,0.0,0.1207
-Selected (DBTM),shared_selected40,2.0,2,person-occupation,0.398,0.008,0.2433
-Selected (DBTM),shared_selected40,2.0,2,person-sport,0.838,0.17,0.0693
-Selected (DBTM),shared_selected40,2.0,2,person-instrument,0.292,0.032,0.1007
-Selected (DBTM),shared_selected40,2.0,2,capitalize,0.888,0.008,0.1693
+Combined (DBTM),shared_selected40,1.0,1,person-occupation,0.466,0.248,0.1
+Combined (DBTM),shared_selected40,1.0,1,person-sport,0.226,0.214,0.0293
+Combined (DBTM),shared_selected40,1.0,1,person-instrument,0.218,0.094,0.1033
+Combined (DBTM),shared_selected40,1.0,1,capitalize,0.538,0.008,0.028
+Combined (DBTM),shared_selected40,1.0,2,person-occupation,0.37,0.2,0.0993
+Combined (DBTM),shared_selected40,1.0,2,person-sport,0.208,0.176,0.0567
+Combined (DBTM),shared_selected40,1.0,2,person-instrument,0.214,0.092,0.1347
+Combined (DBTM),shared_selected40,1.0,2,capitalize,0.474,0.008,0.0647
+Combined (DBTM),shared_selected40,2.0,1,person-occupation,0.5,0.018,0.1447
+Combined (DBTM),shared_selected40,2.0,1,person-sport,0.78,0.17,0.0407
+Combined (DBTM),shared_selected40,2.0,1,person-instrument,0.214,0.036,0.138
+Combined (DBTM),shared_selected40,2.0,1,capitalize,0.88,0.0,0.1207
+Combined (DBTM),shared_selected40,2.0,2,person-occupation,0.398,0.008,0.2433
+Combined (DBTM),shared_selected40,2.0,2,person-sport,0.838,0.17,0.0693
+Combined (DBTM),shared_selected40,2.0,2,person-instrument,0.292,0.032,0.1007
+Combined (DBTM),shared_selected40,2.0,2,capitalize,0.888,0.008,0.1693
 DBM,shared_screen_DBM,1.0,1,person-occupation,0.53,0.288,0.0853
 DBM,shared_screen_DBM,1.0,1,person-sport,0.274,0.292,0.0387
 DBM,shared_screen_DBM,1.0,1,person-instrument,0.278,0.128,0.0667

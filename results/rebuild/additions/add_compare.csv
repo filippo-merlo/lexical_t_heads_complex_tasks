@@ -1,9 +1,9 @@
 scope,rule,form,task,control,random
 per task,LRP-T,replace,0.696,0.026,0.07
 per task,LRP-T,add,0.67,0.028,0.068
-per task,Selected,replace,0.638,0.027,0.077
-per task,Selected,add,0.587,0.027,0.074
+per task,Combined,replace,0.638,0.027,0.077
+per task,Combined,add,0.587,0.027,0.074
 shared,LRP-T,replace,0.576,0.03,0.101
 shared,LRP-T,add,0.542,0.042,0.091
-shared,Selected,replace,0.622,0.032,0.068
-shared,Selected,add,0.594,0.036,0.069
+shared,Combined,replace,0.622,0.032,0.068
+shared,Combined,add,0.594,0.036,0.069

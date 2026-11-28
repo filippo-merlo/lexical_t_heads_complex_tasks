@@ -2,7 +2,7 @@
 both folds, with the control mean and the random sets, per scope and size. No GPU.
 
 Reads ``results/rebuild/additions/{lrp,s1,s2,zs}_summary.csv`` (``scripts/rebuild_report.py``) and, for the shared
-Selected at the sizes with their own screen, ``results/rebuild/shared_n<N>/sel_summary.csv`` (as
+Combined at the sizes with their own screen, ``results/rebuild/shared_n<N>/sel_summary.csv`` (as
 ``rebuild_figures``). Writes ``results/rebuild/additions/lrp_compare.csv`` and prints it.
 
     .venv/bin/python scripts/lrp_compare.py
@@ -21,7 +21,7 @@ from lth import RESULTS  # noqa: E402
 
 DIR = RESULTS / "rebuild" / "additions"
 SIZES = (10, 20, 40, 60, 80, 100, 120)
-RULES = {"T": "T", "lrpT": "LRP-T", "selected": "Selected", "causal": "Causal", "causalzs": "Causal (zero-shot)"}
+RULES = {"T": "T", "lrpT": "LRP-T", "selected": "Combined", "causal": "Causal", "causalzs": "Causal (zero-shot)"}
 
 
 def main() -> None:

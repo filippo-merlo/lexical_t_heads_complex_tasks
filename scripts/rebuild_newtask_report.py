@@ -44,7 +44,7 @@ REPEATED = 0.5
 def rules() -> dict[str, str]:
     """label -> set name"""
     SELECTED = selected()
-    out = {f"Selected ({SELECTED})": f"shared_selected{SCREEN_N}"}
+    out = {f"Combined ({SELECTED})": f"shared_selected{SCREEN_N}"}
     out.update({c: f"shared_screen_{c}" for c in combos_used() if c != SELECTED})
     out.update({"Causal": f"shared_causal{SCREEN_N}", "Causal - generic": f"shared_causalnogen{SCREEN_N}",
                 "D": f"shared_D{SCREEN_N}"})
@@ -56,7 +56,7 @@ def main() -> None:
     acc = rebuild_report.load("nt")
     rebuild_report.DIR = RESULTS / "rebuild" / "additions"
     ref = rebuild_report.load("s1")
-    ref.update(rebuild_report.load("s2"))  # also globs s2sel (Selected) and the screen
+    ref.update(rebuild_report.load("s2"))  # also globs s2sel (Combined) and the screen
     tasks = simple.UNSEEN_TASKS
     rows = []
     for label, nm in rules().items():
@@ -135,18 +135,18 @@ def main() -> None:
 
 
 def tables(summary: list[dict], base: list[dict]) -> None:
-    """paper/tables/design_unseen.tex: the rules of Sec. 5 and the combinations that do better than Selected on
+    """paper/tables/design_unseen.tex: the rules of Sec. 5 and the combinations that do better than Combined on
     the unseen tasks at both alphas; design_unseen_combos.tex: the other combinations."""
     import results_tex as rt
 
     tasks = simple.UNSEEN_TASKS
     by = {(s["rule"], s["alpha"]): s for s in summary}
     SELECTED = selected()
-    selected_label = f"Selected ({SELECTED})"
+    selected_label = f"Combined ({SELECTED})"
     combos = [c for c in combos_used() if c != SELECTED]
     better = [c for c in combos if all(by[(c, a)]["unseen mean"] > by[(selected_label, a)]["unseen mean"] for a in ALPHAS)]
     others = [c for c in combos if c not in better]
-    print(f"combinations above Selected on the unseen tasks at both alphas: {better}")
+    print(f"combinations above Combined on the unseen tasks at both alphas: {better}")
     short = {"person-occupation": "occupation", "person-sport": "sport", "person-instrument": "instrument",
              "capitalize": "capitalize"}
     label = lambda r: r.replace(" - ", " $-$ ")  # noqa: E731

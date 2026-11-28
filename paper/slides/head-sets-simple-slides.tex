@@ -2,7 +2,7 @@
 %  Talk version of paper/head-sets-simple-design.tex: one message per slide,
 %  the message in the title, at most a few short bullets.
 %  Order follows the doc: setup -> two published methods -> the ladder of
-%  changes (J-head, task words, attention, Selected, generic heads) ->
+%  changes (J-head, task words, attention, Combined, generic heads) ->
 %  results -> tests beyond the identification prompts -> unseen tasks.
 %  Every number is copied from paper/tables/design_*.tex (the main plots
 %  from design_ladder.tex); figures are paper/figures/design_*.pdf.
@@ -83,7 +83,7 @@
 
 % shaded accuracy cell: \cv{0.62}
 \newcommand{\cv}[1]{\pgfmathtruncatemacro{\cvshade}{#1*70}\edef\cvcmd{\noexpand\cellcolor{acc!\cvshade!white}}\cvcmd#1}
-\newcommand{\Sel}{\textcolor{cSel}{\textbf{Selected}}}
+\newcommand{\Sel}{\textcolor{cSel}{\textbf{Combined}}}
 \newcommand{\Causal}{\textcolor{cCaus}{Causal}}
 \newcommand{\CausalG}{\textcolor{cCausG}{Causal $-$ generic}}
 \newcommand{\nl}{\textbackslash n}
@@ -510,7 +510,7 @@ Shared set: each feature's ranks are first averaged over the 14 tasks.
 \node[stp](a){\textbf{Quick pass}\\all 511 combinations at $N$ heads, $\alpha=2$, 10 items/task, first token};
 \node[stp,right=0.35cm of a](b){\textbf{Shortlist}\\the 10 best on the \emph{other} fold};
 \node[stp,right=0.35cm of b](c){\textbf{Full pass}\\all items, $\alpha$ = 1 and 2, whole answer};
-\node[stp,right=0.35cm of c,fill=cSel!15](d){\textbf{\textcolor{cSel}{Selected}}\\best on the other fold};
+\node[stp,right=0.35cm of c,fill=cSel!15](d){\textbf{\textcolor{cSel}{Combined}}\\best on the other fold};
 \draw[arr](a)--(b); \draw[arr](b)--(c); \draw[arr](c)--(d);
 \end{tikzpicture}
 
@@ -544,7 +544,7 @@ Shared set: each feature's ranks are first averaged over the 14 tasks.
 % =====================================================================
 \section{Results}
 
-\begin{frame}{One set per task: Selected is best from 20 to 120 heads}
+\begin{frame}{One set per task: Combined is best from 20 to 120 heads}
 \begin{columns}[c]
 \column{0.6\textwidth}
 \centering
@@ -556,7 +556,7 @@ Shared set: each feature's ranks are first averaged over the 14 tasks.
 \addplot[sSel] coordinates {(10,0.24)(20,0.42)(40,0.64)(60,0.67)(80,0.66)(100,0.66)(120,0.67)};
 \addplot[sC]   coordinates {(10,0.25)(20,0.33)(40,0.41)(60,0.46)(80,0.53)(100,0.56)(120,0.61)};
 \addplot[sCG]  coordinates {(10,0.31)(20,0.40)(40,0.48)(60,0.52)(80,0.53)(100,0.55)(120,0.58)};
-\legend{Yang terms (Logit),Yang terms (J),D,Selected,Causal,Causal $-$ generic}
+\legend{Yang terms (Logit),Yang terms (J),D,Combined,Causal,Causal $-$ generic}
 \end{axis}
 \end{tikzpicture}
 
@@ -573,7 +573,7 @@ Shared set: each feature's ranks are first averaged over the 14 tasks.
 \end{frame}
 
 % =====================================================================
-\begin{frame}{One set for all tasks: Selected is best from 10 to 100 heads}
+\begin{frame}{One set for all tasks: Combined is best from 10 to 100 heads}
 \begin{columns}[c]
 \column{0.6\textwidth}
 \centering
@@ -585,7 +585,7 @@ Shared set: each feature's ranks are first averaged over the 14 tasks.
 \addplot[sSel] coordinates {(10,0.29)(20,0.47)(40,0.62)(60,0.64)(80,0.71)(100,0.72)(120,0.70)};
 \addplot[sC]   coordinates {(10,0.12)(20,0.32)(40,0.50)(60,0.55)(80,0.62)(100,0.65)(120,0.68)};
 \addplot[sCG]  coordinates {(10,0.22)(20,0.40)(40,0.56)(60,0.61)(80,0.68)(100,0.68)(120,0.69)};
-\legend{Yang terms (Logit),Yang terms (J),D,Selected,Causal,Causal $-$ generic}
+\legend{Yang terms (Logit),Yang terms (J),D,Combined,Causal,Causal $-$ generic}
 \end{axis}
 \end{tikzpicture}
 
@@ -598,7 +598,7 @@ Shared set: each feature's ranks are first averaged over the 14 tasks.
 \end{itemize}
 \end{columns}
 \vfill
-\gnote{Shared Selected: the combination chosen at each size (next slide).}
+\gnote{Shared Combined: the combination chosen at each size (next slide).}
 \end{frame}
 
 % =====================================================================
@@ -662,7 +662,7 @@ S stopwords, P punctuation, M markers, Q query, L last token.}
 \end{frame}
 
 % =====================================================================
-\begin{frame}{Selected's heads crowd layers 12--15}
+\begin{frame}{The heads of Combined crowd layers 12--15}
 \begin{columns}[c]
 \column{0.6\textwidth}
 \centering
@@ -694,7 +694,7 @@ S stopwords, P punctuation, M markers, Q query, L last token.}
 \end{frame}
 
 % =====================================================================
-\begin{frame}{By task type: only Selected triggers the translations per task}
+\begin{frame}{By task type: only Combined triggers the translations per task}
 \centering\small
 \begin{tabular}{@{}lcccccc@{}}
 \toprule
@@ -747,7 +747,7 @@ Unseen tasks & the 14 tasks (shared, 40 heads) & 4 new tasks' own templates \\
 \end{frame}
 
 % =====================================================================
-\begin{frame}{Unseen wordings: Selected stays the best rule}
+\begin{frame}{Unseen wordings: Combined stays the best rule}
 \centering
 \includegraphics[width=0.72\textwidth]{design_wordings_reid}
 
@@ -762,7 +762,7 @@ Unseen tasks & the 14 tasks (shared, 40 heads) & 4 new tasks' own templates \\
 \end{frame}
 
 % =====================================================================
-\begin{frame}{Examples: Selected re-identified on them triggers 9 items in 10}
+\begin{frame}{Examples: Combined re-identified on them triggers 9 items in 10}
 \centering
 \includegraphics[width=0.72\textwidth]{design_examples}
 
@@ -843,7 +843,7 @@ Shared & Yang terms (J) & 0.53 (0.09) & 0.53 (0.11) & 0.67 (0.21) & \textbf{0.60
 \end{frame}
 
 % =====================================================================
-\begin{frame}{Between tasks: D is type-specific, Selected and Causal shared}
+\begin{frame}{Between tasks: D is type-specific, Combined and Causal shared}
 \begin{columns}[c]
 \column{0.5\textwidth}
 \centering
@@ -871,7 +871,7 @@ D & 0.54 & 0.17 \\
 \end{frame}
 
 % =====================================================================
-\begin{frame}{One summed vector hurts, except Selected from examples}
+\begin{frame}{One summed vector hurts, except Combined from examples}
 \centering\small
 \begin{tabular}{@{}lcc@{\hspace{1.2em}}cc@{\hspace{2em}}cc@{\hspace{1.2em}}cc@{}}
 \toprule
@@ -900,7 +900,7 @@ D & \cv{0.33} & \cv{0.35} & \cv{0.25} & \cv{0.25} & \cv{0.62} & \cv{0.63} & \cv{
 \end{frame}
 
 % =====================================================================
-\begin{frame}{Unseen tasks: the shared Selected set triggers four new tasks}
+\begin{frame}{Unseen tasks: the shared set of Combined triggers four new tasks}
 \centering\footnotesize\setlength{\tabcolsep}{4pt}
 \begin{tabular}{@{}lccccc|ccc@{}}
 \toprule
@@ -988,7 +988,7 @@ the ring is \Sel, the same combination on both folds.
 \item Shared: markers (M) recur on word relations, morphology, next-item, English--Spanish; on no fact task.
 \item The three translations share DBOSP (other words, stopwords, punctuation), none of which the shared \Sel\ (DBTM) has.
 \end{itemize}
-\gnote{Chosen on the accuracies shown: best vs Sel.\ overstates the gain of choosing per task.}
+\gnote{Chosen on the accuracies shown: best vs Comb.\ overstates the gain of choosing per task.}
 \end{columns}
 \end{frame}
 
@@ -1020,7 +1020,7 @@ not name the task are the hardest. Shared \Causal\ depends most on the form: its
 \begin{frame}{Backup: example-based picks and unseen tasks at $\alpha=1$}
 \begin{columns}[T]
 \column{0.42\textwidth}
-\textbf{Selected on example prompts}\\[4pt]
+\textbf{Combined on example prompts}\\[4pt]
 \small
 \begin{tabular}{@{}lll@{}}
 \toprule
@@ -1068,7 +1068,7 @@ Every rule is weaker at $\alpha=1$.
 Per task\\[3pt]
 \begin{tabular}{@{}lcccc@{}}
 \toprule
- & D & Sel. & Caus. & C.$-$g. \\
+ & D & Comb. & Caus. & C.$-$g. \\
 \midrule
 D & \textit{.91} & & & \\
 \Sel & .23 & \textit{.91} & & \\
@@ -1081,7 +1081,7 @@ D & \textit{.91} & & & \\
 Shared\\[3pt]
 \begin{tabular}{@{}lcccccc@{}}
 \toprule
- & Y(L) & Y(J) & D & Sel. & Caus. & C.$-$g. \\
+ & Y(L) & Y(J) & D & Comb. & Caus. & C.$-$g. \\
 \midrule
 Yang terms (Logit) & \textit{.88} & & & & & \\
 Yang terms (J) & .55 & \textit{.90} & & & & \\

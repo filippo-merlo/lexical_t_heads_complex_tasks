@@ -53,7 +53,7 @@
 \setbeamercolor{takeaway}{bg=soft,fg=ink}
 
 \newcommand{\cv}[1]{\pgfmathtruncatemacro{\cvshade}{#1*70}\edef\cvcmd{\noexpand\cellcolor{acc!\cvshade!white}}\cvcmd#1}
-\newcommand{\Sel}{\textcolor{cSel}{\textbf{Selected}}}
+\newcommand{\Sel}{\textcolor{cSel}{\textbf{Combined}}}
 \newcommand{\Causal}{\textcolor{cCaus}{Causal}}
 \newcommand{\CausalG}{\textcolor{cCausG}{Causal $-$ generic}}
 \newcommand{\nl}{\textbackslash n}
@@ -193,14 +193,14 @@ The combination (of 511) is chosen on the \emph{other} half of the items: \Sel.\
 \addplot[sSel] coordinates {(10,0.29)(20,0.47)(40,0.62)(60,0.64)(80,0.71)(100,0.72)(120,0.70)};
 \addplot[sC]   coordinates {(10,0.12)(20,0.32)(40,0.50)(60,0.55)(80,0.62)(100,0.65)(120,0.68)};
 \addplot[sCG]  coordinates {(10,0.22)(20,0.40)(40,0.56)(60,0.61)(80,0.68)(100,0.68)(120,0.69)};
-\legend{Yang terms (Logit),Yang terms (J),D,Selected,Causal,Causal $-$ generic}
+\legend{Yang terms (Logit),Yang terms (J),D,Combined,Causal,Causal $-$ generic}
 \end{axis}
 \end{tikzpicture}
 
 \vspace{0.2em}
 \raggedright\footnotesize\color{gray}
 Test half, mean of 14 tasks and two folds. Control means $\leq$0.06 for every set.
-Shared Selected: combination chosen at each size.
+Shared Combined: combination chosen at each size.
 \takeaway{\textbf{Per task:} \Sel\ best from 20 to 120 heads (0.64 vs \Causal\ 0.41 at 40).\quad
 \textbf{Shared:} best from 10 to 100, level with \CausalG\ at 120.}
 \end{frame}
@@ -208,7 +208,7 @@ Shared Selected: combination chosen at each size.
 % =====================================================================
 \begin{frame}{Beyond the prompts the heads were identified on (40 heads)}
 \centering\small
-\newcommand{\hS}{\textcolor{cSel}{\textbf{Sel.}}}\newcommand{\hC}{\textcolor{cCaus}{Causal}}\newcommand{\hG}{\textcolor{cCausG}{C.\,$-$\,gen.}}
+\newcommand{\hS}{\textcolor{cSel}{\textbf{Comb.}}}\newcommand{\hC}{\textcolor{cCaus}{Causal}}\newcommand{\hG}{\textcolor{cCausG}{C.\,$-$\,gen.}}
 \begin{tabular}{@{}lccc@{\hspace{1.5em}}ccc@{}}
 \toprule
  & \multicolumn{3}{c}{Per task} & \multicolumn{3}{c}{Shared} \\
@@ -232,7 +232,7 @@ One summed vector (main) & \cv{0.48} & \cv{0.27} & \cv{0.40} & \cv{0.42} & \cv{0
 \item Summed into one vector, the instruction sets lose; patch head by head.
 \end{itemize}
 \vfill
-\footnotesize\color{gray} Sel.: Selected; C.\,$-$\,gen.: Causal $-$ generic. Unseen tasks: shared sets identified on the 14 tasks,
+\footnotesize\color{gray} Comb.: Combined; C.\,$-$\,gen.: Causal $-$ generic. Unseen tasks: shared sets identified on the 14 tasks,
 patched with each new task's own means at fixed $\alpha$; on the 14 the same sets give 0.62 / 0.50 / 0.56.
 \end{frame}
 
