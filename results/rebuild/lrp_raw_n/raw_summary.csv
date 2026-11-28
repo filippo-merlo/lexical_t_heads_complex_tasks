@@ -1,0 +1,7 @@
+set,scope,n,task,control,random,tasks_folds
+shared_lrpTraw10,shared,10,0.24,0.042,0.014,28
+shared_lrpTraw100,shared,100,0.606,0.019,0.08,28
+shared_lrpTraw120,shared,120,0.627,0.018,0.099,28
+shared_lrpTraw40,shared,40,0.583,0.019,0.115,28
+shared_lrpTraw60,shared,60,0.589,0.017,0.193,28
+shared_lrpTraw80,shared,80,0.58,0.019,0.177,28
