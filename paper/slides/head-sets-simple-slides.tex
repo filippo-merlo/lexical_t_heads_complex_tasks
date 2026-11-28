@@ -2,10 +2,15 @@
 %  Talk version of paper/head-sets-simple-design.tex: one message per slide,
 %  the message in the title, at most a few short bullets.
 %  Order follows the doc: setup -> two published methods -> the ladder of
-%  changes (J-head, task words, attention, Combined, generic heads) ->
-%  results -> tests beyond the identification prompts -> unseen tasks.
+%  changes (J-head, task words, attention, Combined, generic heads, causal
+%  score in the zero-shot prompt, relevance-weighted attention LRP-T) ->
+%  results (incl. LRP-Combined, the relevance-weighted screen) -> tests
+%  beyond the identification prompts -> unseen tasks.
 %  Every number is copied from paper/tables/design_*.tex (the main plots
-%  from design_ladder.tex); figures are paper/figures/design_*.pdf.
+%  from design_ladder.tex, LRP-Combined from design_lrp_screen.tex); the
+%  quick-pass gains of D on the LRP-Combined slide are not in a table
+%  (doc Sec. 5.8, "Relevance in the screen"); figures are
+%  paper/figures/design_*.pdf.
 %  Word-list example: results/rebuild/additions/fold1/word_lists.json.
 %  Compile with Tectonic from this folder:  tectonic head-sets-simple-slides.tex
 % =====================================================================
@@ -38,6 +43,7 @@
 \definecolor{cSel}{HTML}{1BAF7A}
 \definecolor{cCaus}{HTML}{EB6834}
 \definecolor{cCausG}{HTML}{008300}
+\definecolor{cLRP}{HTML}{9B2D6F}
 % prompt segments
 \definecolor{cBOS}{HTML}{B8B8B8}
 \definecolor{cTask}{HTML}{F4B942}
@@ -68,7 +74,8 @@
   sD/.style={cD,thick,mark=triangle*,mark size=1.8pt},
   sSel/.style={cSel,ultra thick,mark=diamond*,mark size=2.2pt},
   sC/.style={cCaus,thick,mark=triangle*,mark size=1.8pt,mark options={rotate=180}},
-  sCG/.style={cCausG,thick,mark=pentagon*,mark size=1.7pt}}
+  sCG/.style={cCausG,thick,mark=pentagon*,mark size=1.7pt},
+  sLRP/.style={cLRP,thick,mark=x,mark size=2.4pt,mark options={line width=1.2pt}}}
 
 % one-line take-home message at the bottom of a slide (used sparingly)
 \newcommand{\takeaway}[1]{\vfill
@@ -86,6 +93,8 @@
 \newcommand{\Sel}{\textcolor{cSel}{\textbf{Combined}}}
 \newcommand{\Causal}{\textcolor{cCaus}{Causal}}
 \newcommand{\CausalG}{\textcolor{cCausG}{Causal $-$ generic}}
+\newcommand{\LRPT}{\textcolor{cLRP}{\textbf{LRP-T}}}
+\newcommand{\LRPC}{\textcolor{cLRP}{\textbf{LRP-Combined}}}
 \newcommand{\nl}{\textbackslash n}
 
 % a coloured token box for the prompt diagrams
@@ -342,14 +351,17 @@ Instr.\ function vector & shared & 20 & summed, $\alpha=1$ & \cv{0.29} & 0.06 & 
 2 & predefined terms $\to$ words from the data & no list fixed in advance & \textcolor{cD}{D} \\[2pt]
 3 & attention to each prompt segment & where a head reads from & one rule per segment \\[2pt]
 4 & best combination of features & combine decoding and attention, chosen on held-out accuracy & \Sel \\[2pt]
-5 & generic heads removed & separate task-specific heads from heads that help every task alike & \CausalG \\
+5 & generic heads removed & separate task-specific heads from heads that help every task alike & \CausalG \\[2pt]
+6 & causal score in the zero-shot prompt & score heads in the prompt the sets are tested in & Causal (zero-shot) \\[2pt]
+7 & task-word attention weighted by relevance & keep the attention the answer depends on & \LRPT \\
 \bottomrule
 \end{tabular}
 
 \vspace{1em}
 \raggedright
 Each step keeps everything of the step before, so a change in accuracy at equal size
-belongs to that step. Steps 1--4 start from lexical task heads, step 5 from \Causal.
+belongs to that step. Steps 1--4 start from lexical task heads, steps 5--6 from \Causal,
+step 7 from T, the step-3 rule for the task words.
 \end{frame}
 
 % =====================================================================
@@ -542,9 +554,51 @@ Shared set: each feature's ranks are first averaged over the 14 tasks.
 \end{frame}
 
 % =====================================================================
+\begin{frame}{Step 6: the causal score measured in the test prompt is weaker}
+\begin{itemize}\spaced
+\item \Causal\ measures each head's effect in \texttt{<uninformative text> Q: x\nl A:},
+      but every set is tested in the zero-shot prompt \texttt{\ x:}.
+\item \textbf{Causal (zero-shot)}: the same score measured in \texttt{\ x:};
+      same 20 items, means and target, so the rankings differ only in the prompt.
+\item Weaker at every size, most with one set for all tasks.
+      At 40 heads: 0.36 vs \Causal\ 0.41 per task, 0.35 vs 0.50 shared.
+\item In \texttt{\ x:} one head moves the answer's probability much less
+      (top-20 effect 0.0016 vs 0.0055), and the ranking is less stable between the halves of the items
+      (0.39 vs 0.52 of the top 40 heads kept, per task).
+\end{itemize}
+\takeaway{The lead of \Sel\ does not come from where the causal score is measured.}
+\end{frame}
+
+% =====================================================================
+\begin{frame}{Step 7: weight the attention to the task words by its relevance}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\small
+\begin{itemize}\spaced
+\item Attention counts every weight, whether or not the answer depends on what the head reads there.
+\item \LRPT\ (after Pham et al., 2026): each attention weight on the task words is replaced by its
+      \textbf{relevance} for the answer's first token, computed with AttnLRP (Achtibat et al., 2024).
+\item One forward and one backward pass per identification prompt: \textbf{no screen, no patching}.
+\item T, the same attention without relevance (step 3), is run beside it at every size.
+\end{itemize}
+\column{0.42\textwidth}
+\small
+Relevance of the last token's attention to key $j$:
+\[R_{n,j} = a_{n,j}\,\frac{\tilde\partial \ell_y}{\tilde\partial a_{n,j}}\]
+$\tilde\partial$: gradient under AttnLRP's rules.
+
+\vspace{0.6em}
+Score: positive relevance on the task words, mean over prompts
+\[\mathbb{E}_p\Big[\textstyle\sum_{j\in T(p)} \max(R_{n,j},0)\Big]\]
+\end{columns}
+\vfill
+\gnote{Pham et al.\ pick the instruction's task-defining tokens by hand; we use the task words of step 2.}
+\end{frame}
+
+% =====================================================================
 \section{Results}
 
-\begin{frame}{One set per task: Combined is best from 20 to 120 heads}
+\begin{frame}{One set per task: LRP-T is best at every size, then Combined}
 \begin{columns}[c]
 \column{0.6\textwidth}
 \centering
@@ -556,15 +610,18 @@ Shared set: each feature's ranks are first averaged over the 14 tasks.
 \addplot[sSel] coordinates {(10,0.24)(20,0.42)(40,0.64)(60,0.67)(80,0.66)(100,0.66)(120,0.67)};
 \addplot[sC]   coordinates {(10,0.25)(20,0.33)(40,0.41)(60,0.46)(80,0.53)(100,0.56)(120,0.61)};
 \addplot[sCG]  coordinates {(10,0.31)(20,0.40)(40,0.48)(60,0.52)(80,0.53)(100,0.55)(120,0.58)};
-\legend{Yang terms (Logit),Yang terms (J),D,Combined,Causal,Causal $-$ generic}
+\addplot[sLRP] coordinates {(10,0.34)(20,0.53)(40,0.70)(60,0.72)(80,0.74)(100,0.74)(120,0.73)};
+\legend{Yang terms (Logit),Yang terms (J),D,Combined,Causal,Causal $-$ generic,LRP-T}
 \end{axis}
 \end{tikzpicture}
 
 \column{0.38\textwidth}
+\small
 \begin{itemize}\spaced
-\item At 40 heads: \Sel\ \textbf{0.64}, \CausalG\ 0.48, \Causal\ 0.41.
+\item At 40 heads: \LRPT\ \textbf{0.70}, \Sel\ 0.64, \CausalG\ 0.48, \Causal\ 0.41.
+\item T, the same attention without relevance, stays below \Sel\ (0.46 at 40).
 \item \Sel\ levels off from 60 heads (0.67); \Causal\ keeps rising, 0.61 at 120.
-\item \CausalG\ is best at 10 heads (0.31).
+\item Without \LRPT: \Sel\ best from 20 heads, \CausalG\ at 10 (0.31).
 \item D is above both Yang terms rules wherever they fill.
 \end{itemize}
 \end{columns}
@@ -585,14 +642,17 @@ Shared set: each feature's ranks are first averaged over the 14 tasks.
 \addplot[sSel] coordinates {(10,0.29)(20,0.47)(40,0.62)(60,0.64)(80,0.71)(100,0.72)(120,0.70)};
 \addplot[sC]   coordinates {(10,0.12)(20,0.32)(40,0.50)(60,0.55)(80,0.62)(100,0.65)(120,0.68)};
 \addplot[sCG]  coordinates {(10,0.22)(20,0.40)(40,0.56)(60,0.61)(80,0.68)(100,0.68)(120,0.69)};
-\legend{Yang terms (Logit),Yang terms (J),D,Combined,Causal,Causal $-$ generic}
+\addplot[sLRP] coordinates {(10,0.23)(20,0.31)(40,0.58)(60,0.59)(80,0.61)(100,0.66)(120,0.67)};
+\legend{Yang terms (Logit),Yang terms (J),D,Combined,Causal,Causal $-$ generic,LRP-T}
 \end{axis}
 \end{tikzpicture}
 
 \column{0.38\textwidth}
+\small
 \begin{itemize}\spaced
-\item At 40 heads: \Sel\ \textbf{0.62}, \CausalG\ 0.56, \Causal\ 0.50.
+\item At 40 heads: \Sel\ \textbf{0.62}, \LRPT\ 0.58, \CausalG\ 0.56, \Causal\ 0.50.
 \item \Sel\ peaks at 100 heads (0.72); level with \CausalG\ at 120 (0.70 vs 0.69).
+\item \LRPT\ stays below \Sel\ at every size, about level with the causal ranking or above.
 \item Removing generic heads raises \Causal\ at every size.
 \item D and Yang terms stay at or below 0.26.
 \end{itemize}
@@ -662,17 +722,56 @@ S stopwords, P punctuation, M markers, Q query, L last token.}
 \end{frame}
 
 % =====================================================================
+\begin{frame}{Relevance-weighted screen: D adds little, Combined still leads}
+\textbf{\LRPC}: the screen of step 4 with every attention feature weighted by its relevance (as in \LRPT),
+D unchanged; one set for all tasks, chosen at each size.
+
+\vspace{0.5em}
+\begin{columns}[T]
+\column{0.6\textwidth}
+\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}rlclcc@{}}
+\toprule
+$N$ & \LRPC\ & Task & \Sel & Task & \LRPT \\
+\midrule
+10 & BT / DBS & 0.23 & DBTL & \textbf{0.29} & 0.23 \\
+20 & BT / DBTSP & 0.43 & DBTPL / DBTML & \textbf{0.47} & 0.31 \\
+40 & BT & 0.60 & DBTM & \textbf{0.62} & 0.58 \\
+60 & DBTSM & 0.63 & DBTSML / DBTSPL & \textbf{0.64} & 0.59 \\
+80 & TS & 0.68 & DBTSPML & \textbf{0.71} & 0.61 \\
+100 & TP & 0.72 & DBOSML / DTSPML & 0.72 & 0.66 \\
+120 & BTSM & \textbf{0.73} & DBTOSML / DTSML & 0.70 & 0.67 \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.3em}
+\gnote{Combinations: fold 1 / fold 2 where they differ. Shared, test half, mean of 14 tasks and two folds.}
+\column{0.38\textwidth}
+\small
+\begin{itemize}\spaced
+\item Short picks; D in only 4 of 14.
+\item Quick pass, adding D: changes little up to 40 heads, lowers accuracy from 60
+      (attention screen: $+$0.2 or more from 20 to 80).
+\item Above \LRPT\ from 20 heads; below \Sel\ up to 100, above at 120.
+\item Random sets $\leq$0.18 (\Sel's 0.30 at 120).
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% =====================================================================
 \begin{frame}{The heads of Combined crowd layers 12--15}
 \begin{columns}[c]
 \column{0.6\textwidth}
 \centering
 \includegraphics[width=\textwidth]{design_layers}
 \column{0.38\textwidth}
+\small
 \begin{itemize}\spaced
 \item \Sel\ is the most concentrated: at 40 heads layer 13 holds about a quarter of its set.
 \item The causal rules also take about half or more from layers 12--15; D and Yang terms take many from layer 18 on.
 \item \Sel\ shares a quarter to two-fifths of its heads with \Causal: 1.5--4$\times$ chance,
       without any causal score.
+\item \LRPT: the same layers, less densely (layer 13 a fifth).
 \end{itemize}
 \end{columns}
 \end{frame}
@@ -689,25 +788,28 @@ S stopwords, P punctuation, M markers, Q query, L last token.}
 \item \textbf{Random sets} stay low at small sizes.
 \item With crowded layers they rise: \Sel's random sets reach 0.28 (per task) and 0.30 (shared) at 120 heads,
       sharing a third to two-fifths of its heads.
+\item \LRPT's heads are spread more widely: its random sets stay at 0.12 or below.
 \end{itemize}
 \end{columns}
 \end{frame}
 
 % =====================================================================
-\begin{frame}{By task type: only Combined triggers the translations per task}
-\centering\small
+\begin{frame}{By task type: per task, LRP-T triggers the translations best}
+\centering\footnotesize
 \begin{tabular}{@{}lcccccc@{}}
 \toprule
 40 heads & word rel. & morphology & facts & sequences & translations & all \\
 \midrule
 \multicolumn{7}{@{}l}{\textit{Per task}} \\
 D & \cv{0.22} & \cv{0.31} & \cv{0.64} & \cv{0.00} & \cv{0.12} & \cv{0.33} \\
+\LRPT & \cv{0.65} & \cv{0.81} & \cv{0.85} & \cv{0.17} & \cv{0.74} & \cv{0.70} \\
 \Sel & \cv{0.56} & \cv{0.74} & \cv{0.86} & \cv{0.10} & \cv{0.61} & \cv{0.64} \\
 \Causal & \cv{0.26} & \cv{0.65} & \cv{0.73} & \cv{0.09} & \cv{0.02} & \cv{0.41} \\
 \CausalG & \cv{0.53} & \cv{0.80} & \cv{0.76} & \cv{0.11} & \cv{0.02} & \cv{0.48} \\
 \midrule
 \multicolumn{7}{@{}l}{\textit{Shared}} \\
 D & \cv{0.01} & \cv{0.06} & \cv{0.66} & \cv{0.02} & \cv{0.00} & \cv{0.25} \\
+\LRPT & \cv{0.42} & \cv{0.88} & \cv{0.89} & \cv{0.05} & \cv{0.30} & \cv{0.58} \\
 \Sel & \cv{0.53} & \cv{0.87} & \cv{0.84} & \cv{0.23} & \cv{0.42} & \cv{0.62} \\
 \Causal & \cv{0.31} & \cv{0.76} & \cv{0.71} & \cv{0.11} & \cv{0.37} & \cv{0.50} \\
 \CausalG & \cv{0.35} & \cv{0.87} & \cv{0.85} & \cv{0.17} & \cv{0.27} & \cv{0.56} \\
@@ -719,6 +821,7 @@ D & \cv{0.01} & \cv{0.06} & \cv{0.66} & \cv{0.02} & \cv{0.00} & \cv{0.25} \\
 \begin{itemize}
 \item \textbf{Facts}: every rule that fills the set. \textbf{Sequences}: the hardest, no rule reaches a quarter.
 \item The rules differ most on translations and word relations.
+\item Per task \LRPT\ is above \Sel\ on every type but facts (level); shared it falls behind on word relations, sequences, translations.
 \end{itemize}
 \end{frame}
 
@@ -931,11 +1034,15 @@ D & 0.30 & 0.84 & 0.45 & \cv{0.12} & \cv{0.43} & 0.02 & 0.08 & 0.25 \\
 \section{Conclusions}
 
 \begin{frame}{Take-home}
-\begin{enumerate}\spaced
+\small
+\begin{enumerate}\setlength{\itemsep}{0.3em}
 \item \textbf{What a head decodes + where the last token attends} identifies heads that trigger the task
       better than the causal ranking at most sizes: per task from 20 to 120 heads, shared from 10 to 100.
 \item Once the combination is fixed, this needs \textbf{no patching}: at most 300 forward passes per task,
       against about 61{,}000 patched ones.
+\item Weighting the attention to the task words by its \textbf{relevance} (\LRPT) gives better sets still per task,
+      at every size, with no screen; with one set for all tasks it stays below \Sel, also when chosen among
+      relevance-weighted combinations, except at 120 heads.
 \item It holds with \textbf{unseen wordings}, and on \textbf{four tasks} outside the 14.
 \item On \textbf{example-based prompts}, \Sel\ re-identified triggers 9 items in 10, also as one summed vector.
       Its heads differ from those identified on instructions about as much as random ones;
@@ -947,7 +1054,8 @@ D & 0.30 & 0.84 & 0.45 & \cv{0.12} & \cv{0.43} & 0.02 & 0.08 & 0.25 \\
 
 % =====================================================================
 \begin{frame}{Limitations}
-\begin{itemize}\spaced
+\small
+\begin{itemize}\setlength{\itemsep}{0.3em}
 \item One model, 14 simple tasks, one greedy run per condition, no intervals:
       gaps of a point or two are not established. Only $\alpha$ = 1, 2.
 \item \textbf{Choosing the combination} still takes many patched runs: every candidate on ten items per task,
@@ -958,6 +1066,8 @@ D & 0.30 & 0.84 & 0.45 & \cv{0.12} & \cv{0.43} & 0.02 & 0.08 & 0.25 \\
 \item Overlap is read against each set's stability between the two folds: one pair of item halves.
 \item Sets identified on examples: control means reach about a fifth on four tasks.
 \item The 30 further wordings were generated by a language model and checked by script, not by hand.
+\item \LRPT: relevance from the answer's first token (not the top prediction on half of English--German);
+      tested on the identification prompts only, \LRPC\ shared only.
 \end{itemize}
 \end{frame}
 
