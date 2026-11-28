@@ -1,0 +1,339 @@
+% =====================================================================
+%  Record of every choice made in the project for localizing task heads
+%  and for patching them, in the frame of Pham et al. (2026): two degrees
+%  of freedom, the options tried for each, the best one marked.
+%  Numbers are copied from the generated tables (tables/design_*.tex),
+%  the result CSVs under results/, and summary-simple.tex; every row names
+%  its source. Compile: tex-keep-notes --synctex --keep-logs <this>.tex
+% =====================================================================
+\documentclass[10pt,a4paper]{article}
+
+\usepackage{fontspec}
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,tabularx,array}
+\usepackage{xltabular}
+\usepackage{enumitem}
+\usepackage{pifont}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage[round,authoryear]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=green!40!black,urlcolor=blue!60!black]{hyperref}
+
+\setlist{nosep,leftmargin=*}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\captionsetup{font=small,labelfont=bf}
+\renewcommand{\arraystretch}{1.14}
+\setlength{\emergencystretch}{3em}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+
+\newcommand{\best}{\textcolor{blue!65!black}{$\bigstar$}}
+\newcommand{\yes}{\textcolor{green!45!black}{\ding{51}}}
+\newcommand{\no}{\textcolor{red!70!black}{\ding{55}}}
+\newcommand{\mixed}{\textcolor{orange!80!black}{$\sim$}}
+\newcommand{\tR}{\textsf{\textbf{[R]}}}
+\newcommand{\tH}[1]{\textsf{\textbf{[H}, #1\textbf{]}}}
+\newcommand{\tX}[1]{\textsf{\textbf{[X}, #1\textbf{]}}}
+\newcommand{\src}[1]{{\footnotesize\textcolor{gray!60!black}{(\texttt{#1})}}}
+\newcommand{\grp}[1]{\multicolumn{4}{@{}l}{\textbf{#1}} \\*}
+\newcommand{\nl}{\textbackslash n}
+\newcommand{\p}[1]{``\texttt{#1}''}
+
+\title{Localizing and Patching Task Heads\\[3pt]
+\large Every choice made in the project, and the one that worked best}
+\author{Filippo Merlo}
+\date{28 November 2026}
+
+\begin{document}
+\maketitle
+\vspace{-1em}
+
+% ---------------------------------------------------------------------
+\section{Two degrees of freedom}\label{sec:frame}
+
+\citet{pham2026fast} note that there is little consensus on how to define a function vector and identify two degrees of freedom in doing so: how the heads are selected (by their average indirect effect, or by AttnLRP relevance on the words of the instruction that define the task) and how their means are patched (summed into one vector added after one layer, or each head's mean put back where it was taken). They compare every permutation of the two. This record follows the same split for everything this project tried on the 14 simple tasks:
+\begin{itemize}
+\item \textbf{Head localization} (Sec.~\ref{sec:loc}): what a head is ranked by, how its output is read, how signals are combined, on which prompts, for one task or all, and how many heads are kept.
+\item \textbf{Patching} (Sec.~\ref{sec:patch}): how the means enter the model, at which scale, which means, into which prompt, and how the reply is scored.
+\end{itemize}
+Each row of Tables~\ref{tab:loc} and~\ref{tab:patch} is one choice, with the options tried and the option that gave the best result. Sec.~\ref{sec:grid} gives the permutation grid in Pham et al.'s sense, Sec.~\ref{sec:cost} the cost of identification, Sec.~\ref{sec:findings} the findings, and Sec.~\ref{sec:complex} the complex tasks, where no choice worked.
+
+\paragraph{How to read the numbers.}
+\begin{itemize}
+\item \emph{Measure.} Unless a row says otherwise: accuracy of check~1, i.e.\ the head set patched into a zero-shot prompt that does not give the task, on held-out items, flexible score (the reply begins with the whole answer as words), mean over the 14 tasks and the two folds. Llama-3.1-8B-Instruct, bf16, greedy.
+\item \emph{Protocols.} Three, and numbers from different protocols are never compared.
+\tR{} the rebuild of the design doc: one design for every rule; items split in two halves, used both ways; every rule at $N\in\{10,20,40,60,80,100,120\}$ heads, per task and shared; $\alpha\in\{1,2\}$ cross-fitted; zero-shot prompt \p{ x:}; combinations chosen on the other fold. This is the reference: \best{} refers to it unless the row is tagged otherwise.
+\tH{E4--E27} the earlier held-out protocol (E4's item split; $\alpha$ cross-fitted over 10 values in E4, over $\{1,2\}$ from E8). Some of its choices (E22/E23 combinations, sizes) were made on the test items.
+\tX{E1--E3} exploratory: chosen and scored on the same items, best $\alpha$.
+\item \emph{Equal size.} Sets are compared only at the same number of heads. The reference size is $N=40$, where the per-task combination is chosen.
+\item \emph{Marks.} \best{} best option in the comparison of that row; \yes{} kept or works; \no{} dropped; \mixed{} depends on the task or scope; --: the rule does not fill that size on every task; n.r.: not run.
+\item \emph{Sources.} Each number is copied from the file in grey: a generated table \texttt{tables/design\_*}, a CSV under \texttt{results/}, or the named row of \texttt{summary-simple} (whose rows cite their own result files). Every condition is one greedy run; accuracies only, no intervals.
+\item \emph{Not listed.} Conditions deleted from the repository after they failed. Analyses that did not decide a choice (behavioural baseline E0, Bai et al.'s token types E20, instruction vs demonstration causal heads E27, the overlap measure, head roles) are named only where they bear on a choice.
+\end{itemize}
+
+% ---------------------------------------------------------------------
+\section*{Best result at each size}
+
+\begin{table}[htbp]
+\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}rllll@{}}
+\toprule
+& \multicolumn{2}{c}{Per task (one set per task)} & \multicolumn{2}{c}{Shared (one set for all 14 tasks)} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+$N$ & \best{} best & next & \best{} best & next \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Identified on instruction-based prompts, patched with the identification templates' means}} \\
+10 & LRP-T 0.34 & Causal $-$ gen.\ 0.31 & Combined DBTL 0.29 & LRP-T, raw mean 0.24 \\
+20 & LRP-T 0.53 & Combined DBTSPL 0.42 & LRP-T, raw mean 0.51 & Combined DBTPL/DBTML 0.47 \\
+40 & LRP-T 0.70 & Combined DBTSPL 0.64 & Combined DBTM 0.62 & LRP-Combined BT 0.60 \\
+60 & LRP-T 0.72 & Combined DBTSPL 0.67 & Combined DBTSML/DBTSPL 0.64 & LRP-Combined DBTSM 0.63 \\
+80 & LRP-T 0.74 & Combined DBTSPL 0.66 & Combined DBTSPML 0.71 & Causal $-$ gen.\ 0.68 \\
+100 & LRP-T 0.74 & Combined DBTSPL 0.66 & Combined DBOSML/DTSPML 0.72 & LRP-Combined TP 0.72 \\
+120 & LRP-T 0.73 & Combined DBTSPL 0.67 & LRP-Combined BTSM 0.73 & Combined DBTOSML/DTSML 0.70 \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Identified on example-based prompts, patched with the test formats' means (other means: not comparable with the rows above)}} \\
+10 & Combined Y 0.76 & Causal 0.57 & Causal $-$ gen.\ 0.71 & Causal 0.70 \\
+20 & Combined Y 0.86 & Causal 0.66 & Combined DY/DBY 0.82 & Causal 0.79 \\
+40 & Combined Y 0.91 & Causal 0.75 & Combined BY 0.90 & Causal 0.81 \\
+60 & Combined Y 0.92 & Causal 0.78 & Combined DBYS/BY 0.89 & Causal 0.84 \\
+80 & Combined Y 0.91 & Causal 0.79 & Combined DBYS/BY 0.89 & Causal 0.73 \\
+100 & Combined Y 0.92 & Causal 0.81 & Combined DBXYS/DYS 0.87 & Causal 0.72 \\
+120 & Combined Y 0.91 & Causal 0.81 & Combined BY/Y 0.87 & Causal 0.70 \\
+\bottomrule
+\end{tabular}
+\caption{\tR{} The best rule at each size and the next one, among every rule run in the rebuild; combinations given per fold (fold~1/fold~2) where the folds chose differently. Instruction rows: \src{tables/design\_ladder, design\_selected\_sizes, design\_lrp\_screen; results/rebuild/lrp\_raw\_n/compare.csv}. At 100 heads the shared pair is level (0.724 vs 0.716, \src{results/rebuild/lrp\_shared\_compare.csv}). Example rows: \src{tables/design\_examples}, re-identified columns; LRP rules were not run on example-based prompts. Picking the best of about ten rules at each size is itself a choice made on the test items, and the two folds of one rule differ by up to five points (\src{tables/design\_selected\_sizes}), so leads of one or two points are not decisive. Outside the 14 tasks, the shared 40-head sets on four unseen tasks ($\alpha=2$): DBTPL 0.68, Causal $-$ gen.\ 0.66, Combined DBTM 0.60, D 0.43, Causal 0.39 \src{tables/design\_unseen}.}
+\label{tab:best}
+\end{table}
+
+\textbf{The best configuration found}, per task: \emph{LRP-T} (task-word attention of the last token weighted by its AttnLRP relevance for the answer's first token; task words = the instruction tokens matching the task's 30-word TF-IDF list of J-head decodings; identified on up to 300 correct prompts of Yang et al.'s five templates), patched \emph{head by head}, each head's last-token output replaced by $\alpha$ times its template mean, $\alpha\in\{1,2\}$ cross-fitted. Shared, the best rule depends on the size: Combined chosen by its own screen at each size, raw-mean LRP-T at 20 heads, LRP-Combined (BTSM) at 120. When heads are identified on example-based prompts and patched with example means, Combined (Y, attention to the demonstrations' outputs) is best at every size per task.
+
+% ---------------------------------------------------------------------
+\section{Head localization}\label{sec:loc}
+
+Rule names: \emph{Yang terms} = share of prompts on which a head's top-10 decoded tokens contain one of Yang et al.'s predefined terms (Logit-head or J-head); \emph{D} = the same with the task's 30 decoded words; letters B, T, O, S, P, M, Q, L = last-token attention to every token but the first (\emph{non-first}), the instruction's task words, other words, stopwords, punctuation, markers, the query, the last token; on example-based prompts X, Y, S = demonstration inputs, outputs, separators; \emph{Combined} = the combination of D and these features chosen by the screen; \emph{Causal} = Davidson et al.'s causal indirect effect; \emph{LRP-T} = T weighted by AttnLRP relevance; \emph{LRP-Combined} = the screen over relevance-weighted features.
+
+\small
+\begin{xltabular}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.35cm}>{\hsize=1.0\hsize}L>{\raggedright\arraybackslash}p{2.45cm}>{\hsize=1.0\hsize}L@{}}
+\caption{Choices of head localization. Evidence at equal $N$; protocol tag first.}\label{tab:loc}\\
+\toprule
+\textbf{Choice} & \textbf{Options tried} & \textbf{Best} & \textbf{Evidence} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Choice} & \textbf{Options tried} & \textbf{Best} & \textbf{Evidence} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\grp{What a head is ranked by}
+L1. Signal & Decoding a task word (Yang terms, D); attention to one prompt segment (T, \dots); causal indirect effect (Causal); T weighted by AttnLRP relevance (LRP-T); T weighted by the Head-JLens decomposition, toward the list words or the answer (J-T, J-answer; shared 20/40 only) & \best{} LRP-T (per task, and best single signal shared) & \tR{} 40 heads, per task: LRP-T 0.70, T 0.46, Causal 0.41, D 0.33, Yang terms --. Shared: LRP-T 0.58, Causal 0.50, T 0.41, J-T 0.28, D 0.25, J-answer 0.22, Yang terms (J) 0.19. Shared 20: LRP-T 0.32, J-T 0.17, J-answer 0.14 \src{design\_ladder; rebuild/jdec/compare.csv} \\
+L2. Combining signals & One signal alone vs a combination of D and attention features, ranked by the mean of within-task ranks and chosen by the screen (Combined) & \best{} Combined (shared); per task below LRP-T & \tR{} 40 heads: per task Combined DBTSPL 0.64 vs T 0.46, D 0.33 (LRP-T 0.70); shared Combined DBTM 0.62 vs LRP-T 0.58, T 0.41 \src{design\_ladder} \\
+L3. Features in the screen & Attention features (Combined) vs their relevance twins with D unchanged (LRP-Combined; shared only) & \best{} attention to 100 heads, relevance at 120 & \tR{} shared: 10 DBTL 0.29 vs BT/DBS 0.23; 40 DBTM 0.62 vs BT 0.60; 100 DBOSML/DTSPML 0.72 vs TP 0.72; 120 DBTOSML/DTSML 0.70 vs BTSM 0.73. D in 4/14 LRP fold picks \src{design\_lrp\_screen} \\
+L4. Where the causal score is measured & Instruction replaced by uninformative text (Davidson et al.) vs the zero-shot test prompt \p{ x:} (Causal (zero-shot)) & \best{} uninformative text & \tR{} 40 heads: per task 0.41 vs 0.36, shared 0.50 vs 0.35; own form (20 heads summed) 0.29 vs 0.24 \src{design\_ladder, design\_own} \\
+L5. Intensional frame (Pham et al.) & Their hand-picked frame words (three gaps filled) vs the instruction tokens matching our list & level & \tR{} shared 20, raw mean: 0.50 vs 0.51; rank mean 0.39 vs 0.32 \src{rebuild/pham\_frame/pham\_summary.csv; lrp\_raw\_n/compare.csv} \\
+L6. Attend $\times$ decode & Share of attention on task words $\times$ share of prompts decoding one, vs match rate alone (E3) & \mixed{} & \tX{E3} 20 heads 0.25 vs 0.21; works on facts and plurals (capitals 0.88 with L16H25 alone), nothing on translations, sequences, present--past \src{summary-simple E3} \\
+L7. LLM-scored heads & GPT-5.5 scores every head 0--100 from its decoded tokens, top $N$ (E5; two tasks) & \no{} vs causal & \tH{E5} country--capital, 20 heads: J-head 0.78, Logit-head 0.70, FV-20 0.88; English--German: nothing below 60 heads \src{archive/best-approaches} \\
+L8. What the instruction adds & Readings of clean minus instruction-replaced prompts (E6) & \no{} & \tH{E6} dcc 0.18 vs CC 0.44 (20 heads: 0.22 vs 0.22) \src{summary-simple E6} \\
+L9. Core heads from per-head credit & 7 heads credited across all rebuild sets vs the top 7 of shared rules, on four unseen tasks, $\alpha=2$ & \mixed{} & \tR{} 0.33 (control 0.20) vs LRP-T 0.27, Causal 0.24, Combined DBTL 0.23, Causal $-$ gen.\ 0.21; credits came from the test halves of the 14 tasks \src{rebuild/newtasks\_core/summary.csv} \\
+\midrule
+\grp{Reading what a head writes}
+L10. Readout & Logit-head (unembedding of the head's write) vs J-head (Head-JLens) & \best{} J-head & \tR{} Yang terms per task 10: 0.11 vs 0.14; shared 40: 0.12 vs 0.19, shared 80: 0.03 vs 0.25 \src{design\_ladder}. \tX{E1} J-head finds more heads on 23/28 task--style pairs; 16 of its 25 leads hold at 5, 10 and 20 heads, none reverse \src{summary-simple E1, E1b} \\
+L11. Source of the task words & Yang et al.'s predefined terms (2--22 tokens) vs words the heads decode & \best{} decoded words & \tR{} D vs Yang terms (J): per task 20 heads 0.24 vs 0.17; shared 40 0.25 vs 0.19 \src{design\_ladder}. \tX{E3} CC-pooled 0.45 vs E1 0.19 \src{summary-simple E3} \\
+L12. Which decoded words (early lists) & Task words (vs the other tasks) and/or common words; 5--20 words; WikiText cut; task minus WikiText; group contrast; strict consensus (E3); most active words, raw or cleaned (E7); 30 most active words with capitalised token forms (E8) & \best{} 5 task + 5 common, pooled (E3); raw (E7); capitalised forms (E8) & \tX{E3} 5+5 pooled 0.45; task only 0.10, common only 0.07; 5 words 0.22 $\to$ 20 words 0.10; WikiText cut 0.38; task minus WikiText 0.21; group contrast 0.32; consensus 0.15--0.20. \tH{E7} raw 0.37 vs clean 0.18. \tH{E8} DB 0.31 $\to$ 0.51 with the fix \src{summary-simple E3, E7, E8} \\
+L13. Word list of the rebuild & 30 words by share, top 50 WikiText words removed vs 30 words by smooth TF-IDF against WikiText & \best{} TF-IDF & \tR{} Combined at 40 heads: per task 0.63 $\to$ 0.64, shared 0.60 $\to$ 0.62 \src{summary-simple, design variant 11-21} \\
+L14. Threshold or ranking & Yang et al.'s threshold ($\geq$10\% of prompts) vs ranking by the same share at fixed $N$ & \yes{} ranking & Thresholds give 1--35 heads per task, so sets cannot be compared at equal size; \tX{E1b} at equal size, differences between template rules mostly vanish \src{summary-simple E1b; design\_own} \\
+\midrule
+\grp{Attention features and their combination}
+L15. Attention to the first token & As a filter, heads with $>0.5$ dropped (E7), vs as a ranking feature (B, non-first) & \best{} ranking feature & \tH{E7} filter 0.37 $\to$ 0.40 with 32 heads, random drop 0.09--0.10. \tR{} B is in both per-task picks and in 12 of the 14 shared fold picks \src{summary-simple E7; design\_selected\_sizes} \\
+L16. Which segments & Task words, query, rest (E8); stopwords+punctuation, markers, whole instruction, last token (E21--E22); eight disjoint segments (R) & \best{} task words, stopwords, punctuation, markers, with D and B; never the query & \tR{} quick pass at 40: T best alone, D the largest gain when added, adding Q lowers every per-task combination \src{head-sets-simple-design Sec.~5.6}. \tH{E8} adding query or rest lowers all 15 sets. \tH{E21} DBS 0.60 vs DBT 0.55 per task \src{summary-simple E8, E21} \\
+L17. Punctuation and stopwords & Together (S) vs split into punctuation and stopwords (E25, 40 heads) & no gain from splitting then; split in R & \tH{E25} per task DBTMS 0.61 vs P 0.59, W 0.61; shared DBTMS 0.53 vs 0.55/0.48 \src{results/e25\_punct\_split/per\_task.csv; summary-simple E22}. \tR{} per-task Combined DBTSPL holds both \\
+L18. How features combine & AND of thresholds, sets of any size (E8) vs mean of ranks at fixed $N$ (from E13) & \yes{} mean of ranks & \tH{E8} T 0.55 with 154 heads, DB 0.51 with 65; \tH{E13} DBT 0.55 at 40 per task. Only the rank form allows equal sizes \src{summary-simple E8, E13} \\
+L19. Which combination & Fixed in advance (E13: DBT) vs the best of all on the test items (E22) vs chosen on the other fold (R) & \best{} other fold & \tH{E13} DBT 0.55; \tH{E22} DBMN 0.63 per task, DBTLS 0.60 shared, optimistic by selection; \tR{} DBTSPL 0.64 per task, DBTM 0.62 shared, held out \src{summary-simple E13, E22; design\_selected} \\
+L20. Size at which the shared combination is chosen & The 40-head pick at every size vs a screen at each size vs one combination chosen across sizes (DBTSML) & \best{} each size & \tR{} DBTM / own pick / DBTSML: 10 heads 0.05 / 0.29 (DBTL) / 0.13; 40 0.62 / 0.62 / 0.51; 120 0.66 / 0.70 (DBTOSML/DTSML) / 0.69 \src{design\_summed\_pick40; rebuild/general\_n/gen\_summary.csv} \\
+L21. Screen & All candidates in full vs two stages (all on 10 items at $\alpha=2$, first-token score; each fold's 10 best in full) & \yes{} two stages & Same picks in an offline replay on the stored full screens; used for every screen since the TF-IDF lists (replay scripts not kept) \\
+L22. One combination or one per task & One combination for all tasks vs each task its own & \yes{} one (decision) & Per-task choice not run held out; the design doc's per-task best-combination figure (Sec.~5.6) shows each task's best on the quick pass, which overstates the gain \\
+\midrule
+\grp{Cleaning the set}
+L23. Generic heads & Kept vs removed from the causal ranking (two-group cut of the J-head generic score among the shared causal top 30) & \best{} removed, for Causal & \tR{} Causal vs Causal $-$ gen., 40 heads: per task 0.41 vs 0.48, shared 0.50 vs 0.56; per task 120: 0.61 vs 0.58 \src{design\_ladder}. \tH{E13} removing them lowers DBT. \tH{E11, E12} FV-30 without them 0.63 when found on the scored items, 0.49 when found on the identification half \src{summary-simple} \\
+L24. Retrieval heads & Kept vs removed from the union sets (E1b) & \mixed{} not adopted & \tX{E1b} mostly small changes; landmark--country collapses (Logit-head 0.72 $\to$ 0.02), synonym J-head 0.21 $\to$ 0.32 \src{summary-simple E1b} \\
+L25. Answer heads & Kept vs removed (E6) & not adopted & \tH{E6} little change \src{summary-simple E6} \\
+\midrule
+\grp{Identification prompts}
+L26. Which templates & Most accurate template (Yang et al.) vs heads passing on all five ($k=5$) vs union ($k=1$) vs the pooled prompts of all five & \best{} pooled & \tX{E1b} $k=5$ better on $\leq$5/14 tasks; $k=1$ helps J-head on present--past, synonym and prev-item, hurts Logit-head on the facts. \tX{E3} words and heads pooled 0.45 vs both from the best template 0.18 \src{summary-simple E1b, E3} \\
+L27. More wordings & Yang et al.'s 5 templates vs 5 + 15 identification wordings (sets tested with the means of 15 unseen wordings) & \best{} more wordings & \tR{} 40 heads, per task: Combined 0.56 (DBTSPL) $\to$ 0.59 (DBTSPML/DBTSML), Causal $-$ gen.\ 0.42 $\to$ 0.46; shared: Combined 0.58 (DBTM) $\to$ 0.60 (DBM) \src{design\_wordings\_transfer, design\_wordings\_reid}. \tH{E14} identified on all 35 wordings, DBT and Causal $-$ gen.\ beat the same rules identified on Yang's 5, in both scopes and at every size \src{head-sets-simple, Sec.~Other wordings} \\
+L28. Prompt style & Heads identified on instruction-based vs on example-based prompts, both patched with the test formats' example means & \best{} same style as the means & \tR{} 40 heads, per task: Combined 0.59 (DBTSPL) vs 0.91 (Y), Causal 0.40 vs 0.75; shared: Combined 0.50 (DBTM) vs 0.90 (BY) \src{design\_examples} \\
+L29. Amount of material & Up to 300 correct prompts per pool, $\geq$10 per template & fixed & Not varied \\
+\midrule
+\grp{Scope, aggregation and size}
+L30. Scope & One set per task vs one set for all tasks & \best{} per task & \tR{} 40 heads: best per task 0.70 (LRP-T) vs best shared 0.62 (Combined DBTM). Causal is the exception: shared $\geq$ per task from 40 heads (0.50 vs 0.41) \src{design\_ladder}. Shared sets are needed for unseen tasks (Table~\ref{tab:best}) \\
+L31. Aggregation over tasks & Mean of scores, weakest task, mean of within-task ranks (E10, 30 heads); raw score mean (Pham et al.) vs rank mean for LRP-T (R) & \best{} rank mean; raw mean at 20 heads & \tH{E10} rank DBT 0.47, mean BT 0.44, weakest-task best 0.36 \src{summary-simple E10}. \tR{} LRP-T raw / rank: 10 0.24/0.23, 20 0.51/0.32, 40 0.58/0.58, 60 0.59/0.60, 80 0.58/0.61, 100 0.61/0.66, 120 0.63/0.67 \src{rebuild/lrp\_raw\_n/compare.csv} \\
+L32. Set size & Each method's own size (Yang threshold, Davidson 20) vs top $N$, $N=10$--120 & \yes{} top $N$, compared at equal $N$ & \tR{} the best rules rise to 40--60 heads and then level off (LRP-T per task 0.70 at 40, 0.74 at 80--100); Causal keeps rising (0.41 at 40, 0.61 at 120) \src{design\_ladder} \\
+\end{xltabular}
+\normalsize
+
+% ---------------------------------------------------------------------
+\clearpage
+\section{Patching}\label{sec:patch}
+
+\small
+\begin{xltabular}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.35cm}>{\hsize=1.0\hsize}L>{\raggedright\arraybackslash}p{2.45cm}>{\hsize=1.0\hsize}L@{}}
+\caption{Choices of patching. Evidence at equal $N$; protocol tag first.}\label{tab:patch}\\
+\toprule
+\textbf{Choice} & \textbf{Options tried} & \textbf{Best} & \textbf{Evidence} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Choice} & \textbf{Options tried} & \textbf{Best} & \textbf{Evidence} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+P1. Intervention & Replace each head's last-token output by $\alpha$ times its mean (Yang et al.) vs add $\alpha$ times the mean to it (Pham et al.'s code) vs sum the means through $W_O$ and add after layer 11 (Davidson et al.) & \best{} replace, head by head & \tR{} 40 heads, replace / add / summed: per task Combined DBTSPL 0.64 / 0.59 / 0.48, LRP-T 0.70 / 0.67 / n.r.; shared Combined DBTM 0.62 / 0.59 / 0.42, LRP-T 0.58 / 0.54 / n.r. Exceptions: D and Yang terms sum as well or better; Combined Y on examples 0.91 vs 0.88 summed (Table~\ref{tab:grid}). \tH{E26} summed below head by head for every set but Yang terms \\
+P2. Layer of the summed vector & After layer 11 ($\approx L/3$, Davidson et al.) & fixed & Not varied; Pham et al.\ search the best layer per model \\
+P3. Position & Last prompt token & fixed & Only position on the simple tasks; a pre-answer position on the complex tasks was dropped \src{summary-complex, variant 10-29} \\
+P4. Scale $\alpha$ & 15 values from $-10$ to 10 (E1), 10 values (E4), $\{1,2\}$ (from E8) & \yes{} $\{1,2\}$ & \tX{E1} Yang-style sets best around $\alpha=4$; Davidson et al.'s FV best at 1, nothing at $|\alpha|\geq3$; FV without generic heads best at 2--3 \src{summary-simple E1, FV split}. \tR{} head by head takes $\alpha=2$ on 0.75 of task-folds, summed on 0.48 \src{summary-simple 3.5a}; adding takes 2 on nearly every task \\
+P5. How $\alpha$ is chosen & Best on the scored items vs cross-fitted on the other fold & \yes{} cross-fitted & \tH{E4} E3's sets re-tested: CC 0.45 $\to$ 0.44, E1 0.19 $\to$ 0.20 \src{summary-simple E4} \\
+P6. Which mean & One mean per template, accuracy averaged over them (Yang et al.'s code) vs one mean pooled over the templates & \yes{} per template (level) & \tH{E26} same accuracy on the four question--answer templates (summed vector) \src{summary-simple E26}. Mean = first 100 correct prompts of the identification half \\
+P7. Style of the means & Instruction means vs example means, on sets identified on either style & \best{} same style as identification & \tH{E24} rule-chosen sets keep about 0.8 of their accuracy with 5-shot means from 60 heads; example-built sets with example means highest (per task DB-40 0.69 vs rule-built with rule means 0.45) \src{summary-simple E24}. \tR{} Table~\ref{tab:best}, example rows \\
+P8. Means of unseen wordings & Template means vs the means of 15 test wordings (a test of transfer, not an alternative) & -- & \tR{} 40 heads: per task Combined DBTSPL 0.64 $\to$ 0.56, shared DBTM 0.62 $\to$ 0.58; the order of the rules holds \src{design\_ladder, design\_wordings\_transfer} \\
+P9. Test & Check 1: zero-shot prompt without task information vs check 2: one-shot prompts answered wrongly (Yang et al.'s released script) & \best{} check 1 & Check 2 reproduces Yang et al.'s figures but hardly separates sets: \tH{E4} E1 0.31, CC 0.33, FV-$N_t$ 0.39, controls 0.12--0.13 \src{summary-simple E4}. Check 1 only from E13 on \\
+P10. Scoring & First token vs strict vs flexible (whole answer as words; case, accents, punctuation, leading article ignored) & \best{} flexible & First token counts any number on next/prev-item and marks capitalised German nouns wrong; strict scoring created spurious wording differences \src{summary-simple, variant 10-30}. The screen's quick pass ranks candidates by first token only \\
+P11. Controls & Related task's means at the same heads; layer-matched random sets (5 draws in H, 3 in R) & fixed & Kept throughout; on the complex tasks the control mean was added after zero-ablation alone gave gains \src{summary-complex, variant 10-31} \\
+P12. Implementation & Yang et al.'s batching without attention mask vs padding masked; bf16 vs fp32 & \yes{} masked; bf16 & The model attended to the padding \src{summary-simple, variant 10-28}; an fp32 Head-JLens fit ($\approx$136 GPU-h) was declined. LRP-T in fp32 vs bf16 on 20 prompts of two tasks: 39 and 40 of the same top 40 heads \src{head-sets-simple-design Sec.~5.7} \\
+\end{xltabular}
+\normalsize
+
+% ---------------------------------------------------------------------
+\section{The permutation grid}\label{sec:grid}
+
+Pham et al.'s main comparison (their Fig.~2) crosses the two degrees of freedom. Table~\ref{tab:grid} is the same grid for the rules and interventions of the rebuild at 40 heads: rows are localization rules, columns patching forms. Adding the means was run only for Combined and LRP-T; LRP-T was not summed.
+
+\begin{table}[htbp]
+\centering\small\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lccc@{\hspace{12pt}}lccc@{}}
+\toprule
+\multicolumn{4}{@{}l}{\textit{Per task}} & \multicolumn{4}{l}{\textit{Shared}} \\
+\cmidrule(r){1-4}\cmidrule(l){5-8}
+Rule & replace & add & summed & Rule & replace & add & summed \\
+\midrule
+Yang terms (J) & -- & n.r. & -- & Yang terms (J) & 0.19 & n.r. & \textbf{0.22} \\
+D & 0.33 & n.r. & \textbf{0.35} & D & 0.25 & n.r. & 0.25 \\
+Causal & \textbf{0.41} & n.r. & 0.27 & Causal & \textbf{0.50} & n.r. & 0.35 \\
+Causal $-$ gen. & \textbf{0.48} & n.r. & 0.40 & Causal $-$ gen. & \textbf{0.56} & n.r. & 0.47 \\
+Combined DBTSPL & \textbf{0.64} & 0.59 & 0.48 & Combined DBTM & \best{} \textbf{0.62} & 0.59 & 0.42 \\
+LRP-T & \best{} \textbf{0.70} & 0.67 & n.r. & LRP-T & \textbf{0.58} & 0.54 & n.r. \\
+\midrule
+\multicolumn{8}{@{}l}{\textit{Identified on example-based prompts, test formats' means}} \\
+Combined Y & \best{} \textbf{0.91} & n.r. & 0.88 & Combined BY & \best{} \textbf{0.90} & n.r. & 0.88 \\
+Causal & \textbf{0.75} & n.r. & 0.61 & Causal & \textbf{0.81} & n.r. & 0.62 \\
+\bottomrule
+\end{tabular}
+\caption{\tR{} Localization $\times$ patching at 40 heads. Replace: each head's output replaced by $\alpha$ times its mean; add: $\alpha$ times the mean added to it; summed: the means through $W_O$, summed and added after layer 11. Bold: best patching form of the row; \best: best cell of the panel. \src{design\_ladder, design\_summed, design\_examples, design\_summed\_examples; results/rebuild/additions/add\_compare.csv}.}
+\label{tab:grid}
+\end{table}
+
+\textbf{Pham et al.'s own form.} Their head selection, one set of 20 heads for all tasks with raw scores averaged over tasks, also has two choices of its own: the frame words and the aggregation over tasks (Table~\ref{tab:pham}). Our sets are patched head by head with replacement; Pham et al.'s code adds the means.
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Shared, 20 heads & raw score mean (Pham et al.) & mean of within-task ranks (ours) \\
+\midrule
+Pham et al.'s frame words & 0.50 (control 0.03) & 0.39 (0.09) \\
+Instruction tokens matching our list & \best{} 0.51 (0.03) & 0.32 (0.09) \\
+\bottomrule
+\end{tabular}
+\caption{\tR{} The $2\times2$ of Pham et al.'s own form, task accuracy (control in brackets). The frame barely matters; the aggregation does. For comparison at 20 heads: Combined DBTPL/DBTML 0.47, LRP-Combined BT/DBTSP 0.43, Causal $-$ gen.\ 0.40, Causal 0.32. \src{results/rebuild/pham\_frame/pham\_summary.csv; lrp\_raw\_n/compare.csv; design\_ladder; design\_selected\_sizes; design\_lrp\_screen}.}
+\label{tab:pham}
+\end{table}
+
+% ---------------------------------------------------------------------
+\section{Cost of identification}\label{sec:cost}
+
+Pham et al.\ report the speed of AttnLRP against the average indirect effect (their Table~1). Table~\ref{tab:cost} gives what each of our localization rules needs per task and half of the items. The counts of passes follow from the design; the times are wall-clock readings from run logs and file times on one A100 at the batch sizes used, not a controlled benchmark.
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.6cm}LLL@{}}
+\toprule
+Rule & Passes to score the heads & Choosing the combination & Time per task and half \\
+\midrule
+Causal & one patched forward pass per head (1{,}024) for each of 60 prompt rows (20 items $\times$ 3 kinds of text), plus 100 prompts for the means & none & $\approx$140 s (CIE phase $\approx$33 min per fold for 14 tasks; file times) \\
+D and attention (Combined) & one unpatched pass per prompt ($\leq$300) with the J-head readout of every head, and one attention pass & screen of 511 candidates: $\approx$3.1 GPU-h at 40 heads (both scopes), $\approx$13.6 GPU-h with the shared sizes (logs) & $\approx$19 s (readings + attention) \\
+LRP-T & one forward and one backward pass per prompt ($\leq$300) & none & 35--37 s \src{logs/rebuild/lrp\_A.log, lrp\_B.log} \\
+LRP-Combined & as LRP-T & screen as Combined (shared only) & as LRP-T \\
+\bottomrule
+\end{tabularx}
+\caption{Cost of localization. D, T and LRP-T all need the Head-JLens matrices (fitted once per model, $\approx$14 GPU-h): LRP-T takes its task words from the J-head word list. Causal and screen times are from session notes of 24 November that read the logs and file times of the runs.}
+\label{tab:cost}
+\end{table}
+
+% ---------------------------------------------------------------------
+\section{Findings}\label{sec:findings}
+
+\textbf{Finding 1: patch each head at its own place, by replacing its output.} At 40 heads, putting each head's mean back where it was taken beats one vector summed after layer 11 for every rule but the two decoding rules, and replacing the head's output beats adding to it by three to five points for both rules where both were run (Table~\ref{tab:grid}). This agrees with Pham et al.'s first finding, that distributed function vectors beat one summed vector; their code adds the means, and here replacing does better. Among the rules that lead, the one case where summing costs little is Combined identified on example-based prompts with example means.
+
+\textbf{Finding 2: per task, relevance-weighted task-word attention is the best localization at every size; shared, the best rule depends on the size.} LRP-T leads per task from 10 to 120 heads (0.70 at 40 vs Combined DBTSPL 0.64), with one backward pass per prompt and no screen. Shared, it stays below the screened combination at most sizes (0.58 vs DBTM 0.62 at 40), except with raw scores averaged over tasks at 20 heads (0.51 vs DBTPL/DBTML 0.47); the screen over relevance-weighted features (LRP-Combined BTSM) is ahead only at 120 heads (Table~\ref{tab:best}). This is the reverse of Pham et al.'s second finding, where relevance helps most with one set for all tasks; their frame is chosen by hand, their set holds 20 heads, and their code adds the means.
+
+\textbf{Finding 3: the causal ranking is not the best localization at any size on instruction-based prompts with the template means.} With the means of unseen wordings, Causal $-$ generic leads per task at 10 heads only (0.24, level with Combined after re-identification; LRP rules not run there) \src{design\_wordings\_transfer, design\_wordings\_reid}. Measured in the zero-shot test prompt instead of with uninformative text it gets worse at every size, and removing its generic heads helps it in the shared scope and per task up to 60 heads (Table~\ref{tab:loc}, L4 and L23). On example-based prompts, the shared causal ranking without generic heads is best at 10 heads only.
+
+\textbf{Finding 4: decoding helps through the readout and the word list, and mostly in combination.} J-head beats Logit-head and decoded words beat predefined terms (L10, L11), but D alone is far below attention rules. Added to attention features, D gives the largest gain in the screen; once attention is weighted by relevance, it adds little (L3).
+
+\textbf{Finding 5: identify heads on the style of prompt whose means are patched.} Example-identified sets with example means reach about 0.9 at 40 heads in both scopes, against 0.59 and 0.50 for instruction-identified sets with the same means (L28). More instruction wordings for identification help on unseen wordings (L27).
+
+\textbf{Finding 6: the screen is the cost.} Once a combination is fixed, decoding and attention rules score heads in seconds per task; choosing the combination takes hours of patching. LRP-T needs no screen and is the cheapest rule that leads (Table~\ref{tab:cost}).
+
+% ---------------------------------------------------------------------
+\section{Complex tasks}\label{sec:complex}
+
+On Fu et al.'s five rule-defined tasks (Set Game, Tapatan, Operator Function, Noun Class Agreement, Lexical Category Inference), no localization or patching choice gave a task-specific effect, so no option is marked best (Table~\ref{tab:complex}).
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\textwidth}{@{}p{2.6cm}LL@{}}
+\toprule
+Choice & Options tried & Outcome \\
+\midrule
+Readout & Logit-head vs J-head (E2) & J-head finds more heads (layers 10--19) and covers 44--91\% of Logit-head's; J-only heads have no task-specific effect \\
+Term lists & GPT-5.5 lists checked by hand, 114--340 tokens (E2); D with the 30 most active words + low BOS attention (DB, E9) & E2 head counts not interpretable (long lists, few correct prompts); DB 87--109 heads, mostly shared across tasks \\
+Test & Check 1 (no task information) vs check 2 (rule prompts answered wrongly), both with a control mean & Check 1: the model does not attempt 4 of 5 tasks, with or without a patch. Check 2: gains matched by the control; $\alpha=0$ alone fixes 21--23 Set Game items; on Yes/No tasks the patch pushes every answer to one label \\
+Position, replies & Last prompt token (pre-answer position dropped); replies up to 1{,}024 tokens, flexible scoring & -- \\
+\bottomrule
+\end{tabularx}
+\caption{\tH{E2, E9} Choices on the complex tasks \src{archive/summary-complex}.}
+\label{tab:complex}
+\end{table}
+
+% ---------------------------------------------------------------------
+\appendix
+\section{Every rule at every size}\label{app:ladder}
+
+The rebuild's main table, as generated from the runs. LRP-Combined and the raw-mean LRP-T are in Tables~\ref{tab:lrp-screen-app} and~\ref{tab:loc} (L31).
+
+\begin{table}[htbp]
+\centering\small
+\input{tables/design_ladder}
+\caption{\tR{} Accuracy of every rule of the rebuild at every size, instruction-based identification, template means, head by head; best rule of each row in bold. Combined per task is DBTSPL at every size; shared, the combination chosen at each size (Table~\ref{tab:sizes-app}). \src{tables/design\_ladder}.}
+\label{tab:ladder-app}
+\end{table}
+
+\begin{table}[htbp]
+\centering\small
+\input{tables/design_selected_sizes}
+\caption{\tR{} Shared Combined at every size: each fold's combination and its accuracy on its own test half; Task, Control, Random: means of the two folds. \src{tables/design\_selected\_sizes}.}
+\label{tab:sizes-app}
+\end{table}
+
+\begin{table}[htbp]
+\centering\small
+\input{tables/design_lrp_screen}
+\caption{\tR{} LRP-Combined at every size, with Combined and LRP-T of the same size. \src{tables/design\_lrp\_screen}.}
+\label{tab:lrp-screen-app}
+\end{table}
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}
