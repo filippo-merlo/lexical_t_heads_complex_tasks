@@ -59,6 +59,22 @@ def heads_of(directory: Path, fold: int, name: str) -> set:
     return {tuple(h) for h in heads}
 
 
+def general(n: int) -> tuple[float, float, float]:
+    """The general combination (scripts/general_sets.py, DBTSML) at n heads: its own run (general_n, part gen) with
+    control and random sets; else the full pass of the size's screen where it was shortlisted (accuracy only)."""
+    g = summary(R / "general_n", "gen")
+    if g is not None and f"shared_general{n}" in g.index:
+        r = g.loc[f"shared_general{n}"]
+        return r.task, r.control, r.random
+    combo = json.loads((R / "general_n" / "selected.json").read_text())["1"]["combo"]
+    path = R / f"shared_n{n}" / "summary.csv"
+    if path.exists():
+        s = pd.read_csv(path).set_index("combo")
+        if combo in s.index:
+            return float(s.loc[combo].accuracy), np.nan, np.nan
+    return np.nan, np.nan, np.nan
+
+
 def per_task(directory: Path, stage: str, name: str) -> dict[str, float]:
     rebuild_report.DIR = directory
     cf = rebuild_report.crossfit(rebuild_report.load(stage))
@@ -87,6 +103,7 @@ def main() -> None:
         for ref, (stage, prefix) in REFS.items():
             s = summary(R / "additions", stage)
             row[ref] = s.loc[f"{prefix}{n}"].task if s is not None and f"{prefix}{n}" in s.index else np.nan
+        row["general"], row["general_control"], row["general_random"] = general(n)
         rows.append(row)
     df = pd.DataFrame(rows)
     df.to_csv(R / "lrp_shared_compare.csv", index=False)
@@ -97,6 +114,9 @@ def main() -> None:
         lrp_cell = (f"{r['lrp']:.2f} ({r['lrp_control']:.2f}/{r['lrp_random']:.2f}) {r['lrp_combo']}  common {r['common']:.1f}"
                     if "lrp" in r else "--")
         refs = "  ".join(f"{k} {r[k]:.2f}" for k in REFS)
+        g = r["general"]
+        refs += "  DBTSML " + ("--" if np.isnan(g) else f"{g:.2f}" + (
+            "" if np.isnan(r["general_control"]) else f" ({r['general_control']:.2f}/{r['general_random']:.2f})"))
         print(f"{r['n']:>4}  attention: {ours_cell:34s} LRP: {lrp_cell:48s} {refs}")
     if tasks:
         t = pd.DataFrame(tasks)
