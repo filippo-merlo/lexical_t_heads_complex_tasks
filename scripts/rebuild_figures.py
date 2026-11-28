@@ -426,6 +426,28 @@ def table_selected_sizes() -> None:
     write("design_selected_sizes", rt.tabular("@{}rlrlrrrr@{}", header, rows))
 
 
+# LRP-Combined (Sec. 5.7, user 2026-11-27): the shared pick of the relevance-weighted screen at every size
+# (scripts/rebuild_screen_n.sh lrp, results/rebuild/lrp_shared_n<N>). Its sets are also named shared_selected<N>,
+# so their accuracies are read apart from ACC.
+LRP_SCREEN = {n: R / f"lrp_shared_n{n}" for n in SIZES if (R / f"lrp_shared_n{n}" / "sel_per_task.csv").exists()}
+
+
+def table_lrp_screen() -> None:
+    """LRP-Combined at every size, as table_selected_sizes, with the shared Combined and LRP-T of the same size."""
+    header = ["$N$ & Fold 1 & Acc. & Fold 2 & Acc. & Task & Control & Random & Combined & LRP-T \\\\"]
+    rows = []
+    for n, d in LRP_SCREEN.items():
+        name = f"shared_selected{n}"
+        sel = json.loads((d / "selected.json").read_text())
+        acc = cells(pd.read_csv(d / "sel_per_task.csv"))
+        combos = [sel[str(f)]["combo"] for f in (1, 2)]
+        folds = [float(acc.loc[(name, "task", f)].mean()) for f in (1, 2)]
+        rows.append(f"{n} & {combos[0]} & {rt.num(folds[0])} & {combos[1]} & {rt.num(folds[1])} & "
+                    + " & ".join(rt.num(mean_over(name, k, acc=acc)) for k in ("task", "control", "random"))
+                    + f" & {rt.num(mean_over(name))} & {rt.num(mean_over(f'shared_lrpT{n}'))} \\\\")
+    write("design_lrp_screen", rt.tabular("@{}rlrlrrrrrr@{}", header, rows))
+
+
 # ------------------------------------------------------------------ figures
 
 
@@ -1551,6 +1573,9 @@ def main() -> None:
     table_yang_tasks()
     table_selected(scores)
     table_selected_sizes()
+    table_lrp_screen()
+    if "--lrp-screen" in sys.argv:  # that table only
+        return
     fig_published()
     fig_ladder()
     fig_controls()
