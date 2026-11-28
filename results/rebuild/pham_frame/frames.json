@@ -1,0 +1,2536 @@
+{
+ "frames": {
+  "antonym": {
+   "fold1": {
+    "inst0": {
+     "text": "The antonym of true is",
+     "frame": [
+      " ant",
+      "onym"
+     ],
+     "T": []
+    },
+    "inst1": {
+     "text": "Output the antonym of the word in the question. Q: orthodox\nA:",
+     "frame": [
+      " ant",
+      "onym"
+     ],
+     "T": [
+      " word",
+      " question"
+     ]
+    },
+    "inst2": {
+     "text": "Give me the antonym of the following word. Q: orthodox\nA:",
+     "frame": [
+      " ant",
+      "onym"
+     ],
+     "T": [
+      " word"
+     ]
+    },
+    "inst3": {
+     "text": "What word is the opposite of the word in the question? Q: orthodox\nA:",
+     "frame": [
+      " opposite"
+     ],
+     "T": [
+      "What",
+      " word",
+      " opposite",
+      " word",
+      " question"
+     ]
+    },
+    "inst4": {
+     "text": "Give an antonym for the following word: Q: orthodox\nA:",
+     "frame": [
+      " ant",
+      "onym"
+     ],
+     "T": [
+      " word"
+     ]
+    }
+   },
+   "fold2": {
+    "inst0": {
+     "text": "The antonym of flawed is",
+     "frame": [
+      " ant",
+      "onym"
+     ],
+     "T": []
+    },
+    "inst1": {
+     "text": "Output the antonym of the word in the question. Q: flawed\nA:",
+     "frame": [
+      " ant",
+      "onym"
+     ],
+     "T": [
+      " word",
+      " question"
+     ]
+    },
+    "inst2": {
+     "text": "Give me the antonym of the following word. Q: privilege\nA:",
+     "frame": [
+      " ant",
+      "onym"
+     ],
+     "T": [
+      " word"
+     ]
+    },
+    "inst3": {
+     "text": "What word is the opposite of the word in the question? Q: flawed\nA:",
+     "frame": [
+      " opposite"
+     ],
+     "T": [
+      "What",
+      " word",
+      " opposite",
+      " word",
+      " question"
+     ]
+    },
+    "inst4": {
+     "text": "Give an antonym for the following word: Q: privilege\nA:",
+     "frame": [
+      " ant",
+      "onym"
+     ],
+     "T": [
+      " word"
+     ]
+    }
+   }
+  },
+  "synonym": {
+   "fold1": {
+    "inst0": {
+     "text": "A synonym for notorious is",
+     "frame": [
+      " synonym"
+     ],
+     "T": [
+      " synonym"
+     ]
+    },
+    "inst1": {
+     "text": "Output the synonym of the question. Q: notorious\nA:",
+     "frame": [
+      " synonym"
+     ],
+     "T": [
+      " synonym",
+      " question"
+     ]
+    },
+    "inst2": {
+     "text": "Task: Synonym Q: notorious\nA:",
+     "frame": [
+      " Syn",
+      "onym"
+     ],
+     "T": [
+      " Syn",
+      "onym"
+     ]
+    },
+    "inst3": {
+     "text": "Word to synonym Q: notorious\nA:",
+     "frame": [
+      " synonym"
+     ],
+     "T": [
+      "Word",
+      " synonym"
+     ]
+    },
+    "inst4": {
+     "text": "What is the synonym? Q: notorious\nA:",
+     "frame": [
+      " synonym"
+     ],
+     "T": [
+      "What",
+      " synonym"
+     ]
+    }
+   },
+   "fold2": {
+    "inst0": {
+     "text": "A synonym for identify is",
+     "frame": [
+      " synonym"
+     ],
+     "T": [
+      " synonym"
+     ]
+    },
+    "inst1": {
+     "text": "Output the synonym of the question. Q: identify\nA:",
+     "frame": [
+      " synonym"
+     ],
+     "T": [
+      " synonym",
+      " question"
+     ]
+    },
+    "inst2": {
+     "text": "Task: Synonym Q: identify\nA:",
+     "frame": [
+      " Syn",
+      "onym"
+     ],
+     "T": [
+      " Syn",
+      "onym"
+     ]
+    },
+    "inst3": {
+     "text": "Word to synonym Q: identify\nA:",
+     "frame": [
+      " synonym"
+     ],
+     "T": [
+      "Word",
+      " synonym"
+     ]
+    },
+    "inst4": {
+     "text": "What is the synonym? Q: identify\nA:",
+     "frame": [
+      " synonym"
+     ],
+     "T": [
+      "What",
+      " synonym"
+     ]
+    }
+   }
+  },
+  "singular-plural": {
+   "fold1": {
+    "inst0": {
+     "text": "The plural form of wallet is",
+     "frame": [
+      " plural"
+     ],
+     "T": [
+      " plural"
+     ]
+    },
+    "inst1": {
+     "text": "What is the plural of the following word? Q: wallet\nA:",
+     "frame": [
+      " plural"
+     ],
+     "T": [
+      " plural",
+      " word"
+     ]
+    },
+    "inst2": {
+     "text": "Task: Singlular to Plural Q: wallet\nA:",
+     "frame": [
+      " Pl",
+      "ural"
+     ],
+     "T": [
+      " Pl",
+      "ural"
+     ]
+    },
+    "inst3": {
+     "text": "Could you please tell me what is the plural word? Q: wallet\nA:",
+     "frame": [
+      " plural"
+     ],
+     "T": [
+      " plural",
+      " word"
+     ]
+    },
+    "inst4": {
+     "text": "Output the plural word from the singular Q: wallet\nA:",
+     "frame": [
+      " plural"
+     ],
+     "T": [
+      " plural",
+      " word"
+     ]
+    }
+   },
+   "fold2": {
+    "inst0": {
+     "text": "The plural form of comb is",
+     "frame": [
+      " plural"
+     ],
+     "T": [
+      " plural"
+     ]
+    },
+    "inst1": {
+     "text": "What is the plural of the following word? Q: comb\nA:",
+     "frame": [
+      " plural"
+     ],
+     "T": [
+      " plural",
+      " word"
+     ]
+    },
+    "inst2": {
+     "text": "Task: Singlular to Plural Q: comb\nA:",
+     "frame": [
+      " Pl",
+      "ural"
+     ],
+     "T": [
+      " Pl",
+      "ural"
+     ]
+    },
+    "inst3": {
+     "text": "Could you please tell me what is the plural word? Q: comb\nA:",
+     "frame": [
+      " plural"
+     ],
+     "T": [
+      " plural",
+      " word"
+     ]
+    },
+    "inst4": {
+     "text": "Output the plural word from the singular Q: comb\nA:",
+     "frame": [
+      " plural"
+     ],
+     "T": [
+      " plural",
+      " word"
+     ]
+    }
+   }
+  },
+  "present-past": {
+   "fold1": {
+    "inst0": {
+     "text": "The past tense of accelerate is",
+     "frame": [
+      " past",
+      " tense"
+     ],
+     "T": [
+      " past"
+     ]
+    },
+    "inst1": {
+     "text": "Write the word in its past tense form. Q: accelerate\nA:",
+     "frame": [
+      " past",
+      " tense"
+     ],
+     "T": [
+      " word",
+      " past"
+     ]
+    },
+    "inst2": {
+     "text": "What is the past tense of the following verb? Q: accelerate\nA:",
+     "frame": [
+      " past",
+      " tense"
+     ],
+     "T": [
+      "What",
+      " past",
+      " verb"
+     ]
+    },
+    "inst3": {
+     "text": "Give me the past tense of 'Q' Q: accelerate\nA:",
+     "frame": [
+      " past",
+      " tense"
+     ],
+     "T": [
+      " past"
+     ]
+    },
+    "inst4": {
+     "text": "I wonder what the past tense of this English word is. Can you tell me? Q: accelerate\nA:",
+     "frame": [
+      " past",
+      " tense"
+     ],
+     "T": [
+      " what",
+      " past",
+      " English",
+      " word"
+     ]
+    }
+   },
+   "fold2": {
+    "inst0": {
+     "text": "The past tense of adapt is",
+     "frame": [
+      " past",
+      " tense"
+     ],
+     "T": [
+      " past"
+     ]
+    },
+    "inst1": {
+     "text": "Write the word in its past tense form. Q: adapt\nA:",
+     "frame": [
+      " past",
+      " tense"
+     ],
+     "T": [
+      " word",
+      " past"
+     ]
+    },
+    "inst2": {
+     "text": "What is the past tense of the following verb? Q: adapt\nA:",
+     "frame": [
+      " past",
+      " tense"
+     ],
+     "T": [
+      "What",
+      " past",
+      " verb"
+     ]
+    },
+    "inst3": {
+     "text": "Give me the past tense of 'Q' Q: adapt\nA:",
+     "frame": [
+      " past",
+      " tense"
+     ],
+     "T": [
+      " past"
+     ]
+    },
+    "inst4": {
+     "text": "I wonder what the past tense of this English word is. Can you tell me? Q: adapt\nA:",
+     "frame": [
+      " past",
+      " tense"
+     ],
+     "T": [
+      " what",
+      " past",
+      " English",
+      " word"
+     ]
+    }
+   }
+  },
+  "country-capital": {
+   "fold1": {
+    "inst0": {
+     "text": "The capital city of Afghanistan is",
+     "frame": [
+      " capital"
+     ],
+     "T": [
+      " capital",
+      " city"
+     ]
+    },
+    "inst1": {
+     "text": "What is the capital of the country? Q: Afghanistan\nA:",
+     "frame": [
+      " capital"
+     ],
+     "T": [
+      " capital",
+      " country"
+     ]
+    },
+    "inst2": {
+     "text": "Country -> Capital Q: Afghanistan\nA:",
+     "frame": [
+      " Capital"
+     ],
+     "T": [
+      "Country",
+      " Capital"
+     ]
+    },
+    "inst3": {
+     "text": "Task: given the country, answer the capital of the country. Q: Afghanistan\nA:",
+     "frame": [
+      " capital"
+     ],
+     "T": [
+      " country",
+      " answer",
+      " capital",
+      " country"
+     ]
+    },
+    "inst4": {
+     "text": "What capital city does this country have? Q: Afghanistan\nA:",
+     "frame": [
+      " capital"
+     ],
+     "T": [
+      " capital",
+      " city",
+      " country"
+     ]
+    }
+   },
+   "fold2": {
+    "inst0": {
+     "text": "The capital city of Andorra is",
+     "frame": [
+      " capital"
+     ],
+     "T": [
+      " capital",
+      " city"
+     ]
+    },
+    "inst1": {
+     "text": "What is the capital of the country? Q: Andorra\nA:",
+     "frame": [
+      " capital"
+     ],
+     "T": [
+      " capital",
+      " country"
+     ]
+    },
+    "inst2": {
+     "text": "Country -> Capital Q: Andorra\nA:",
+     "frame": [
+      " Capital"
+     ],
+     "T": [
+      "Country",
+      " Capital"
+     ]
+    },
+    "inst3": {
+     "text": "Task: given the country, answer the capital of the country. Q: Andorra\nA:",
+     "frame": [
+      " capital"
+     ],
+     "T": [
+      " country",
+      " answer",
+      " capital",
+      " country"
+     ]
+    },
+    "inst4": {
+     "text": "What capital city does this country have? Q: Andorra\nA:",
+     "frame": [
+      " capital"
+     ],
+     "T": [
+      " capital",
+      " city",
+      " country"
+     ]
+    }
+   }
+  },
+  "country-currency": {
+   "fold1": {
+    "inst0": {
+     "text": "The currency of Afghanistan is the",
+     "frame": [
+      " currency"
+     ],
+     "T": [
+      " currency"
+     ]
+    },
+    "inst1": {
+     "text": "What is the currency used by the country? Q: Afghanistan\nA:",
+     "frame": [
+      " currency"
+     ],
+     "T": [
+      " currency",
+      " country"
+     ]
+    },
+    "inst2": {
+     "text": "Country -> Currency Q: Afghanistan\nA:",
+     "frame": [
+      " Currency"
+     ],
+     "T": [
+      "Country",
+      " Currency"
+     ]
+    },
+    "inst3": {
+     "text": "Task: given the country, answer with the currency of the country. Q: Albania\nA:",
+     "frame": [
+      " currency"
+     ],
+     "T": [
+      " country",
+      " answer",
+      " currency",
+      " country"
+     ]
+    },
+    "inst4": {
+     "text": "What currency does this country use? Q: Albania\nA:",
+     "frame": [
+      " currency"
+     ],
+     "T": [
+      " currency",
+      " country"
+     ]
+    }
+   },
+   "fold2": {
+    "inst0": {
+     "text": "The currency of Andorra is the",
+     "frame": [
+      " currency"
+     ],
+     "T": [
+      " currency"
+     ]
+    },
+    "inst1": {
+     "text": "What is the currency used by the country? Q: Andorra\nA:",
+     "frame": [
+      " currency"
+     ],
+     "T": [
+      " currency",
+      " country"
+     ]
+    },
+    "inst2": {
+     "text": "Country -> Currency Q: Andorra\nA:",
+     "frame": [
+      " Currency"
+     ],
+     "T": [
+      "Country",
+      " Currency"
+     ]
+    },
+    "inst3": {
+     "text": "Task: given the country, answer with the currency of the country. Q: Andorra\nA:",
+     "frame": [
+      " currency"
+     ],
+     "T": [
+      " country",
+      " answer",
+      " currency",
+      " country"
+     ]
+    },
+    "inst4": {
+     "text": "What currency does this country use? Q: Andorra\nA:",
+     "frame": [
+      " currency"
+     ],
+     "T": [
+      " currency",
+      " country"
+     ]
+    }
+   }
+  },
+  "landmark-country": {
+   "fold1": {
+    "inst0": {
+     "text": "The country where Kuala Langat is located is",
+     "frame": [
+      " country"
+     ],
+     "T": [
+      " country",
+      " located"
+     ]
+    },
+    "inst1": {
+     "text": "Which country does this landmark belong to? Q: Kuala Langat\nA:",
+     "frame": [
+      " country"
+     ],
+     "T": [
+      "Which",
+      " country"
+     ]
+    },
+    "inst2": {
+     "text": "Return the country that this landmark is in. Q: Kuala Langat\nA:",
+     "frame": [
+      " country"
+     ],
+     "T": [
+      " country"
+     ]
+    },
+    "inst3": {
+     "text": "Help me find the country that the mentioned landmark is located in. Q: Kuala Langat\nA:",
+     "frame": [
+      " country"
+     ],
+     "T": [
+      " country",
+      " located"
+     ]
+    },
+    "inst4": {
+     "text": "Landmark -> Country. Q: Kuala Langat\nA:",
+     "frame": [
+      " Country"
+     ],
+     "T": [
+      " Country"
+     ]
+    }
+   },
+   "fold2": {
+    "inst0": {
+     "text": "The country where Autonomous University of Madrid is located is",
+     "frame": [
+      " country"
+     ],
+     "T": [
+      " country",
+      " where",
+      " located"
+     ]
+    },
+    "inst1": {
+     "text": "Which country does this landmark belong to? Q: Autonomous University of Madrid\nA:",
+     "frame": [
+      " country"
+     ],
+     "T": [
+      "Which",
+      " country"
+     ]
+    },
+    "inst2": {
+     "text": "Return the country that this landmark is in. Q: Autonomous University of Madrid\nA:",
+     "frame": [
+      " country"
+     ],
+     "T": [
+      " country"
+     ]
+    },
+    "inst3": {
+     "text": "Help me find the country that the mentioned landmark is located in. Q: Autonomous University of Madrid\nA:",
+     "frame": [
+      " country"
+     ],
+     "T": [
+      " country",
+      " located"
+     ]
+    },
+    "inst4": {
+     "text": "Landmark -> Country. Q: Autonomous University of Madrid\nA:",
+     "frame": [
+      " Country"
+     ],
+     "T": [
+      " Country"
+     ]
+    }
+   }
+  },
+  "park-country": {
+   "fold1": {
+    "inst0": {
+     "text": "The country where Llogara National Park is located is",
+     "frame": [
+      " country"
+     ],
+     "T": [
+      " country",
+      " located"
+     ]
+    },
+    "inst1": {
+     "text": "What is the country of the park? Q: Band-e Gulbahar National Park\nA:",
+     "frame": [
+      " country"
+     ],
+     "T": [
+      " country",
+      " park"
+     ]
+    },
+    "inst2": {
+     "text": "Which nation does the park belong to? Q: Llogara National Park\nA:",
+     "frame": [
+      " nation"
+     ],
+     "T": [
+      "Which",
+      " nation",
+      " park"
+     ]
+    },
+    "inst3": {
+     "text": "Park -> Country Q: Llogara National Park\nA:",
+     "frame": [
+      " Country"
+     ],
+     "T": [
+      "Park",
+      " Country"
+     ]
+    },
+    "inst4": {
+     "text": "Which country is this place located in? Q: Band-e Gulbahar National Park\nA:",
+     "frame": [
+      " country"
+     ],
+     "T": [
+      "Which",
+      " country",
+      " located"
+     ]
+    }
+   },
+   "fold2": {
+    "inst0": {
+     "text": "The country where Band-e Amir National Park is located is",
+     "frame": [
+      " country"
+     ],
+     "T": [
+      " country",
+      " located"
+     ]
+    },
+    "inst1": {
+     "text": "What is the country of the park? Q: Band-e Amir National Park\nA:",
+     "frame": [
+      " country"
+     ],
+     "T": [
+      " country",
+      " park"
+     ]
+    },
+    "inst2": {
+     "text": "Which nation does the park belong to? Q: Band-e Amir National Park\nA:",
+     "frame": [
+      " nation"
+     ],
+     "T": [
+      "Which",
+      " nation",
+      " park"
+     ]
+    },
+    "inst3": {
+     "text": "Park -> Country Q: Wakhan National Park\nA:",
+     "frame": [
+      " Country"
+     ],
+     "T": [
+      "Park",
+      " Country"
+     ]
+    },
+    "inst4": {
+     "text": "Which country is this place located in? Q: Band-e Amir National Park\nA:",
+     "frame": [
+      " country"
+     ],
+     "T": [
+      "Which",
+      " country",
+      " located"
+     ]
+    }
+   }
+  },
+  "product-company": {
+   "fold1": {
+    "inst0": {
+     "text": "The company that produces Platform Controller Hub is",
+     "frame": [
+      " company"
+     ],
+     "T": [
+      " company"
+     ]
+    },
+    "inst1": {
+     "text": "Which company is the product from? Q: Platform Controller Hub\nA:",
+     "frame": [
+      " company"
+     ],
+     "T": [
+      " company",
+      " product"
+     ]
+    },
+    "inst2": {
+     "text": "Which company makes the given product? Q: Platform Controller Hub\nA:",
+     "frame": [
+      " company"
+     ],
+     "T": [
+      " company",
+      " product"
+     ]
+    },
+    "inst3": {
+     "text": "Task definition: given a product, which company makes it? Q: Platform Controller Hub\nA:",
+     "frame": [
+      " company"
+     ],
+     "T": [
+      " product",
+      " company"
+     ]
+    },
+    "inst4": {
+     "text": "Product -> Company owning it Q: Platform Controller Hub\nA:",
+     "frame": [
+      " Company"
+     ],
+     "T": [
+      "Product",
+      " Company"
+     ]
+    }
+   },
+   "fold2": {
+    "inst0": {
+     "text": "The company that produces Shahab-2 is",
+     "frame": [
+      " company"
+     ],
+     "T": [
+      " company"
+     ]
+    },
+    "inst1": {
+     "text": "Which company is the product from? Q: Shahab-2\nA:",
+     "frame": [
+      " company"
+     ],
+     "T": [
+      " company",
+      " product"
+     ]
+    },
+    "inst2": {
+     "text": "Which company makes the given product? Q: iPhone 5\nA:",
+     "frame": [
+      " company"
+     ],
+     "T": [
+      " company",
+      " product"
+     ]
+    },
+    "inst3": {
+     "text": "Task definition: given a product, which company makes it? Q: iPhone 5\nA:",
+     "frame": [
+      " company"
+     ],
+     "T": [
+      " product",
+      " company"
+     ]
+    },
+    "inst4": {
+     "text": "Product -> Company owning it Q: Shahab-2\nA:",
+     "frame": [
+      " Company"
+     ],
+     "T": [
+      "Product",
+      " Company"
+     ]
+    }
+   }
+  },
+  "next_item": {
+   "fold1": {
+    "inst0": {
+     "text": "The next item after zero is",
+     "frame": [
+      " next"
+     ],
+     "T": [
+      " next",
+      " item",
+      " after"
+     ]
+    },
+    "inst1": {
+     "text": "What is the next item in the sequence? Q: 8\nA:",
+     "frame": [
+      " next"
+     ],
+     "T": [
+      "What",
+      " next",
+      " item",
+      " sequence"
+     ]
+    },
+    "inst2": {
+     "text": "Given the current item, what is the next item in the sequence? Q: zero\nA:",
+     "frame": [
+      " next"
+     ],
+     "T": [
+      " item",
+      " what",
+      " next",
+      " item",
+      " sequence"
+     ]
+    },
+    "inst3": {
+     "text": "Find the next item. Q: six\nA:",
+     "frame": [
+      " next"
+     ],
+     "T": [
+      " next",
+      " item"
+     ]
+    },
+    "inst4": {
+     "text": "Return the item that is sequentially next of the given input Q: 5\nA:",
+     "frame": [
+      " next"
+     ],
+     "T": [
+      " item",
+      " next"
+     ]
+    }
+   },
+   "fold2": {
+    "inst0": {
+     "text": "The next item after one is",
+     "frame": [
+      " next"
+     ],
+     "T": [
+      " next",
+      " item",
+      " after"
+     ]
+    },
+    "inst1": {
+     "text": "What is the next item in the sequence? Q: one\nA:",
+     "frame": [
+      " next"
+     ],
+     "T": [
+      "What",
+      " next",
+      " item",
+      " sequence"
+     ]
+    },
+    "inst2": {
+     "text": "Given the current item, what is the next item in the sequence? Q: one\nA:",
+     "frame": [
+      " next"
+     ],
+     "T": [
+      " item",
+      " what",
+      " next",
+      " item",
+      " sequence"
+     ]
+    },
+    "inst3": {
+     "text": "Find the next item. Q: one\nA:",
+     "frame": [
+      " next"
+     ],
+     "T": [
+      " next",
+      " item"
+     ]
+    },
+    "inst4": {
+     "text": "Return the item that is sequentially next of the given input Q: twelve\nA:",
+     "frame": [
+      " next"
+     ],
+     "T": [
+      " item",
+      " next"
+     ]
+    }
+   }
+  },
+  "prev_item": {
+   "fold1": {
+    "inst0": {
+     "text": "The previous item before fourteen is",
+     "frame": [
+      " previous",
+      " item",
+      " before"
+     ],
+     "T": [
+      " previous",
+      " item",
+      " before"
+     ]
+    },
+    "inst1": {
+     "text": "Given a number, letter, or month, return the previous item in the sequence. Q: one\nA:",
+     "frame": [
+      " previous",
+      " item"
+     ],
+     "T": [
+      " return",
+      " previous",
+      " item",
+      " sequence"
+     ]
+    },
+    "inst2": {
+     "text": "Return the previous item in the sequence. Q: six\nA:",
+     "frame": [
+      " previous",
+      " item"
+     ],
+     "T": [
+      "Return",
+      " previous",
+      " item",
+      " sequence"
+     ]
+    },
+    "inst3": {
+     "text": "Instruction: given the current item, what is the previous one? Q: six\nA:",
+     "frame": [
+      " previous"
+     ],
+     "T": [
+      " item",
+      " what",
+      " previous"
+     ]
+    },
+    "inst4": {
+     "text": "You are given an item in the squence, what is the previous item? Q: six\nA:",
+     "frame": [
+      " previous",
+      " item"
+     ],
+     "T": [
+      " item",
+      " what",
+      " previous",
+      " item"
+     ]
+    }
+   },
+   "fold2": {
+    "inst0": {
+     "text": "The previous item before thirteen is",
+     "frame": [
+      " previous",
+      " item",
+      " before"
+     ],
+     "T": [
+      " previous",
+      " item",
+      " before"
+     ]
+    },
+    "inst1": {
+     "text": "Given a number, letter, or month, return the previous item in the sequence. Q: two\nA:",
+     "frame": [
+      " previous",
+      " item"
+     ],
+     "T": [
+      " return",
+      " previous",
+      " item",
+      " sequence"
+     ]
+    },
+    "inst2": {
+     "text": "Return the previous item in the sequence. Q: four\nA:",
+     "frame": [
+      " previous",
+      " item"
+     ],
+     "T": [
+      "Return",
+      " previous",
+      " item",
+      " sequence"
+     ]
+    },
+    "inst3": {
+     "text": "Instruction: given the current item, what is the previous one? Q: two\nA:",
+     "frame": [
+      " previous"
+     ],
+     "T": [
+      " item",
+      " what",
+      " previous"
+     ]
+    },
+    "inst4": {
+     "text": "You are given an item in the squence, what is the previous item? Q: two\nA:",
+     "frame": [
+      " previous",
+      " item"
+     ],
+     "T": [
+      " item",
+      " what",
+      " previous",
+      " item"
+     ]
+    }
+   }
+  },
+  "english-french": {
+   "fold1": {
+    "inst0": {
+     "text": "The French translation of dependent is",
+     "frame": [
+      " French"
+     ],
+     "T": [
+      " French",
+      " translation"
+     ]
+    },
+    "inst1": {
+     "text": "Translate English to French: Q: dependent\nA:",
+     "frame": [
+      " French"
+     ],
+     "T": [
+      " English",
+      " French"
+     ]
+    },
+    "inst2": {
+     "text": "What is the French translation of the following English sentence? Q: dependent\nA:",
+     "frame": [
+      " French"
+     ],
+     "T": [
+      " French",
+      " translation",
+      " English"
+     ]
+    },
+    "inst3": {
+     "text": "Given an English word, can you translate it into French? Q: dependent\nA:",
+     "frame": [
+      " French"
+     ],
+     "T": [
+      " English",
+      " French"
+     ]
+    },
+    "inst4": {
+     "text": "Write the translation of the following sentence in French. Q: dependent\nA:",
+     "frame": [
+      " French"
+     ],
+     "T": [
+      " translation",
+      " French"
+     ]
+    }
+   },
+   "fold2": {
+    "inst0": {
+     "text": "The French translation of circle is",
+     "frame": [
+      " French"
+     ],
+     "T": [
+      " French",
+      " translation"
+     ]
+    },
+    "inst1": {
+     "text": "Translate English to French: Q: circle\nA:",
+     "frame": [
+      " French"
+     ],
+     "T": [
+      " English",
+      " French"
+     ]
+    },
+    "inst2": {
+     "text": "What is the French translation of the following English sentence? Q: circle\nA:",
+     "frame": [
+      " French"
+     ],
+     "T": [
+      " French",
+      " translation",
+      " English"
+     ]
+    },
+    "inst3": {
+     "text": "Given an English word, can you translate it into French? Q: circle\nA:",
+     "frame": [
+      " French"
+     ],
+     "T": [
+      " English",
+      " French"
+     ]
+    },
+    "inst4": {
+     "text": "Write the translation of the following sentence in French. Q: circle\nA:",
+     "frame": [
+      " French"
+     ],
+     "T": [
+      " translation",
+      " French"
+     ]
+    }
+   }
+  },
+  "english-german": {
+   "fold1": {
+    "inst0": {
+     "text": "The German translation of pastor is",
+     "frame": [
+      " German"
+     ],
+     "T": [
+      " German",
+      " translation"
+     ]
+    },
+    "inst1": {
+     "text": "Translate the following English word to German. Q: seminary\nA:",
+     "frame": [
+      " German"
+     ],
+     "T": [
+      " English",
+      " German"
+     ]
+    },
+    "inst2": {
+     "text": "What is the German translation of the following English sentence? Q: seminary\nA:",
+     "frame": [
+      " German"
+     ],
+     "T": [
+      " German",
+      " translation",
+      " English"
+     ]
+    },
+    "inst3": {
+     "text": "Given an English word, can you translate it into German? Q: seminary\nA:",
+     "frame": [
+      " German"
+     ],
+     "T": [
+      " English",
+      " German"
+     ]
+    },
+    "inst4": {
+     "text": "Write the translation of the following sentence in German. Q: seminary\nA:",
+     "frame": [
+      " German"
+     ],
+     "T": [
+      " translation",
+      " German"
+     ]
+    }
+   },
+   "fold2": {
+    "inst0": {
+     "text": "The German translation of command is",
+     "frame": [
+      " German"
+     ],
+     "T": [
+      " German",
+      " translation"
+     ]
+    },
+    "inst1": {
+     "text": "Translate the following English word to German. Q: meetings\nA:",
+     "frame": [
+      " German"
+     ],
+     "T": [
+      " English",
+      " German"
+     ]
+    },
+    "inst2": {
+     "text": "What is the German translation of the following English sentence? Q: meetings\nA:",
+     "frame": [
+      " German"
+     ],
+     "T": [
+      " German",
+      " translation",
+      " English"
+     ]
+    },
+    "inst3": {
+     "text": "Given an English word, can you translate it into German? Q: meetings\nA:",
+     "frame": [
+      " German"
+     ],
+     "T": [
+      " English",
+      " German"
+     ]
+    },
+    "inst4": {
+     "text": "Write the translation of the following sentence in German. Q: meetings\nA:",
+     "frame": [
+      " German"
+     ],
+     "T": [
+      " translation",
+      " German"
+     ]
+    }
+   }
+  },
+  "english-spanish": {
+   "fold1": {
+    "inst0": {
+     "text": "The Spanish translation of opponent is",
+     "frame": [
+      " Spanish"
+     ],
+     "T": [
+      " Spanish",
+      " translation"
+     ]
+    },
+    "inst1": {
+     "text": "Translate the following English sentences to Spanish. Q: proposal\nA:",
+     "frame": [
+      " Spanish"
+     ],
+     "T": [
+      " English",
+      " Spanish"
+     ]
+    },
+    "inst2": {
+     "text": "Translate the following English word to Spanish. Q: proposal\nA:",
+     "frame": [
+      " Spanish"
+     ],
+     "T": [
+      " English",
+      " Spanish"
+     ]
+    },
+    "inst3": {
+     "text": "What is the translation of the word in Spanish? Q: proposal\nA:",
+     "frame": [
+      " Spanish"
+     ],
+     "T": [
+      " translation",
+      " Spanish"
+     ]
+    },
+    "inst4": {
+     "text": "English to Spanish translation: Q: proposal\nA:",
+     "frame": [
+      " Spanish"
+     ],
+     "T": [
+      "English",
+      " Spanish",
+      " translation"
+     ]
+    }
+   },
+   "fold2": {
+    "inst0": {
+     "text": "The Spanish translation of marks is",
+     "frame": [
+      " Spanish"
+     ],
+     "T": [
+      " Spanish",
+      " translation"
+     ]
+    },
+    "inst1": {
+     "text": "Translate the following English sentences to Spanish. Q: not\nA:",
+     "frame": [
+      " Spanish"
+     ],
+     "T": [
+      " English",
+      " Spanish"
+     ]
+    },
+    "inst2": {
+     "text": "Translate the following English word to Spanish. Q: not\nA:",
+     "frame": [
+      " Spanish"
+     ],
+     "T": [
+      " English",
+      " Spanish"
+     ]
+    },
+    "inst3": {
+     "text": "What is the translation of the word in Spanish? Q: not\nA:",
+     "frame": [
+      " Spanish"
+     ],
+     "T": [
+      "What",
+      " translation",
+      " Spanish"
+     ]
+    },
+    "inst4": {
+     "text": "English to Spanish translation: Q: not\nA:",
+     "frame": [
+      " Spanish"
+     ],
+     "T": [
+      "English",
+      " Spanish",
+      " translation"
+     ]
+    }
+   }
+  }
+ },
+ "overlap": {
+  "fold1": {
+   "shared_lrpFraw20": {
+    "shared_lrpFraw20": 20,
+    "shared_lrpFrank20": 7,
+    "shared_lrpTraw20": 19,
+    "shared_lrpT20": 7
+   },
+   "shared_lrpFrank20": {
+    "shared_lrpFraw20": 7,
+    "shared_lrpFrank20": 20,
+    "shared_lrpTraw20": 8,
+    "shared_lrpT20": 16
+   },
+   "shared_lrpTraw20": {
+    "shared_lrpFraw20": 19,
+    "shared_lrpFrank20": 8,
+    "shared_lrpTraw20": 20,
+    "shared_lrpT20": 8
+   },
+   "shared_lrpT20": {
+    "shared_lrpFraw20": 7,
+    "shared_lrpFrank20": 16,
+    "shared_lrpTraw20": 8,
+    "shared_lrpT20": 20
+   },
+   "layers": {
+    "shared_lrpFraw20": [
+     12,
+     13,
+     13,
+     13,
+     13,
+     14,
+     14,
+     14,
+     14,
+     14,
+     15,
+     15,
+     15,
+     15,
+     16,
+     16,
+     16,
+     17,
+     17,
+     24
+    ],
+    "shared_lrpFrank20": [
+     0,
+     2,
+     12,
+     12,
+     12,
+     13,
+     13,
+     13,
+     13,
+     13,
+     13,
+     14,
+     14,
+     14,
+     15,
+     15,
+     15,
+     16,
+     17,
+     17
+    ],
+    "shared_lrpTraw20": [
+     0,
+     12,
+     13,
+     13,
+     13,
+     13,
+     14,
+     14,
+     14,
+     14,
+     14,
+     15,
+     15,
+     15,
+     15,
+     16,
+     16,
+     16,
+     17,
+     24
+    ],
+    "shared_lrpT20": [
+     0,
+     2,
+     9,
+     12,
+     12,
+     12,
+     13,
+     13,
+     13,
+     13,
+     13,
+     14,
+     14,
+     14,
+     15,
+     16,
+     16,
+     17,
+     17,
+     30
+    ]
+   }
+  },
+  "fold2": {
+   "shared_lrpFraw20": {
+    "shared_lrpFraw20": 20,
+    "shared_lrpFrank20": 8,
+    "shared_lrpTraw20": 19,
+    "shared_lrpT20": 8
+   },
+   "shared_lrpFrank20": {
+    "shared_lrpFraw20": 8,
+    "shared_lrpFrank20": 20,
+    "shared_lrpTraw20": 9,
+    "shared_lrpT20": 14
+   },
+   "shared_lrpTraw20": {
+    "shared_lrpFraw20": 19,
+    "shared_lrpFrank20": 9,
+    "shared_lrpTraw20": 20,
+    "shared_lrpT20": 9
+   },
+   "shared_lrpT20": {
+    "shared_lrpFraw20": 8,
+    "shared_lrpFrank20": 14,
+    "shared_lrpTraw20": 9,
+    "shared_lrpT20": 20
+   },
+   "layers": {
+    "shared_lrpFraw20": [
+     12,
+     13,
+     13,
+     13,
+     13,
+     14,
+     14,
+     14,
+     14,
+     14,
+     15,
+     15,
+     15,
+     15,
+     16,
+     16,
+     16,
+     17,
+     17,
+     24
+    ],
+    "shared_lrpFrank20": [
+     0,
+     2,
+     12,
+     12,
+     13,
+     13,
+     13,
+     13,
+     13,
+     13,
+     14,
+     14,
+     14,
+     15,
+     15,
+     15,
+     15,
+     16,
+     17,
+     17
+    ],
+    "shared_lrpTraw20": [
+     0,
+     12,
+     13,
+     13,
+     13,
+     13,
+     14,
+     14,
+     14,
+     14,
+     14,
+     15,
+     15,
+     15,
+     15,
+     16,
+     16,
+     16,
+     17,
+     24
+    ],
+    "shared_lrpT20": [
+     0,
+     2,
+     9,
+     12,
+     12,
+     12,
+     13,
+     13,
+     13,
+     13,
+     13,
+     14,
+     14,
+     14,
+     15,
+     16,
+     16,
+     17,
+     17,
+     30
+    ]
+   }
+  },
+  "fold_to_fold": {
+   "shared_lrpFraw20": 20,
+   "shared_lrpFrank20": 19,
+   "shared_lrpTraw20": 20,
+   "shared_lrpT20": 19
+  },
+  "sets": {
+   "fold1": {
+    "shared_lrpFraw20": [
+     [
+      12,
+      9
+     ],
+     [
+      13,
+      6
+     ],
+     [
+      13,
+      8
+     ],
+     [
+      13,
+      22
+     ],
+     [
+      13,
+      31
+     ],
+     [
+      14,
+      5
+     ],
+     [
+      14,
+      12
+     ],
+     [
+      14,
+      13
+     ],
+     [
+      14,
+      25
+     ],
+     [
+      14,
+      29
+     ],
+     [
+      15,
+      14
+     ],
+     [
+      15,
+      21
+     ],
+     [
+      15,
+      25
+     ],
+     [
+      15,
+      27
+     ],
+     [
+      16,
+      8
+     ],
+     [
+      16,
+      18
+     ],
+     [
+      16,
+      25
+     ],
+     [
+      17,
+      3
+     ],
+     [
+      17,
+      5
+     ],
+     [
+      24,
+      1
+     ]
+    ],
+    "shared_lrpFrank20": [
+     [
+      0,
+      23
+     ],
+     [
+      2,
+      5
+     ],
+     [
+      12,
+      9
+     ],
+     [
+      12,
+      10
+     ],
+     [
+      12,
+      15
+     ],
+     [
+      13,
+      2
+     ],
+     [
+      13,
+      4
+     ],
+     [
+      13,
+      6
+     ],
+     [
+      13,
+      7
+     ],
+     [
+      13,
+      29
+     ],
+     [
+      13,
+      31
+     ],
+     [
+      14,
+      12
+     ],
+     [
+      14,
+      23
+     ],
+     [
+      14,
+      29
+     ],
+     [
+      15,
+      0
+     ],
+     [
+      15,
+      5
+     ],
+     [
+      15,
+      22
+     ],
+     [
+      16,
+      8
+     ],
+     [
+      17,
+      5
+     ],
+     [
+      17,
+      13
+     ]
+    ],
+    "shared_lrpTraw20": [
+     [
+      0,
+      23
+     ],
+     [
+      12,
+      9
+     ],
+     [
+      13,
+      6
+     ],
+     [
+      13,
+      8
+     ],
+     [
+      13,
+      22
+     ],
+     [
+      13,
+      31
+     ],
+     [
+      14,
+      5
+     ],
+     [
+      14,
+      12
+     ],
+     [
+      14,
+      13
+     ],
+     [
+      14,
+      25
+     ],
+     [
+      14,
+      29
+     ],
+     [
+      15,
+      14
+     ],
+     [
+      15,
+      21
+     ],
+     [
+      15,
+      25
+     ],
+     [
+      15,
+      27
+     ],
+     [
+      16,
+      8
+     ],
+     [
+      16,
+      18
+     ],
+     [
+      16,
+      25
+     ],
+     [
+      17,
+      5
+     ],
+     [
+      24,
+      1
+     ]
+    ],
+    "shared_lrpT20": [
+     [
+      0,
+      23
+     ],
+     [
+      2,
+      5
+     ],
+     [
+      9,
+      6
+     ],
+     [
+      12,
+      9
+     ],
+     [
+      12,
+      10
+     ],
+     [
+      12,
+      15
+     ],
+     [
+      13,
+      2
+     ],
+     [
+      13,
+      4
+     ],
+     [
+      13,
+      6
+     ],
+     [
+      13,
+      29
+     ],
+     [
+      13,
+      31
+     ],
+     [
+      14,
+      3
+     ],
+     [
+      14,
+      12
+     ],
+     [
+      14,
+      29
+     ],
+     [
+      15,
+      5
+     ],
+     [
+      16,
+      8
+     ],
+     [
+      16,
+      16
+     ],
+     [
+      17,
+      5
+     ],
+     [
+      17,
+      13
+     ],
+     [
+      30,
+      5
+     ]
+    ]
+   },
+   "fold2": {
+    "shared_lrpFraw20": [
+     [
+      12,
+      9
+     ],
+     [
+      13,
+      6
+     ],
+     [
+      13,
+      8
+     ],
+     [
+      13,
+      22
+     ],
+     [
+      13,
+      31
+     ],
+     [
+      14,
+      5
+     ],
+     [
+      14,
+      12
+     ],
+     [
+      14,
+      13
+     ],
+     [
+      14,
+      25
+     ],
+     [
+      14,
+      29
+     ],
+     [
+      15,
+      14
+     ],
+     [
+      15,
+      21
+     ],
+     [
+      15,
+      25
+     ],
+     [
+      15,
+      27
+     ],
+     [
+      16,
+      8
+     ],
+     [
+      16,
+      18
+     ],
+     [
+      16,
+      25
+     ],
+     [
+      17,
+      3
+     ],
+     [
+      17,
+      5
+     ],
+     [
+      24,
+      1
+     ]
+    ],
+    "shared_lrpFrank20": [
+     [
+      0,
+      23
+     ],
+     [
+      2,
+      5
+     ],
+     [
+      12,
+      9
+     ],
+     [
+      12,
+      10
+     ],
+     [
+      13,
+      2
+     ],
+     [
+      13,
+      4
+     ],
+     [
+      13,
+      6
+     ],
+     [
+      13,
+      7
+     ],
+     [
+      13,
+      29
+     ],
+     [
+      13,
+      31
+     ],
+     [
+      14,
+      12
+     ],
+     [
+      14,
+      23
+     ],
+     [
+      14,
+      29
+     ],
+     [
+      15,
+      0
+     ],
+     [
+      15,
+      5
+     ],
+     [
+      15,
+      22
+     ],
+     [
+      15,
+      27
+     ],
+     [
+      16,
+      8
+     ],
+     [
+      17,
+      5
+     ],
+     [
+      17,
+      13
+     ]
+    ],
+    "shared_lrpTraw20": [
+     [
+      0,
+      23
+     ],
+     [
+      12,
+      9
+     ],
+     [
+      13,
+      6
+     ],
+     [
+      13,
+      8
+     ],
+     [
+      13,
+      22
+     ],
+     [
+      13,
+      31
+     ],
+     [
+      14,
+      5
+     ],
+     [
+      14,
+      12
+     ],
+     [
+      14,
+      13
+     ],
+     [
+      14,
+      25
+     ],
+     [
+      14,
+      29
+     ],
+     [
+      15,
+      14
+     ],
+     [
+      15,
+      21
+     ],
+     [
+      15,
+      25
+     ],
+     [
+      15,
+      27
+     ],
+     [
+      16,
+      8
+     ],
+     [
+      16,
+      18
+     ],
+     [
+      16,
+      25
+     ],
+     [
+      17,
+      5
+     ],
+     [
+      24,
+      1
+     ]
+    ],
+    "shared_lrpT20": [
+     [
+      0,
+      23
+     ],
+     [
+      2,
+      5
+     ],
+     [
+      9,
+      6
+     ],
+     [
+      12,
+      9
+     ],
+     [
+      12,
+      10
+     ],
+     [
+      12,
+      15
+     ],
+     [
+      13,
+      4
+     ],
+     [
+      13,
+      6
+     ],
+     [
+      13,
+      8
+     ],
+     [
+      13,
+      29
+     ],
+     [
+      13,
+      31
+     ],
+     [
+      14,
+      3
+     ],
+     [
+      14,
+      12
+     ],
+     [
+      14,
+      29
+     ],
+     [
+      15,
+      5
+     ],
+     [
+      16,
+      8
+     ],
+     [
+      16,
+      16
+     ],
+     [
+      17,
+      5
+     ],
+     [
+      17,
+      13
+     ],
+     [
+      30,
+      5
+     ]
+    ]
+   }
+  }
+ },
+ "pham_llama8b": {
+  "antonym": [
+   "opposite",
+   "opposing",
+   "contrasting"
+  ],
+  "synonym": [
+   "synonym",
+   "same meaning",
+   "same idea",
+   "similar",
+   "meaning"
+  ],
+  "singular-plural": [
+   "plural"
+  ],
+  "present-past": [
+   "past tense",
+   "past form"
+  ],
+  "country-capital": [
+   "capital"
+  ],
+  "country-currency": [
+   "currency",
+   "currencies"
+  ],
+  "landmark-country": [
+   "country"
+  ],
+  "park-country": [
+   "country",
+   "countries"
+  ],
+  "product-company": [
+   "company",
+   "developer"
+  ],
+  "next_item": [
+   "Next",
+   "next position",
+   "Next step"
+  ],
+  "prev_item": [
+   "before",
+   "back one step",
+   " previous item"
+  ],
+  "english-french": [
+   "French"
+  ],
+  "english-german": [
+   "German"
+  ],
+  "english-spanish": [
+   "Spanish"
+  ]
+ },
+ "gaps": {
+  "antonym": {
+   "antonym": [
+    "inst0",
+    "inst1",
+    "inst2",
+    "inst4"
+   ]
+  },
+  "park-country": {
+   "nation": [
+    "inst2"
+   ]
+  },
+  "prev_item": {
+   "previous": [
+    "inst3"
+   ]
+  }
+ }
+}

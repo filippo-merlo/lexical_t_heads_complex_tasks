@@ -1,0 +1,4 @@
+set,scope,n,task,control,random,tasks_folds
+shared_lrpFrank20,shared,20,0.39,0.088,0.022,28
+shared_lrpFraw20,shared,20,0.499,0.026,0.043,28
+shared_lrpTraw20,shared,20,0.508,0.029,0.014,28
