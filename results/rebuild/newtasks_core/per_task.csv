@@ -1,0 +1,121 @@
+rule,alpha,fold,task,accuracy,control,random
+core (7),1.0,1,person-occupation,0.296,0.16,0.09600000000000002
+core (7),1.0,1,person-sport,0.014000000000000002,0.078,0.034
+core (7),1.0,1,person-instrument,0.266,0.258,0.09799999999999999
+core (7),1.0,1,capitalize,0.05,0.006,0.008666666666666668
+core (7),1.0,2,person-occupation,0.256,0.126,0.06133333333333333
+core (7),1.0,2,person-sport,0.032,0.078,0.048666666666666664
+core (7),1.0,2,person-instrument,0.22999999999999998,0.22000000000000003,0.15466666666666665
+core (7),1.0,2,capitalize,0.062,0.04,0.008
+core (7),2.0,1,person-occupation,0.502,0.33999999999999997,0.09466666666666668
+core (7),2.0,1,person-sport,0.17600000000000002,0.2,0.032
+core (7),2.0,1,person-instrument,0.33399999999999996,0.256,0.104
+core (7),2.0,1,capitalize,0.32,0.036,0.012666666666666668
+core (7),2.0,2,person-occupation,0.4920000000000001,0.314,0.072
+core (7),2.0,2,person-sport,0.14600000000000002,0.19599999999999998,0.05266666666666667
+core (7),2.0,2,person-instrument,0.344,0.24,0.14333333333333334
+core (7),2.0,2,capitalize,0.296,0.041999999999999996,0.014
+core (7),cf,1,person-occupation,0.502,0.33999999999999997,0.09466666666666668
+core (7),cf,1,person-sport,0.17600000000000002,0.2,0.032
+core (7),cf,1,person-instrument,0.33399999999999996,0.256,0.104
+core (7),cf,1,capitalize,0.32,0.036,0.012666666666666668
+core (7),cf,2,person-occupation,0.4920000000000001,0.314,0.072
+core (7),cf,2,person-sport,0.14600000000000002,0.19599999999999998,0.05266666666666667
+core (7),cf,2,person-instrument,0.344,0.24,0.14333333333333334
+core (7),cf,2,capitalize,0.296,0.041999999999999996,0.014
+shared DBTL top 7,1.0,1,person-occupation,0.128,0.068,nan
+shared DBTL top 7,1.0,1,person-sport,0.044,0.05600000000000001,nan
+shared DBTL top 7,1.0,1,person-instrument,0.142,0.06799999999999999,nan
+shared DBTL top 7,1.0,1,capitalize,0.0,0.0,nan
+shared DBTL top 7,1.0,2,person-occupation,0.092,0.062,nan
+shared DBTL top 7,1.0,2,person-sport,0.072,0.06200000000000001,nan
+shared DBTL top 7,1.0,2,person-instrument,0.162,0.076,nan
+shared DBTL top 7,1.0,2,capitalize,0.012,0.01,nan
+shared DBTL top 7,2.0,1,person-occupation,0.364,0.042,nan
+shared DBTL top 7,2.0,1,person-sport,0.17600000000000002,0.176,nan
+shared DBTL top 7,2.0,1,person-instrument,0.32999999999999996,0.07,nan
+shared DBTL top 7,2.0,1,capitalize,0.044000000000000004,0.004,nan
+shared DBTL top 7,2.0,2,person-occupation,0.32,0.05,nan
+shared DBTL top 7,2.0,2,person-sport,0.17200000000000001,0.15399999999999997,nan
+shared DBTL top 7,2.0,2,person-instrument,0.352,0.074,nan
+shared DBTL top 7,2.0,2,capitalize,0.062,0.004,nan
+shared DBTL top 7,cf,1,person-occupation,0.364,0.042,nan
+shared DBTL top 7,cf,1,person-sport,0.17600000000000002,0.176,nan
+shared DBTL top 7,cf,1,person-instrument,0.32999999999999996,0.07,nan
+shared DBTL top 7,cf,1,capitalize,0.044000000000000004,0.004,nan
+shared DBTL top 7,cf,2,person-occupation,0.32,0.05,nan
+shared DBTL top 7,cf,2,person-sport,0.17200000000000001,0.15399999999999997,nan
+shared DBTL top 7,cf,2,person-instrument,0.352,0.074,nan
+shared DBTL top 7,cf,2,capitalize,0.062,0.004,nan
+shared LRP-T top 7,1.0,1,person-occupation,0.202,0.118,nan
+shared LRP-T top 7,1.0,1,person-sport,0.02,0.05,nan
+shared LRP-T top 7,1.0,1,person-instrument,0.20200000000000004,0.16999999999999998,nan
+shared LRP-T top 7,1.0,1,capitalize,0.022,0.006,nan
+shared LRP-T top 7,1.0,2,person-occupation,0.164,0.07400000000000001,nan
+shared LRP-T top 7,1.0,2,person-sport,0.036,0.054000000000000006,nan
+shared LRP-T top 7,1.0,2,person-instrument,0.22399999999999998,0.196,nan
+shared LRP-T top 7,1.0,2,capitalize,0.041999999999999996,0.036000000000000004,nan
+shared LRP-T top 7,2.0,1,person-occupation,0.446,0.284,nan
+shared LRP-T top 7,2.0,1,person-sport,0.12600000000000003,0.172,nan
+shared LRP-T top 7,2.0,1,person-instrument,0.346,0.272,nan
+shared LRP-T top 7,2.0,1,capitalize,0.188,0.008,nan
+shared LRP-T top 7,2.0,2,person-occupation,0.39599999999999996,0.236,nan
+shared LRP-T top 7,2.0,2,person-sport,0.10400000000000001,0.166,nan
+shared LRP-T top 7,2.0,2,person-instrument,0.32199999999999995,0.248,nan
+shared LRP-T top 7,2.0,2,capitalize,0.192,0.026000000000000002,nan
+shared LRP-T top 7,cf,1,person-occupation,0.446,0.284,nan
+shared LRP-T top 7,cf,1,person-sport,0.12600000000000003,0.172,nan
+shared LRP-T top 7,cf,1,person-instrument,0.346,0.272,nan
+shared LRP-T top 7,cf,1,capitalize,0.188,0.008,nan
+shared LRP-T top 7,cf,2,person-occupation,0.39599999999999996,0.236,nan
+shared LRP-T top 7,cf,2,person-sport,0.10400000000000001,0.166,nan
+shared LRP-T top 7,cf,2,person-instrument,0.32199999999999995,0.248,nan
+shared LRP-T top 7,cf,2,capitalize,0.192,0.026000000000000002,nan
+shared Causal top 7,1.0,1,person-occupation,0.194,0.10600000000000001,nan
+shared Causal top 7,1.0,1,person-sport,0.039999999999999994,0.054000000000000006,nan
+shared Causal top 7,1.0,1,person-instrument,0.194,0.15600000000000003,nan
+shared Causal top 7,1.0,1,capitalize,0.016,0.0,nan
+shared Causal top 7,1.0,2,person-occupation,0.11600000000000002,0.08800000000000001,nan
+shared Causal top 7,1.0,2,person-sport,0.036000000000000004,0.044000000000000004,nan
+shared Causal top 7,1.0,2,person-instrument,0.152,0.148,nan
+shared Causal top 7,1.0,2,capitalize,0.02,0.018,nan
+shared Causal top 7,2.0,1,person-occupation,0.472,0.278,nan
+shared Causal top 7,2.0,1,person-sport,0.152,0.17400000000000002,nan
+shared Causal top 7,2.0,1,person-instrument,0.33799999999999997,0.20400000000000001,nan
+shared Causal top 7,2.0,1,capitalize,0.266,0.022,nan
+shared Causal top 7,2.0,2,person-occupation,0.33799999999999997,0.178,nan
+shared Causal top 7,2.0,2,person-sport,0.038,0.136,nan
+shared Causal top 7,2.0,2,person-instrument,0.21799999999999997,0.162,nan
+shared Causal top 7,2.0,2,capitalize,0.128,0.018,nan
+shared Causal top 7,cf,1,person-occupation,0.472,0.278,nan
+shared Causal top 7,cf,1,person-sport,0.152,0.17400000000000002,nan
+shared Causal top 7,cf,1,person-instrument,0.33799999999999997,0.20400000000000001,nan
+shared Causal top 7,cf,1,capitalize,0.266,0.022,nan
+shared Causal top 7,cf,2,person-occupation,0.33799999999999997,0.178,nan
+shared Causal top 7,cf,2,person-sport,0.038,0.136,nan
+shared Causal top 7,cf,2,person-instrument,0.21799999999999997,0.162,nan
+shared Causal top 7,cf,2,capitalize,0.128,0.018,nan
+shared Causal - generic top 7,1.0,1,person-occupation,0.194,0.12200000000000003,nan
+shared Causal - generic top 7,1.0,1,person-sport,0.036000000000000004,0.052000000000000005,nan
+shared Causal - generic top 7,1.0,1,person-instrument,0.19,0.14400000000000002,nan
+shared Causal - generic top 7,1.0,1,capitalize,0.018,0.0,nan
+shared Causal - generic top 7,1.0,2,person-occupation,0.07800000000000001,0.07200000000000001,nan
+shared Causal - generic top 7,1.0,2,person-sport,0.068,0.068,nan
+shared Causal - generic top 7,1.0,2,person-instrument,0.152,0.11599999999999999,nan
+shared Causal - generic top 7,1.0,2,capitalize,0.014000000000000002,0.012,nan
+shared Causal - generic top 7,2.0,1,person-occupation,0.48200000000000004,0.264,nan
+shared Causal - generic top 7,2.0,1,person-sport,0.166,0.194,nan
+shared Causal - generic top 7,2.0,1,person-instrument,0.358,0.20600000000000002,nan
+shared Causal - generic top 7,2.0,1,capitalize,0.25999999999999995,0.016,nan
+shared Causal - generic top 7,2.0,2,person-occupation,0.128,0.07200000000000001,nan
+shared Causal - generic top 7,2.0,2,person-sport,0.062,0.06599999999999999,nan
+shared Causal - generic top 7,2.0,2,person-instrument,0.19,0.11399999999999999,nan
+shared Causal - generic top 7,2.0,2,capitalize,0.042,0.01,nan
+shared Causal - generic top 7,cf,1,person-occupation,0.48200000000000004,0.264,nan
+shared Causal - generic top 7,cf,1,person-sport,0.036000000000000004,0.052000000000000005,nan
+shared Causal - generic top 7,cf,1,person-instrument,0.358,0.20600000000000002,nan
+shared Causal - generic top 7,cf,1,capitalize,0.25999999999999995,0.016,nan
+shared Causal - generic top 7,cf,2,person-occupation,0.128,0.07200000000000001,nan
+shared Causal - generic top 7,cf,2,person-sport,0.062,0.06599999999999999,nan
+shared Causal - generic top 7,cf,2,person-instrument,0.19,0.11399999999999999,nan
+shared Causal - generic top 7,cf,2,capitalize,0.042,0.01,nan
