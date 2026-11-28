@@ -1,0 +1,5 @@
+set,scope,n,task,control,random,tasks_folds
+shared_jA20,shared,20,0.142,0.057,0.009,28
+shared_jA40,shared,40,0.22,0.026,0.044,28
+shared_jT20,shared,20,0.166,0.026,0.014,28
+shared_jT40,shared,40,0.275,0.02,0.067,28

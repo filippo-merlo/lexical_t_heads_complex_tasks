@@ -1,0 +1,3 @@
+n,jT,jT_control,jT_random,jA,jA_control,jA_random,lrpT,lrpT_control,lrpT_random,lrpTraw,lrpTraw_control,lrpTraw_random,jT_max_modal_share,jA_max_modal_share,combined_combo,combined,lrp_combined_combo,lrp_combined,causal,causal_gen
+20,0.166,0.026,0.014,0.142,0.057,0.009,0.315,0.092,0.015,0.508,0.029,0.014,0.851,0.209,DBTPL/DBTML,0.471,BT/DBTSP,0.434,0.317,0.396
+40,0.275,0.02,0.067,0.22,0.026,0.044,0.576,0.03,0.101,0.583,0.019,0.115,0.52,0.56,DBTM,0.622,BT,0.605,0.504,0.561
